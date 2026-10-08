@@ -77,13 +77,13 @@ test('vault encrypts secrets, reloads them and exposes only configuration flags'
   assert.equal(store.getPrivate('qwen').apiKey, 'private-qwen-key');
 });
 
-test('provider switching keeps keys separate; deleting clears persisted and runtime credentials', t => {
+test('provider switching keeps unrelated keys separate; deleting clears persisted and runtime credentials', t => {
   const store = vault(t);
   store.save({ provider: 'qwen', secrets: { apiKey: 'qwen-only' } });
   store.save({ provider: 'google', secrets: { apiKey: 'google-only' } });
   assert.equal(engineOptions(store, 'google').apiKey, 'google-only');
   assert.equal(engineOptions(store, 'qwen').apiKey, 'qwen-only');
-  assert.equal(engineOptions(store, 'google-translate').apiKey, '');
+  assert.equal(engineOptions(store, 'google-translate').apiKey, 'google-only', 'one Google key serves both Gemini modes');
   applyAIConfiguration(store);
   assert.equal(CLOUD_KEYS.dashscope, 'qwen-only');
   store.deleteSecrets('qwen');
@@ -92,6 +92,47 @@ test('provider switching keeps keys separate; deleting clears persisted and runt
   assert.equal(store.getPrivate('qwen').apiKey, '');
   assert.equal(store.getPrivate('google').apiKey, 'google-only');
   assert.equal(new AISettingsStore({ filePath: store.filePath, safeStorage: encryption }).getPrivate('qwen').apiKey, '');
+});
+
+test('a key is saved once per account and shared by every feature that uses it', t => {
+  const store = vault(t);
+  store.save({ provider: 'cartesia', secrets: { apiKey: 'voice', llmApiKey: 'deepseek-shared' } });
+  assert.equal(store.getPrivate('deepseek').apiKey, 'deepseek-shared');
+  assert.equal(store.data.translationProvider, 'deepseek', 'translation follows the account that has a key');
+  store.save({ provider: 'deepseek', purpose: 'translate', translationProvider: 'deepseek', secrets: { apiKey: 'deepseek-new' } });
+  assert.equal(store.getPrivate('cartesia').llmApiKey, 'deepseek-new');
+  assert.equal(store.publicSettings().providers.find(item => item.id === 'cartesia').fields[1].configured, true);
+  store.save({ provider: 'qwen', secrets: { apiKey: 'qwen-key' } });
+  assert.equal(store.data.translationProvider, 'deepseek', 'an explicit working translator is kept');
+  store.deleteSecrets('cartesia', 'llmApiKey');
+  assert.equal(store.getPrivate('deepseek').apiKey, '');
+  assert.equal(store.getPrivate('cartesia').apiKey, 'voice', 'removing one key leaves the others');
+  assert.throws(() => store.deleteSecrets('cartesia', 'unknown'));
+  const reloaded = new AISettingsStore({ filePath: store.filePath, safeStorage: encryption });
+  assert.equal(reloaded.getPrivate('deepseek').apiKey, '');
+});
+
+test('vaults from older versions share keys that were saved for one feature only', t => {
+  const store = vault(t);
+  store.save({ provider: 'qwen', secrets: { apiKey: 'qwen' } });
+  const data = JSON.parse(fs.readFileSync(store.filePath, 'utf8'));
+  data.providers.google = { secrets: { apiKey: encryption.encryptString('legacy-google').toString('base64') } };
+  data.providers['google-translate'] = { secrets: {} };
+  data.providers.deepseek = { secrets: { apiKey: encryption.encryptString('legacy-deepseek').toString('base64') } };
+  data.providers.cartesia = { secrets: { apiKey: encryption.encryptString('cartesia').toString('base64'), llmApiKey: encryption.encryptString('other-deepseek').toString('base64') } };
+  fs.writeFileSync(store.filePath, JSON.stringify(data));
+  const reloaded = new AISettingsStore({ filePath: store.filePath, safeStorage: encryption });
+  assert.equal(reloaded.getPrivate('google-translate').apiKey, 'legacy-google');
+  assert.equal(reloaded.getPrivate('cartesia').llmApiKey, 'other-deepseek', 'existing distinct keys are never overwritten on load');
+  assert.equal(reloaded.getPrivate('deepseek').apiKey, 'legacy-deepseek');
+});
+
+test('saving a translation key interrupts voice only when the live session uses that account', t => {
+  const store = vault(t);
+  store.save({ provider: 'cartesia', secrets: { apiKey: 'voice', llmApiKey: 'deepseek' } });
+  assert.equal(settingsAffectVoice(store, { provider: 'deepseek', purpose: 'translate', secrets: { apiKey: 'replacement' } }, 'cartesia'), true);
+  assert.equal(settingsAffectVoice(store, { provider: 'deepseek', purpose: 'translate', secrets: { apiKey: 'deepseek' } }, 'cartesia'), false);
+  assert.equal(settingsAffectVoice(store, { provider: 'deepseek', purpose: 'translate', secrets: { apiKey: 'replacement' } }, 'doubao'), false);
 });
 
 test('a damaged unselected credential cannot block healthy providers or retain old runtime keys', t => {

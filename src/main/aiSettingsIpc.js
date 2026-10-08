@@ -1,3 +1,5 @@
+import { credentialAccount, providerDefinition } from './aiSettingsStore.js';
+
 /** Trust only the top-level frame of the exact local settings document. */
 export function isTrustedSettingsSender(event, window, expectedURL) {
   return Boolean(window && !window.isDestroyed()
@@ -23,8 +25,15 @@ export function aiKeyPage(provider) {
 /** A translation-only change need not end an unrelated live voice session. */
 export function settingsAffectVoice(store, payload, currentProvider) {
   if (payload?.purpose !== 'translate') return true;
-  if (!currentProvider || payload.provider !== currentProvider) return false;
+  if (!currentProvider) return false;
+  const voice = providerDefinition(currentProvider);
   const profile = store.getPrivate(currentProvider);
-  return Object.entries(payload.secrets || {}).some(([key, value]) => typeof value === 'string' && value.trim() && value.trim() !== profile[key])
-    || ['region', 'workspaceId'].some(key => payload[key] !== undefined && payload[key] !== profile[key]);
+  // Keys are shared per account, so a translation key can be the live voice key.
+  const keyChanged = Object.entries(payload.secrets || {}).some(([fieldId, value]) => {
+    if (typeof value !== 'string' || !value.trim()) return false;
+    const account = credentialAccount(payload.provider, fieldId);
+    return voice.fields.some(field => credentialAccount(currentProvider, field.id) === account && value.trim() !== profile[field.id]);
+  });
+  return keyChanged || (payload.provider === currentProvider
+    && ['region', 'workspaceId'].some(key => payload[key] !== undefined && payload[key] !== profile[key]));
 }

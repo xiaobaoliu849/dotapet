@@ -16,6 +16,25 @@ export const AI_PROVIDERS = [
   { id: 'deepseek', label: 'DeepSeek 文字 / 截图翻译', model: 'deepseek-flash', voice: '', voices: [], fields: [{ id: 'apiKey', label: 'DeepSeek API Key' }], textOnly: true },
 ];
 
+// One saved key per account: features that bill the same account share it, so
+// a key is pasted once no matter how many features use it.
+const SHARED_ACCOUNTS = {
+  'google.apiKey': 'google', 'google-translate.apiKey': 'google',
+  'deepseek.apiKey': 'deepseek', 'cartesia.llmApiKey': 'deepseek',
+};
+
+export function credentialAccount(providerId, fieldId) {
+  return SHARED_ACCOUNTS[`${providerId}.${fieldId}`] || `${providerId}.${fieldId}`;
+}
+
+/** Every [provider, field] pair that stores the same account's key. */
+export function linkedCredentialFields(providerId, fieldId) {
+  const account = credentialAccount(providerId, fieldId);
+  return AI_PROVIDERS.flatMap(provider => provider.fields
+    .filter(field => credentialAccount(provider.id, field.id) === account)
+    .map(field => [provider.id, field.id]));
+}
+
 export function providerDefinition(id) {
   const provider = AI_PROVIDERS.find(item => item.id === id);
   if (!provider) throw new Error('不支持的服务商。');
@@ -67,9 +86,34 @@ export class AISettingsStore {
       for (const [id, saved] of Object.entries(parsed.providers)) validateProfile(id, saved);
       this.data = parsed;
       if (this.data.providers.deepseek?.model === 'deepseek-chat') this.data.providers.deepseek.model = 'deepseek-flash';
+      this.shareSavedKeys(this.data);
     } catch {
       // Do not overwrite an unreadable vault with a new empty configuration.
       this.error = 'AI 设置文件无法读取，请备份后恢复文件。';
+    }
+  }
+
+  /** Older vaults stored shared keys per feature; fill only the missing copies. */
+  shareSavedKeys(data) {
+    for (const definition of AI_PROVIDERS) {
+      for (const field of definition.fields) {
+        const value = data.providers[definition.id]?.secrets?.[field.id];
+        if (!value) continue;
+        for (const [providerId, fieldId] of linkedCredentialFields(definition.id, field.id)) {
+          const saved = data.providers[providerId] ||= { secrets: {} };
+          saved.secrets ||= {};
+          saved.secrets[fieldId] ||= value;
+        }
+      }
+    }
+  }
+
+  writeSecret(data, providerId, fieldId, encrypted) {
+    for (const [linkedProvider, linkedField] of linkedCredentialFields(providerId, fieldId)) {
+      const saved = data.providers[linkedProvider] ||= { secrets: {} };
+      saved.secrets ||= {};
+      if (encrypted) saved.secrets[linkedField] = encrypted;
+      else delete saved.secrets[linkedField];
     }
   }
 
@@ -111,7 +155,8 @@ export class AISettingsStore {
         return { ...definition, model: saved.model || definition.model, voice: saved.voice ?? definition.voice,
           credentialError,
           workspaceId: saved.workspaceId || '', region: saved.region || 'beijing',
-          fields: definition.fields.map(field => ({ ...field, configured: Boolean(saved.secrets?.[field.id]) })) };
+          fields: definition.fields.map(field => ({ ...field, account: credentialAccount(definition.id, field.id),
+            configured: Boolean(saved.secrets?.[field.id]) })) };
       }),
     };
   }
@@ -159,7 +204,8 @@ export class AISettingsStore {
         const secret = plainText(value, '密钥', 4096);
         if (!secret) continue;
         this.ensureEncryption();
-        saved.secrets[field.id] = this.safeStorage.encryptString(secret).toString('base64');
+        next.providers[definition.id] = saved;
+        this.writeSecret(next, definition.id, field.id, this.safeStorage.encryptString(secret).toString('base64'));
       }
     }
     next.providers[definition.id] = saved;
@@ -168,14 +214,22 @@ export class AISettingsStore {
     if (payload.translationProvider !== undefined) {
       if (!['qwen', 'deepseek'].includes(payload.translationProvider)) throw new Error('不支持的文字翻译服务商。');
       next.translationProvider = payload.translationProvider;
+    } else {
+      // Translation follows whichever translation account already has a key.
+      const hasKey = id => Boolean(next.providers[id]?.secrets?.apiKey);
+      if (!hasKey(next.translationProvider)) next.translationProvider = ['qwen', 'deepseek'].find(hasKey) || next.translationProvider;
     }
     return this.commit(next);
   }
 
-  deleteSecrets(id) {
-    providerDefinition(id);
+  /** Removes a key everywhere it is shared; without a field, all of the provider's keys. */
+  deleteSecrets(id, fieldId) {
+    const definition = providerDefinition(id);
+    if (fieldId !== undefined && !definition.fields.some(field => field.id === fieldId)) throw new Error('不支持的密钥。');
     const next = structuredClone(this.data);
-    if (next.providers[id]) next.providers[id].secrets = {};
+    for (const field of definition.fields) {
+      if (fieldId === undefined || field.id === fieldId) this.writeSecret(next, id, field.id, '');
+    }
     return this.commit(next);
   }
 
@@ -193,16 +247,13 @@ export class AISettingsStore {
       this.ensureEncryption();
       const saved = next.providers[id] || { secrets: {} };
       saved.secrets ||= {};
-      saved.secrets.apiKey = this.safeStorage.encryptString(secret).toString('base64');
+      next.providers[id] = saved;
+      this.writeSecret(next, id, 'apiKey', this.safeStorage.encryptString(secret).toString('base64'));
       if (id === 'qwen') {
         const endpoint = config.realtime_api_urls?.DashScope || '';
         const match = /^wss:\/\/([a-zA-Z0-9-]+)\.(cn-beijing|ap-southeast-1)\.maas\.aliyuncs\.com(?:\/|$)/.exec(endpoint);
         if (match) { saved.workspaceId = match[1]; saved.region = match[2] === 'cn-beijing' ? 'beijing' : 'singapore'; }
       }
-      if (id === 'cartesia' && keys.deepseek_api_key) {
-        saved.secrets.llmApiKey = this.safeStorage.encryptString(plainText(keys.deepseek_api_key, '导入密钥', 4096)).toString('base64');
-      }
-      next.providers[id] = saved;
       count++;
     }
     if (!count) throw new Error('文件中没有可导入的服务商密钥。');

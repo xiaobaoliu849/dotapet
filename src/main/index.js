@@ -1475,9 +1475,10 @@ function setupIPC() {
     applyAIConfiguration(aiSettingsStore);
     return { settings };
   }));
-  ipcMain.handle('ai:delete-secrets', settingsHandler(provider => {
+  ipcMain.handle('ai:delete-secrets', settingsHandler(payload => {
+    const { provider, field } = typeof payload === 'string' ? { provider: payload } : payload || {};
     stopVoiceForSettings();
-    const settings = aiSettingsStore.deleteSecrets(provider);
+    const settings = aiSettingsStore.deleteSecrets(provider, field);
     applyAIConfiguration(aiSettingsStore);
     return { settings };
   }));

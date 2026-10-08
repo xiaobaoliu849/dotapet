@@ -4,7 +4,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('electronAPI', {
   getAISettings: () => ipcRenderer.invoke('ai:get-settings'),
   saveAISettings: settings => ipcRenderer.invoke('ai:save-settings', settings),
-  deleteAISecrets: provider => ipcRenderer.invoke('ai:delete-secrets', provider),
+  deleteAISecrets: (provider, field) => ipcRenderer.invoke('ai:delete-secrets', { provider, field }),
   importAIConfig: () => ipcRenderer.invoke('ai:import-config'),
   testAIConnection: provider => ipcRenderer.invoke('ai:test-connection', provider),
   testTextConnection: provider => ipcRenderer.invoke('ai:test-text', provider),
