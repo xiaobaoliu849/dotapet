@@ -1,0 +1,33 @@
+appId: fun.dota2bot.companion
+productName: DotaPet
+artifactName: DotaPet-${version}-${arch}.${ext}
+asar: true
+directories:
+  output: release
+files:
+  - src/**/*
+  - heroes.config.json
+  - package.json
+  - '!**/.env*'
+  - '!**/*config.json.bak'
+  - '!**/ai-settings.json'
+  - '!**/custom_phrases.json'
+win:
+  target: nsis
+  icon: src/renderer/assets/app-icon.ico
+  signExecutable: false
+nsis:
+  artifactName: DotaPet-Setup-${version}.${ext}
+  shortcutName: 刀塔Pet
+  installerIcon: src/renderer/assets/app-icon.ico
+  uninstallerIcon: src/renderer/assets/app-icon.ico
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  deleteAppDataOnUninstall: false
+  runAfterFinish: true
+  installerLanguages:
+    - zh_CN
+    - en_US
