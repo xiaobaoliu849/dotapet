@@ -11,7 +11,7 @@ const tick = () => new Promise(resolve => setImmediate(resolve));
 
 class Contents extends EventEmitter {
   constructor() { super(); Object.assign(this, { mainFrame: {}, sent: [], destroyed: false, focused: 0 }); }
-  loadFile(file) { this.mainFrame.url = pathToFileURL(file).href; this.file = path.basename(file); }
+  loadFile(file, options) { this.mainFrame.url = pathToFileURL(file).href; this.file = path.basename(file); this.query = options?.query?.embedded; }
   send(...message) { this.sent.push(message); }
   isDestroyed() { return this.destroyed; }
   close() { this.destroyed = true; this.emit('destroyed'); }
@@ -26,7 +26,7 @@ class View {
 }
 
 function fixture() {
-  const windows = [], handlers = new Map(), calls = { closed: 0, phrases: 0 };
+  const windows = [], handlers = new Map(), calls = { closed: 0, focus: [] };
   class Window extends EventEmitter {
     constructor(options) {
       super(); windows.push(this);
@@ -50,7 +50,7 @@ function fixture() {
     ipcMain: { handle: (name, handler) => handlers.set(name, handler) },
   };
   const hub = createControlCenter({ electron, rendererDirectory, smokeTest: true,
-    onClosed: () => calls.closed++, openPhrases: () => calls.phrases++ });
+    onClosed: () => calls.closed++, onFocusChange: focused => calls.focus.push(focused) });
   const shell = () => ({ sender: windows.at(-1).webContents, senderFrame: windows.at(-1).webContents.mainFrame });
   const view = id => windows.at(-1).children.find(child => child.webContents === hub.contents(id));
   return { hub, windows, handlers, calls, shell, view };
@@ -90,9 +90,10 @@ test('one window hosts isolated pages; switching hides the old page and keeps it
 });
 
 test('sidebar IPC accepts only the shell document and only pages that exist', async () => {
-  const { hub, handlers, shell, calls } = fixture();
+  const { hub, handlers, shell } = fixture();
   hub.register('services', services());
   hub.open();
+  assert.equal(handlers.has('hub:open-phrases'), false, 'phrases are a page, not a second window');
   const navigate = handlers.get('hub:navigate');
   assert.equal((await navigate(shell(), 'help')).ok, true);
   assert.equal(hub.active, 'help');
@@ -101,11 +102,8 @@ test('sidebar IPC accepts only the shell document and only pages that exist', as
   const page = { sender: hub.contents('services'), senderFrame: hub.contents('services').mainFrame };
   assert.equal((await navigate(page, 'services')).ok, false, 'a page cannot drive the sidebar');
   assert.equal((await navigate({ ...shell(), senderFrame: { url: shell().senderFrame.url } }, 'services')).ok, false, 'subframe');
-  assert.equal((await handlers.get('hub:open-phrases')(page)).ok, false);
-  assert.equal((await handlers.get('hub:open-phrases')(shell())).ok, true);
-  assert.equal(calls.phrases, 1);
   const { state } = await handlers.get('hub:state')(shell());
-  assert.deepEqual(state.pages, ['services', 'phrases', 'help']);
+  assert.deepEqual(state.pages, ['services', 'help'], 'unregistered pages stay out of the sidebar');
   assert.equal(state.version, '9.9.9');
 });
 
@@ -122,6 +120,9 @@ test('late pages appear in the sidebar and removed pages fall back to the setup 
   assert.equal(updatePage.isDestroyed(), true);
   assert.equal(hub.active, 'services');
   assert.equal(hub.contents('update'), null);
+  hub.register('phrases', { file: 'phrases.html', query: { embedded: '1' }, preload: '../preload/phrases.js' });
+  assert.equal((await handlers.get('hub:navigate')(shell(), 'phrases')).ok, true);
+  assert.equal(hub.contents('phrases').query, '1', 'page query reaches the document');
   assert.throws(() => hub.register('help', {}), /Unknown settings page/);
   assert.throws(() => hub.register('elsewhere', {}), /Unknown settings page/);
 });
@@ -142,6 +143,29 @@ test('closing runs page close hooks first, then destroys every page and reopens 
   hub.open();
   assert.equal(windows.length, 3);
   assert.equal(hub.active, 'services', 'a new window starts on the setup page');
+});
+
+test('a window still closing is never reused, and its late closed event leaves the new one alone', () => {
+  const { hub, windows, calls, view } = fixture();
+  hub.register('services', services());
+  hub.open();
+  // Electron emits 'close' at once and 'closed' only after the native window is gone.
+  windows[0].close = function () { this.emit('close'); this.destroyed = true; };
+  const first = hub.contents('services');
+  hub.close();
+  assert.equal(hub.window, null, 'a closing window is already gone');
+  assert.equal(first.isDestroyed(), true);
+  const reopened = hub.open();
+  assert.notEqual(reopened, windows[0]);
+  const second = hub.contents('services');
+  windows[0].emit('closed');
+  assert.equal(calls.closed, 0, 'the new window owns the closing duties');
+  assert.equal(hub.contents('services'), second);
+  assert.equal(view('services').visible, true);
+  windows[0].emit('focus');
+  assert.deepEqual(calls.focus, [false], 'focus of the old window is ignored');
+  hub.close();
+  assert.equal(calls.closed, 1);
 });
 
 test('resizing re-lays out every page and tells the sidebar when it compacts', () => {
@@ -194,6 +218,20 @@ test('a crashed page is rebuilt when it is showing; a clean exit is ignored', as
   assert.notEqual(rebuilt, first);
   assert.equal(first.isDestroyed(), true);
   assert.equal(rebuilt.file, 'ai-settings.html');
+});
+
+test('the window is not owned by the pet and reports focus so the pet can step back', () => {
+  const { hub, windows, calls } = fixture();
+  hub.register('services', services());
+  hub.open();
+  assert.equal(windows[0].options.parent, undefined, 'an owned window minimizes to a stub, not the taskbar');
+  windows[0].emit('focus');
+  windows[0].emit('blur');
+  windows[0].emit('focus');
+  windows[0].emit('minimize');
+  windows[0].emit('focus');
+  hub.close();
+  assert.deepEqual(calls.focus, [true, false, true, false, true, false]);
 });
 
 test('settings IPC trust also accepts a page view’s web contents', () => {

@@ -1,6 +1,6 @@
 const hub = window.controlCenter;
 const items = [...document.querySelectorAll('.nav-item')];
-const nativePages = { phrases: document.getElementById('page-phrases'), help: document.getElementById('page-help') };
+const nativePages = { help: document.getElementById('page-help') };
 
 function render(state) {
   if (!state) return;
@@ -30,17 +30,6 @@ document.getElementById('sidebar').addEventListener('keydown', event => {
   if (index < 0) return;
   event.preventDefault();
   visible[(index + (event.key === 'ArrowDown' ? 1 : visible.length - 1)) % visible.length].focus();
-});
-
-const openPhrases = document.getElementById('open-phrases');
-openPhrases.addEventListener('click', async () => {
-  const feedback = document.getElementById('phrases-feedback');
-  openPhrases.disabled = true;
-  try {
-    const response = await hub.openPhrases();
-    feedback.textContent = response?.ok ? '' : '面板没有打开，请按 F6 再试一次。';
-  } catch { feedback.textContent = '面板没有打开，请按 F6 再试一次。'; }
-  finally { openPhrases.disabled = false; }
 });
 
 hub.onState(render);

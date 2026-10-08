@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { UpdateService } from './updateService.js';
 import { createUpdateController } from './updateController.js';
-import { pageLoaded } from './controlCenterSmoke.js';
+import { captureHub, pageLoaded } from './controlCenterSmoke.js';
 
 /** Real settings page/preload/IPC, simulated release server; never install or restart in smoke mode. */
 export async function runUpdateSmoke({ electron, rendererDirectory, controlCenter, icon, outputDirectory }) {
@@ -29,6 +29,10 @@ export async function runUpdateSmoke({ electron, rendererDirectory, controlCente
     const item = document.querySelector('.nav-item[data-page=update]');
     for (let i=0; i<100 && item.getAttribute('aria-current') !== 'page'; i++) await new Promise(r=>setTimeout(r,20));
     if (item.hidden || item.getAttribute('aria-current') !== 'page') throw new Error('Sidebar does not show the update page');
+    // Occasional: pinned to the bottom of the sidebar, below the everyday pages.
+    const sidebar = document.getElementById('sidebar').getBoundingClientRect();
+    const help = document.querySelector('.nav-item[data-page=help]').getBoundingClientRect();
+    if (sidebar.bottom - item.getBoundingClientRect().bottom > 16 || item.getBoundingClientRect().top - help.bottom < 40) throw new Error('Update entry is not at the bottom of the sidebar');
   })()`);
   const ready = async () => {
     await pageLoaded(page);
@@ -46,6 +50,7 @@ export async function runUpdateSmoke({ electron, rendererDirectory, controlCente
   try {
     await ready();
     await capture('update-available.png');
+    fs.writeFileSync(path.join(outputDirectory, 'update-sidebar.png'), (await captureHub(controlCenter, electron.nativeImage)).toPNG());
     await page.executeJavaScript(`document.getElementById('primary').click(); document.getElementById('primary').click();`);
     await new Promise(resolve => setTimeout(resolve, 100));
     if (downloads !== 1 || installs) throw new Error('Updater duplicated download or installed early');

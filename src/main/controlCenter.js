@@ -6,7 +6,7 @@ import { isTrustedSettingsSender } from './aiSettingsIpc.js';
 /** Height of the shell's top bar; the native window buttons sit inside it. */
 export const HUB_TOP = 40;
 /** Pages drawn by the shell itself; every other page is an isolated view. */
-export const NATIVE_PAGES = ['phrases', 'help'];
+export const NATIVE_PAGES = ['help'];
 export const PAGE_ORDER = ['services', 'appearance', 'phrases', 'help', 'update'];
 
 /** Main owns the geometry so the sidebar and the page view never disagree. */
@@ -22,7 +22,7 @@ export function hubLayout(width, height) {
  * document, preload and IPC trust, so a page cannot reach another page's API
  * and its unsaved input survives switching pages.
  */
-export function createControlCenter({ electron, rendererDirectory, icon, smokeTest = false, getParent = () => null, onClosed = () => {}, openPhrases = () => {} }) {
+export function createControlCenter({ electron, rendererDirectory, icon, smokeTest = false, onClosed = () => {}, onFocusChange = () => {} }) {
   const { BrowserWindow, WebContentsView, ipcMain, screen, app } = electron;
   const shellURL = pathToFileURL(path.join(rendererDirectory, 'control-center.html')).href;
   const pages = new Map();
@@ -92,7 +92,7 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
     window.contentView.addChildView(view);
     view.setBounds(geometry.content);
     page.onCreated?.(contents);
-    contents.loadFile(path.join(rendererDirectory, page.file));
+    contents.loadFile(path.join(rendererDirectory, page.file), page.query ? { query: page.query } : undefined);
     return view;
   }
   function show(id) {
@@ -116,8 +116,9 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
       icon, ...settingsWindowBounds(screen.getPrimaryDisplay().workArea, { width: 1060, height: 820, minWidth: 620, minHeight: 640 }),
       title: '刀塔宠物 · 设置中心', titleBarStyle: 'hidden',
       titleBarOverlay: { color: '#eef1ea', symbolColor: '#52604f', height: HUB_TOP },
+      // Not owned by the pet: an owned window minimizes to a stub above the
+      // taskbar instead of to its own taskbar button.
       autoHideMenuBar: true, show: false, backgroundColor: '#f6f7f2',
-      parent: getParent() || undefined,
       webPreferences: { preload: path.join(rendererDirectory, '../preload/control-center.js'), contextIsolation: true, nodeIntegration: false, sandbox: true },
     });
     const created = window;
@@ -126,18 +127,30 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
     created.webContents.on('before-input-event', switchKeys);
     for (const event of ['resize', 'maximize', 'unmaximize', 'restore']) created.on(event, layout);
     // The window has focus when shown; hand it to the visible page.
-    created.on('focus', () => { const view = views.get(active); if (view && !view.webContents.isDestroyed()) view.webContents.focus(); });
+    // A window that is closing no longer speaks for the settings center.
+    created.on('focus', () => {
+      if (window !== created) return;
+      const view = views.get(active);
+      if (view && !view.webContents.isDestroyed()) view.webContents.focus();
+      onFocusChange(true);
+    });
+    for (const event of ['blur', 'minimize', 'hide']) created.on(event, () => { if (window === created) onFocusChange(false); });
     presentSettingsWhenReady(created, { smokeTest });
     // Views switched inside a never-shown window lose their surface, so smoke
     // tests show the window invisibly to exercise the real, visible path.
     if (smokeTest) { created.setOpacity(0); created.setSkipTaskbar(true); created.showInactive(); }
     // Synchronous, like closing the old standalone windows: nothing may slip in before it.
-    created.on('close', () => { for (const page of pages.values()) page.onHubClose?.(); });
-    created.on('closed', () => {
+    // Electron destroys the window asynchronously; from 'close' on it is gone,
+    // so an open() in between builds a fresh window instead of reusing this one.
+    created.on('close', () => {
+      if (window !== created) return;
+      for (const page of pages.values()) page.onHubClose?.();
       for (const id of [...views.keys()]) closeView(id);
-      if (window === created) window = null;
-      onClosed();
+      window = null;
+      onFocusChange(false);
     });
+    // A newer window may already be open; then it owns the closing duties.
+    created.on('closed', () => { if (!window) onClosed(); });
     created.loadFile(path.join(rendererDirectory, 'control-center.html'));
   }
 
@@ -171,11 +184,6 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
     show(id);
     return { ok: true, state: state() };
   });
-  ipcMain.handle('hub:open-phrases', event => {
-    if (!trustedShell(event)) return { ok: false };
-    openPhrases();
-    return { ok: true };
-  });
 
   return {
     open, register, unregister,
@@ -184,6 +192,5 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
     /** Live contents of a page, or null; IPC trust checks compare against this. */
     contents(id) { const contents = views.get(id)?.webContents; return contents && !contents.isDestroyed() ? contents : null; },
     close() { if (alive()) window.close(); },
-    isOpen: () => alive() && window.isVisible() && !window.isMinimized(),
   };
 }

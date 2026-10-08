@@ -23,6 +23,13 @@ const SIMPLIFIED_PRESETS = [
 ];
 
 let loadedPhrases = [];
+// Inside the settings center there is no window of our own to close.
+const embedded = document.documentElement.dataset.embedded === 'true';
+// The sidebar already says where you are; the page needs no "panel" in its name.
+if (embedded) document.querySelector('.phrases-title-text').textContent = '快捷短语';
+// Rows edited here and not yet saved; a save in the other editor never replaces them.
+const dirtyRows = new Set();
+const markDirty = (index) => dirtyRows.add(Number(index));
 
 const rowsContainer = document.getElementById('phrases-rows-container');
 const btnImportPreset = document.getElementById('btn-import-preset');
@@ -53,7 +60,7 @@ function showToast(message) {
 }
 
 function closeEditor() {
-  window.close();
+  if (!embedded) window.close();
 }
 
 function renderPhrasesRows(phrasesList = []) {
@@ -94,6 +101,7 @@ function renderPhrasesRows(phrasesList = []) {
         const res = await window.electronAPI?.translatePhraseText?.(cnText);
         if (res && res.translated) {
           enInput.value = res.translated;
+          markDirty(i);
           showToast(`⚡ 第 ${digitLabel} 行 AI 翻译成功: "${res.translated}"`);
         } else {
           showToast('翻译返回为空');
@@ -148,6 +156,7 @@ function importSelectedPreset() {
       const enInput = rowEl.querySelector('.phrase-en');
       if (cnInput) cnInput.value = preset.cn;
       if (enInput) enInput.value = preset.en;
+      markDirty(targetIndex);
       showToast(`💡 已导入 ${preset.label} 到第 ${targetDigit} 行`);
     }
   }
@@ -171,6 +180,7 @@ async function translateAllEmptyRows() {
         const res = await window.electronAPI?.translatePhraseText?.(cnText);
         if (res && res.translated) {
           enInput.value = res.translated;
+          markDirty(row.dataset.index);
           count++;
         }
       }
@@ -186,6 +196,7 @@ async function translateAllEmptyRows() {
 
 function resetDefaultPhrases() {
   renderPhrasesRows(SIMPLIFIED_PRESETS.slice(0, 10));
+  for (let i = 0; i < 10; i++) markDirty(i);
   showToast('🔄 已重置为精简模板 (确认无误后请点击保存)');
 }
 
@@ -208,6 +219,7 @@ async function savePhrasesFromUI() {
     const res = await window.electronAPI?.savePhrasesConfig?.(phrases);
     if (res && res.success) {
       loadedPhrases = phrases;
+      dirtyRows.clear();
       showToast('💾 快捷短语已保存并即时生效！可在局内按 Ctrl+1~0 / Alt+1~0');
     } else {
       showToast(`保存失败: ${res?.error || '未知错误'}`);
@@ -233,6 +245,24 @@ async function init() {
   populatePresetDropdown();
 }
 
+rowsContainer?.addEventListener('input', (event) => {
+  const row = event.target.closest?.('.phrase-row-item');
+  if (row) markDirty(row.dataset.index);
+});
+// The other editor (F6 panel or settings page) saved: take its rows, except the ones being edited here.
+window.electronAPI?.onPhrasesChanged?.((phrases) => {
+  if (!Array.isArray(phrases)) return;
+  loadedPhrases = phrases;
+  // Update values in place: focus, the rows being edited and pending AI
+  // translations (which hold these inputs) all stay valid.
+  rowsContainer?.querySelectorAll('.phrase-row-item').forEach((row) => {
+    const index = Number(row.dataset.index);
+    if (dirtyRows.has(index)) return;
+    row.querySelector('.phrase-cn').value = phrases[index]?.cn || '';
+    row.querySelector('.phrase-en').value = phrases[index]?.en || '';
+  });
+  if (dirtyRows.size) showToast('另一处保存的短语已同步；你正在改的行保持不变');
+});
 btnImportPreset?.addEventListener('click', () => importSelectedPreset());
 btnTranslateAll?.addEventListener('click', () => translateAllEmptyRows());
 btnResetDefault?.addEventListener('click', () => resetDefaultPhrases());

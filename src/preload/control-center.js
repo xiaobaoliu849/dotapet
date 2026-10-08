@@ -4,7 +4,6 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('controlCenter', {
   state: () => ipcRenderer.invoke('hub:state'),
   navigate: page => ipcRenderer.invoke('hub:navigate', page),
-  openPhrases: () => ipcRenderer.invoke('hub:open-phrases'),
   onState: callback => {
     const listener = (_event, value) => callback(value);
     ipcRenderer.on('hub:state', listener);

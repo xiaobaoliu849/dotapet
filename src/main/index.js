@@ -92,6 +92,18 @@ let aiSettingsStore = null;
 // One settings window with a sidebar; its 语音与翻译 page is ai-settings.html.
 let controlCenter = null;
 const settingsPage = () => controlCenter?.contents('services') || null;
+// While the settings center has focus the always-on-top pet steps back so it
+// never covers the settings; it returns on top as soon as focus leaves.
+let settingsFocused = false;
+function onSettingsFocusChange(focused) {
+  if (focused === settingsFocused) return;
+  settingsFocused = focused;
+  if (!mainWindow || mainWindow.isDestroyed()) return;
+  if (focused) { mainWindow.setAlwaysOnTop(false); controlCenter?.window?.moveTop(); return; }
+  // Restore the flag even while the pet is hidden; a visible pet is also raised.
+  mainWindow.setAlwaysOnTop(true, TOPMOST_LEVEL);
+  reassertTopmost(mainWindow, { invalidate: true });
+}
 let connectionTest = null;
 let customizationController = null;
 let welcomeController = null;
@@ -270,7 +282,7 @@ async function runCompanionSmokeTest() {
   if (controlCenter.active !== 'help') throw new Error('Help request did not open the help page');
   await controlCenter.window.webContents.executeJavaScript(`(async () => {
     for (let i=0; i<100 && document.getElementById('page-help').hidden; i++) await new Promise(r=>setTimeout(r,20));
-    if (document.getElementById('page-help').hidden || !document.getElementById('page-phrases').hidden) throw new Error('Help page not shown alone');
+    if (document.getElementById('page-help').hidden) throw new Error('Help page not shown');
     if (document.documentElement.scrollWidth > document.documentElement.clientWidth) throw new Error('Help overflows horizontally');
   })()`);
   openAISettings('translate');
@@ -284,6 +296,11 @@ async function runCompanionSmokeTest() {
   })()`);
   openAISettings();
   if (controlCenter.active !== 'services') throw new Error('Reopening without a purpose changed the page');
+  // The settings center is its own taskbar window; while it has focus the pet steps back.
+  controlCenter.window.emit('focus');
+  if (mainWindow.isAlwaysOnTop()) throw new Error('Pet stayed above the focused settings center');
+  controlCenter.window.emit('blur');
+  if (!mainWindow.isAlwaysOnTop()) throw new Error('Pet did not return on top after settings lost focus');
   const vault = fs.readFileSync(aiSettingsStore.filePath, 'utf8');
   if (vault.includes('smoke-google-key')) throw new Error('Vault contains plaintext');
   const outputArg = process.argv.find(value => value.startsWith('--companion-smoke-output='));
@@ -336,11 +353,16 @@ async function runCompanionSmokeTest() {
   }
   const customizationResult = await runCustomizationSmoke({ controller: customizationController, controlCenter, mainWindow, dialog, nativeImage, outputDirectory: app.getPath('userData') });
   const { runPhrasesSmoke } = await import('./phrasesSmoke.js');
-  const phrases = await runPhrasesSmoke({ controlCenter, getWindow: () => phrasesWindow,
+  const phrases = await runPhrasesSmoke({ controlCenter, openPanel: () => createPhrasesWindow(),
     getCopiedText: () => smokeClipboardText, nativeImage, outputDirectory: app.getPath('userData') });
   const { runUpdateSmoke } = await import('./updateSmoke.js');
   const updates = await runUpdateSmoke({ electron, rendererDirectory: path.join(__dirname, '../renderer'), controlCenter, icon: appIcon, outputDirectory: app.getPath('userData') });
-  console.log('[Smoke] PASS', JSON.stringify({ ...result, onboarding, customization: customizationResult, phrases, updates }));
+  // Last: quitting from the pet must not leave the (unowned) settings center behind.
+  controlCenter.open();
+  const settingsClosed = new Promise(resolve => controlCenter.window.once('closed', resolve));
+  mainWindow.close();
+  await Promise.race([settingsClosed, new Promise((_, reject) => setTimeout(() => reject(new Error('Settings center outlived the pet window')), 3000))]);
+  console.log('[Smoke] PASS', JSON.stringify({ ...result, onboarding, customization: customizationResult, phrases, updates, settingsClosesWithPet: true }));
   app.exit(0);
 }
 
@@ -368,6 +390,7 @@ const TOPMOST_LEVEL = process.platform === 'win32' ? 'screen-saver' : 'floating'
  */
 function reassertTopmost(win, { invalidate = false } = {}) {
   if (!win || win.isDestroyed() || !win.isVisible()) return;
+  if (win === mainWindow && settingsFocused) return;
   win.setAlwaysOnTop(false);
   win.setAlwaysOnTop(true, TOPMOST_LEVEL);
   win.moveTop();
@@ -868,8 +891,10 @@ function createWindow() {
   const showAndPresentWindow = () => {
     if (smokeTest) return;
     if (!mainWindow || mainWindow.isDestroyed()) return;
-    mainWindow.show();
-    mainWindow.setAlwaysOnTop(true, TOPMOST_LEVEL);
+    // Appearing must not take focus from the settings center (first launch).
+    if (controlCenter?.window) mainWindow.showInactive();
+    else mainWindow.show();
+    if (!settingsFocused) mainWindow.setAlwaysOnTop(true, TOPMOST_LEVEL);
     if (!controlCenter?.window) {
       mainWindow.focus();
       mainWindow.moveTop();
@@ -940,7 +965,7 @@ function createWindow() {
       if (!mainWindow || mainWindow.isDestroyed() || !mainWindow.isVisible() || mainWindow.isMinimized()) return;
       // While the phrase editor has focus the user is at the desktop working
       // in it — don't yank the pet above the editor every half second.
-      const settingsActive = Boolean(controlCenter?.isOpen());
+      const settingsActive = settingsFocused;
       const phrasesActive = phrasesWindow && !phrasesWindow.isDestroyed()
         && phrasesWindow.isVisible() && phrasesWindow.isFocused();
       if (settingsActive || phrasesActive) return;
@@ -982,6 +1007,8 @@ function createWindow() {
     if (phrasesWindow && !phrasesWindow.isDestroyed()) {
       phrasesWindow.close();
     }
+    // Nor the settings center, which is no longer owned by the pet window.
+    controlCenter?.close();
   });
 }
 
@@ -1011,9 +1038,10 @@ function createPhrasesWindow() {
     show: false,
     alwaysOnTop: true,
     webPreferences: {
-      preload: path.join(__dirname, '../preload/index.js'),
+      preload: path.join(__dirname, '../preload/phrases.js'),
       contextIsolation: true,
       nodeIntegration: false,
+      sandbox: true,
     },
   });
 
@@ -1611,7 +1639,16 @@ function setupIPC() {
   // Quick Phrases IPC (F6 Panel & Shortcuts)
   ipcMain.on('phrases:toggle-window', () => togglePhrasesWindow());
   ipcMain.handle('phrases:get-config', () => loadPhrasesConfig());
-  ipcMain.handle('phrases:save-config', (event, phrases) => savePhrasesConfig(phrases));
+  ipcMain.handle('phrases:save-config', (event, phrases) => {
+    const result = savePhrasesConfig(phrases);
+    // The F6 panel and the settings page edit the same list; keep the other one current.
+    if (result.success) {
+      for (const editor of [phrasesWindow && !phrasesWindow.isDestroyed() ? phrasesWindow.webContents : null, controlCenter?.contents('phrases')]) {
+        if (editor && editor !== event.sender && !editor.isDestroyed()) editor.send('phrases:changed', phrases);
+      }
+    }
+    return result;
+  });
   ipcMain.handle('phrases:translate-text', async (event, text) => {
     if (ahkEngine && ahkEngine.translationService) {
       const result = await ahkEngine.translationService.analyzeText(text, { heroId: currentHeroId });
@@ -1819,9 +1856,11 @@ if (app?.whenReady) {  app.whenReady().then(() => {
     loadTranslateTargetLanguage();
     // Created before anything that can ask for settings (pet window, tray, IPC).
     controlCenter = createControlCenter({ electron, rendererDirectory: path.join(__dirname, '../renderer'), icon: appIcon, smokeTest,
-      getParent: () => mainWindow, onClosed: onSettingsCenterClosed, openPhrases: () => createPhrasesWindow() });
+      onClosed: onSettingsCenterClosed, onFocusChange: onSettingsFocusChange });
     controlCenter.register('services', { file: 'ai-settings.html', preload: '../preload/ai-settings.js', background: '#f6f7f2', backgroundThrottling: false,
       onHide: contents => contents.send('settings:hidden') });
+    // The same editor as the F6 panel, drawn in the settings center's light style.
+    controlCenter.register('phrases', { file: 'phrases.html', query: { embedded: '1' }, preload: '../preload/phrases.js', background: '#f6f7f2' });
     createWindow();
     if (!smokeTest) { setupTray(); setupServices(); }
     setupIPC();
