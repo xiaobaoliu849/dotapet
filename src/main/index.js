@@ -15,7 +15,7 @@ import { checkGsiInstalled, installGsiConfig } from './gsi/gsiInstaller.js';
 import { AISettingsStore, providerDefinition } from './aiSettingsStore.js';
 import { applyAIConfiguration, engineOptions, testAIConnection } from './aiConfiguration.js';
 import { connectionError } from '../services/connectionCheck.js';
-import { isTrustedSettingsSender, aiKeyPage } from './aiSettingsIpc.js';
+import { isTrustedSettingsSender, aiKeyPage, settingsAffectVoice } from './aiSettingsIpc.js';
 import { createCustomizationController } from './customizationIpc.js';
 import { runCustomizationSmoke } from './customizationSmoke.js';
 import { createWelcomeController } from './welcomeController.js';
@@ -1476,8 +1476,9 @@ function setupIPC() {
       companionPet: allowedPets.includes(pet) ? pet : 'mischievous_greevil' };
   }));
   ipcMain.handle('ai:save-settings', settingsHandler(payload => {
-    stopVoiceForSettings();
+    const affectsVoice = settingsAffectVoice(aiSettingsStore, payload, currentVoiceProvider);
     const settings = aiSettingsStore.save(payload);
+    if (affectsVoice) stopVoiceForSettings();
     applyAIConfiguration(aiSettingsStore);
     return { settings };
   }));

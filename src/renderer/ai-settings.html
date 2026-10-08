@@ -22,6 +22,7 @@
     </header>
     <nav class="usage-tabs" aria-label="选择功能"><button id="usage-voice" aria-pressed="true">语音聊天</button><button id="usage-translate" aria-pressed="false">文字 / 截图翻译</button></nav>
     <select id="usage" hidden aria-label="使用功能"><option value="voice">语音聊天</option><option value="translate">文字 / 截图翻译</option></select>
+    <p id="shared-credentials" class="hint shared-credentials">按功能选择服务商；千问的 API 密钥在两个功能间共用，只需保存一次。</p>
     <section class="card setup-card" aria-labelledby="provider-title">
       <div class="section-heading"><h2 id="provider-title">选择服务商</h2><span class="section-caption" id="provider-caption">用你已有的账户就好</span></div>
       <div id="provider-options" class="provider-options" role="group" aria-label="AI 服务商"></div>
@@ -42,10 +43,10 @@
           <div><label for="region">密钥所属地区</label><select id="region"><option value="beijing">中国 · 北京</option><option value="singapore">新加坡</option></select></div>
           <div><label for="workspace">百炼工作空间 ID（可选）</label><input id="workspace" type="text" autocomplete="off" maxlength="100" placeholder="默认工作空间可留空"></div>
         </div>
-        <div class="field-grid"><div id="model-fields"><label for="model">语音模型</label><input id="model" type="text" maxlength="160" autocomplete="off" spellcheck="false"></div><div id="all-voice-fields"><label for="all-voices">全部音色</label><select id="all-voices"></select></div></div>
+        <div class="field-grid"><div id="model-fields"><label id="model-label" for="model">语音模型</label><input id="model" type="text" maxlength="160" autocomplete="off" spellcheck="false"></div><div id="all-voice-fields"><label for="all-voices">全部音色</label><select id="all-voices"></select></div></div>
         <div id="custom-voice-fields" hidden><label for="custom-voice-id">自定义音色 ID</label><input id="custom-voice-id" type="text" maxlength="160" autocomplete="off"></div>
         <div id="optional-secret-fields"></div>
-        <div id="translator-fields"><label for="translator">文字 / 截图翻译服务商</label><select id="translator"><option value="qwen">阿里千问</option><option value="deepseek">DeepSeek</option></select><p class="hint">翻译需单独配置对应密钥，切换上方「文字 / 截图翻译」即可设置。</p></div>
+        <div id="translator-fields"><p class="hint" id="translator-summary"></p><button id="translator-config">配置文字 / 截图翻译 →</button></div>
         <div class="advanced-actions"><button id="save">仅保存设置</button><button id="voice-test">单独测试语音</button><button id="disconnect">断开语音</button><button id="import">导入配置</button><button id="delete" class="danger">删除当前密钥</button></div>
         <p class="hint">密钥留空可保留已有配置。云端连接与测试可能产生服务商用量。</p>
       </div>

@@ -128,6 +128,8 @@ export class AISettingsStore {
 
   save(payload) {
     const definition = providerDefinition(payload?.provider);
+    if (payload.purpose !== undefined && !['voice', 'translate'].includes(payload.purpose)) throw new Error('请选择有效的使用功能。');
+    if (payload.purpose === 'translate' && !['qwen', 'deepseek'].includes(definition.id)) throw new Error('文字翻译请选择千问或 DeepSeek。');
     const next = structuredClone(this.data);
     const saved = next.providers[definition.id] || { secrets: {} };
     saved.secrets ||= {};
@@ -141,11 +143,12 @@ export class AISettingsStore {
         saved.region = payload.region;
       }
     }
-    if (payload.model !== undefined) {
+    const sharedTranslation = payload.purpose === 'translate' && definition.id === 'qwen';
+    if (payload.model !== undefined && !sharedTranslation) {
       saved.model = plainText(payload.model, '模型');
       if (!saved.model || !/^[a-zA-Z0-9._/-]+$/.test(saved.model)) throw new Error('请填写有效的模型名称。');
     }
-    if (payload.voice !== undefined) {
+    if (payload.voice !== undefined && !sharedTranslation) {
       saved.voice = plainText(payload.voice, '音色');
       if (definition.voices.length && !definition.voices.includes(saved.voice)) throw new Error('请选择支持的音色。');
     }
@@ -160,7 +163,8 @@ export class AISettingsStore {
       }
     }
     next.providers[definition.id] = saved;
-    next.selectedProvider = definition.id;
+    // Translation has its own selection; saving it must not replace voice setup.
+    if (payload.purpose !== 'translate') next.selectedProvider = definition.id;
     if (payload.translationProvider !== undefined) {
       if (!['qwen', 'deepseek'].includes(payload.translationProvider)) throw new Error('不支持的文字翻译服务商。');
       next.translationProvider = payload.translationProvider;

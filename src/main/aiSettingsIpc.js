@@ -19,3 +19,12 @@ export function aiKeyPage(provider) {
   if (!pages.has(provider)) throw new Error('请选择支持的服务商。');
   return pages.get(provider);
 }
+
+/** A translation-only change need not end an unrelated live voice session. */
+export function settingsAffectVoice(store, payload, currentProvider) {
+  if (payload?.purpose !== 'translate') return true;
+  if (!currentProvider || payload.provider !== currentProvider) return false;
+  const profile = store.getPrivate(currentProvider);
+  return Object.entries(payload.secrets || {}).some(([key, value]) => typeof value === 'string' && value.trim() && value.trim() !== profile[key])
+    || ['region', 'workspaceId'].some(key => payload[key] !== undefined && payload[key] !== profile[key]);
+}

@@ -10,7 +10,7 @@ import { applyAIConfiguration, engineOptions, checkTextConnection } from '../src
 import { CLOUD_KEYS, CloudVoiceEngine, configureCloudKeys, loadEnv } from '../src/services/cloudVoiceEngine.js';
 import { checkVoiceConnection, connectionError } from '../src/services/connectionCheck.js';
 import { TranslationService } from '../src/services/translationService.js';
-import { isTrustedSettingsSender, aiKeyPage } from '../src/main/aiSettingsIpc.js';
+import { isTrustedSettingsSender, aiKeyPage, settingsAffectVoice } from '../src/main/aiSettingsIpc.js';
 
 test('key acquisition opens only known provider pages and rejects arbitrary URLs', () => {
   for (const id of ['qwen', 'doubao', 'google', 'google-translate', 'cartesia', 'deepseek']) assert.equal(new URL(aiKeyPage(id)).protocol, 'https:');
@@ -38,6 +38,32 @@ function vault(t, secure = encryption) {
   const filePath = path.join(directory, 'ai-settings.json');
   return new AISettingsStore({ filePath, safeStorage: secure });
 }
+
+test('translation saves keep the selected voice provider and Qwen voice model', t => {
+  const store = vault(t);
+  store.save({ provider: 'qwen', model: 'custom-voice-model', voice: 'Raymond', secrets: { apiKey: 'shared-key' } });
+  store.save({ provider: 'doubao', secrets: { apiKey: 'voice-key' } });
+  store.save({ provider: 'deepseek', purpose: 'translate', translationProvider: 'deepseek', secrets: { apiKey: 'text-key' } });
+  assert.equal(store.data.selectedProvider, 'doubao');
+  store.save({ provider: 'qwen', purpose: 'translate', translationProvider: 'qwen', model: 'qwen-flash', voice: 'Tina' });
+  assert.equal(store.getPrivate('qwen').model, 'custom-voice-model');
+  assert.equal(store.getPrivate('qwen').voice, 'Raymond');
+  assert.equal(store.getPrivate('qwen').apiKey, 'shared-key');
+  assert.equal(store.data.selectedProvider, 'doubao');
+  assert.equal(new AISettingsStore({ filePath: store.filePath, safeStorage: encryption }).data.selectedProvider, 'doubao');
+  assert.throws(() => store.save({ provider: 'doubao', purpose: 'translate' }));
+  assert.throws(() => store.save({ provider: 'qwen', purpose: 'unknown' }));
+});
+
+test('translation changes interrupt voice only when its shared credentials change', t => {
+  const store = vault(t);
+  store.save({ provider: 'qwen', secrets: { apiKey: 'shared-key' } });
+  assert.equal(settingsAffectVoice(store, { provider: 'deepseek', purpose: 'translate', secrets: { apiKey: 'text-key' } }, 'qwen'), false);
+  assert.equal(settingsAffectVoice(store, { provider: 'qwen', purpose: 'translate', secrets: { apiKey: '' }, region: 'beijing', workspaceId: '' }, 'qwen'), false);
+  assert.equal(settingsAffectVoice(store, { provider: 'qwen', purpose: 'translate', secrets: { apiKey: 'shared-key' } }, 'qwen'), false);
+  assert.equal(settingsAffectVoice(store, { provider: 'qwen', purpose: 'translate', secrets: { apiKey: 'replacement' } }, 'qwen'), true);
+  assert.equal(settingsAffectVoice(store, { provider: 'qwen', purpose: 'translate', region: 'singapore' }, 'qwen'), true);
+});
 
 test('vault encrypts secrets, reloads them and exposes only configuration flags', t => {
   const store = vault(t);

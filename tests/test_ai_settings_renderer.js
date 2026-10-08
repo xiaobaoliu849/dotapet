@@ -28,10 +28,10 @@ async function renderer(overrides = {}) {
     }
     click() { return this.listeners.click?.(); }
   }
-  for (const id of ['feedback', 'provider-help', 'secret-fields', 'optional-secret-fields', 'workspace-fields', 'voice-fields', 'connection-status', 'provider-options', 'welcome-title', 'welcome-description', 'provider-caption', 'all-voice-fields', 'custom-voice-fields', 'google-mode-fields', 'model-fields', 'translator-fields']) nodes.set(id, new Element('div', id));
+  for (const id of ['feedback', 'provider-help', 'secret-fields', 'optional-secret-fields', 'workspace-fields', 'voice-fields', 'connection-status', 'provider-options', 'welcome-title', 'welcome-description', 'provider-caption', 'all-voice-fields', 'custom-voice-fields', 'google-mode-fields', 'model-fields', 'translator-fields', 'shared-credentials', 'model-label', 'translator-summary']) nodes.set(id, new Element('div', id));
   for (const id of ['provider', 'voice', 'translator', 'region', 'usage', 'google-mode', 'all-voices']) nodes.set(id, new Element('select', id));
   for (const id of ['model', 'workspace', 'voice-custom', 'custom-voice-id']) nodes.set(id, new Element('input', id));
-  for (const id of ['connect', 'disconnect', 'save', 'test', 'cancel', 'delete', 'import', 'voice-test', 'finish', 'skip', 'usage-voice', 'usage-translate']) nodes.set(id, new Element('button', id));
+  for (const id of ['connect', 'disconnect', 'save', 'test', 'cancel', 'delete', 'import', 'voice-test', 'finish', 'skip', 'usage-voice', 'usage-translate', 'translator-config']) nodes.set(id, new Element('button', id));
   const settings = { selectedProvider: 'qwen', translationProvider: 'qwen', encryptionAvailable: true,
     providers: AI_PROVIDERS.map(item => ({ ...item, fields: item.fields.map(field => ({ ...field, configured: false })) })) };
   const calls = { test: 0, cancel: 0, save: 0, connect: 0, finish: 0 };
@@ -179,7 +179,33 @@ test('changing purpose remembers provider choices and clicking the active tab ke
   assert.equal(ui.nodes.get('connect').hidden, true);
   ui.nodes.get('usage-voice').click();
   assert.equal(ui.nodes.get('provider').value, 'doubao');
+  assert.equal(ui.nodes.get('secret-apiKey').value, 'unsaved');
+});
+
+test('Qwen shares a key draft across purposes without submitting voice model changes for translation', async () => {
+  const ui = await renderer();
+  ui.nodes.get('secret-apiKey').value = 'shared-qwen-key';
+  ui.nodes.get('voice').value = 'Raymond'; ui.nodes.get('voice').listeners.change();
+  ui.nodes.get('usage-translate').click();
+  assert.equal(ui.nodes.get('secret-apiKey').value, 'shared-qwen-key');
+  assert.match(ui.nodes.get('shared-credentials').textContent, /共用/);
+  await ui.nodes.get('test').click();
+  assert.equal(ui.calls.saved.purpose, 'translate');
+  assert.equal(ui.calls.saved.model, undefined);
+  assert.equal(ui.calls.saved.voice, undefined);
+  assert.equal(ui.calls.saved.secrets.apiKey, 'shared-qwen-key');
+  ui.nodes.get('usage-voice').click();
+  assert.equal(ui.nodes.get('voice').value, 'Raymond');
   assert.equal(ui.nodes.get('secret-apiKey').value, '');
+});
+
+test('failed saves retain the input for correction and retry', async () => {
+  const ui = await renderer({ saveAISettings: async () => ({ ok: false, error: 'Unable to save' }) });
+  ui.nodes.get('secret-apiKey').value = 'retry-key';
+  await ui.nodes.get('connect').click();
+  assert.equal(ui.nodes.get('secret-apiKey').value, 'retry-key');
+  assert.equal(ui.calls.connect, 0);
+  assert.match(ui.nodes.get('feedback').textContent, /Unable to save/);
 });
 
 test('late cancelled test results cannot report setup complete', async () => {

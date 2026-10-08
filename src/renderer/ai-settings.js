@@ -7,6 +7,9 @@ let testCancelled = false;
 let lastStatus = { status: 'disconnected' };
 let dirty = false;
 const selectionByPurpose = {};
+// Drafts stay only in this window and are shared by purpose for the same provider.
+const drafts = new Map();
+let renderedProvider = '';
 const providerNames = { qwen: '阿里千问', doubao: '豆包', google: 'Gemini', cartesia: 'Cartesia', deepseek: 'DeepSeek' };
 const providerDescriptions = { qwen: ['千', '聊天，也能翻译'], doubao: ['豆', '实时语音聊天'], google: ['✦', '聊天 / 语音翻译'], cartesia: ['C', '英语对练'], deepseek: ['D', '文字 / 截图翻译'] };
 const simpleVoices = { qwen: ['Tina', 'Raymond', 'Jennifer'], doubao: ['zh_female_xiaohe_jupiter_bigtts', 'zh_female_vv_jupiter_bigtts', 'zh_male_yunzhou_jupiter_bigtts'], google: ['Puck', 'Kore', 'Aoede'] };
@@ -37,6 +40,13 @@ function markDirty() {
 function focusCredential() {
   const field = profile().fields.find(item => !item.optional && !item.configured);
   if (field) byId(`secret-${field.id}`).focus?.();
+}
+function rememberDraft() {
+  if (!renderedProvider) return;
+  const item = settings.providers.find(item => item.id === renderedProvider);
+  drafts.set(renderedProvider, { dirty, values: Object.fromEntries([
+    ...item.fields.map(field => `secret-${field.id}`), 'model', 'voice', 'voice-custom', 'workspace', 'region',
+  ].map(id => [id, byId(id).value])) });
 }
 function status(event) {
   if (event) lastStatus = event;
@@ -72,6 +82,9 @@ function renderProfile() {
   byId('welcome-title').textContent = translating() ? '看懂聊天，轻松开黑' : '让小伙伴听见你';
   byId('welcome-description').textContent = '选一家服务商，粘贴密钥，就可以开始了。';
   byId('provider-caption').textContent = translating() ? '支持文字与截图翻译' : '用你已有的账户就好';
+  byId('shared-credentials').textContent = item.id === 'qwen'
+    ? '千问的 API 密钥和地区在语音与翻译间共用，只需保存一次；两种功能使用不同模型。'
+    : '语音与文字 / 截图翻译可分别选择服务商；切换功能会保留未保存的输入。';
   const container = byId('secret-fields');
   container.className = item.id === 'cartesia' ? 'secret-fields two-keys' : 'secret-fields';
   container.replaceChildren();
@@ -118,7 +131,8 @@ function renderProfile() {
   byId('region').value = item.region || 'beijing';
   byId('google-mode-fields').hidden = translating() || byId('provider').value !== 'google';
   byId('voice-fields').hidden = translating() || !item.voice;
-  if (byId('model-fields')) byId('model-fields').hidden = translating();
+  if (byId('model-fields')) byId('model-fields').hidden = translating() && item.id !== 'deepseek';
+  byId('model-label').textContent = translating() ? '文字翻译模型' : '语音模型';
   if (byId('translator-fields')) byId('translator-fields').hidden = translating();
   const choices = item.voices.length ? [...new Set([...(simpleVoices[item.id] || item.voices.slice(0, 3)), item.voice])].filter(voice => item.voices.includes(voice)) : [item.voice];
   byId('voice').replaceChildren(...choices.map(voice => new Option(voiceNames[voice] || (item.id === 'cartesia' ? '当前音色' : voice) + (voice === item.voices[0] ? ' · 默认' : ''), voice)));
@@ -129,7 +143,7 @@ function renderProfile() {
   byId('all-voices').value = item.voice;
   byId('custom-voice-fields').hidden = translating() || !item.voice || Boolean(item.voices.length);
   byId('custom-voice-id').value = item.voice;
-  byId('translator').value = settings.translationProvider;
+  byId('translator-summary').textContent = `文字 / 截图翻译：${providerNames[settings.translationProvider]}。${settings.translationProvider === 'qwen' ? '与千问语音共用密钥。' : '使用独立的 DeepSeek 密钥。'}`;
   byId('connect').hidden = translating();
   byId('disconnect').hidden = translating();
   byId('connect').disabled = busy || translating() || Boolean(item.textOnly);
@@ -143,6 +157,14 @@ function renderProfile() {
   updateConnectAction();
   byId('delete').disabled = busy || !item.fields.some(field => field.configured);
   selectionByPurpose[byId('usage').value] = item.id;
+  renderedProvider = item.id;
+  const draft = drafts.get(item.id);
+  if (draft) {
+    for (const [id, value] of Object.entries(draft.values)) byId(id).value = value;
+    byId('custom-voice-id').value = byId('voice-custom').value;
+    byId('all-voices').value = byId('voice').value;
+    if (draft.dirty || item.fields.some(field => draft.values[`secret-${field.id}`])) markDirty();
+  }
 }
 function render(next, selected) {
   const initial = !settings;
@@ -171,17 +193,27 @@ function render(next, selected) {
 }
 function payload() {
   const item = profile();
-  return { provider: item.id, model: byId('model').value, voice: item.voices.length ? byId('voice').value : byId('voice-custom').value,
+  return { provider: item.id, purpose: translating() ? 'translate' : 'voice',
+    ...(!translating() ? { model: byId('model').value, voice: item.voices.length ? byId('voice').value : byId('voice-custom').value }
+      : item.id === 'deepseek' ? { model: byId('model').value } : {}),
     workspaceId: byId('workspace').value, region: byId('region').value,
-    translationProvider: translating() ? item.id : byId('translator').value,
+    translationProvider: translating() ? item.id : settings.translationProvider,
     secrets: Object.fromEntries(item.fields.map(field => [field.id, byId(`secret-${field.id}`).value])) };
 }
 function clearInputs() { for (const input of document.querySelectorAll('input[type=password]')) input.value = ''; }
 async function save() {
+  rememberDraft();
   const data = payload();
-  clearInputs();
   const response = await api.saveAISettings(data);
   if (!response.ok) throw new Error(response.error);
+  clearInputs();
+  // Keep unfinished voice choices when saving the shared Qwen key for translation.
+  const draft = drafts.get(data.provider);
+  if (translating() && data.provider === 'qwen' && draft) {
+    for (const field of profile().fields) draft.values[`secret-${field.id}`] = '';
+    const savedProfile = response.settings.providers.find(item => item.id === data.provider);
+    draft.dirty = draft.values.model !== savedProfile.model || draft.values.voice !== savedProfile.voice;
+  } else drafts.delete(data.provider);
   render(response.settings, data.provider);
   if (profile().credentialError) throw new Error(profile().credentialError);
   return data.provider;
@@ -196,7 +228,7 @@ async function action(task, testing = false) {
   finally { if (current === generation) setBusy(false); }
 }
 function changeProvider() {
-  window.stopMicrophoneCheck?.(); clearInputs();
+  rememberDraft(); window.stopMicrophoneCheck?.(); clearInputs();
   byId('google-mode').value = 'google';
   renderProfile(); status(lastStatus);
   feedback(profile().credentialError || '', profile().credentialError ? 'error' : '');
@@ -205,7 +237,7 @@ function changeProvider() {
 byId('provider').addEventListener('change', changeProvider);
 function choosePurpose(purpose) {
   if (!settings || busy || !['voice', 'translate'].includes(purpose) || byId('usage').value === purpose) return;
-  window.stopMicrophoneCheck?.(); clearInputs(); byId('usage').value = purpose;
+  rememberDraft(); window.stopMicrophoneCheck?.(); clearInputs(); byId('usage').value = purpose;
   render(settings, selectionByPurpose[purpose] || (translating() ? settings.translationProvider : settings.selectedProvider));
   status(lastStatus);
 }
@@ -215,11 +247,11 @@ for (const purpose of ['voice', 'translate']) byId(`usage-${purpose}`).addEventL
   choosePurpose(purpose); feedback('');
 });
 byId('usage').addEventListener('change', () => {
-  window.stopMicrophoneCheck?.(); clearInputs(); render(settings, translating() ? settings.translationProvider : byId('provider').value);
+  rememberDraft(); window.stopMicrophoneCheck?.(); clearInputs(); render(settings, translating() ? settings.translationProvider : settings.selectedProvider);
   status(lastStatus); feedback('');
 });
 byId('google-mode').addEventListener('change', () => {
-  window.stopMicrophoneCheck?.(); clearInputs(); renderProfile(); status(lastStatus);
+  rememberDraft(); window.stopMicrophoneCheck?.(); clearInputs(); renderProfile(); status(lastStatus);
   feedback('已切换 Gemini 功能，请使用对应密钥。');
 });
 byId('voice').addEventListener('change', () => { byId('all-voices').value = byId('voice').value; markDirty(); });
@@ -231,7 +263,8 @@ byId('all-voices').addEventListener('change', () => {
 });
 byId('custom-voice-id').addEventListener('input', () => { byId('voice-custom').value = byId('custom-voice-id').value; markDirty(); });
 for (const id of ['model', 'workspace']) byId(id).addEventListener('input', markDirty);
-for (const id of ['region', 'translator']) byId(id).addEventListener('change', markDirty);
+byId('region').addEventListener('change', markDirty);
+byId('translator-config').addEventListener('click', () => choosePurpose('translate'));
 function requireCredentials() {
   const missing = profile().fields.find(field => !field.optional && !field.configured && !byId(`secret-${field.id}`).value.trim());
   if (missing) throw new Error(`请先填写 ${missing.label}。`);
@@ -269,12 +302,14 @@ byId('delete').addEventListener('click', () => action(async () => {
   const id = profile().id; clearInputs();
   const response = await api.deleteAISecrets(id);
   if (!response.ok) throw new Error(response.error);
+  drafts.delete(id);
   render(response.settings, id); feedback('此服务商的密钥已删除，当前语音已断开。', 'success');
 }));
 byId('import').addEventListener('click', () => action(async () => {
   clearInputs(); const response = await api.importAIConfig();
   if (!response.ok) throw new Error(response.error);
   if (response.cancelled) return;
+  drafts.clear();
   render(response.settings); feedback(`已导入 ${response.count} 个配置并加密保存。请检查模型及音色后测试。`, 'success');
 }));
 api.onVoiceStatus(status);
