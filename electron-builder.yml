@@ -2,6 +2,12 @@ appId: fun.dota2bot.companion
 productName: DotaPet
 artifactName: DotaPet-${version}-${arch}.${ext}
 asar: true
+publish:
+  provider: github
+  owner: xiaobaoliu849
+  repo: dotapet
+  releaseType: release
+electronUpdaterCompatibility: '>=2.16'
 directories:
   output: release
 files:

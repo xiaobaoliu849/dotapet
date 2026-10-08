@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'">
+  <title>刀塔宠物 · 应用更新</title>
+  <link rel="stylesheet" href="update.css">
+  <script defer src="update.js"></script>
+</head>
+<body>
+  <main>
+    <header><img src="assets/app-icon.png" alt="刀塔宠物"><div><span class="eyebrow">DotaPet</span><p id="version">应用更新</p></div></header>
+    <section aria-live="polite" aria-atomic="true">
+      <span id="badge">保持新鲜</span>
+      <h1 id="title">让陪伴更好一点</h1>
+      <p id="description">自动检查新版本，一键更新并重新打开桌宠。</p>
+    </section>
+    <div id="download" hidden><progress id="progress" max="100" value="0" aria-label="更新下载进度"></progress><p id="percent"></p></div>
+    <details id="details" hidden><summary>这次更新了什么</summary><pre id="notes"></pre></details>
+    <footer>
+      <p class="keep">API Key、音色和自定义形象都会保留。</p>
+      <button id="primary" type="button">检查更新</button>
+      <button id="postpone" type="button" hidden>下载完成后，稍后重启</button>
+      <button id="releases" type="button" class="link">查看发布页 ↗</button>
+      <p id="schedule">启动后和每 4 小时自动检查；点击更新才下载。</p>
+    </footer>
+  </main>
+</body>
+</html>

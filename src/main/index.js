@@ -19,6 +19,8 @@ import { isTrustedSettingsSender, aiKeyPage } from './aiSettingsIpc.js';
 import { createCustomizationController } from './customizationIpc.js';
 import { runCustomizationSmoke } from './customizationSmoke.js';
 import { createWelcomeController } from './welcomeController.js';
+import { UpdateService } from './updateService.js';
+import { createUpdateController } from './updateController.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -89,6 +91,8 @@ let aiSettingsWindow = null;
 let connectionTest = null;
 let customizationController = null;
 let welcomeController = null;
+let updateController = null;
+let updateService = null;
 let lastVoiceStatus = { status: 'disconnected', provider: '未连接' };
 
 function publishVoiceStatus(data) {
@@ -287,7 +291,9 @@ async function runCompanionSmokeTest() {
     await win.webContents.executeJavaScript("if(document.getElementById('usage').value !== 'voice') throw new Error('Voice action did not open voice setup')");
   }
   const customizationResult = await runCustomizationSmoke({ controller: customizationController, mainWindow, dialog, outputDirectory: app.getPath('userData') });
-  console.log('[Smoke] PASS', JSON.stringify({ ...result, onboarding, customization: customizationResult }));
+  const { runUpdateSmoke } = await import('./updateSmoke.js');
+  const updates = await runUpdateSmoke({ electron, rendererDirectory: path.join(__dirname, '../renderer'), icon: appIcon, outputDirectory: app.getPath('userData') });
+  console.log('[Smoke] PASS', JSON.stringify({ ...result, onboarding, customization: customizationResult, updates }));
   app.exit(0);
 }
 
@@ -1269,6 +1275,8 @@ function updateTrayMenu() {
     { label: '⚙️ AI 设置 / 自己的 API Key', click: () => openAISettings() },
     { label: '🏡 新手引导 / 使用帮助', click: () => welcomeController?.open() },
     { label: '🎨 自定义形象 / 背景', click: () => customizationController?.open() },
+    { label: updateService?.state.version && ['available', 'ready', 'downloading'].includes(updateService.state.phase)
+      ? `⬆️ 更新到 v${updateService.state.version}` : `⬆️ 检查更新 · v${app.getVersion()}`, click: () => updateController?.open() },
     {
       label: '📍 吸附位置',
       submenu: [
@@ -1801,6 +1809,13 @@ if (app?.whenReady) {  app.whenReady().then(() => {
       runCompanionSmokeTest().catch(error => { console.error('[Smoke]', error.message); app.exit(1); }); return;
     }
     welcomeController.showOnFirstRun();
+    // Load the CJS updater only in a real session; isolated smoke tests never dial out.
+    import('electron-updater').then(({ default: electronUpdater }) => {
+      updateService = new UpdateService({ updater: electronUpdater.autoUpdater, currentVersion: app.getVersion(), enabled: app.isPackaged && process.platform === 'win32' });
+      updateController = createUpdateController({ electron, service: updateService, rendererDirectory: path.join(__dirname, '../renderer'), icon: appIcon, onState: updateTrayMenu });
+      updateService.start();
+      updateTrayMenu();
+    }).catch(error => console.warn('[Updates] Could not initialize updater:', error.message));
 
     roamEngine = new DesktopRoamEngine(() => mainWindow);
 
@@ -1875,6 +1890,7 @@ if (app?.whenReady) {  app.whenReady().then(() => {
   });
 
   app.on('will-quit', () => {
+    updateController?.dispose();
     cancelConnectionTest();
     unregisterShortcuts();
     if (ahkEngine?.gameInput?.dispose) {
