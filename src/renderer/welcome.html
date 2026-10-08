@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none';">
+  <title>刀塔Pet · 欢迎</title>
+  <link rel="stylesheet" href="ai-settings.css">
+  <link rel="stylesheet" href="welcome.css">
+  <script src="microphone-check.js" defer></script>
+  <script src="welcome.js" defer></script>
+</head>
+<body>
+  <main class="welcome-main">
+    <header class="welcome">
+      <div class="welcome-copy"><p class="eyebrow">刀塔Pet · DOTA2 桌面宠物 <span id="app-version"></span></p><h1>陪你开黑，帮你看懂聊天</h1><p class="welcome-description">DOTA2 英雄与信使陪伴 · 对局聊天翻译。<br>先选你需要的功能，国内服务优先。</p></div>
+      <img class="welcome-logo" src="assets/pets/mischievous_greevil/idle.svg" alt="DOTA2 信使小贪魔">
+    </header>
+    <nav class="guide-steps" aria-label="新手引导"><button data-step="0" aria-current="step">1 · 认识一下</button><button data-step="1">2 · 检查声音</button><button data-step="2">3 · 开始陪伴</button></nav>
+    <section id="step-0" class="guide-panel" aria-labelledby="intro-title">
+      <h2 id="intro-title" tabindex="-1">先按你喜欢的方式，安顿好它</h2>
+      <div class="guide-tips"><article><span aria-hidden="true">✋</span><h3>拖到喜欢的位置</h3><p>按住小伙伴拖动；需要固定时，右键选择位置固定。</p></article><article><span aria-hidden="true">🎨</span><h3>换个喜欢的样子</h3><p>切换宠物、上传自己的图片，也可以换背景。</p><button id="guide-customize">挑选形象与背景</button></article><article><span aria-hidden="true">☕</span><h3>想安静时，随时隐藏</h3><p>从任务栏右下角的小狼图标找回它。右键菜单里也能退出程序。</p></article></div>
+      <p class="guide-note">语音和翻译是可选功能。没有密钥，也不影响拖动、换装和日常陪伴。</p>
+    </section>
+    <section id="step-1" class="guide-panel" aria-labelledby="sound-title" hidden>
+      <h2 id="sound-title" tabindex="-1">想聊聊天？先检查声音</h2>
+      <div class="mic-check card">
+        <h3>① 麦克风能听到你吗？</h3>
+        <p class="hint">点击后说一句话。只在本机检查音量，不保存、不上传、不回放；最多检查 10 秒。</p>
+        <div class="mic-meter" role="meter" aria-label="麦克风音量" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="mic-level"></span></div>
+        <p id="mic-status" role="status" aria-live="polite">还没有检查。也可以跳过，之后再试。</p>
+        <button id="mic-start">检查麦克风</button><button id="mic-stop" hidden>停止检查</button><button id="mic-privacy" hidden>打开 Windows 麦克风设置</button>
+      </div>
+      <div class="card guide-ai"><h3>② 翻译聊天，还是语音对话？</h3><p class="hint">翻译：选择千问或 DeepSeek，保存密钥后按 Alt+T。语音：选择千问或豆包，测试后连接，再按 Alt+Q 讲话。只用翻译不用开麦。</p><button id="guide-settings" class="secondary">打开翻译与语音设置</button><p class="hint">截图会发送给你选择的服务商。AI 服务需要联网，按服务商规则计费。</p></div>
+    </section>
+    <section id="step-2" class="guide-panel" aria-labelledby="ready-title" hidden>
+      <h2 id="ready-title" tabindex="-1">准备好了，回到桌面吧</h2>
+      <div class="shortcut-list"><p><kbd>Win+Shift+S</kbd> → <kbd>Alt+T</kbd><span>框选队友聊天 → 显示中文译文</span></p><p><kbd>F8</kbd><span>将自己输入的中文翻成英文</span></p><p><kbd>Alt+Q</kbd><span>开启 / 关闭语音（先连接 AI）</span></p><p><kbd>F6</kbd><span>游戏快捷短语</span></p></div>
+      <div class="card"><h3>找不到小伙伴了？</h3><p class="hint">打开任务栏右下角的隐藏图标区域，双击小狼图标即可找回。右键图标 →「新手引导 / 使用帮助」，随时回来看看。</p></div>
+      <p class="guide-note">以后安装新版，直接运行新版安装包即可。保留同一 Windows 用户，已有密钥与形象会继续留在本机。</p>
+    </section>
+    <p id="guide-feedback" role="status" aria-live="polite"></p>
+    <footer class="guide-footer"><button id="guide-skip">先陪着我，稍后设置</button><div><button id="guide-back" hidden>上一步</button><button id="guide-next" class="secondary">下一步</button></div></footer>
+  </main>
+</body>
+</html>

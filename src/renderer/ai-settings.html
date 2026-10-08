@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none';">
+  <title>刀塔Pet · 翻译与语音设置</title>
+  <link rel="stylesheet" href="ai-settings.css">
+  <script src="microphone-check.js" defer></script>
+  <script src="ai-settings.js" defer></script>
+</head>
+<body>
+  <div class="app-chrome"><img class="brand-icon" src="assets/app-icon.svg" alt=""><span>刀塔Pet · DOTA2 桌面宠物</span><span class="chrome-caption">翻译与语音 <span id="settings-version"></span></span></div>
+  <main>
+    <header class="welcome">
+      <div class="welcome-copy">
+        <p class="eyebrow">DOTA2 · 国内服务优先</p>
+        <h1>先选你想用的功能<span class="title-spark" aria-hidden="true">✦</span></h1>
+        <p class="welcome-description">看懂队友聊天，或与桌宠说话。<br>模型参数已准备好，填写自己的密钥就行。</p>
+      </div>
+      <div class="pet-greeting" aria-hidden="true">
+        <span class="pet-note">慢慢来，我在这里</span>
+        <div class="pet-halo"></div>
+        <img id="welcome-pet" class="welcome-pet" src="assets/pets/mischievous_greevil/idle.svg" alt="">
+        <span class="pet-spark spark-one">✧</span><span class="pet-spark spark-two">✦</span>
+      </div>
+    </header>
+    <label for="usage">你想先做什么？</label>
+    <select id="usage"><option value="translate">翻译文字 / 截图 · 看懂队友聊天</option><option value="voice">语音对话 · 与桌宠说话</option></select>
+    <ol class="steps" aria-label="设置步骤"><li>选功能</li><li>填写密钥</li><li>测试后使用</li></ol>
+    <div class="setup-grid">
+      <section class="card provider-card" aria-labelledby="provider-title">
+        <div class="section-heading"><span class="section-number" aria-hidden="true">01</span><h2 id="provider-title">从这里开始</h2></div>
+        <label for="provider">选择 AI 服务商</label>
+        <select id="provider" disabled></select>
+        <p id="provider-help" class="hint"></p>
+        <div id="secret-fields" class="secret-fields"></div>
+        <div class="save-row"><button id="save" class="secondary">保存设置</button><span class="local-note"><span aria-hidden="true">⌁</span> 加密保存在本机</span></div>
+        <p class="hint preserve-note">已保存的密钥不需要再填；留空即可保留。</p>
+      </section>
+      <section class="card connection-card" aria-labelledby="connection-title">
+        <div class="section-heading"><span class="section-number" aria-hidden="true">02</span><h2 id="connection-title">准备好，就打个招呼</h2></div>
+        <div class="connection-presence" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+        <p id="connection-status" class="connection-status" role="status">还没有连接，先安顿好小伙伴吧</p>
+        <div id="feedback" class="feedback" role="status" aria-live="polite">正在整理小伙伴的设置…</div>
+        <div class="connection-actions"><button id="connect" class="primary">连接，开始陪伴 <span aria-hidden="true">↗</span></button><div class="quiet-actions"><button id="test">测试 AI 连接</button><button id="disconnect">断开连接</button><button id="cancel" hidden>取消测试</button></div></div>
+        <p class="hint connection-note">连接后，回到桌宠点麦克风或按 Alt+Q 说话。测试不会开启麦克风，可能产生少量服务商用量。</p>
+      </section>
+    </div>
+    <details id="microphone" class="advanced">
+      <summary><span aria-hidden="true">🎙</span><span>麦克风检查<span class="summary-hint">听不到声音时，先在本机试一试</span></span><span class="summary-chevron" aria-hidden="true">⌄</span></summary>
+      <div class="advanced-content mic-check">
+        <p class="hint">点击后说一句话。只在本机显示音量，不保存、不上传、不回放；最多检查 10 秒。</p>
+        <div class="mic-meter" role="meter" aria-label="麦克风音量" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="mic-level"></span></div>
+        <p id="mic-status" role="status" aria-live="polite">还没有检查。</p>
+        <button id="mic-start">检查麦克风</button><button id="mic-stop" hidden>停止检查</button><button id="mic-privacy" hidden>打开 Windows 麦克风设置</button>
+      </div>
+    </details>
+    <details id="advanced" class="advanced">
+      <summary><span class="advanced-icon" aria-hidden="true">☷</span><span>更多设置<span class="summary-hint">模型、音色与工作空间</span></span><span class="summary-chevron" aria-hidden="true">⌄</span></summary>
+      <div class="advanced-content">
+        <label class="overseas-option"><input id="overseas" type="checkbox">显示海外语音服务（Google / Cartesia）</label>
+        <p class="hint">Gemini API 的支持地区不含中国大陆。国内用户优先使用千问或豆包；海外选项需要相应地区与网络条件。</p>
+        <p class="hint advanced-intro">默认选项已经替你准备好。想换个声音，或使用自己的工作空间，可以在这里调整。</p>
+        <div id="workspace-fields" class="field-grid" hidden>
+          <div><label for="region">密钥所属地区</label><select id="region"><option value="beijing">中国 · 北京</option><option value="singapore">新加坡</option></select></div>
+          <div><label for="workspace">百炼工作空间 ID</label><input id="workspace" type="text" autocomplete="off" maxlength="100" placeholder="填写你自己的工作空间 ID"></div>
+          <p class="hint wide-field">建议填写工作空间 ID，并选择与密钥一致的地区。</p>
+        </div>
+        <div class="field-grid">
+          <div id="model-fields"><label for="model">语音模型</label><input id="model" type="text" maxlength="160" autocomplete="off" spellcheck="false"></div>
+          <div id="voice-fields"><label for="voice">小伙伴的声音</label><select id="voice"></select><input id="voice-custom" type="text" maxlength="160" autocomplete="off" hidden></div>
+        </div>
+        <div id="optional-secret-fields"></div>
+        <div id="translator-fields"><label for="translator">语音模式下的文字 / 截图翻译服务商</label>
+        <select id="translator"><option value="qwen">阿里千问</option><option value="deepseek">DeepSeek</option></select>
+        <p class="hint">翻译需要所选服务商的密钥；文字翻译失败时可使用本地术语词典，截图失败会提示重试。</p></div>
+        <div class="advanced-actions"><button id="import">导入已有配置</button><button id="delete" class="danger">删除此服务商的密钥</button></div>
+        <p class="hint">导入只读取你选择的 JSON 文件。修改并保存设置后，需要重新连接语音。</p>
+      </div>
+    </details>
+    <footer><span class="privacy-mark" aria-hidden="true">◇</span><p>你的密钥，加密留在这台电脑。<br><span>随时连接，随时离开。小伙伴一直都在。</span></p></footer>
+  </main>
+</body>
+</html>
