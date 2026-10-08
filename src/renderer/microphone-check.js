@@ -1,4 +1,4 @@
-// Shared by welcome and settings. No recorder, IPC audio or network connection.
+// Local microphone check for settings. No recorder, IPC audio or network connection.
 (() => {
   const get = id => document.getElementById(id);
   let stream, context, timer, frame, generation = 0, checking = false;
@@ -19,7 +19,7 @@
   window.stopMicrophoneCheck = () => stop();
   get('mic-stop').addEventListener('click', () => stop());
   get('mic-privacy').addEventListener('click', async () => {
-    const response = window.welcomeAPI ? await window.welcomeAPI.action('mic-privacy') : await window.electronAPI?.openMicrophonePrivacy?.();
+    const response = await window.electronAPI?.openMicrophonePrivacy?.();
     if (!response?.ok) message(response?.error || '请打开 Windows 设置 → 隐私和安全性 → 麦克风，允许桌面应用访问。');
   });
   get('mic-start').addEventListener('click', async () => {

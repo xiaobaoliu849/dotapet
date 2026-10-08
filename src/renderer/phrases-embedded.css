@@ -1,0 +1,56 @@
+/*
+ * The phrase editor inside the settings center: same markup and behavior as
+ * the F6 panel, drawn in the settings center's light palette. Every rule is
+ * scoped so the dark in-game panel is unchanged.
+ */
+html[data-embedded='true'] {
+  --ink: #2f3a32; --muted: #6f7a70; --faint: #98a196; --line: #e3e7de; --surface: #ffffff; --canvas: #f6f7f2;
+  --green: #3f6a52; --green-dark: #325844; --green-soft: #ebf3e7;
+  color-scheme: light;
+  font-family: 'Segoe UI Variable Text', 'Segoe UI', 'Microsoft YaHei UI', 'Microsoft YaHei', sans-serif;
+}
+html[data-embedded='true'], html[data-embedded='true'] body { background: var(--canvas); color: var(--ink); }
+html[data-embedded='true'] .phrases-picker-modal { background: var(--canvas); backdrop-filter: none; animation: none; padding: 0; }
+html[data-embedded='true'] .phrases-modal-card { max-width: none; background: transparent; border: 0; border-radius: 0; box-shadow: none; }
+
+/* Page heading instead of the panel's red title bar. */
+html[data-embedded='true'] .phrases-modal-header { padding: 26px max(28px, calc((100% - 820px) / 2)) 2px; background: transparent; border: 0; }
+html[data-embedded='true'] .phrases-modal-title { flex-direction: column; align-items: flex-start; gap: 6px; }
+html[data-embedded='true'] .phrases-title-icon { display: none; }
+html[data-embedded='true'] .phrases-title-text { font-size: 26px; line-height: 1.3; font-weight: 700; letter-spacing: -.4px; color: var(--ink); }
+html[data-embedded='true'] .phrases-title-badge { margin: 0; padding: 3px 10px; border-radius: 20px; background: var(--green-soft); color: var(--green); font-size: 12px; }
+
+html[data-embedded='true'] .phrases-modal-body { padding: 12px max(28px, calc((100% - 820px) / 2)) 18px; gap: 12px; }
+html[data-embedded='true'] .phrases-usage-hint { color: var(--muted); font-size: 13.5px; }
+html[data-embedded='true'] .preset-import-strip { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; }
+html[data-embedded='true'] .preset-label { color: #4c5a4c; font-size: 12.5px; }
+html[data-embedded='true'] .preset-to-label, html[data-embedded='true'] .preset-unit-label { color: var(--muted); font-size: 12.5px; }
+html[data-embedded='true'] .preset-dropdown, html[data-embedded='true'] .preset-row-dropdown,
+html[data-embedded='true'] .phrase-input { background: #fcfdfb; color: var(--ink); border: 1px solid #d9dfd3; border-radius: 8px; font-size: 13px; padding: 7px 10px; }
+html[data-embedded='true'] .phrase-input:focus { border-color: #7e9878; box-shadow: 0 0 0 3px #7e98781f; background: #fff; }
+html[data-embedded='true'] .phrase-input::placeholder { color: var(--faint); }
+
+html[data-embedded='true'] .phrases-table-header { color: var(--muted); font-size: 12px; border-bottom: 1px solid var(--line); }
+html[data-embedded='true'] .phrase-row-item { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; }
+html[data-embedded='true'] .phrase-row-item:focus-within { background: var(--surface); border-color: #9db594; }
+html[data-embedded='true'] .phrase-row-num { color: var(--green); font-size: 13px; }
+
+html[data-embedded='true'] .btn-import-preset, html[data-embedded='true'] .btn-primary-action {
+  background: var(--green); border: 1px solid var(--green); color: #fff; border-radius: 9px; font-size: 13px; font-weight: 600; box-shadow: 0 2px 6px #3f6a5230; }
+html[data-embedded='true'] .btn-import-preset { padding: 7px 14px; }
+html[data-embedded='true'] .btn-primary-action { padding: 9px 20px; }
+html[data-embedded='true'] .btn-import-preset:hover, html[data-embedded='true'] .btn-primary-action:hover { background: var(--green-dark); box-shadow: 0 2px 6px #3f6a5230; }
+html[data-embedded='true'] .btn-phrase-trans, html[data-embedded='true'] .btn-phrase-copy,
+html[data-embedded='true'] .btn-secondary-action { background: #f8faf5; border: 1px solid #d9dfd3; color: #4f6248; border-radius: 8px; font-size: 12px; }
+html[data-embedded='true'] .btn-phrase-trans { color: var(--green); background: var(--green-soft); border-color: #b2c4a8; }
+html[data-embedded='true'] .btn-secondary-action { padding: 8px 14px; font-size: 13px; }
+html[data-embedded='true'] .btn-phrase-trans:hover, html[data-embedded='true'] .btn-phrase-copy:hover,
+html[data-embedded='true'] .btn-secondary-action:hover { background: #edf2e7; color: var(--green); }
+html[data-embedded='true'] .btn-secondary-action.btn-dim { color: var(--muted); }
+html[data-embedded='true'] button:focus-visible, html[data-embedded='true'] select:focus-visible { outline: 2px solid #75946c; outline-offset: 2px; }
+
+/* Actions stay visible at the bottom; the settings center closes itself. */
+html[data-embedded='true'] .phrases-modal-footer { padding: 10px max(28px, calc((100% - 820px) / 2)); background: #f6f7f2f2; border-top: 1px solid var(--line); }
+html[data-embedded='true'] #btn-cancel-phrases { display: none; }
+html[data-embedded='true'] .toast { background: var(--green); box-shadow: 0 4px 14px #2f3a3230; left: 50%; transform: translateX(-50%); bottom: 72px; font-size: 13px; }
+html[data-embedded='true'] .toast.hidden { transform: translate(-50%, 6px); }

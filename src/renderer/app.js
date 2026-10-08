@@ -875,14 +875,12 @@ const elements = {
   ctxAttrBadge: document.getElementById('ctx-attr-badge'),
   ctxBtnVoice: document.getElementById('ctx-btn-voice'),
   ctxBtnTranslate: document.getElementById('ctx-btn-translate'),
-  ctxBtnPhrases: document.getElementById('ctx-btn-phrases'),
   ctxBtnPin: document.getElementById('ctx-btn-pin'),
   ctxBtnScale: document.getElementById('ctx-btn-scale'),
   ctxScaleLabel: document.getElementById('ctx-scale-label'),
   ctxBtnProvider: document.getElementById('ctx-btn-provider'),
   ctxProviderLabel: document.getElementById('ctx-provider-label'),
   ctxBtnWardrobe: document.getElementById('ctx-btn-wardrobe'),
-  ctxBtnHeroes: document.getElementById('ctx-btn-heroes'),
   ctxBtnSnapBr: document.getElementById('ctx-btn-snap-br'),
   ctxBtnSnapBl: document.getElementById('ctx-btn-snap-bl'),
   ctxBtnCenter: document.getElementById('ctx-btn-center'),
@@ -1279,6 +1277,26 @@ function setupHitTesting() {
       setIgnoreState(true, { forward: true });
     }
   });
+}
+
+/**
+ * Calm resting state: the toolbars show only while the mouse is over the
+ * companion, so the desktop normally shows just the pet.
+ */
+function setupHudAutoHide() {
+  let sleepTimer = null;
+  const awakeAreas = '.hud-top-bar, .hud-bottom-dock, .pet-wrapper, .pet-context-menu, .dialogue-bubble, .transcript-panel, .snap-popover, .pet-matrix-popover, .hero-picker-modal';
+  const wake = () => { clearTimeout(sleepTimer); document.body.classList.add('hud-awake'); };
+  const sleep = delay => {
+    clearTimeout(sleepTimer);
+    sleepTimer = setTimeout(() => document.body.classList.remove('hud-awake'), delay);
+  };
+  window.addEventListener('mousemove', event => {
+    const el = document.elementFromPoint(event.clientX, event.clientY);
+    if (el?.closest(awakeAreas)) wake();
+    else sleep(1500);
+  });
+  window.addEventListener('mouseleave', () => sleep(800));
 }
 
 /**
@@ -1864,7 +1882,7 @@ function copyText(text) {
 
 let toastTimer = null;
 
-function showToast(message) {
+function showToast(message, duration = 1800) {
   elements.toast.textContent = message;
   elements.toast.classList.remove('hidden');
   // Clear the previous dismissal first, or a rapid second toast gets hidden
@@ -1872,7 +1890,7 @@ function showToast(message) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => {
     elements.toast.classList.add('hidden');
-  }, 1800);
+  }, duration);
 }
 
 
@@ -2682,16 +2700,6 @@ function setupEventListeners() {
       window.electronAPI?.openCustomization?.().then(result => { if (result && !result.ok) showToast(result.error); });
     });
 
-    elements.ctxBtnPhrases?.addEventListener('click', () => {
-      closePetContextMenu();
-      window.electronAPI?.togglePhrasesWindow?.();
-    });
-
-    elements.ctxBtnHeroes?.addEventListener('click', () => {
-      closePetContextMenu();
-      openHeroModal('heroes');
-    });
-
     elements.ctxBtnSnapBr?.addEventListener('click', () => {
       closePetContextMenu();
       snapToPosition('bottom-right');
@@ -2736,6 +2744,10 @@ function setupEventListeners() {
 
     window.electronAPI.onScaleChanged?.((data) => {
       applyScaleMode(data?.scaleMode, data?.label, true);
+    });
+
+    window.electronAPI.onOnboardingHint?.(() => {
+      showToast('右键我打开菜单 · Alt+Q 说话 · Alt+T 翻译', 7000);
     });
 
     window.electronAPI.onVoiceProviderCycled?.((data) => {
@@ -3099,10 +3111,6 @@ function setupEventListeners() {
 
 // Initialization
 window.addEventListener('DOMContentLoaded', async () => {
-  document.getElementById('ctx-btn-welcome')?.addEventListener('click', () => {
-    document.getElementById('pet-context-menu')?.classList.add('hidden');
-    window.electronAPI?.openWelcome?.();
-  });
   for (const id of ['btn-ai-settings', 'ctx-btn-ai-settings']) {
     document.getElementById(id)?.addEventListener('click', () => {
       document.getElementById('pet-context-menu')?.classList.add('hidden');
@@ -3110,6 +3118,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     });
   }
   setupHitTesting();
+  setupHudAutoHide();
   setupWindowDragging();
   setupEventListeners();
   await loadHeroConfig();

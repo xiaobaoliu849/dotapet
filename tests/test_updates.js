@@ -95,27 +95,31 @@ test('development sessions never check or install and disposal clears scheduled 
   assert.equal(normal.updater.listenerCount('update-available'), 0);
 });
 
-test('update commands require exact local top-level window and closing it postpones restart', async () => {
-  class Window extends EventEmitter {
-    constructor() { super(); this.webContents = new EventEmitter(); this.webContents.mainFrame = {}; this.webContents.setWindowOpenHandler = () => {}; this.webContents.send = () => {}; }
-    isDestroyed() { return false; }
-    loadFile(file) { this.webContents.mainFrame.url = new URL(`file:///${file.replaceAll('\\', '/')}`).href; }
-  }
+test('update commands require the exact local update page and closing the settings center postpones restart', async () => {
+  const rendererDirectory = 'D:/Projects/dotapet/src/renderer';
+  const contents = { mainFrame: { url: new URL(`file:///${rendererDirectory}/update.html`).href }, sent: [], send(...args) { this.sent.push(args); }, isDestroyed: () => false };
+  const pages = new Map(), opened = [];
+  const hub = { register: (id, page) => pages.set(id, page), unregister: id => pages.delete(id),
+    contents: id => pages.has(id) ? contents : null, open: id => { opened.push(id); return {}; } };
   let handler;
   const { service } = fixture(false);
-  const controller = createUpdateController({ service, rendererDirectory: 'D:/Projects/dotapet/src/renderer', smokeTest: true, electron: {
-    BrowserWindow: Window, ipcMain: { handle(_channel, value) { handler = value; }, removeHandler() {} }, shell: { openExternal() { throw new Error('must not open'); } },
+  const controller = createUpdateController({ service, rendererDirectory, hub, smokeTest: true, electron: {
+    ipcMain: { handle(_channel, value) { handler = value; }, removeHandler() {} }, shell: { openExternal() { throw new Error('must not open'); } },
   } });
-  const win = controller.open();
-  const event = { sender: win.webContents, senderFrame: win.webContents.mainFrame };
+  controller.open();
+  assert.deepEqual(opened, ['update']);
+  const event = { sender: contents, senderFrame: contents.mainFrame };
   assert.equal((await handler(event, 'state')).ok, true);
   assert.equal((await handler({ ...event, senderFrame: { url: event.senderFrame.url } }, 'install')).ok, false);
   assert.equal((await handler({ ...event, sender: {} }, 'install')).ok, false);
   assert.equal((await handler(event, 'https://example.com')).ok, false);
   service.publish({ restartRequested: true });
-  win.emit('close');
+  assert.ok(contents.sent.some(([channel]) => channel === 'update:state'), 'state reaches the open page');
+  pages.get('update').onHubClose();
   assert.equal(service.state.restartRequested, false);
   controller.dispose();
+  assert.equal(pages.has('update'), false, 'dispose removes the sidebar page');
+  assert.equal((await handler(event, 'state')).ok, false, 'a removed page is no longer trusted');
 });
 
 test('release workflow publishes updater metadata with installer and publishes a production channel', () => {

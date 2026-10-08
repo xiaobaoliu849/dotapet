@@ -1,12 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { CustomizationStore } from './customizationStore.js';
+import { captureHub, pageLoaded } from './controlCenterSmoke.js';
 
 // Exercises the real preload, renderer, IPC and desktop without user data/network.
-export async function runCustomizationSmoke({ controller, mainWindow, dialog, outputDirectory }) {
+export async function runCustomizationSmoke({ controller, controlCenter, mainWindow, dialog, nativeImage, outputDirectory }) {
   const errors = [];
   mainWindow.webContents.on('console-message', (_event, level, text) => { if (level >= 3) errors.push(text); });
-  const waitScript = `const waitFor = async predicate => { for (let i=0;i<125;i++) { if (await predicate()) return; await new Promise(r=>setTimeout(r,40)); } throw new Error('Customization UI timed out: '+ (document.getElementById('feedback')?.textContent || '') + ' / ' + predicate.toString()); }; const get = id => document.getElementById(id);`;
+  const waitScript = `const waitFor = async predicate => { for (let i=0;i<125;i++) { if (await predicate()) return; await new Promise(r=>setTimeout(r,40)); } throw new Error('Customization UI timed out: '+ (document.getElementById('feedback')?.textContent || '') + ' / ' + predicate.toString()); }; const get = id => document.getElementById(id); const idle = () => get('editor').getAttribute('aria-busy') !== 'true';`;
   const fixture = `data:image/svg+xml;base64,${Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 140"><ellipse cx="70" cy="128" rx="36" ry="6" fill="#544233" opacity=".15"/><path d="M45 62Q22 3 49 17L65 55M83 55l11-38q30-14 10 49" fill="#f8dcad" stroke="#a18158" stroke-width="3"/><ellipse cx="73" cy="86" rx="45" ry="39" fill="#f8dcad" stroke="#a18158" stroke-width="3"/><circle cx="56" cy="78" r="4" fill="#544233"/><circle cx="90" cy="78" r="4" fill="#544233"/><path d="M69 87h8l-4 5z" fill="#c47c71"/><path d="M73 92q-7 10-14 1m14-1q7 10 14 1" fill="none" stroke="#544233" stroke-width="2"/><circle cx="44" cy="91" r="5" fill="#e6afa0"/><circle cx="102" cy="91" r="5" fill="#e6afa0"/></svg>').toString('base64')}`;
   await mainWindow.webContents.executeJavaScript(`(async()=>{ ${waitScript}
     await waitFor(async()=>Boolean((await window.electronAPI.getCustomization())?.ok));
@@ -19,10 +20,19 @@ export async function runCustomizationSmoke({ controller, mainWindow, dialog, ou
     await waitFor(async()=>Boolean((await window.electronAPI.getCustomization())?.state?.profiles['hero:invoker']?.appearance.assetId));
     if (!localStorage.getItem('voicespirit_custom_skins_invoker')) throw new Error('Migration erased legacy settings');
   })()`);
-  const editor = controller.open();
-  editor.webContents.on('console-message', (_event, level, text) => { if (level >= 3) errors.push(text); });
-  await new Promise(resolve => editor.webContents.once('did-finish-load', resolve));
-  const assetId = await editor.webContents.executeJavaScript(`(async()=>{ ${waitScript}
+  // Start from a closed settings center so the editor loads after migration.
+  if (controlCenter.window) {
+    const closed = new Promise(resolve => controlCenter.window.once('closed', resolve));
+    controlCenter.close(); await closed;
+  }
+  // The desktop's 自定义 button opens the settings center on its 形象与背景 page.
+  const opened = await mainWindow.webContents.executeJavaScript('window.electronAPI.openCustomization()');
+  if (!opened?.ok || controlCenter.active !== 'appearance') throw new Error('Desktop could not open the appearance page');
+  const editor = controlCenter.contents('appearance');
+  editor.on('console-message', (_event, level, text) => { if (level >= 3) errors.push(text); });
+  await pageLoaded(editor);
+  if (controller.open() !== controlCenter.window || controlCenter.contents('appearance') !== editor) throw new Error('Reopening created a second editor');
+  const assetId = await editor.executeJavaScript(`(async()=>{ ${waitScript}
     await waitFor(()=>!get('character').disabled);
     if (get('character').value !== 'hero:companion') throw new Error('Editor does not show active free-chat companion');
     if ('sendAudioChunk' in window.customizationAPI || 'getCustomization' in window.customizationAPI) throw new Error('Editor exposes desktop controls');
@@ -39,12 +49,12 @@ export async function runCustomizationSmoke({ controller, mainWindow, dialog, ou
     get('background-color').value='#8ca99a'; get('background-color').dispatchEvent(new Event('input'));
     get('background-scope').value='scene'; get('background-scope').dispatchEvent(new Event('input'));
     if ((await window.customizationAPI.get()).state.profiles['pet:aurora_wolf']) throw new Error('Preview applied before Apply');
+    if (get('apply').textContent !== '应用并换上此伙伴') throw new Error('Apply does not say it will switch companions');
     get('apply').click();
     await waitFor(async()=>Boolean((await window.customizationAPI.get()).state.profiles['pet:aurora_wolf']?.appearance.assetId));
-    await waitFor(()=>!get('apply').disabled);
-    if (!get('draft-status').textContent.includes('已保存')) throw new Error('Draft did not become saved');
-    get('activate').click();
     await waitFor(async()=>(await window.customizationAPI.get()).state.activeKey==='pet:aurora_wolf');
+    await waitFor(()=>idle() && get('draft-status').textContent.includes('已应用'));
+    if (!get('apply').disabled || get('apply').textContent !== '已应用') throw new Error('Apply stays active with nothing to apply');
     const favorite=document.querySelector('.asset-actions button[aria-pressed]'); favorite.click();
     await waitFor(async()=>(await window.customizationAPI.get()).state.assets[0].favorite);
     get('preset-name').value='暖金小兔'; get('save-preset').click();
@@ -68,29 +78,25 @@ export async function runCustomizationSmoke({ controller, mainWindow, dialog, ou
   try {
     dialog.showSaveDialog = async () => ({ canceled: false, filePath: bundlePath });
     dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [bundlePath] });
-    await editor.webContents.executeJavaScript(`(async()=>{ ${waitScript}
-      await waitFor(()=>!get('apply').disabled);
+    await editor.executeJavaScript(`(async()=>{ ${waitScript}
+      await waitFor(idle);
       document.querySelector('.preset-row button:nth-of-type(2)').click();
       await waitFor(()=>get('feedback').textContent.includes('导出'));
       get('import-preset').click(); await waitFor(()=>document.querySelectorAll('.preset-row').length===2);
     })()`);
   } finally { dialog.showSaveDialog = originalSave; dialog.showOpenDialog = originalOpen; }
-  const capture = async filename => {
-    await editor.webContents.capturePage();
-    await editor.webContents.executeJavaScript('new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))');
-    fs.writeFileSync(path.join(outputDirectory, filename), (await editor.webContents.capturePage()).toPNG());
-  };
+  const capture = async filename => fs.writeFileSync(path.join(outputDirectory, filename), (await captureHub(controlCenter, nativeImage)).toPNG());
   await capture('customization.png');
-  await editor.webContents.executeJavaScript("document.getElementById('library-section').scrollIntoView({block:'start'})");
+  await editor.executeJavaScript("document.getElementById('library-section').scrollIntoView({block:'start'})");
   await capture('customization-library.png');
-  editor.setSize(680, 750);
+  controlCenter.window.setSize(680, 750);
   await new Promise(resolve => setTimeout(resolve, 150));
-  await editor.webContents.executeJavaScript(`if(document.documentElement.scrollWidth>document.documentElement.clientWidth) throw new Error('Narrow customization editor overflows'); window.scrollTo(0,0);`);
+  await editor.executeJavaScript(`if(document.documentElement.scrollWidth>document.documentElement.clientWidth) throw new Error('Narrow customization editor overflows'); window.scrollTo(0,0);`);
   await capture('customization-narrow.png');
   // Real File input and drop import path, including animated GIF and errors.
   const gif = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-  await editor.webContents.executeJavaScript(`(async()=>{ ${waitScript}
-    await waitFor(()=>!get('apply').disabled);
+  await editor.executeJavaScript(`(async()=>{ ${waitScript}
+    await waitFor(idle);
     const bytes=Uint8Array.from(atob(${JSON.stringify(gif.split(',')[1])}),c=>c.charCodeAt(0));
     const transfer=new DataTransfer(); transfer.items.add(new File([bytes],'tiny.gif',{type:'image/gif'}));
     get('import-role').value='background';
@@ -98,20 +104,33 @@ export async function runCustomizationSmoke({ controller, mainWindow, dialog, ou
     await waitFor(()=>document.querySelectorAll('.asset-card').length===2);
     await waitFor(()=>get('background-mode').value==='image');
     if (get('preview-background').hidden) throw new Error('Imported background not previewed');
-    get('apply').click(); await waitFor(()=>!get('apply').disabled);
+    get('apply').click(); await waitFor(()=>idle() && get('draft-status').textContent.includes('已应用'));
     const invalid=new DataTransfer(); invalid.items.add(new File(['invalid'],'bad.png',{type:'image/png'}));
     get('image-file').files=invalid.files; get('image-file').dispatchEvent(new Event('change'));
     await waitFor(()=>get('feedback').dataset.error==='true');
     if (document.querySelectorAll('.asset-card').length!==2) throw new Error('Invalid image was imported');
     get('character').value='hero:invoker'; get('character').dispatchEvent(new Event('change'));
     if (!get('preview-image').src.includes('customization-assets')) throw new Error('Migrated hero appearance not shown');
-    get('activate').click(); await waitFor(async()=>(await window.customizationAPI.get()).state.activeKey==='hero:invoker');
+    if (get('apply').textContent !== '换上此伙伴') throw new Error('Clean draft of another companion should offer to switch');
+    get('apply').click(); await waitFor(async()=>(await window.customizationAPI.get()).state.activeKey==='hero:invoker');
+    await waitFor(()=>idle() && get('desk-status').dataset.active==='true');
   })()`);
   await mainWindow.webContents.executeJavaScript(`(async()=>{ ${waitScript}
     await waitFor(()=>get('hero-name').textContent.startsWith('祈求者') && get('pet-avatar').src.includes('customization-assets'));
     const {state}=await window.electronAPI.getCustomization();
     if (!get('companion-scene-background').hidden) throw new Error('Hero inherited a pet background');
     if (!state.profiles['hero:invoker'].appearance.assetId) throw new Error('Migrated skin missing');
+  })()`);
+  // Applying to the companion already on the desktop must update it at once.
+  await editor.executeJavaScript(`(async()=>{ ${waitScript}
+    await waitFor(idle);
+    get('appearance-scale').value='150'; get('appearance-scale').dispatchEvent(new Event('input'));
+    if (get('apply').disabled || get('apply').textContent !== '应用到桌面伙伴') throw new Error('Edits to the desktop companion cannot be applied');
+    get('apply').click();
+    await waitFor(()=>get('feedback').textContent.includes('已应用到桌面伙伴'));
+  })()`);
+  await mainWindow.webContents.executeJavaScript(`(async()=>{ ${waitScript}
+    await waitFor(()=>getComputedStyle(get('pet-avatar')).scale==='1.5');
   })()`);
   // Restart the desktop renderer to exercise restore of hero and pet appearance.
   const reloaded = new Promise(resolve => mainWindow.webContents.once('did-finish-load', resolve));
@@ -123,6 +142,6 @@ export async function runCustomizationSmoke({ controller, mainWindow, dialog, ou
   const restored = new CustomizationStore(controller.store.directory).snapshot();
   if (restored.assets.length !== 2 || restored.profiles['pet:aurora_wolf'].appearance.assetId !== assetId) throw new Error('Customization did not survive store reload');
   if (errors.length) throw new Error(`Renderer errors: ${errors.join('; ')}`);
-  editor.close();
+  controlCenter.window.setSize(1060, 820);
   return { assets: restored.assets.length, presets: restored.presets.length, migratedHero: true, heroAndPet: true };
 }

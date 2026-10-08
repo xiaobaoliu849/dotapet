@@ -20,7 +20,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return () => ipcRenderer.removeListener('customization:activate', listener);
   },
   openAISettings: purpose => ipcRenderer.send('ai:open-settings', purpose),
-  openWelcome: () => ipcRenderer.send('welcome:open'),
+  // One-time tip after the first setup closes; teaches the pet in place.
+  onOnboardingHint: (callback) => {
+    const subscription = () => callback();
+    ipcRenderer.on('onboarding:hint', subscription);
+    return () => ipcRenderer.removeListener('onboarding:hint', subscription);
+  },
   // Hit-testing / Click-through
   setIgnoreMouseEvents: (ignore, options) => {
     ipcRenderer.send('set-ignore-mouse-events', ignore, options);

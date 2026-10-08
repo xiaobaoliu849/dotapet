@@ -9,14 +9,14 @@
 </head>
 <body>
   <header>
-    <div><span class="eyebrow">刀塔宠物 · DOTA2 桌面宠物</span><h1>让伙伴更像你的伙伴</h1><p>形象、色彩和背景，随心搭配。图片导入一次，就能反复使用。</p></div>
+    <div><h1>让伙伴更像你的伙伴</h1><p>形象、色彩和背景，随心搭配。图片导入一次，就能反复使用。</p></div>
     <span id="active-name" class="active-badge">正在加载伙伴…</span>
   </header>
   <main id="editor" aria-busy="true">
     <aside>
       <label for="character">编辑角色</label>
       <select id="character" disabled></select>
-      <button id="activate" class="quiet">切换为此伙伴</button>
+      <p id="desk-status" class="desk-status" role="status"></p>
       <div id="preview-stage" class="preview-stage">
         <div id="preview-background" class="background-layer" hidden></div>
         <span class="preview-tag">外观预览</span>
@@ -74,7 +74,7 @@
           <small>PNG · JPEG · GIF · WebP · SVG / 最大 12 MB</small>
           <input id="image-file" type="file" accept="image/png,image/jpeg,image/gif,image/webp,image/svg+xml" hidden>
         </div>
-        <p class="help">图片、重命名和收藏自动保存；角色外观需要点击「应用」。删除图片会重置所有角色与预设中的引用。</p>
+        <p class="help">图片、重命名和收藏自动保存；角色外观需要点击右下角的按钮应用。删除图片会重置所有角色与预设中的引用。</p>
         <div id="asset-library" class="asset-library"></div>
       </section>
       <section>
@@ -85,7 +85,7 @@
       </section>
     </div>
   </main>
-  <footer><div><span id="draft-status">加载中…</span><p id="feedback" role="status" aria-live="polite"></p></div><button id="apply" class="primary" disabled>应用到此角色</button></footer>
+  <footer><div><span id="draft-status">加载中…</span><p id="feedback" role="status" aria-live="polite"></p></div><button id="apply" class="primary" disabled>应用到桌面伙伴</button></footer>
   <dialog id="delete-dialog"><h2>删除这张图片？</h2><p>使用它的角色形象将恢复默认，背景将恢复透明；预设中的引用也会重置。</p><div class="dialog-actions"><button id="cancel-delete">保留图片</button><button id="confirm-delete" class="danger">删除图片</button></div></dialog>
   <script type="module" src="customize.js"></script>
 </body>

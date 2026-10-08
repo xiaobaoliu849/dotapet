@@ -738,6 +738,17 @@ body.has-dialogue-active .pet-wrapper {
   margin: 3px 0;
 }
 
+/* Calm resting state: toolbars fade in while the mouse is over the companion. */
+.hud-top-bar,
+.hud-bottom-dock {
+  transition: opacity 0.2s ease;
+}
+
+body:not(.hud-awake) .hud-top-bar,
+body:not(.hud-awake) .hud-bottom-dock {
+  opacity: 0;
+}
+
 /* Bottom Quick Action Dock */
 .hud-bottom-dock {
   width: 100%;
@@ -2165,7 +2176,7 @@ body.has-dialogue-active .pet-wrapper {
   gap: 3px;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85);
   z-index: 250;
-  min-width: 190px;
+  min-width: 210px;
   animation: fadeInUp 0.15s ease-out;
 }
 
