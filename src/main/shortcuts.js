@@ -42,20 +42,8 @@ export function registerShortcuts(mainWindow, handlers = {}) {
     }
   });
 
-  // Ctrl + 1~9,0: Send In-Game Chinese Quick Phrase
-  // Alt + 1~9,0: Send In-Game English Quick Phrase
-  // Main's onSendPhrase copies to the clipboard and notifies the renderer via
-  // 'phrase:sent'; the renderer has no consumer for a second channel.
-  const phraseDigits = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
-  phraseDigits.forEach((digit) => {
-    registerKey(`Ctrl+${digit}`, `Send CN Phrase ${digit}`, () => {
-      if (handlers.onSendPhrase) handlers.onSendPhrase(digit, 'cn');
-    });
-
-    registerKey(`Alt+${digit}`, `Send EN Phrase ${digit}`, () => {
-      if (handlers.onSendPhrase) handlers.onSendPhrase(digit, 'en');
-    });
-  });
+  // Ctrl/Alt+digits are managed by gamePhraseShortcuts only while Dota is
+  // foreground, so browsers and editors retain their own digit shortcuts.
 
   // Alt+Q: Voice Duplex Toggle
   registerKey('Alt+Q', 'Voice Duplex Toggle', () => {

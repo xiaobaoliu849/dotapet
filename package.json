@@ -15,7 +15,7 @@
   "scripts": {
     "start": "electron .",
     "dev": "electron . --enable-logging",
-    "test": "node --test tests/test_onboarding.js tests/test_settings_presentation.js tests/test_control_center.js tests/test_customization.js tests/test_ai_settings.js tests/test_ai_settings_renderer.js tests/test_gsi_server.js tests/test_lazy_voice_connect.js tests/test_doubao_duplex.js tests/test_google_live.js tests/test_pet_persona.js tests/test_voice_tts_fallback.js tests/test_transcript_streaming.js tests/test_qwen_realtime.js tests/test_desktop_roam_engine.js tests/test_roam_motor.js tests/test_pet_matrix.js tests/test_phrases_panel.js tests/test_game_chat_translate.js tests/test_screenshot_translate.js tests/test_updates.js",
+    "test": "node --test tests/test_onboarding.js tests/test_settings_presentation.js tests/test_control_center.js tests/test_customization.js tests/test_ai_settings.js tests/test_ai_settings_renderer.js tests/test_gsi_server.js tests/test_lazy_voice_connect.js tests/test_doubao_duplex.js tests/test_google_live.js tests/test_pet_persona.js tests/test_voice_tts_fallback.js tests/test_transcript_streaming.js tests/test_qwen_realtime.js tests/test_desktop_roam_engine.js tests/test_roam_motor.js tests/test_pet_matrix.js tests/test_phrases_panel.js tests/test_game_phrase_shortcuts.js tests/test_game_input_helper.js tests/test_hero_search.js tests/test_phrases_store.js tests/test_phrases_renderer.js tests/test_game_chat_translate.js tests/test_screenshot_translate.js tests/test_updates.js",
     "build:icons": "node scripts/build-icons.mjs",
     "test:onboarding": "node --test tests/test_onboarding.js tests/test_settings_presentation.js",
     "pack": "electron-builder --dir",

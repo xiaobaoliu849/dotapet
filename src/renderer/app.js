@@ -1,5 +1,6 @@
 import { PetStateMachine } from './petEngine/PetStateMachine.js';
 import { extractPetCatchphrases } from '../services/petPersona.js';
+import { heroMatchesSearch } from '../services/heroSearch.js';
 import { normalizeProfile, resolveAppearance, applyImageAppearance, applyBackground } from '../services/appearance.js';
 
 let customizationData = null;
@@ -1946,6 +1947,7 @@ function updateDetailEquipButton(hero) {
  */
 function updateSelectionDock(hero) {
   if (!elements.heroSelectionDock || !hero) return;
+  elements.heroSelectionDock.hidden = false;
   state.selectedGalleryHero = hero;
 
   const fallbackSvg = generateFallbackAvatarSvg(hero.nameZh, hero.attribute);
@@ -2003,25 +2005,16 @@ function renderHeroesGrid() {
       if (hero.attackType !== filterAttack) return false;
     }
     // 4. Multi-field search query filter
-    if (q) {
-      const nameZh = (hero.nameZh || '').toLowerCase();
-      const nameEn = (hero.nameEn || '').toLowerCase();
-      const id = (hero.id || '').toLowerCase();
-      const aliases = (hero.aliases || []).map((a) => a.toLowerCase());
-      const matchesSearch =
-        nameZh.includes(q) ||
-        nameEn.includes(q) ||
-        id.includes(q) ||
-        aliases.some((alias) => alias.includes(q));
-      if (!matchesSearch) return false;
-    }
+    if (!heroMatchesSearch(hero, q)) return false;
     return true;
   });
 
   if (filtered.length === 0) {
+    state.selectedGalleryHero = null;
+    if (elements.heroSelectionDock) elements.heroSelectionDock.hidden = true;
     const emptyNotice = document.createElement('div');
     emptyNotice.style.cssText = 'grid-column: 1 / -1; text-align: center; color: #a3947a; padding: 25px 10px; font-size: 11.5px;';
-    emptyNotice.textContent = '未找到匹配英雄 (支持拼音 / 英文 / 别名如 SF / AM / 白牛)';
+    emptyNotice.textContent = '未找到匹配英雄，试试中文名、英文名或常用别名 (卡尔 / SF / 白牛 / 蓝猫)';
     elements.heroesGrid.appendChild(emptyNotice);
     return;
   }
@@ -2402,7 +2395,7 @@ function setupEventListeners() {
 
   // Selection Dock Action Buttons
   elements.dockBtnEquip?.addEventListener('click', async () => {
-    const heroToEquip = state.selectedGalleryHero || state.currentHero;
+    const heroToEquip = state.selectedGalleryHero;
     if (heroToEquip) {
       await equipSelectedHero(heroToEquip);
       closeHeroModal();
@@ -2410,7 +2403,7 @@ function setupEventListeners() {
   });
 
   elements.dockBtnDetail?.addEventListener('click', () => {
-    const heroToDetail = state.selectedGalleryHero || state.currentHero;
+    const heroToDetail = state.selectedGalleryHero;
     if (heroToDetail) {
       showHeroDetail(heroToDetail);
       switchModalTab('detail');

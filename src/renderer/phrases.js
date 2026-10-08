@@ -23,13 +23,33 @@ const SIMPLIFIED_PRESETS = [
 ];
 
 let loadedPhrases = [];
+let savedRevision = -1;
+const dirtyBases = new Map();
+let conflictRows = [];
 // Inside the settings center there is no window of our own to close.
 const embedded = document.documentElement.dataset.embedded === 'true';
 // The sidebar already says where you are; the page needs no "panel" in its name.
 if (embedded) document.querySelector('.phrases-title-text').textContent = '快捷短语';
 // Rows edited here and not yet saved; a save in the other editor never replaces them.
 const dirtyRows = new Set();
-const markDirty = (index) => dirtyRows.add(Number(index));
+const rowRevisions = new Map();
+let rowsGeneration = 0;
+function touchRow(index) {
+  index = Number(index);
+  rowRevisions.set(index, (rowRevisions.get(index) || 0) + 1);
+}
+function updateDraftStatus() {
+  const status = document.getElementById('phrases-draft-status');
+  if (status) status.textContent = dirtyRows.size ? `${dirtyRows.size} 行有未保存改动${conflictRows.length ? '；存在保存冲突' : ''}` : '无未保存改动';
+  btnSave.textContent = conflictRows.length ? '确认覆盖冲突并保存' : '💾 保存并生效';
+}
+function markDirty(index) {
+  index = Number(index);
+  if (!dirtyRows.has(index)) dirtyBases.set(index, { ...(loadedPhrases[index] || { cn: '', en: '' }) });
+  dirtyRows.add(index);
+  touchRow(index);
+  updateDraftStatus();
+}
 
 const rowsContainer = document.getElementById('phrases-rows-container');
 const btnImportPreset = document.getElementById('btn-import-preset');
@@ -63,8 +83,47 @@ function closeEditor() {
   if (!embedded) window.close();
 }
 
+// Hold both values and a revision: changing a row and changing it back also
+// invalidates an older request. A reset creates new rows, invalidating all.
+function snapshotRow(row) {
+  const index = Number(row.dataset.index);
+  return { row, index, generation: rowsGeneration, revision: rowRevisions.get(index) || 0,
+    cn: row.querySelector('.phrase-cn').value, en: row.querySelector('.phrase-en').value };
+}
+function rowUnchanged(snapshot) {
+  return rowsContainer.contains(snapshot.row) && snapshot.generation === rowsGeneration &&
+    snapshot.revision === (rowRevisions.get(snapshot.index) || 0) &&
+    snapshot.cn === snapshot.row.querySelector('.phrase-cn').value &&
+    snapshot.en === snapshot.row.querySelector('.phrase-en').value;
+}
+
+function rememberSaved(state) {
+  const phrases = Array.isArray(state) ? state : state?.phrases;
+  if (!Array.isArray(phrases)) return false;
+  const revision = state?.revision;
+  if (Number.isInteger(revision)) {
+    if (revision < savedRevision) return false;
+    savedRevision = revision;
+  }
+  loadedPhrases = phrases.map(row => ({ cn: row?.cn || '', en: row?.en || '' }));
+  return true;
+}
+
+function syncSavedRows() {
+  rowsContainer?.querySelectorAll('.phrase-row-item').forEach((row) => {
+    const index = Number(row.dataset.index);
+    if (dirtyRows.has(index)) return;
+    const phrase = loadedPhrases[index] || { cn: '', en: '' };
+    const changed = row.querySelector('.phrase-cn').value !== phrase.cn || row.querySelector('.phrase-en').value !== phrase.en;
+    if (changed) touchRow(index);
+    row.querySelector('.phrase-cn').value = phrase.cn;
+    row.querySelector('.phrase-en').value = phrase.en;
+  });
+}
+
 function renderPhrasesRows(phrasesList = []) {
   if (!rowsContainer) return;
+  rowsGeneration++;
   rowsContainer.innerHTML = '';
 
   for (let i = 0; i < 10; i++) {
@@ -97,9 +156,12 @@ function renderPhrasesRows(phrasesList = []) {
       }
       btnTrans.textContent = '...';
       btnTrans.disabled = true;
+      const snapshot = snapshotRow(rowEl);
       try {
         const res = await window.electronAPI?.translatePhraseText?.(cnText);
-        if (res && res.translated) {
+        if (!rowUnchanged(snapshot)) {
+          showToast('此行已有新改动，已保留；可重新翻译');
+        } else if (res && res.translated) {
           enInput.value = res.translated;
           markDirty(i);
           showToast(`⚡ 第 ${digitLabel} 行 AI 翻译成功: "${res.translated}"`);
@@ -166,26 +228,34 @@ async function translateAllEmptyRows() {
   if (!rowsContainer) return;
   const rowEls = rowsContainer.querySelectorAll('.phrase-row-item');
   let count = 0;
+  let attempted = 0;
+  let preserved = 0;
   btnTranslateAll.textContent = '⚡ AI 翻译中...';
   btnTranslateAll.disabled = true;
 
   try {
     for (const row of rowEls) {
+      if (!rowsContainer.contains(row)) break;
       const cnInput = row.querySelector('.phrase-cn');
       const enInput = row.querySelector('.phrase-en');
       const cnText = (cnInput?.value || '').trim();
       const enText = (enInput?.value || '').trim();
 
       if (cnText && !enText) {
+        const snapshot = snapshotRow(row);
+        attempted++;
         const res = await window.electronAPI?.translatePhraseText?.(cnText);
-        if (res && res.translated) {
+        if (!rowUnchanged(snapshot)) {
+          preserved++;
+        } else if (res && res.translated) {
           enInput.value = res.translated;
           markDirty(row.dataset.index);
           count++;
         }
       }
     }
-    showToast(count > 0 ? `⚡ 已完成 ${count} 行智能翻译！` : '所有中文行已有英文翻译');
+    showToast(preserved ? `已完成 ${count} 行翻译；${preserved} 行有新改动，已保留` :
+      count ? `⚡ 已完成 ${count} 行智能翻译！` : attempted ? '翻译返回为空，请重试' : '没有需要补全的中文行');
   } catch (err) {
     showToast(`批量翻译异常: ${err.message}`);
   } finally {
@@ -204,6 +274,10 @@ async function savePhrasesFromUI() {
   if (!rowsContainer || btnSave.disabled) return;
   const rowEls = rowsContainer.querySelectorAll('.phrase-row-item');
   const phrases = [];
+  const snapshots = Array.from(rowEls, snapshotRow);
+  const changedRows = [...dirtyRows];
+  const basePhrases = snapshots.map(snapshot => ({ ...(dirtyBases.get(snapshot.index) ||
+    loadedPhrases[snapshot.index] || { cn: '', en: '' }) }));
 
   rowEls.forEach((row) => {
     const cnInput = row.querySelector('.phrase-cn');
@@ -216,11 +290,31 @@ async function savePhrasesFromUI() {
 
   btnSave.disabled = true;
   try {
-    const res = await window.electronAPI?.savePhrasesConfig?.(phrases);
+    const res = await window.electronAPI?.savePhrasesConfig?.({ phrases, changedRows, basePhrases });
     if (res && res.success) {
-      loadedPhrases = phrases;
-      dirtyRows.clear();
-      showToast('💾 快捷短语已保存并即时生效！可在局内按 Ctrl+1~0 / Alt+1~0');
+      rememberSaved({ phrases: res.phrases || phrases, revision: res.revision });
+      for (const snapshot of snapshots) {
+        if (!changedRows.includes(snapshot.index)) continue;
+        if (rowUnchanged(snapshot)) {
+          dirtyRows.delete(snapshot.index);
+          dirtyBases.delete(snapshot.index);
+        } else {
+          // New edits made during this save are now based on our committed row.
+          dirtyBases.set(snapshot.index, { ...(res.phrases?.[snapshot.index] || phrases[snapshot.index]) });
+        }
+      }
+      conflictRows = [];
+      syncSavedRows();
+      updateDraftStatus();
+      showToast(dirtyRows.size ? '💾 提交的短语已保存；新改动仍未保存，请再次保存' :
+        '💾 快捷短语已保存并即时生效！可在局内按 Ctrl+1~0 / Alt+1~0');
+    } else if (res?.conflicts?.length && res.phrases) {
+      rememberSaved(res);
+      conflictRows = res.conflicts;
+      for (const index of conflictRows) dirtyBases.set(index, { ...res.phrases[index] });
+      syncSavedRows();
+      updateDraftStatus();
+      showToast(`${res.error}；草稿已保留，再次保存会覆盖这些行`);
     } else {
       showToast(`保存失败: ${res?.error || '未知错误'}`);
     }
@@ -232,17 +326,19 @@ async function savePhrasesFromUI() {
 }
 
 async function init() {
+  const actions = [btnImportPreset, btnTranslateAll, btnResetDefault, btnSave];
+  actions.forEach(button => { if (button) button.disabled = true; });
   try {
     const config = await window.electronAPI?.getPhrasesConfig?.();
-    if (Array.isArray(config) && config.length > 0) {
-      loadedPhrases = config;
-    }
+    rememberSaved(config);
   } catch (e) {
     console.warn('[Phrases] Failed to fetch config, using fallback:', e);
   }
 
   renderPhrasesRows(loadedPhrases);
   populatePresetDropdown();
+  updateDraftStatus();
+  actions.forEach(button => { if (button) button.disabled = false; });
 }
 
 rowsContainer?.addEventListener('input', (event) => {
@@ -250,17 +346,9 @@ rowsContainer?.addEventListener('input', (event) => {
   if (row) markDirty(row.dataset.index);
 });
 // The other editor (F6 panel or settings page) saved: take its rows, except the ones being edited here.
-window.electronAPI?.onPhrasesChanged?.((phrases) => {
-  if (!Array.isArray(phrases)) return;
-  loadedPhrases = phrases;
-  // Update values in place: focus, the rows being edited and pending AI
-  // translations (which hold these inputs) all stay valid.
-  rowsContainer?.querySelectorAll('.phrase-row-item').forEach((row) => {
-    const index = Number(row.dataset.index);
-    if (dirtyRows.has(index)) return;
-    row.querySelector('.phrase-cn').value = phrases[index]?.cn || '';
-    row.querySelector('.phrase-en').value = phrases[index]?.en || '';
-  });
+window.electronAPI?.onPhrasesChanged?.((state) => {
+  if (!rememberSaved(state)) return;
+  syncSavedRows();
   if (dirtyRows.size) showToast('另一处保存的短语已同步；你正在改的行保持不变');
 });
 btnImportPreset?.addEventListener('click', () => importSelectedPreset());

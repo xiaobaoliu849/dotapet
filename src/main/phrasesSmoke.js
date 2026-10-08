@@ -90,6 +90,39 @@ export async function runPhrasesSmoke({ controlCenter, openPanel, getCopiedText,
   await run(panel.webContents, save);
   if (await run(page, waitForEnglish(2, 'Panel draft')) !== 'Panel draft') throw new Error('Settings page did not pick up the panel save');
   if (saved()[2].en !== 'Panel draft' || saved()[3].en !== 'Second settings save') throw new Error('Final phrase list is wrong');
+  // Both editors can submit before receiving the other's save notification.
+  await run(page, typeEnglish(4, 'Concurrent settings save'));
+  await run(panel.webContents, typeEnglish(5, 'Concurrent panel save'));
+  await Promise.all([run(page, save), run(panel.webContents, save)]);
+  if (await run(page, waitForEnglish(5, 'Concurrent panel save')) !== 'Concurrent panel save' ||
+      await run(panel.webContents, waitForEnglish(4, 'Concurrent settings save')) !== 'Concurrent settings save') throw new Error('Concurrent phrase saves did not merge');
+  if (saved()[4].en !== 'Concurrent settings save' || saved()[5].en !== 'Concurrent panel save') throw new Error('Concurrent phrase saves lost a row');
+  // A conflicting row never silently replaces the saved version.
+  await run(page, typeEnglish(6, 'Settings conflicting row'));
+  await run(panel.webContents, typeEnglish(6, 'Panel conflicting row'));
+  await run(page, save);
+  await run(panel.webContents, `(async () => {
+    const button = document.getElementById('btn-save-phrases'); button.click();
+    for (let i = 0; i < 100 && button.disabled; i++) await new Promise(r => setTimeout(r, 20));
+    if (!document.getElementById('hud-toast').textContent.includes('本次未保存') || !button.textContent.includes('确认覆盖')) throw new Error('Conflicting save did not explain overwrite');
+    if (${english(6)}.value !== 'Panel conflicting row') throw new Error('Conflict erased the local draft');
+  })()`);
+  if (saved()[6].en !== 'Settings conflicting row') throw new Error('Conflict overwrote the saved row');
+  // The longer overwrite action must stay reachable at the panel's minimum size.
+  panel.setSize(620, 520);
+  await new Promise(resolve => setTimeout(resolve, 150));
+  await run(panel.webContents, `(() => {
+    const footer = document.querySelector('.phrases-modal-footer').getBoundingClientRect();
+    const button = document.getElementById('btn-save-phrases').getBoundingClientRect();
+    if (document.documentElement.scrollWidth > document.documentElement.clientWidth ||
+        footer.bottom > innerHeight + 1 || button.right > innerWidth || button.left < 0) throw new Error('Conflict actions overflow the narrow panel');
+  })()`);
+  await panel.webContents.capturePage();
+  await run(panel.webContents, 'new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))');
+  fs.writeFileSync(path.join(outputDirectory, 'phrases-conflict.png'), (await panel.webContents.capturePage()).toPNG());
+  panel.setSize(880, 780);
+  await run(panel.webContents, save);
+  if (await run(page, waitForEnglish(6, 'Panel conflicting row')) !== 'Panel conflicting row') throw new Error('Confirmed overwrite did not synchronize');
   // Cover the old delayed auto-close, not just the immediate save result.
   await new Promise(resolve => setTimeout(resolve, 1100));
   if (panel.isDestroyed()) throw new Error('Saving closed the quick-copy panel');
@@ -138,5 +171,6 @@ export async function runPhrasesSmoke({ controlCenter, openPanel, getCopiedText,
   await checkFits(page, 'settings phrases page');
   fs.writeFileSync(path.join(outputDirectory, 'phrases-page-narrow.png'), (await captureHub(controlCenter, nativeImage)).toPNG());
   controlCenter.window.setSize(1060, 820);
-  return { settingsPage: true, bilingualCopy: true, panelSync: true, keepsUnsavedEdits: true, saveKeepsOpen: true, narrowLayout: true };
+  return { settingsPage: true, bilingualCopy: true, panelSync: true, concurrentSaves: true, conflictKeepsDraft: true,
+    confirmedOverwrite: true, keepsUnsavedEdits: true, saveKeepsOpen: true, narrowLayout: true };
 }

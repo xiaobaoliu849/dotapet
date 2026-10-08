@@ -1,10 +1,13 @@
 import electron from 'electron';
-const { app, BrowserWindow, ipcMain, clipboard, Tray, Menu, nativeImage, screen, powerMonitor, safeStorage, dialog, session, shell } = electron;
+const { app, BrowserWindow, ipcMain, clipboard, Tray, Menu, nativeImage, screen, powerMonitor, safeStorage, dialog, session, shell, globalShortcut } = electron;
 import path from 'path';
 import fs from 'fs';
 import { exec } from 'child_process';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { registerShortcuts, unregisterShortcuts } from './shortcuts.js';
+import { createGamePhraseShortcuts } from './gamePhraseShortcuts.js';
+import { PhrasesStore } from './phrasesStore.js';
+export { DEFAULT_SIMPLIFIED_PHRASES } from './phrasesStore.js';
 import { VoiceSpiritClient } from '../services/voiceSpiritClient.js';
 import { FREE_CHAT_HERO_ID } from '../services/cloudVoiceEngine.js';
 import { buildPetPseudoHero } from '../services/petPersona.js';
@@ -85,6 +88,7 @@ let mainWindow = null;
 let tray = null;
 let voiceClient = null;
 let ahkEngine = null;
+let gamePhraseShortcuts = null;
 let roamEngine = null;
 let gsiServer = null;
 let heroesConfig = null;
@@ -352,6 +356,8 @@ async function runCompanionSmokeTest() {
     await page.executeJavaScript("if(!document.getElementById('translate-secret')) throw new Error('DeepSeek translation did not ask for its key'); document.querySelector('#translator-options [data-provider=qwen]').click(); window.scrollTo(0,0)");
   }
   const customizationResult = await runCustomizationSmoke({ controller: customizationController, controlCenter, mainWindow, dialog, nativeImage, outputDirectory: app.getPath('userData') });
+  const { runHeroSearchSmoke } = await import('./heroSearchSmoke.js');
+  const heroSearch = await runHeroSearchSmoke({ mainWindow, outputDirectory: app.getPath('userData') });
   const { runPhrasesSmoke } = await import('./phrasesSmoke.js');
   const phrases = await runPhrasesSmoke({ controlCenter, openPanel: () => createPhrasesWindow(),
     getCopiedText: () => smokeClipboardText, nativeImage, outputDirectory: app.getPath('userData') });
@@ -362,7 +368,7 @@ async function runCompanionSmokeTest() {
   const settingsClosed = new Promise(resolve => controlCenter.window.once('closed', resolve));
   mainWindow.close();
   await Promise.race([settingsClosed, new Promise((_, reject) => setTimeout(() => reject(new Error('Settings center outlived the pet window')), 3000))]);
-  console.log('[Smoke] PASS', JSON.stringify({ ...result, onboarding, customization: customizationResult, phrases, updates, settingsClosesWithPet: true }));
+  console.log('[Smoke] PASS', JSON.stringify({ ...result, onboarding, customization: customizationResult, heroSearch, phrases, updates, settingsClosesWithPet: true }));
   app.exit(0);
 }
 
@@ -614,19 +620,6 @@ function getSettingsPath() {
   }
 }
 
-export const DEFAULT_SIMPLIFIED_PHRASES = [
-  { cn: '快推中路别刷了，一波带走', en: 'Push mid now, end the game.' },
-  { cn: '集合开雾打肉山，别单走', en: 'Smoke and rosh now, stick together.' },
-  { cn: '没买活稳点，别单走送了', en: "No buyback, play safe and don't get caught." },
-  { cn: 'TP救一下，反打他们！', en: 'TP help! Counter-initiate now!' },
-  { cn: '先手秒辅助，别集火前排', en: 'Focus backline supports first, ignore tank.' },
-  { cn: '键盘上拴条狗都比你玩得好', en: 'A dog on keyboard plays better than you.' },
-  { cn: '超级兵死了给钱，你死了只值举报', en: 'Mega creeps give gold, you only give reports.' },
-  { cn: '在野区采灵芝？出来打团', en: 'AFK jungle forever? Join the fight.' },
-  { cn: '脑子不用可以捐给有用的人', en: 'Donate your brain if you never use it.' },
-  { cn: '打得漂亮，兄弟们冲！', en: "Well played boys, let's keep going!" },
-];
-
 function getPhrasesConfigPath() {
   try {
     return path.join(app.getPath('userData'), 'custom_phrases.json');
@@ -635,36 +628,15 @@ function getPhrasesConfigPath() {
   }
 }
 
-let cachedPhrases = null;
+let phrasesStore = null;
+const getPhrasesStore = () => phrasesStore ||= new PhrasesStore({ filePath: getPhrasesConfigPath() });
 
 function loadPhrasesConfig() {
-  if (cachedPhrases) return cachedPhrases;
-  try {
-    const pPath = getPhrasesConfigPath();
-    if (fs.existsSync(pPath)) {
-      const data = JSON.parse(fs.readFileSync(pPath, 'utf8'));
-      if (Array.isArray(data) && data.length > 0) {
-        cachedPhrases = data;
-        return cachedPhrases;
-      }
-    }
-  } catch (err) {
-    console.error('[Phrases] Failed to load custom phrases, using defaults:', err.message);
-  }
-  cachedPhrases = JSON.parse(JSON.stringify(DEFAULT_SIMPLIFIED_PHRASES));
-  return cachedPhrases;
+  return getPhrasesStore().load();
 }
 
 function savePhrasesConfig(phrases) {
-  try {
-    cachedPhrases = phrases;
-    const pPath = getPhrasesConfigPath();
-    fs.writeFileSync(pPath, JSON.stringify(phrases, null, 2), 'utf8');
-    return { success: true };
-  } catch (err) {
-    console.error('[Phrases] Failed to save custom phrases:', err.message);
-    return { success: false, error: err.message };
-  }
+  return getPhrasesStore().save(phrases);
 }
 
 function sendPhraseToGame(digit, type = 'cn') {
@@ -1638,13 +1610,13 @@ function setupIPC() {
 
   // Quick Phrases IPC (F6 Panel & Shortcuts)
   ipcMain.on('phrases:toggle-window', () => togglePhrasesWindow());
-  ipcMain.handle('phrases:get-config', () => loadPhrasesConfig());
+  ipcMain.handle('phrases:get-config', () => getPhrasesStore().snapshot());
   ipcMain.handle('phrases:save-config', (event, phrases) => {
     const result = savePhrasesConfig(phrases);
     // The F6 panel and the settings page edit the same list; keep the other one current.
     if (result.success) {
       for (const editor of [phrasesWindow && !phrasesWindow.isDestroyed() ? phrasesWindow.webContents : null, controlCenter?.contents('phrases')]) {
-        if (editor && editor !== event.sender && !editor.isDestroyed()) editor.send('phrases:changed', phrases);
+        if (editor && editor !== event.sender && !editor.isDestroyed()) editor.send('phrases:changed', { phrases: result.phrases, revision: result.revision });
       }
     }
     return result;
@@ -1919,7 +1891,7 @@ if (app?.whenReady) {  app.whenReady().then(() => {
     powerMonitor.on('resume', () => reassertTopmost(mainWindow, { invalidate: true }));
     powerMonitor.on('unlock-screen', () => reassertTopmost(mainWindow, { invalidate: true }));
 
-    // Register Global Shortcuts (F6, Ctrl/Alt+1~0, Alt+Q, Alt+T, Alt+M, Alt+H, F8, Alt+L, Alt+V, Alt+C)
+    // Persistent desktop controls; digit shortcuts follow Dota foreground focus.
     registerShortcuts(mainWindow, {
       onTriggerTranslate: () => {
         if (ahkEngine) ahkEngine.handleClipboardTranslation(currentHeroId);
@@ -1932,9 +1904,6 @@ if (app?.whenReady) {  app.whenReady().then(() => {
       },
       onTogglePhrasePanel: () => {
         togglePhrasesWindow();
-      },
-      onSendPhrase: (digit, type) => {
-        sendPhraseToGame(digit, type);
       },
       onToggleRoam: () => {
         if (windowState.pinned) {
@@ -1953,6 +1922,16 @@ if (app?.whenReady) {  app.whenReady().then(() => {
         cycleScaleMode();
       },
     });
+
+    if (ahkEngine?.gameInput?.isSupported()) {
+      gamePhraseShortcuts = createGamePhraseShortcuts({
+        shortcuts: globalShortcut,
+        foregroundProcessName: () => ahkEngine.gameInput.foregroundProcessName({ timeoutMs: 2000 }),
+        onSendPhrase: sendPhraseToGame,
+        onShortcutFailures: reportShortcutFailures,
+      });
+      void gamePhraseShortcuts.start();
+    }
 
     app.on('activate', () => {
       if (BrowserWindow.getAllWindows().length === 0) {
@@ -1975,6 +1954,7 @@ if (app?.whenReady) {  app.whenReady().then(() => {
   app.on('will-quit', () => {
     updateController?.dispose();
     cancelConnectionTest();
+    gamePhraseShortcuts?.stop();
     unregisterShortcuts();
     if (ahkEngine?.gameInput?.dispose) {
       ahkEngine.gameInput.dispose();

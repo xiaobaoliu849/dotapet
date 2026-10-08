@@ -33,6 +33,7 @@
     .phrase-input, .preset-dropdown { min-width: 0; }
     .phrase-row-actions { justify-content: flex-end; }
     .phrases-usage-hint { margin: 0; color: #e6dcc4; font-size: 12px; line-height: 1.6; }
+    #phrases-draft-status { color: #e6dcc4; font-size: 12px; }
     button:focus-visible, select:focus-visible { outline: 2px solid #e3b868; outline-offset: 2px; }
     @media (max-width: 700px) {
       .phrases-table-header { display: none; }
@@ -98,6 +99,7 @@
           <button id="btn-reset-default-phrases" class="btn-secondary-action btn-dim">🔄 恢复精简默认值</button>
         </div>
         <div class="footer-right">
+          <span id="phrases-draft-status" role="status" aria-live="polite"></span>
           <button id="btn-save-phrases" class="btn-primary-action">💾 保存并生效</button>
           <button id="btn-cancel-phrases" class="btn-secondary-action">关闭 (ESC)</button>
         </div>

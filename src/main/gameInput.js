@@ -1,4 +1,5 @@
 import { spawn } from 'child_process';
+import { StringDecoder } from 'node:string_decoder';
 
 /**
  * Game Input Injection Helper (Windows)
@@ -140,16 +141,21 @@ export class GameInputHelper {
       stdio: ['pipe', 'pipe', 'pipe'],
     });
 
-    this.child.on('error', () => this.handleDead());
-    this.child.on('exit', () => this.handleDead());
+    const child = this.child;
+    const decoder = new StringDecoder('utf8');
+    child.on('error', () => this.handleDead(child));
+    child.on('exit', () => this.handleDead(child));
     // A dead helper turns every later stdin.write into an ASYNC EPIPE stream
     // error — without this listener it escapes as uncaughtException and takes
     // the whole Electron main process down (e.g. AV killed powershell.exe).
-    this.child.stdin.on('error', () => this.handleDead());
+    child.stdin.on('error', () => this.handleDead(child));
+    child.stdout.on('error', () => this.handleDead(child));
+    child.stderr.on('error', () => this.handleDead(child));
     // stderr is drained so a noisy helper can never fill the pipe and wedge.
-    this.child.stderr.on('data', () => {});
-    this.child.stdout.on('data', (chunk) => {
-      this.buffer += chunk.toString('utf8');
+    child.stderr.on('data', () => {});
+    child.stdout.on('data', (chunk) => {
+      if (child !== this.child) return;
+      this.buffer += decoder.write(chunk);
       let idx;
       while ((idx = this.buffer.indexOf('\n')) >= 0) {
         const line = this.buffer.slice(0, idx).trim();
@@ -159,14 +165,17 @@ export class GameInputHelper {
     });
   }
 
-  handleDead() {
-    const err = new Error('按键注入助手进程已退出');
+  handleDead(child = this.child, err = new Error('按键注入助手进程已退出')) {
+    // Exit/EPIPE/data events can arrive after a replacement has started.
+    if (!child || child !== this.child) return;
+    this.child = null;
+    this.buffer = '';
     for (const entry of this.pending.values()) {
       clearTimeout(entry.timer);
       entry.reject(err);
     }
     this.pending.clear();
-    this.child = null;
+    try { child.kill(); } catch { /* The process may already have exited. */ }
   }
 
   handleLine(line) {
@@ -193,11 +202,12 @@ export class GameInputHelper {
     } catch (err) {
       return Promise.reject(err);
     }
+    const child = this.child;
     const id = this.nextId++;
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
-        this.pending.delete(id);
-        reject(new Error(`按键注入超时 (${action})`));
+        // A hung child must not later execute queued capture/typing commands.
+        this.handleDead(child, new Error(`按键注入超时 (${action})`));
       }, timeoutMs);
       this.pending.set(id, { resolve, reject, timer });
 
@@ -207,18 +217,16 @@ export class GameInputHelper {
         text: text ? Buffer.from(text, 'utf8').toString('base64') : '',
       };
       try {
-        this.child.stdin.write(JSON.stringify(payload) + '\n');
+        child.stdin.write(JSON.stringify(payload) + '\n');
       } catch (err) {
-        clearTimeout(timer);
-        this.pending.delete(id);
-        reject(err);
+        this.handleDead(child, err);
       }
     });
   }
 
   /** Process name of the foreground window (e.g. "dota2"), '' when unknown. */
-  foregroundProcessName() {
-    return this.call('foreground');
+  foregroundProcessName(options) {
+    return this.call('foreground', options);
   }
 
   /** Ctrl+A then Ctrl+C — mirrors legacy AHK CopyFromChatBox(). */
@@ -236,9 +244,6 @@ export class GameInputHelper {
   }
 
   dispose() {
-    try {
-      this.child?.kill();
-    } catch (e) {}
     this.handleDead();
   }
 }

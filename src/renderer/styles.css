@@ -1198,6 +1198,8 @@ body:not(.hud-awake) .hud-bottom-dock {
 }
 
 /* Hero Selection Dock at Bottom */
+.hero-selection-dock[hidden] { display: none; }
+
 .hero-selection-dock {
   display: flex;
   align-items: center;
