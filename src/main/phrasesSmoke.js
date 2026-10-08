@@ -40,6 +40,20 @@ export async function runPhrasesSmoke({ settingsWindow, getWindow, getCopiedText
   if (window.isDestroyed()) throw new Error('Saving closed the quick-copy panel');
   const saved = JSON.parse(fs.readFileSync(path.join(outputDirectory, 'custom_phrases.json'), 'utf8'));
   if (saved[0].en !== 'Smoke test phrase') throw new Error('Phrase changes not persisted');
+  window.setSize(880, 780);
+  await new Promise(resolve => setTimeout(resolve, 150));
+  await window.webContents.executeJavaScript(`(() => {
+    for(const row of document.querySelectorAll('.phrase-row-item')) {
+      const bounds=row.getBoundingClientRect(), english=row.querySelector('.phrase-en').getBoundingClientRect();
+      for(const button of row.querySelectorAll('button')) {
+        const action=button.getBoundingClientRect();
+        if(action.right > bounds.right || action.left < english.right) throw new Error('Copy actions overlap phrase text');
+      }
+    }
+  })()`);
+  await window.webContents.capturePage();
+  await window.webContents.executeJavaScript('new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))');
+  fs.writeFileSync(path.join(outputDirectory, 'phrases.png'), (await window.webContents.capturePage()).toPNG());
   window.setSize(620, 520);
   await new Promise(resolve => setTimeout(resolve, 150));
   await window.webContents.executeJavaScript(`(() => {

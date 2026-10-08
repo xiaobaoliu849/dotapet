@@ -19,7 +19,7 @@ import { isTrustedSettingsSender, aiKeyPage, settingsAffectVoice } from './aiSet
 import { createCustomizationController } from './customizationIpc.js';
 import { runCustomizationSmoke } from './customizationSmoke.js';
 import { createWelcomeController } from './welcomeController.js';
-import { presentSettingsWhenReady } from './settingsPresentation.js';
+import { presentSettingsWhenReady, settingsWindowBounds } from './settingsPresentation.js';
 import { UpdateService } from './updateService.js';
 import { createUpdateController } from './updateController.js';
 
@@ -129,7 +129,7 @@ function openAISettings(purpose = '', { firstRun = false } = {}) {
   }
   aiSettingsWindow = new BrowserWindow({
     icon: appIcon,
-    width: 940, height: 820, minWidth: 620, minHeight: 640,
+    ...settingsWindowBounds(screen.getPrimaryDisplay().workArea),
     title: '刀塔宠物 · 翻译与语音设置', titleBarStyle: 'hidden',
     titleBarOverlay: { color: '#f7f8f4', symbolColor: '#52604f', height: 48 },
     autoHideMenuBar: true, show: false, backgroundColor: '#f7f8f4',
@@ -235,6 +235,9 @@ async function runCompanionSmokeTest() {
     if ('copyToClipboard' in window.electronAPI || 'sendAudioChunk' in window.electronAPI) throw new Error('Settings preload exposes unrelated app controls');
     if (get('advanced').open) throw new Error('Advanced setup should be collapsed initially');
     get('provider').value = 'google'; get('provider').dispatchEvent(new Event('change'));
+    get('all-voices').value = 'Charon'; get('all-voices').dispatchEvent(new Event('change'));
+    get('usage-translate').click(); get('usage-voice').click();
+    if(get('voice').value !== 'Charon') throw new Error('Switching tabs lost the draft voice');
     get('secret-apiKey').value = 'smoke-google-key'; get('save').click();
     await waitFor(() => !get('save').disabled);
     if (get('secret-apiKey').value || !get('secret-apiKey').placeholder.includes('保留')) throw new Error('Key was not cleared or saved');
@@ -902,7 +905,8 @@ function createWindow() {
       if (!mainWindow || mainWindow.isDestroyed() || !mainWindow.isVisible() || mainWindow.isMinimized()) return;
       // While the phrase editor has focus the user is at the desktop working
       // in it — don't yank the pet above the editor every half second.
-      const settingsActive = aiSettingsWindow && !aiSettingsWindow.isDestroyed();
+      const settingsActive = aiSettingsWindow && !aiSettingsWindow.isDestroyed()
+        && aiSettingsWindow.isVisible() && !aiSettingsWindow.isMinimized();
       const phrasesActive = phrasesWindow && !phrasesWindow.isDestroyed()
         && phrasesWindow.isVisible() && phrasesWindow.isFocused();
       if (settingsActive || phrasesActive) return;
@@ -966,10 +970,7 @@ function createPhrasesWindow() {
 
   phrasesWindow = new BrowserWindow({
     icon: appIcon,
-    width: 880,
-    height: 780,
-    minWidth: 620,
-    minHeight: 520,
+    ...settingsWindowBounds(screen.getPrimaryDisplay().workArea, { width: 880, height: 780, minWidth: 620, minHeight: 520 }),
     title: 'DOTA 2 快捷短语面板',
     autoHideMenuBar: true,
     backgroundColor: '#1c1611',

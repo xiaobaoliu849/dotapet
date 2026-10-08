@@ -174,6 +174,25 @@ test('advanced voice and Gemini translation choices reach the matching profile',
   assert.equal(ui.nodes.get('provider').children.length, 4);
 });
 
+test('unsaved uncommon voices survive tab changes with a selectable option', async () => {
+  const ui = await renderer();
+  ui.nodes.get('provider-options').children.find(item => item.dataset.provider === 'google').click();
+  ui.nodes.get('all-voices').value = 'Charon'; ui.nodes.get('all-voices').listeners.change();
+  ui.nodes.get('usage-translate').click(); ui.nodes.get('usage-voice').click();
+  assert.equal(ui.nodes.get('voice').value, 'Charon');
+  assert.ok(ui.nodes.get('voice').options.some(option => option.value === 'Charon'));
+});
+
+test('cancelled import and failed deletion keep the current key draft', async () => {
+  const ui = await renderer({ importAIConfig: async () => ({ ok: true, cancelled: true }),
+    deleteAISecrets: async () => ({ ok: false, error: 'Unable to delete' }) });
+  ui.nodes.get('secret-apiKey').value = 'unsaved-key';
+  await ui.nodes.get('import').click();
+  assert.equal(ui.nodes.get('secret-apiKey').value, 'unsaved-key');
+  await ui.nodes.get('delete').click();
+  assert.equal(ui.nodes.get('secret-apiKey').value, 'unsaved-key');
+});
+
 test('changing purpose remembers provider choices and clicking the active tab keeps input', async () => {
   const ui = await renderer();
   ui.nodes.get('provider-options').children.find(item => item.dataset.provider === 'doubao').click();

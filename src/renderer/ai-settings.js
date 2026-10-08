@@ -160,6 +160,11 @@ function renderProfile() {
   renderedProvider = item.id;
   const draft = drafts.get(item.id);
   if (draft) {
+    // A draft can choose a voice outside the three simple defaults.
+    const voice = draft.values.voice;
+    if (item.voices.includes(voice) && ![...byId('voice').options].some(option => option.value === voice)) {
+      byId('voice').append(new Option(voiceNames[voice] || voice, voice));
+    }
     for (const [id, value] of Object.entries(draft.values)) byId(id).value = value;
     byId('custom-voice-id').value = byId('voice-custom').value;
     byId('all-voices').value = byId('voice').value;
@@ -303,16 +308,18 @@ byId('cancel').addEventListener('click', () => {
   api.cancelAITest().catch(() => feedback('取消失败，请关闭设置窗口停止测试。', 'error'));
 });
 byId('delete').addEventListener('click', () => action(async () => {
-  const id = profile().id; clearInputs();
+  const id = profile().id;
   const response = await api.deleteAISecrets(id);
   if (!response.ok) throw new Error(response.error);
+  clearInputs();
   drafts.delete(id);
   render(response.settings, id); feedback('此服务商的密钥已删除，当前语音已断开。', 'success');
 }));
 byId('import').addEventListener('click', () => action(async () => {
-  clearInputs(); const response = await api.importAIConfig();
+  const response = await api.importAIConfig();
   if (!response.ok) throw new Error(response.error);
   if (response.cancelled) return;
+  clearInputs();
   drafts.clear();
   render(response.settings); feedback(`已导入 ${response.count} 个配置并加密保存。请检查模型及音色后测试。`, 'success');
 }));

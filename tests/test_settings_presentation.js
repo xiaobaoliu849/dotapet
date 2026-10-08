@@ -1,7 +1,14 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
-import { presentSettingsWhenReady } from '../src/main/settingsPresentation.js';
+import { presentSettingsWhenReady, settingsWindowBounds } from '../src/main/settingsPresentation.js';
+
+test('settings and minimum sizes fit a scaled desktop with a nonzero origin', () => {
+  const area = { x: -1000, y: 25, width: 600, height: 580 };
+  assert.deepEqual(settingsWindowBounds(area), { x: -1000, y: 25, width: 600, height: 580, minWidth: 600, minHeight: 580 });
+  const large = settingsWindowBounds({ x: 0, y: 0, width: 1920, height: 1080 });
+  assert.equal(large.width, 940); assert.equal(large.x, 490); assert.equal(large.y, 130);
+});
 
 function fixture(options = {}) {
   const window = new EventEmitter();
