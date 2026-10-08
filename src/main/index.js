@@ -19,6 +19,7 @@ import { isTrustedSettingsSender, aiKeyPage } from './aiSettingsIpc.js';
 import { createCustomizationController } from './customizationIpc.js';
 import { runCustomizationSmoke } from './customizationSmoke.js';
 import { createWelcomeController } from './welcomeController.js';
+import { presentSettingsWhenReady } from './settingsPresentation.js';
 import { UpdateService } from './updateService.js';
 import { createUpdateController } from './updateController.js';
 
@@ -123,7 +124,7 @@ function openAISettings(purpose = '', { firstRun = false } = {}) {
   settingsFirstRun ||= firstRun;
   if (aiSettingsWindow && !aiSettingsWindow.isDestroyed()) {
     if (settingsPurpose) aiSettingsWindow.webContents.send('settings:purpose', settingsPurpose);
-    if (!smokeTest) { aiSettingsWindow.show(); aiSettingsWindow.focus(); }
+    if (!smokeTest) { if (aiSettingsWindow.isMinimized()) aiSettingsWindow.restore(); aiSettingsWindow.show(); aiSettingsWindow.focus(); aiSettingsWindow.moveTop(); }
     return aiSettingsWindow;
   }
   aiSettingsWindow = new BrowserWindow({
@@ -132,11 +133,12 @@ function openAISettings(purpose = '', { firstRun = false } = {}) {
     title: '刀塔宠物 · 翻译与语音设置', titleBarStyle: 'hidden',
     titleBarOverlay: { color: '#f7f8f4', symbolColor: '#52604f', height: 48 },
     autoHideMenuBar: true, show: false, backgroundColor: '#f7f8f4',
+    parent: mainWindow || undefined,
     webPreferences: { preload: path.join(__dirname, '../preload/ai-settings.js'), contextIsolation: true, nodeIntegration: false, sandbox: true, backgroundThrottling: false },
   });
   aiSettingsWindow.webContents.on('will-navigate', event => event.preventDefault());
   aiSettingsWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
-  aiSettingsWindow.once('ready-to-show', () => { if (!smokeTest) { aiSettingsWindow?.show(); aiSettingsWindow?.focus(); } });
+  presentSettingsWhenReady(aiSettingsWindow, { smokeTest });
   aiSettingsWindow.on('closed', () => {
     cancelConnectionTest(); aiSettingsWindow = null;
     if (settingsFirstRun) {
@@ -827,8 +829,10 @@ function createWindow() {
     if (!mainWindow || mainWindow.isDestroyed()) return;
     mainWindow.show();
     mainWindow.setAlwaysOnTop(true, TOPMOST_LEVEL);
-    mainWindow.focus();
-    mainWindow.moveTop();
+    if (!aiSettingsWindow || aiSettingsWindow.isDestroyed()) {
+      mainWindow.focus();
+      mainWindow.moveTop();
+    }
     mainWindow.setSize(winWidth, winHeight);
     mainWindow.webContents.setZoomFactor(1);
     mainWindow.webContents.setVisualZoomLevelLimits(1, 1);
@@ -895,9 +899,10 @@ function createWindow() {
       if (!mainWindow || mainWindow.isDestroyed() || !mainWindow.isVisible() || mainWindow.isMinimized()) return;
       // While the phrase editor has focus the user is at the desktop working
       // in it — don't yank the pet above the editor every half second.
+      const settingsActive = aiSettingsWindow && !aiSettingsWindow.isDestroyed();
       const phrasesActive = phrasesWindow && !phrasesWindow.isDestroyed()
         && phrasesWindow.isVisible() && phrasesWindow.isFocused();
-      if (phrasesActive) return;
+      if (settingsActive || phrasesActive) return;
       tick += 1;
       mainWindow.moveTop();
       if (tick % 8 === 0) {
