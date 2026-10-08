@@ -1,5 +1,5 @@
 param(
-  [string]$Installer = (Join-Path $PSScriptRoot '..\release\DotaPet-Setup-0.1.0.exe'),
+  [string]$Installer = (Join-Path $PSScriptRoot '..\release\DotaPet-Setup-0.1.1.exe'),
   [Parameter(Mandatory = $true)][string]$Baseline
 )
 $ErrorActionPreference = 'Stop'

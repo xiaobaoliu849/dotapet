@@ -28,12 +28,18 @@ test('opening with a damaged guide preference preserves the file and skips naggi
 });
 
 const microphoneSource = fs.readFileSync(new URL('../src/renderer/microphone-check.js', import.meta.url), 'utf8');
-function microphoneUI(acquire) {
+function microphoneUI(acquire, amplitude = 0) {
   const nodes = Object.fromEntries(['mic-start', 'mic-stop', 'mic-status', 'mic-level', 'mic-privacy'].map(id => [id, {
     listeners: {}, style: {}, parentElement: { setAttribute() {} }, addEventListener(name, fn) { this.listeners[name] = fn; },
   }]));
   const timers = new Map(); let counter = 0;
-  const window = { addEventListener() {} };
+  const window = { addEventListener() {}, AudioContext: class {
+    state = 'running';
+    createAnalyser() { return { fftSize: 512, getFloatTimeDomainData(values) { values.fill(amplitude); } }; }
+    createMediaStreamSource() { return { connect() {} }; }
+    async resume() {}
+    async close() { this.state = 'closed'; }
+  } };
   vm.runInNewContext(microphoneSource, {
     window, document: { getElementById: id => nodes[id], addEventListener() {} },
     navigator: { mediaDevices: { getUserMedia: acquire } },
@@ -41,6 +47,24 @@ function microphoneUI(acquire) {
     clearTimeout: id => timers.delete(id), requestAnimationFrame() { return 1; }, cancelAnimationFrame() {}, Float32Array,
   });
   return { nodes, window, timers };
+}
+
+for (const [amplitude, expected] of [[0.05, /检查通过/], [0, /没有检测到明显声音/]]) {
+  test(`microphone level ${amplitude} reports its result and closes the device`, async () => {
+    let stopped = 0;
+    const track = { label: 'Test microphone', stop() { stopped++; } };
+    const ui = microphoneUI(async () => ({ getTracks: () => [track], getAudioTracks: () => [track] }), amplitude);
+    await ui.nodes['mic-start'].listeners.click();
+    const measurement = [...ui.timers.values()].find(timer => timer.ms === 10000);
+    assert.ok(measurement, 'measurement timer must start after opening the device');
+    measurement.fn();
+    assert.match(ui.nodes['mic-status'].textContent, expected);
+    assert.match(ui.nodes['mic-status'].textContent, /麦克风已关闭/);
+    assert.equal(stopped, 1);
+    assert.equal(ui.nodes['mic-start'].disabled, false);
+    assert.equal(ui.nodes['mic-level'].style.width, '0%');
+    assert.equal(ui.timers.size, 0);
+  });
 }
 
 test('stopping while microphone permission is pending closes a late stream', async () => {

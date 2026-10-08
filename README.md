@@ -2,7 +2,7 @@
 
 陪你开黑的 DOTA2 桌面宠物，支持英雄与信使陪伴、AI 语音对话和游戏聊天翻译。
 
-**当前版本：0.1.0，Windows 早期体验版。** 功能仍在快速迭代，真实对局的截图识别准确率、响应速度和全屏兼容性需要持续验证。
+**当前版本：0.1.1，Windows 早期体验版。** 功能仍在快速迭代，真实对局的截图识别准确率、响应速度和全屏兼容性需要持续验证。
 
 ![刀塔Pet 首次使用引导](docs/images/welcome.png)
 
@@ -10,7 +10,7 @@
 
 ## 下载安装
 
-从 [Releases](https://github.com/xiaobaoliu849/dotapet/releases) 下载 `DotaPet-Setup-0.1.0.exe` 并运行。普通用户不需要安装 Node.js。
+从 [Releases](https://github.com/xiaobaoliu849/dotapet/releases) 下载 `DotaPet-Setup-0.1.1.exe` 并运行。普通用户不需要安装 Node.js。
 
 程序启动后可拖动宠物，右键切换形象、调整设置；任务栏托盘图标可以找回隐藏的桌宠。不配置 AI 也可使用桌面互动。
 

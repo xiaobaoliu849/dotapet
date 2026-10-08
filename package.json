@@ -1,6 +1,6 @@
 {
   "name": "dotapet",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "刀塔Pet · DOTA2 desktop pet with AI voice chat and in-game chat translation",
   "repository": { "type": "git", "url": "git+https://github.com/xiaobaoliu849/dotapet.git" },
   "homepage": "https://github.com/xiaobaoliu849/dotapet#readme",
