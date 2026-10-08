@@ -2689,7 +2689,7 @@ function setupEventListeners() {
 
     elements.ctxBtnHeroes?.addEventListener('click', () => {
       closePetContextMenu();
-      openHeroModal('heroes');
+      openHeroModal(state.isPetMode ? 'pet-matrix' : 'heroes');
     });
 
     elements.ctxBtnSnapBr?.addEventListener('click', () => {
