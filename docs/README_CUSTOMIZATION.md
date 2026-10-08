@@ -1,6 +1,6 @@
 # Companion customization
 
-Start the desktop companion with `npm start`. Right-click the companion and choose **换个形象**, then **自定义 → 打开自定义面板**. The tray's **形象与背景** opens the editor directly.
+Start the desktop companion with `npm start`. Right-click the companion (or the tray icon) and choose **设置中心**, then **形象与背景** in the sidebar. The pet's own **自定义** tab also has a button that opens this page.
 
 ## Choose and apply an appearance
 
