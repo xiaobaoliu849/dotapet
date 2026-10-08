@@ -10,7 +10,13 @@ import { applyAIConfiguration, engineOptions, checkTextConnection } from '../src
 import { CLOUD_KEYS, CloudVoiceEngine, configureCloudKeys, loadEnv } from '../src/services/cloudVoiceEngine.js';
 import { checkVoiceConnection, connectionError } from '../src/services/connectionCheck.js';
 import { TranslationService } from '../src/services/translationService.js';
-import { isTrustedSettingsSender } from '../src/main/aiSettingsIpc.js';
+import { isTrustedSettingsSender, aiKeyPage } from '../src/main/aiSettingsIpc.js';
+
+test('key acquisition opens only known provider pages and rejects arbitrary URLs', () => {
+  for (const id of ['qwen', 'doubao', 'google', 'google-translate', 'cartesia', 'deepseek']) assert.equal(new URL(aiKeyPage(id)).protocol, 'https:');
+  assert.equal(aiKeyPage('google'), aiKeyPage('google-translate'));
+  for (const value of ['https://example.com', 'file:///C:/', 'javascript:alert(1)', '__proto__']) assert.throws(() => aiKeyPage(value));
+});
 
 // Unit-test substitute for OS encryption. Electron smoke tests use actual DPAPI.
 const key = crypto.randomBytes(32);

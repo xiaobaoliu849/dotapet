@@ -1,6 +1,6 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
-// The settings window has no clipboard, game input, GSI, or window-control API.
+// Only settings actions are exposed; finishing closes this settings window.
 contextBridge.exposeInMainWorld('electronAPI', {
   getAISettings: () => ipcRenderer.invoke('ai:get-settings'),
   saveAISettings: settings => ipcRenderer.invoke('ai:save-settings', settings),
@@ -11,6 +11,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   cancelAITest: () => ipcRenderer.invoke('ai:cancel-test'),
   connectAI: provider => ipcRenderer.invoke('ai:connect', provider),
   disconnectAI: () => ipcRenderer.invoke('ai:disconnect'),
+  finishAISetup: () => ipcRenderer.invoke('ai:finish-setup'),
+  openAIKeyPage: provider => ipcRenderer.invoke('ai:open-key-page', provider),
   openMicrophonePrivacy: () => ipcRenderer.invoke('ai:microphone-privacy'),
   onSettingsPurpose: callback => {
     const listener = (_event, value) => callback(value);

@@ -62,5 +62,7 @@ export function createWelcomeController({ electron, rendererDirectory, icon, ope
       return { ok: true };
     } catch { return { ok: false, error: '暂时无法完成，请重试。' }; }
   });
-  return { open, store, showOnFirstRun() { if (!store.state.dismissed) open(); } };
+  // First launch goes straight to the actual setup, without a separate wizard.
+  // The guide stays available from the tray whenever the user wants help.
+  return { open, store, showOnFirstRun() { if (!store.state.dismissed) return openSettings('voice', { firstRun: true }); } };
 }

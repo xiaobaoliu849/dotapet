@@ -4,7 +4,22 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import vm from 'node:vm';
-import { WelcomeStore } from '../src/main/welcomeController.js';
+import { WelcomeStore, createWelcomeController } from '../src/main/welcomeController.js';
+
+test('first launch opens configuration directly and respects a dismissed setup on the next launch', t => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'companion-first-setup-'));
+  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+  const calls = [];
+  const electron = { app: { getPath: () => directory, getVersion: () => '0.1.2' }, ipcMain: { handle() {} },
+    BrowserWindow: class { constructor() { throw new Error('First launch must not open a separate guide'); } } };
+  const create = () => createWelcomeController({ electron, rendererDirectory: directory, openSettings: (...args) => { calls.push(args); return 'setup-window'; } });
+  const controller = create();
+  assert.equal(controller.showOnFirstRun(), 'setup-window');
+  assert.deepEqual(calls, [['voice', { firstRun: true }]]);
+  controller.store.dismiss('0.1.2');
+  assert.equal(create().showOnFirstRun(), undefined);
+  assert.equal(calls.length, 1);
+});
 
 test('dismissing the guide survives an upgrade without touching other settings', t => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'companion-guide-test-'));

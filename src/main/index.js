@@ -15,7 +15,7 @@ import { checkGsiInstalled, installGsiConfig } from './gsi/gsiInstaller.js';
 import { AISettingsStore, providerDefinition } from './aiSettingsStore.js';
 import { applyAIConfiguration, engineOptions, testAIConnection } from './aiConfiguration.js';
 import { connectionError } from '../services/connectionCheck.js';
-import { isTrustedSettingsSender } from './aiSettingsIpc.js';
+import { isTrustedSettingsSender, aiKeyPage } from './aiSettingsIpc.js';
 import { createCustomizationController } from './customizationIpc.js';
 import { runCustomizationSmoke } from './customizationSmoke.js';
 import { createWelcomeController } from './welcomeController.js';
@@ -113,29 +113,52 @@ function stopVoiceForSettings() {
 }
 
 let settingsPurpose = '';
-function openAISettings(purpose = '') {
+let settingsFirstRun = false;
+function openAISettings(purpose = '', { firstRun = false } = {}) {
   settingsPurpose = ['voice', 'translate'].includes(purpose) ? purpose : '';
+  settingsFirstRun ||= firstRun;
   if (aiSettingsWindow && !aiSettingsWindow.isDestroyed()) {
     if (settingsPurpose) aiSettingsWindow.webContents.send('settings:purpose', settingsPurpose);
     aiSettingsWindow.show(); aiSettingsWindow.focus(); return aiSettingsWindow;
   }
   aiSettingsWindow = new BrowserWindow({
     icon: appIcon,
-    width: 800, height: 730, minWidth: 620, minHeight: 640,
+    width: 940, height: 820, minWidth: 620, minHeight: 640,
     title: '刀塔Pet · 翻译与语音设置', titleBarStyle: 'hidden',
-    titleBarOverlay: { color: '#faf6ef', symbolColor: '#66564c', height: 44 },
-    autoHideMenuBar: true, show: false, backgroundColor: '#faf6ef',
+    titleBarOverlay: { color: '#f7f8f4', symbolColor: '#52604f', height: 48 },
+    autoHideMenuBar: true, show: false, backgroundColor: '#f7f8f4',
     webPreferences: { preload: path.join(__dirname, '../preload/ai-settings.js'), contextIsolation: true, nodeIntegration: false, sandbox: true, backgroundThrottling: false },
   });
   aiSettingsWindow.webContents.on('will-navigate', event => event.preventDefault());
   aiSettingsWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
-  aiSettingsWindow.once('ready-to-show', () => { if (!smokeTest) aiSettingsWindow?.show(); });
-  aiSettingsWindow.on('closed', () => { cancelConnectionTest(); aiSettingsWindow = null; });
+  aiSettingsWindow.once('ready-to-show', () => { if (!smokeTest) { aiSettingsWindow?.show(); aiSettingsWindow?.focus(); } });
+  aiSettingsWindow.on('closed', () => {
+    cancelConnectionTest(); aiSettingsWindow = null;
+    if (settingsFirstRun) {
+      try { welcomeController.store.dismiss(app.getVersion()); }
+      catch (error) { console.warn('[Settings] Could not save first-run preference:', error.message); }
+    }
+    settingsFirstRun = false;
+  });
   aiSettingsWindow.loadFile(path.join(__dirname, '../renderer/ai-settings.html'));
   return aiSettingsWindow;
 }
 
 async function runCompanionSmokeTest() {
+  const firstSetup = welcomeController.showOnFirstRun();
+  if (!firstSetup || firstSetup !== aiSettingsWindow) throw new Error('First launch did not open configuration directly');
+  const firstSetupClosed = new Promise(resolve => firstSetup.once('closed', resolve));
+  await new Promise(resolve => firstSetup.webContents.once('did-finish-load', resolve));
+  await firstSetup.webContents.executeJavaScript(`(async () => {
+    for (let i=0; i<100 && document.getElementById('provider').disabled; i++) await new Promise(resolve=>setTimeout(resolve,40));
+    if(document.querySelectorAll('.provider-option').length !== 4) throw new Error('First launch did not show all four services');
+    if(document.getElementById('usage').value !== 'voice') throw new Error('First launch hid voice services');
+    if(document.getElementById('advanced').open) throw new Error('First launch opened advanced controls');
+    if(document.getElementById('skip').getBoundingClientRect().bottom > innerHeight) throw new Error('First setup requires scrolling to skip');
+    document.getElementById('skip').click();
+  })()`);
+  await firstSetupClosed;
+  if (!welcomeController.store.state.dismissed || welcomeController.showOnFirstRun()) throw new Error('First setup dismissal was not persisted');
   const welcome = welcomeController.open();
   await new Promise(resolve => welcome.webContents.once('did-finish-load', resolve));
   const onboarding = await welcome.webContents.executeJavaScript(`(async () => {
@@ -192,12 +215,12 @@ async function runCompanionSmokeTest() {
     };
     const get = id => document.getElementById(id);
     await waitFor(() => !get('provider').disabled);
-    if (get('provider').options.length !== 2 || get('usage').value !== 'translate' || !window.electronAPI) throw new Error('Domestic translation setup missing');
-    if (!get('connect').hidden) throw new Error('Translation should not ask users to connect voice');
-    get('usage').value='voice'; get('usage').dispatchEvent(new Event('change'));
-    if (get('provider').options.length !== 2) throw new Error('Domestic voice should show only Qwen and Doubao');
-    get('overseas').checked=true; get('overseas').dispatchEvent(new Event('change'));
-    if (get('provider').options.length !== 5) throw new Error('Overseas services are not available when opted in');
+    if (get('provider').options.length !== 4 || get('usage').value !== 'voice' || !window.electronAPI) throw new Error('Four-provider voice setup missing');
+    if (document.querySelectorAll('.provider-option').length !== 4 || get('voice').options.length !== 3) throw new Error('Simple provider or voice choices missing');
+    get('usage-translate').click();
+    if (get('provider').options.length !== 2 || !get('connect').hidden) throw new Error('Text translation setup missing');
+    get('usage-voice').click();
+    if (get('provider').options.length !== 4) throw new Error('Voice tab hid providers');
     if ('copyToClipboard' in window.electronAPI || 'sendAudioChunk' in window.electronAPI) throw new Error('Settings preload exposes unrelated app controls');
     if (get('advanced').open) throw new Error('Advanced setup should be collapsed initially');
     get('provider').value = 'google'; get('provider').dispatchEvent(new Event('change'));
@@ -216,7 +239,9 @@ async function runCompanionSmokeTest() {
     if (JSON.stringify(state).includes('smoke-google-key')) throw new Error('Public IPC leaked a key');
     const viewport = document.documentElement.clientWidth;
     if (document.documentElement.scrollWidth > viewport) throw new Error('Settings page overflows horizontally');
-    return { providerCount: state.settings.providers.length, domesticSetup:true, encryptedStorage: state.settings.encryptionAvailable };
+    const primary = get('connect').getBoundingClientRect();
+    if (primary.bottom > innerHeight) throw new Error('Primary setup action requires scrolling');
+    return { providerCount: state.settings.providers.length, visibleVoiceProviders: 4, directFirstSetup: true, encryptedStorage: state.settings.encryptionAvailable };
   })()`);
   const vault = fs.readFileSync(aiSettingsStore.filePath, 'utf8');
   if (vault.includes('smoke-google-key')) throw new Error('Vault contains plaintext');
@@ -233,6 +258,18 @@ async function runCompanionSmokeTest() {
     if (image.isEmpty()) throw new Error('Settings screenshot is empty');
     const output = path.resolve(outputArg.slice('--companion-smoke-output='.length));
     fs.writeFileSync(output, image.toPNG());
+    for (const state of ['connecting', 'connected', 'error']) {
+      win.webContents.send('voice:status', { status: state, providerId: 'qwen', ...(state === 'error' ? { error: '请检查密钥与网络后重试。' } : {}) });
+      await win.webContents.executeJavaScript(`(async () => {
+        for (let i=0; i<100 && document.getElementById('connection-status').dataset.state !== '${state}'; i++) await new Promise(resolve=>setTimeout(resolve,20));
+        if (document.getElementById('connection-status').dataset.state !== '${state}') throw new Error('Connection state did not update');
+        if ('${state}' === 'connecting' && !document.getElementById('connect').disabled) throw new Error('Connecting allowed duplicate starts');
+        if ('${state}' === 'connected' && document.getElementById('finish').hidden) throw new Error('Connected setup did not offer completion');
+      })()`);
+      fs.writeFileSync(output.replace(/\.png$/, `-${state}.png`), (await capture()).toPNG());
+    }
+    win.webContents.send('voice:status', { status: 'disconnected', providerId: 'qwen' });
+    await win.webContents.executeJavaScript("document.getElementById('feedback').textContent = ''; document.getElementById('feedback').dataset.kind = ''");
     await win.webContents.executeJavaScript("document.getElementById('advanced').open = true; window.scrollTo(0, document.body.scrollHeight)");
     fs.writeFileSync(output.replace(/\.png$/, '-actions.png'), (await capture()).toPNG());
     await win.webContents.executeJavaScript("document.getElementById('advanced').open = false; document.getElementById('provider').value = 'doubao'; document.getElementById('provider').dispatchEvent(new Event('change')); window.scrollTo(0,0)");
@@ -242,7 +279,7 @@ async function runCompanionSmokeTest() {
     const overflow = await win.webContents.executeJavaScript('document.documentElement.scrollWidth > document.documentElement.clientWidth');
     if (overflow) throw new Error('Narrow settings page overflows horizontally');
     fs.writeFileSync(output.replace(/\.png$/, '-narrow.png'), (await capture()).toPNG());
-    win.setSize(800, 730);
+    win.setSize(940, 820);
     await win.webContents.executeJavaScript("document.getElementById('usage').value = 'translate'; document.getElementById('usage').dispatchEvent(new Event('change')); window.scrollTo(0,0)");
     fs.writeFileSync(output.replace(/\.png$/, '-translation.png'), (await capture()).toPNG());
     openAISettings('voice');
@@ -1401,6 +1438,16 @@ function setupIPC() {
   ipcMain.on('welcome:open', () => welcomeController?.open());
   ipcMain.handle('ai:microphone-privacy', settingsHandler(async () => {
     await shell.openExternal('ms-settings:privacy-microphone');
+    return {};
+  }));
+  ipcMain.handle('ai:finish-setup', settingsHandler(() => {
+    // Return before closing so the calling renderer receives its result.
+    const window = aiSettingsWindow;
+    setImmediate(() => { mainWindow?.show(); window?.close(); });
+    return {};
+  }));
+  ipcMain.handle('ai:open-key-page', settingsHandler(async provider => {
+    await shell.openExternal(aiKeyPage(provider));
     return {};
   }));
   ipcMain.handle('ai:get-settings', settingsHandler(() => {

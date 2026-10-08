@@ -5,3 +5,17 @@ export function isTrustedSettingsSender(event, window, expectedURL) {
     && event.senderFrame === window.webContents.mainFrame
     && event.senderFrame?.url === expectedURL);
 }
+
+/** Provider identifiers only; never accept a renderer-supplied external URL. */
+export function aiKeyPage(provider) {
+  const pages = new Map([
+    ['qwen', 'https://bailian.console.aliyun.com/cn-beijing/model/settings/api-key'],
+    ['doubao', 'https://console.volcengine.com/speech/new/setting/apikeys'],
+    ['google', 'https://aistudio.google.com/apikey'],
+    ['google-translate', 'https://aistudio.google.com/apikey'],
+    ['cartesia', 'https://play.cartesia.ai/keys'],
+    ['deepseek', 'https://platform.deepseek.com/api_keys'],
+  ]);
+  if (!pages.has(provider)) throw new Error('请选择支持的服务商。');
+  return pages.get(provider);
+}

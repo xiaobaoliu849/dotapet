@@ -5,19 +5,51 @@ let busy = false;
 let generation = 0;
 let testCancelled = false;
 let lastStatus = { status: 'disconnected' };
-const providerNames = { qwen: '阿里千问 · 国内通用', doubao: '豆包 · 国内语音', google: 'Gemini · 海外实时对话', 'google-translate': 'Gemini · 海外实时翻译', cartesia: 'Cartesia · 海外英语对练', deepseek: 'DeepSeek · 国内文字 / 截图' };
-const overseasProviders = ['google', 'google-translate', 'cartesia'];
+let dirty = false;
+const selectionByPurpose = {};
+const providerNames = { qwen: '阿里千问', doubao: '豆包', google: 'Gemini', cartesia: 'Cartesia', deepseek: 'DeepSeek' };
+const providerDescriptions = { qwen: ['千', '聊天，也能翻译'], doubao: ['豆', '实时语音聊天'], google: ['✦', '聊天 / 语音翻译'], cartesia: ['C', '英语对练'], deepseek: ['D', '文字 / 截图翻译'] };
+const simpleVoices = { qwen: ['Tina', 'Raymond', 'Jennifer'], doubao: ['zh_female_xiaohe_jupiter_bigtts', 'zh_female_vv_jupiter_bigtts', 'zh_male_yunzhou_jupiter_bigtts'], google: ['Puck', 'Kore', 'Aoede'] };
 const translating = () => byId('usage')?.value === 'translate';
-const voiceNames = { zh_female_xiaohe_jupiter_bigtts: '小何 · 甜美台腔', zh_female_vv_jupiter_bigtts: 'VV · 活泼女声', zh_male_yunzhou_jupiter_bigtts: '云舟 · 沉稳男声', zh_male_xiaotian_jupiter_bigtts: '小天 · 清爽男声', en_male_tim_uranus_bigtts: 'Tim · 美式英语', en_female_dacey_uranus_bigtts: 'Dacey · 美式英语', en_female_stokie_uranus_bigtts: 'Stokie · 美式英语' };
+const voiceNames = { Tina: 'Tina · 温和女声', Jennifer: 'Jennifer · 英语女声', Puck: 'Puck · 活泼男声', Kore: 'Kore · 干练女声', Aoede: 'Aoede · 轻快女声', zh_female_xiaohe_jupiter_bigtts: '小何 · 甜美台腔', zh_female_vv_jupiter_bigtts: 'VV · 活泼女声', zh_male_yunzhou_jupiter_bigtts: '云舟 · 沉稳男声', zh_male_xiaotian_jupiter_bigtts: '小天 · 清爽男声', en_male_tim_uranus_bigtts: 'Tim · 美式英语', en_female_dacey_uranus_bigtts: 'Dacey · 美式英语', en_female_stokie_uranus_bigtts: 'Stokie · 美式英语' };
 
 function feedback(message, kind = '') { byId('feedback').textContent = message; byId('feedback').dataset.kind = kind; }
-function profile() { return settings.providers.find(item => item.id === byId('provider').value); }
+function profile() {
+  const id = byId('provider').value === 'google' ? byId('google-mode').value || 'google' : byId('provider').value;
+  return settings?.providers.find(item => item.id === id);
+}
+function connectionState() {
+  return !lastStatus.providerId || lastStatus.providerId === profile()?.id ? lastStatus.status : 'disconnected';
+}
+function updateConnectAction() {
+  const state = connectionState();
+  const connected = state === 'connected' && !dirty;
+  const button = byId('connect');
+  button.disabled = busy || translating() || Boolean(profile()?.textOnly) || state === 'connecting';
+  button.className = state === 'connecting' ? 'primary is-connecting' : connected ? 'secondary' : 'primary';
+  button.setAttribute('aria-busy', String(state === 'connecting'));
+  button.textContent = state === 'connecting' ? '正在连接…' : connected ? '重新连接' : state === 'error' ? '重试连接 →' : profile()?.id === 'google-translate' ? '保存并开始语音翻译 →' : '保存并开始聊天 →';
+}
+function markDirty() {
+  dirty = true; byId('finish').hidden = true; updateConnectAction();
+  if (!translating() && connectionState() === 'connected') feedback('设置有更改，保存后重新连接即可生效。');
+}
+function focusCredential() {
+  const field = profile().fields.find(item => !item.optional && !item.configured);
+  if (field) byId(`secret-${field.id}`).focus?.();
+}
 function status(event) {
   if (event) lastStatus = event;
-  if (translating()) { byId('connection-status').textContent = '按需翻译即可，无需连接语音或开启麦克风。'; return; }
-  const names = { disconnected: '还没有连接，先安顿好小伙伴吧', connecting: '正在为小伙伴接通声音…', connected: '声音已就绪，回到桌宠打个招呼吧', error: '暂时没连上，我们可以再试一次' };
-  byId('connection-status').dataset.state = event?.status || 'disconnected';
-  byId('connection-status').textContent = `${names[event?.status] || names.disconnected}${event?.status === 'error' ? `：${event.error}` : ''}`;
+  if (translating()) { byId('connection-status').dataset.state = ''; byId('connection-status').textContent = '翻译无需开启麦克风。'; return; }
+  const selected = !event?.providerId || event.providerId === profile()?.id;
+  const state = selected ? event?.status || 'disconnected' : 'disconnected';
+  const names = { disconnected: '连接后按 Alt+Q 说话，麦克风由你开启。', connecting: '正在连接，请稍等…', connected: '已连接！按 Alt+Q，就能和小伙伴说话。', error: '连接失败，请检查密钥后重试。' };
+  byId('connection-status').dataset.state = state;
+  byId('connection-status').textContent = `${names[state] || names.disconnected}${state === 'error' && event.error ? ` ${event.error}` : ''}`;
+  byId('finish').hidden = state !== 'connected' || dirty;
+  updateConnectAction();
+  if (state === 'connected' && !dirty) feedback('', 'success');
+  else if (state === 'error') feedback('检查密钥与网络后，点击「重试连接」。', 'error');
 }
 function setBusy(value, testing = false) {
   if (value) window.stopMicrophoneCheck?.();
@@ -26,70 +58,115 @@ function setBusy(value, testing = false) {
   byId('cancel').hidden = !testing;
   byId('cancel').disabled = false;
   if (!value && settings) {
-    byId('connect').disabled = translating() || Boolean(profile()?.textOnly);
+    updateConnectAction();
     byId('delete').disabled = !profile()?.fields.some(field => field.configured);
   }
 }
 function renderProfile() {
   const item = profile();
   if (!item) return;
+  dirty = false;
+  byId('finish').hidden = true;
+  for (const button of byId('provider-options').children) button.setAttribute('aria-pressed', String(button.dataset.provider === byId('provider').value));
+  for (const purpose of ['voice', 'translate']) byId(`usage-${purpose}`).setAttribute('aria-pressed', String(byId('usage').value === purpose));
+  byId('welcome-title').textContent = translating() ? '看懂聊天，轻松开黑' : '让小伙伴听见你';
+  byId('welcome-description').textContent = '选一家服务商，粘贴密钥，就可以开始了。';
+  byId('provider-caption').textContent = translating() ? '支持文字与截图翻译' : '用你已有的账户就好';
   const container = byId('secret-fields');
+  container.className = item.id === 'cartesia' ? 'secret-fields two-keys' : 'secret-fields';
   container.replaceChildren();
   const optionalContainer = byId('optional-secret-fields');
   optionalContainer.replaceChildren();
   for (const field of item.fields) {
     const label = document.createElement('label');
     label.htmlFor = `secret-${field.id}`;
-    label.textContent = `${field.label}${field.configured ? ' · 已保存' : ''}`;
+    const fieldName = field.id === 'apiKey' ? (item.id === 'cartesia' ? 'Cartesia 密钥' : 'API 密钥') : field.id === 'llmApiKey' ? 'DeepSeek 密钥' : field.label;
+    label.textContent = `${fieldName}${field.configured ? ' · 已保存' : ''}`;
     if (field.configured) label.className = 'configured';
     const input = document.createElement('input');
     input.id = label.htmlFor; input.type = 'password'; input.autocomplete = 'off'; input.maxLength = 4096;
-    input.placeholder = field.configured ? '留空保留已有密钥；输入新密钥可替换' : '粘贴你自己的 API Key';
-    (field.optional ? optionalContainer : container).append(label, input);
+    input.disabled = busy;
+    input.addEventListener('input', markDirty);
+    input.addEventListener('keydown', event => {
+      if (event.key === 'Enter' && !busy && !event.isComposing) {
+        event.preventDefault(); (translating() ? byId('test') : byId('connect')).click();
+      }
+    });
+    input.placeholder = field.configured ? '已保存，留空保留；也可粘贴新密钥' : '在这里粘贴 API Key';
+    const heading = document.createElement('div'); heading.className = 'field-label'; heading.append(label);
+    if (!field.optional) {
+      const getKey = document.createElement('button'); getKey.className = 'key-link'; getKey.textContent = '获取密钥 ↗';
+      getKey.setAttribute('aria-label', `获取 ${field.label}`); getKey.disabled = busy;
+      getKey.addEventListener('click', () => action(async () => {
+        const response = await api.openAIKeyPage(field.id === 'llmApiKey' ? 'deepseek' : item.id);
+        if (!response.ok) throw new Error(response.error);
+      }));
+      heading.append(getKey);
+    }
+    const wrapper = document.createElement('div'); wrapper.className = 'secret-field'; wrapper.append(heading, input);
+    (field.optional ? optionalContainer : container).append(wrapper);
   }
-  byId('provider-help').textContent = item.id === 'cartesia' ? '带上 Cartesia 和 DeepSeek 两把密钥，一起练练英语。'
-    : item.textOnly ? '支持文字与截图翻译。图片识别会使用 DeepSeek Flash；语音聊天请选千问或豆包。'
-    : item.id === 'qwen' ? '使用你自己的百炼密钥。地区与工作空间可在「更多设置」中调整。'
-    : item.id === 'google-translate' ? '让小伙伴实时翻译你的语音。此模式的 Google 密钥单独保存。'
-    : '使用你自己的服务商密钥。模型和音色需要在账户中可用。';
+  byId('provider-help').textContent = item.id === 'cartesia' ? '需要 Cartesia 和 DeepSeek 两个密钥；声音已选好。'
+    : item.textOnly ? '使用你的 DeepSeek 密钥，翻译文字和聊天截图。'
+    : item.id === 'qwen' ? (translating() ? '使用阿里百炼的 API Key，可翻译文字和聊天截图。' : '使用阿里百炼的 API Key，模型和声音已替你选好。')
+    : item.id === 'doubao' ? '使用火山引擎的实时语音 API Key，默认声音是小何。'
+    : item.id === 'google-translate' ? '实时语音翻译模式；使用此模式单独保存的 Google 密钥。'
+    : '使用 Google API Key；需具备对应的账户与网络条件。';
   byId('model').value = item.model;
   byId('workspace-fields').hidden = item.id !== 'qwen';
   byId('workspace').value = item.workspaceId || '';
   byId('region').value = item.region || 'beijing';
+  byId('google-mode-fields').hidden = translating() || byId('provider').value !== 'google';
   byId('voice-fields').hidden = translating() || !item.voice;
   if (byId('model-fields')) byId('model-fields').hidden = translating();
   if (byId('translator-fields')) byId('translator-fields').hidden = translating();
-  byId('voice').hidden = !item.voices.length;
-  byId('voice-custom').hidden = Boolean(item.voices.length);
-  byId('voice').replaceChildren(...item.voices.map(voice => new Option(voiceNames[voice] || voice, voice)));
+  const choices = item.voices.length ? [...new Set([...(simpleVoices[item.id] || item.voices.slice(0, 3)), item.voice])].filter(voice => item.voices.includes(voice)) : [item.voice];
+  byId('voice').replaceChildren(...choices.map(voice => new Option(voiceNames[voice] || (item.id === 'cartesia' ? '当前音色' : voice) + (voice === item.voices[0] ? ' · 默认' : ''), voice)));
   byId('voice').value = item.voice;
   byId('voice-custom').value = item.voice;
+  byId('all-voice-fields').hidden = translating() || !item.voices.length;
+  byId('all-voices').replaceChildren(...item.voices.map(voice => new Option(voiceNames[voice] || voice, voice)));
+  byId('all-voices').value = item.voice;
+  byId('custom-voice-fields').hidden = translating() || !item.voice || Boolean(item.voices.length);
+  byId('custom-voice-id').value = item.voice;
   byId('translator').value = settings.translationProvider;
   byId('connect').hidden = translating();
   byId('disconnect').hidden = translating();
   byId('connect').disabled = busy || translating() || Boolean(item.textOnly);
-  byId('test').className = translating() ? 'primary' : '';
-  byId('test').textContent = translating() ? '保存并测试文字翻译' : '保存并测试语音';
+  byId('test').hidden = !translating();
+  byId('voice-test').hidden = translating();
   if (byId('microphone')) byId('microphone').hidden = translating();
-  if (byId('connection-title')) byId('connection-title').textContent = translating() ? '测试后，按快捷键翻译' : '测试后，连接语音';
   const note = document.querySelector?.('.connection-note');
   if (note) note.textContent = translating()
-    ? 'Win+Shift+S 框选聊天 → Alt+T 翻译截图；复制文字 → Alt+T；自己输入中文 → F8 翻成英文。截图会发送给你选择的服务商，可能产生用量。'
-    : '先测试，再连接；回到桌宠点麦克风或按 Alt+Q 讲话，再按一次关闭。测试不会开启麦克风，可能产生少量用量。';
-  byId('connect').textContent = item.textOnly ? '这是文字翻译模式' : '连接语音 ↗';
+    ? '复制文字 → Alt+T；Win+Shift+S 框选聊天 → Alt+T 翻译截图。截图会发给所选服务商。'
+    : '云端服务按服务商规则计费；麦克风由你主动开启。';
+  updateConnectAction();
   byId('delete').disabled = busy || !item.fields.some(field => field.configured);
+  selectionByPurpose[byId('usage').value] = item.id;
 }
 function render(next, selected) {
   const initial = !settings;
   settings = next;
   const selection = selected || settings.selectedProvider;
   if (initial && byId('usage')) {
-    byId('usage').value = settings.providers.find(item => item.id === selection)?.textOnly || !settings.providers.some(item => item.fields.some(field => field.configured)) ? 'translate' : 'voice';
-    if (byId('overseas')) byId('overseas').checked = overseasProviders.includes(selection) && settings.providers.find(item => item.id === selection)?.fields.some(field => field.configured);
+    byId('usage').value = settings.providers.find(item => item.id === selection)?.textOnly ? 'translate' : 'voice';
   }
-  const providers = settings.providers.filter(item => translating() ? ['qwen', 'deepseek'].includes(item.id) : !item.textOnly && (!overseasProviders.includes(item.id) || byId('overseas')?.checked));
+  const providers = (translating() ? ['qwen', 'deepseek'] : ['qwen', 'doubao', 'google', 'cartesia']).map(id => settings.providers.find(item => item.id === id)).filter(Boolean);
+  const visibleSelection = selection === 'google-translate' ? 'google' : selection;
   byId('provider').replaceChildren(...providers.map(item => new Option(providerNames[item.id] || item.label, item.id)));
-  byId('provider').value = providers.some(item => item.id === selection) ? selection : 'qwen';
+  byId('provider').value = providers.some(item => item.id === visibleSelection) ? visibleSelection : 'qwen';
+  byId('google-mode').value = selection === 'google-translate' ? 'google-translate' : 'google';
+  byId('provider-options').replaceChildren(...providers.map(item => {
+    const button = document.createElement('button'); button.className = 'provider-option'; button.dataset.provider = item.id;
+    const name = document.createElement('span'); name.className = 'provider-name';
+    const mark = document.createElement('span'); mark.className = 'provider-mark'; mark.textContent = providerDescriptions[item.id][0]; mark.setAttribute('aria-hidden', 'true');
+    const title = document.createElement('span'); title.textContent = providerNames[item.id]; name.append(mark, title);
+    const description = document.createElement('span'); description.className = 'provider-description'; description.textContent = translating() && item.id === 'qwen' ? '文字 / 截图翻译' : providerDescriptions[item.id][1];
+    button.append(name, description);
+    button.addEventListener('click', () => { if (busy || byId('provider').value === item.id) return; byId('provider').value = item.id; changeProvider(); });
+    button.disabled = busy; return button;
+  }));
+  byId('provider-options').dataset.purpose = byId('usage').value;
   renderProfile();
 }
 function payload() {
@@ -118,31 +195,70 @@ async function action(task, testing = false) {
   catch (error) { if (current === generation) feedback(error.message || '操作失败，请重试。', 'error'); }
   finally { if (current === generation) setBusy(false); }
 }
-byId('provider').addEventListener('change', () => { renderProfile(); feedback(profile().credentialError || '选好啦。填上密钥，准备好了再连接。', profile().credentialError ? 'error' : ''); });
+function changeProvider() {
+  window.stopMicrophoneCheck?.(); clearInputs();
+  byId('google-mode').value = 'google';
+  renderProfile(); status(lastStatus);
+  feedback(profile().credentialError || '', profile().credentialError ? 'error' : '');
+  focusCredential();
+}
+byId('provider').addEventListener('change', changeProvider);
 function choosePurpose(purpose) {
-  if (!settings || busy || !['voice', 'translate'].includes(purpose)) return;
+  if (!settings || busy || !['voice', 'translate'].includes(purpose) || byId('usage').value === purpose) return;
   window.stopMicrophoneCheck?.(); clearInputs(); byId('usage').value = purpose;
-  render(settings, translating() ? settings.translationProvider : byId('provider').value);
+  render(settings, selectionByPurpose[purpose] || (translating() ? settings.translationProvider : settings.selectedProvider));
   status(lastStatus);
 }
 api.onSettingsPurpose?.(choosePurpose);
-for (const id of ['usage', 'overseas']) byId(id)?.addEventListener('change', () => {
-  window.stopMicrophoneCheck?.(); clearInputs(); render(settings, translating() ? settings.translationProvider : byId('provider').value);
-  status(lastStatus); feedback('已切换功能。未保存的密钥已清空，已保存的密钥会保留。');
+for (const purpose of ['voice', 'translate']) byId(`usage-${purpose}`).addEventListener('click', () => {
+  if (byId('usage').value === purpose) return;
+  choosePurpose(purpose); feedback('');
 });
-byId('save').addEventListener('click', () => action(async () => { await save(); feedback('密钥已加密保存。' + (translating() ? '点击测试，随后按快捷键翻译。' : '点击测试，随后连接语音。'), 'success'); }));
-byId('test').addEventListener('click', () => action(async () => {
+byId('usage').addEventListener('change', () => {
+  window.stopMicrophoneCheck?.(); clearInputs(); render(settings, translating() ? settings.translationProvider : byId('provider').value);
+  status(lastStatus); feedback('');
+});
+byId('google-mode').addEventListener('change', () => {
+  window.stopMicrophoneCheck?.(); clearInputs(); renderProfile(); status(lastStatus);
+  feedback('已切换 Gemini 功能，请使用对应密钥。');
+});
+byId('voice').addEventListener('change', () => { byId('all-voices').value = byId('voice').value; markDirty(); });
+byId('all-voices').addEventListener('change', () => {
+  const voice = byId('all-voices').value;
+  if (![...byId('voice').options].some(option => option.value === voice)) byId('voice').append(new Option(voiceNames[voice] || voice, voice));
+  byId('voice').value = voice;
+  markDirty();
+});
+byId('custom-voice-id').addEventListener('input', () => { byId('voice-custom').value = byId('custom-voice-id').value; markDirty(); });
+for (const id of ['model', 'workspace']) byId(id).addEventListener('input', markDirty);
+for (const id of ['region', 'translator']) byId(id).addEventListener('change', markDirty);
+function requireCredentials() {
+  const missing = profile().fields.find(field => !field.optional && !field.configured && !byId(`secret-${field.id}`).value.trim());
+  if (missing) throw new Error(`请先填写 ${missing.label}。`);
+}
+byId('save').addEventListener('click', () => action(async () => { await save(); feedback('设置已加密保存。', 'success'); }));
+function testConnection() { return action(async () => {
+  requireCredentials();
   const provider = await save(); feedback(translating() ? '正在测试文字模型，麦克风保持关闭…' : '正在测试语音连接，麦克风保持关闭…');
   if (testCancelled) { feedback('测试已取消，请重新测试。'); return; }
   const response = await (translating() ? api.testTextConnection(provider) : api.testAIConnection(provider));
   if (!response.ok) throw new Error(response.error);
-  feedback(response.result.message + (response.result.ok && translating() ? ' 现在可复制文字按 Alt+T，或框选聊天截图后按 Alt+T。截图能力取决于视觉模型权限。' : ''), response.result.ok ? 'success' : 'error');
-}, true));
+  if (testCancelled) { feedback('测试已取消，请重新测试。'); return; }
+  feedback(response.result.ok ? (translating() ? '翻译已就绪！复制文字后按 Alt+T。截图还需相应视觉模型权限。' : '测试通过，可以开始聊天了。') : response.result.message, response.result.ok ? 'success' : 'error');
+  byId('finish').hidden = !response.result.ok || !translating();
+}, true); }
+byId('test').addEventListener('click', testConnection);
+byId('voice-test').addEventListener('click', testConnection);
 byId('connect').addEventListener('click', () => action(async () => {
+  requireCredentials();
   const provider = await save(); const response = await api.connectAI(provider);
   if (!response.ok) throw new Error(response.error);
   status(response.status);
-  feedback(response.status?.status === 'error' ? response.status.error : '正在接通。声音准备好后，回到桌宠开启麦克风吧。', response.status?.status === 'error' ? 'error' : '');
+  feedback(response.status?.status === 'error' ? response.status.error : response.status?.status === 'connected' ? '' : '密钥已保存，正在连接…', response.status?.status === 'error' ? 'error' : response.status?.status === 'connected' ? 'success' : '');
+}));
+for (const id of ['finish', 'skip']) byId(id).addEventListener('click', () => action(async () => {
+  window.stopMicrophoneCheck?.(); const response = await api.finishAISetup();
+  if (!response.ok) throw new Error(response.error);
 }));
 byId('disconnect').addEventListener('click', () => action(async () => { const response = await api.disconnectAI(); if (!response.ok) throw new Error(response.error); status(response.status); feedback('已断开语音连接。'); }));
 byId('cancel').addEventListener('click', () => {
@@ -171,8 +287,9 @@ api.getAISettings().then(response => {
   }
   render(response.settings); status(response.status); setBusy(false);
   if (response.purpose) choosePurpose(response.purpose);
+  focusCredential();
   if (settings.error) feedback(settings.error, 'error');
   else if (profile().credentialError) feedback(profile().credentialError, 'error');
   else if (!settings.encryptionAvailable) feedback('系统安全存储不可用，无法保存密钥。', 'error');
-  else feedback(translating() ? '填写自己的密钥后，点击「保存并测试文字翻译」。无需开启语音。' : '填写自己的密钥后，先测试，再连接语音。');
+  else if (lastStatus.status !== 'connected') feedback('');
 }).catch(error => feedback(error.message || '设置加载失败，请重新打开。', 'error'));
