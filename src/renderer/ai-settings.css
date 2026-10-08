@@ -21,6 +21,8 @@ h1 { font-size: 32px; line-height: 1.35; margin: 0; font-weight: 650; letter-spa
 .usage-tabs button { border: 0; background: transparent; color: #737d71; padding: 9px 24px; border-radius: 9px; font-size: 15px; transition: none; }
 .usage-tabs button[aria-pressed='true'] { background: #fff; color: var(--green); box-shadow: 0 2px 5px #3f513510; font-weight: 600; }
 .shared-credentials { margin: -4px 0 12px; }
+.settings-tools { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+#open-phrases { margin-bottom: 8px; font-size: 13px; }
 .card { border: 1px solid var(--line); border-radius: 20px; padding: 22px; background: #fff; box-shadow: 0 5px 20px #3b503704; }
 .section-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
 h2 { margin: 0; font-size: 18px; font-weight: 600; }

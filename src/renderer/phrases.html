@@ -6,9 +6,7 @@
   <title>DOTA 2 快捷短语面板</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
-    /* Standalone editor window: the modal overlay doubles as the page body.
-       The card fills the window so all 10 rows stay visible without scrolling;
-       the OS title bar close button is the only close affordance. */
+    /* The editor scrolls its rows while keeping actions available. */
     html, body {
       width: 100%;
       height: 100%;
@@ -26,6 +24,19 @@
       max-height: none;
       height: 100%;
     }
+    .phrases-modal-body { min-height: 0; }
+    .phrases-modal-header, .phrases-modal-footer { flex-shrink: 0; }
+    .phrases-modal-title, .preset-import-strip, .phrases-modal-footer, .footer-left, .footer-right { flex-wrap: wrap; }
+    .phrases-table-header, .phrase-row-item { grid-template-columns: 28px minmax(0, 1fr) minmax(0, 1fr) 156px; }
+    .phrase-input, .preset-dropdown { min-width: 0; }
+    .phrase-row-actions { justify-content: flex-end; }
+    .phrases-usage-hint { margin: 0; color: #e6dcc4; font-size: 12px; line-height: 1.6; }
+    button:focus-visible, select:focus-visible { outline: 2px solid #e3b868; outline-offset: 2px; }
+    @media (max-width: 700px) {
+      .phrases-table-header { display: none; }
+      .phrase-row-item { grid-template-columns: 24px minmax(0, 1fr) minmax(0, 1fr); }
+      .phrase-row-actions { grid-column: 2 / 4; }
+    }
   </style>
 </head>
 <body>
@@ -41,6 +52,7 @@
       </div>
 
       <div class="phrases-modal-body">
+        <p class="phrases-usage-hint">点「复制中文 / 英文」→ 切回 DOTA 2，按 Enter 打开聊天，再按 Ctrl+V 粘贴。已有双语短语可直接使用，无需 API 密钥。</p>
         <!-- Preset Template Importer Strip -->
         <div class="preset-import-strip">
           <span class="preset-label">💡 快速导入精简模板：</span>
@@ -80,19 +92,19 @@
 
       <div class="phrases-modal-footer">
         <div class="footer-left">
-          <button id="btn-translate-all-phrases" class="btn-secondary-action">⚡ 一键 AI 翻译补全 (Qwen-Flash)</button>
+          <button id="btn-translate-all-phrases" class="btn-secondary-action">⚡ AI 补全空白英文</button>
           <button id="btn-reset-default-phrases" class="btn-secondary-action btn-dim">🔄 恢复精简默认值</button>
         </div>
         <div class="footer-right">
-          <button id="btn-save-phrases" class="btn-primary-action">💾 保存并生效 (Save & Apply)</button>
-          <button id="btn-cancel-phrases" class="btn-secondary-action">取消 (ESC)</button>
+          <button id="btn-save-phrases" class="btn-primary-action">💾 保存并生效</button>
+          <button id="btn-cancel-phrases" class="btn-secondary-action">关闭 (ESC)</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Toast Notification -->
-  <div id="hud-toast" class="toast hidden">已保存</div>
+  <div id="hud-toast" class="toast hidden" role="status" aria-live="polite">已保存</div>
 
   <script src="phrases.js"></script>
 </body>

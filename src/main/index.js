@@ -297,9 +297,12 @@ async function runCompanionSmokeTest() {
     await win.webContents.executeJavaScript("if(document.getElementById('usage').value !== 'voice') throw new Error('Voice action did not open voice setup')");
   }
   const customizationResult = await runCustomizationSmoke({ controller: customizationController, mainWindow, dialog, outputDirectory: app.getPath('userData') });
+  const { runPhrasesSmoke } = await import('./phrasesSmoke.js');
+  const phrases = await runPhrasesSmoke({ settingsWindow: win, getWindow: () => phrasesWindow,
+    getCopiedText: () => smokeClipboardText, outputDirectory: app.getPath('userData') });
   const { runUpdateSmoke } = await import('./updateSmoke.js');
   const updates = await runUpdateSmoke({ electron, rendererDirectory: path.join(__dirname, '../renderer'), icon: appIcon, outputDirectory: app.getPath('userData') });
-  console.log('[Smoke] PASS', JSON.stringify({ ...result, onboarding, customization: customizationResult, updates }));
+  console.log('[Smoke] PASS', JSON.stringify({ ...result, onboarding, customization: customizationResult, phrases, updates }));
   app.exit(0);
 }
 
@@ -950,21 +953,23 @@ function createWindow() {
 // pet window, so it gets its own resizable, framed window.
 // ==========================================================================
 let phrasesWindow = null;
+let smokeClipboardText = '';
 
 function createPhrasesWindow() {
   if (phrasesWindow && !phrasesWindow.isDestroyed()) {
-    phrasesWindow.show();
-    phrasesWindow.focus();
-    phrasesWindow.moveTop();
-    return;
+    if (!smokeTest) {
+      if (phrasesWindow.isMinimized()) phrasesWindow.restore();
+      phrasesWindow.show(); phrasesWindow.focus(); phrasesWindow.moveTop();
+    }
+    return phrasesWindow;
   }
 
   phrasesWindow = new BrowserWindow({
     icon: appIcon,
     width: 880,
     height: 780,
-    minWidth: 760,
-    minHeight: 620,
+    minWidth: 620,
+    minHeight: 520,
     title: 'DOTA 2 快捷短语面板',
     autoHideMenuBar: true,
     backgroundColor: '#1c1611',
@@ -983,22 +988,7 @@ function createPhrasesWindow() {
   phrasesWindow.loadFile(path.join(__dirname, '../renderer/phrases.html'))
     .catch((err) => console.error('[Phrases] loadFile failed:', err.message));
 
-  const showPhrasesWindow = () => {
-    if (!phrasesWindow || phrasesWindow.isDestroyed()) return;
-    console.log('[Phrases] Showing editor window');
-    phrasesWindow.show();
-    phrasesWindow.focus();
-  };
-
-  phrasesWindow.once('ready-to-show', showPhrasesWindow);
-  // Same guard as the pet window: never leave the editor hidden if
-  // ready-to-show is delayed or dropped.
-  setTimeout(() => {
-    if (phrasesWindow && !phrasesWindow.isDestroyed() && !phrasesWindow.isVisible()) {
-      console.warn('[Phrases] ready-to-show did not fire in time, forcing show');
-      showPhrasesWindow();
-    }
-  }, 1200);
+  presentSettingsWhenReady(phrasesWindow, { smokeTest });
 
   phrasesWindow.webContents.on('did-fail-load', (event, code, desc) => {
     console.error(`[Phrases] did-fail-load: ${code} - ${desc}`);
@@ -1011,6 +1001,7 @@ function createPhrasesWindow() {
   phrasesWindow.on('closed', () => {
     phrasesWindow = null;
   });
+  return phrasesWindow;
 }
 
 function togglePhrasesWindow() {
@@ -1458,6 +1449,7 @@ function setupIPC() {
     await shell.openExternal('ms-settings:privacy-microphone');
     return {};
   }));
+  ipcMain.handle('ai:open-phrases', settingsHandler(() => { createPhrasesWindow(); return {}; }));
   ipcMain.handle('ai:finish-setup', settingsHandler(() => {
     // Return before closing so the calling renderer receives its result.
     const window = aiSettingsWindow;
@@ -1599,7 +1591,8 @@ function setupIPC() {
   });
 
   ipcMain.on('clipboard:write', (event, text) => {
-    clipboard.writeText(text);
+    if (smokeTest) smokeClipboardText = text;
+    else clipboard.writeText(text);
   });
 
   // Desktop Pet Roaming IPC. Motion is integrated on the renderer's vsync clock

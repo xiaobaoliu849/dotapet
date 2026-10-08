@@ -31,7 +31,7 @@ async function renderer(overrides = {}) {
   for (const id of ['feedback', 'provider-help', 'secret-fields', 'optional-secret-fields', 'workspace-fields', 'voice-fields', 'connection-status', 'provider-options', 'welcome-title', 'welcome-description', 'provider-caption', 'all-voice-fields', 'custom-voice-fields', 'google-mode-fields', 'model-fields', 'translator-fields', 'shared-credentials', 'model-label', 'translator-summary']) nodes.set(id, new Element('div', id));
   for (const id of ['provider', 'voice', 'translator', 'region', 'usage', 'google-mode', 'all-voices']) nodes.set(id, new Element('select', id));
   for (const id of ['model', 'workspace', 'voice-custom', 'custom-voice-id']) nodes.set(id, new Element('input', id));
-  for (const id of ['connect', 'disconnect', 'save', 'test', 'cancel', 'delete', 'import', 'voice-test', 'finish', 'skip', 'usage-voice', 'usage-translate', 'translator-config']) nodes.set(id, new Element('button', id));
+  for (const id of ['connect', 'disconnect', 'save', 'test', 'cancel', 'delete', 'import', 'voice-test', 'finish', 'skip', 'usage-voice', 'usage-translate', 'translator-config', 'open-phrases']) nodes.set(id, new Element('button', id));
   const settings = { selectedProvider: 'qwen', translationProvider: 'qwen', encryptionAvailable: true,
     providers: AI_PROVIDERS.map(item => ({ ...item, fields: item.fields.map(field => ({ ...field, configured: false })) })) };
   const calls = { test: 0, cancel: 0, save: 0, connect: 0, finish: 0 };
@@ -43,6 +43,7 @@ async function renderer(overrides = {}) {
     cancelAITest: async () => { calls.cancel++; return { ok: true }; },
     connectAI: async provider => { calls.connect++; calls.connectedProvider = provider; return { ok: true, status: { status: 'connected', providerId: provider } }; },
     finishAISetup: async () => { calls.finish++; return { ok: true }; },
+    openPhrases: async () => { calls.phrases = (calls.phrases || 0) + 1; return { ok: true }; },
     onVoiceStatus(listener) { calls.statusListener = listener; }, ...overrides,
   };
   const document = {
@@ -66,6 +67,13 @@ test('translation selection saves the matching key and tests text without reques
   assert.equal(ui.calls.text, 1);
   assert.equal(ui.calls.test, 0);
   assert.equal(ui.nodes.get('connect').hidden, true);
+});
+
+test('settings exposes the phrase panel without saving or connecting', async () => {
+  const ui = await renderer();
+  await ui.nodes.get('open-phrases').click();
+  assert.equal(ui.calls.phrases, 1);
+  assert.equal(ui.calls.save + ui.calls.connect + ui.calls.test, 0);
 });
 
 test('cancelling while settings save is pending prevents any provider test request', async () => {

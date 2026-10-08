@@ -70,12 +70,12 @@ function renderPhrasesRows(phrasesList = []) {
 
     rowEl.innerHTML = `
       <div class="phrase-row-num">${digitLabel}</div>
-      <input type="text" class="phrase-input phrase-cn" data-index="${i}" placeholder="输入中文短语 (局内 Ctrl+${digitLabel})" value="${escapeHtml(phrase.cn || '')}" />
-      <input type="text" class="phrase-input phrase-en" data-index="${i}" placeholder="输入英文短语 (局内 Alt+${digitLabel})" value="${escapeHtml(phrase.en || '')}" />
+      <input type="text" class="phrase-input phrase-cn" data-index="${i}" aria-label="第 ${digitLabel} 行中文短语" placeholder="输入中文短语 (局内 Ctrl+${digitLabel})" value="${escapeHtml(phrase.cn || '')}" />
+      <input type="text" class="phrase-input phrase-en" data-index="${i}" aria-label="第 ${digitLabel} 行英文短语" placeholder="输入英文短语 (局内 Alt+${digitLabel})" value="${escapeHtml(phrase.en || '')}" />
       <div class="phrase-row-actions">
-        <button class="btn-phrase-trans" data-index="${i}" title="使用 Qwen-Flash 极速翻译此行">⚡ 译</button>
-        <button class="btn-phrase-copy" data-index="${i}" data-type="en" title="复制英文短语">📋 EN</button>
-        <button class="btn-phrase-copy" data-index="${i}" data-type="cn" title="复制中文短语">📋 CN</button>
+        <button class="btn-phrase-trans" data-index="${i}" title="使用设置中选择的翻译服务商翻译此行">⚡ 译</button>
+        <button class="btn-phrase-copy" data-index="${i}" data-type="en" aria-label="复制第 ${digitLabel} 行英文短语" title="复制英文短语">复制英文</button>
+        <button class="btn-phrase-copy" data-index="${i}" data-type="cn" aria-label="复制第 ${digitLabel} 行中文短语" title="复制中文短语">复制中文</button>
       </div>
     `;
 
@@ -179,7 +179,7 @@ async function translateAllEmptyRows() {
   } catch (err) {
     showToast(`批量翻译异常: ${err.message}`);
   } finally {
-    btnTranslateAll.textContent = '⚡ 一键 AI 翻译补全 (Qwen-Flash)';
+    btnTranslateAll.textContent = '⚡ AI 补全空白英文';
     btnTranslateAll.disabled = false;
   }
 }
@@ -190,7 +190,7 @@ function resetDefaultPhrases() {
 }
 
 async function savePhrasesFromUI() {
-  if (!rowsContainer) return;
+  if (!rowsContainer || btnSave.disabled) return;
   const rowEls = rowsContainer.querySelectorAll('.phrase-row-item');
   const phrases = [];
 
@@ -203,17 +203,19 @@ async function savePhrasesFromUI() {
     });
   });
 
+  btnSave.disabled = true;
   try {
     const res = await window.electronAPI?.savePhrasesConfig?.(phrases);
     if (res && res.success) {
       loadedPhrases = phrases;
       showToast('💾 快捷短语已保存并即时生效！可在局内按 Ctrl+1~0 / Alt+1~0');
-      setTimeout(closeEditor, 900);
     } else {
       showToast(`保存失败: ${res?.error || '未知错误'}`);
     }
   } catch (err) {
     showToast(`保存异常: ${err.message}`);
+  } finally {
+    btnSave.disabled = false;
   }
 }
 

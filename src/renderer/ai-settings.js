@@ -265,6 +265,10 @@ byId('custom-voice-id').addEventListener('input', () => { byId('voice-custom').v
 for (const id of ['model', 'workspace']) byId(id).addEventListener('input', markDirty);
 byId('region').addEventListener('change', markDirty);
 byId('translator-config').addEventListener('click', () => choosePurpose('translate'));
+byId('open-phrases').addEventListener('click', () => action(async () => {
+  const response = await api.openPhrases();
+  if (!response.ok) throw new Error(response.error);
+}));
 function requireCredentials() {
   const missing = profile().fields.find(field => !field.optional && !field.configured && !byId(`secret-${field.id}`).value.trim());
   if (missing) throw new Error(`请先填写 ${missing.label}。`);

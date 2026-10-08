@@ -14,6 +14,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   finishAISetup: () => ipcRenderer.invoke('ai:finish-setup'),
   openAIKeyPage: provider => ipcRenderer.invoke('ai:open-key-page', provider),
   openMicrophonePrivacy: () => ipcRenderer.invoke('ai:microphone-privacy'),
+  openPhrases: () => ipcRenderer.invoke('ai:open-phrases'),
   onSettingsPurpose: callback => {
     const listener = (_event, value) => callback(value);
     ipcRenderer.on('settings:purpose', listener);
