@@ -29,6 +29,8 @@ jobs:
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
       - run: node scripts/smoke-desktop.mjs release/win-unpacked/DotaPet.exe
+      - name: Verify update download and corrupt-package rejection without installing
+        run: npm run test:update-download
       - name: Installer checksum
         shell: pwsh
         run: |

@@ -1,10 +1,11 @@
 param(
-  [string]$Installer = (Join-Path $PSScriptRoot '..\release\DotaPet-Setup-0.1.2.exe'),
+  [string]$Installer,
   [Parameter(Mandatory = $true)][string]$Baseline
 )
 $ErrorActionPreference = 'Stop'
 $taskProject = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $taskExpectedVersion = (Get-Content -LiteralPath (Join-Path $taskProject 'package.json') -Raw | ConvertFrom-Json).version
+if (!$Installer) { $Installer = Join-Path $taskProject "release/DotaPet-Setup-$taskExpectedVersion.exe" }
 $taskInstaller = (Resolve-Path -LiteralPath $Installer).Path
 $taskBaseline = (Resolve-Path -LiteralPath $Baseline).Path
 $taskUninstallRoots = @('HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*', 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*', 'HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*')

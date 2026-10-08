@@ -18,12 +18,14 @@ delete environment.ELECTRON_RUN_AS_NODE;
 const child = spawn(executable, args, { env: environment, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
 let output = '';
 for (const stream of [child.stdout, child.stderr]) stream.on('data', chunk => { output += chunk.toString(); });
-const timer = setTimeout(() => child.kill(), 60000);
+let timedOut = false;
+const timer = setTimeout(() => { timedOut = true; child.kill(); }, 60000);
 child.on('error', error => { clearTimeout(timer); console.error(error.message); process.exitCode = 1; });
 child.on('close', code => {
   clearTimeout(timer);
   const passed = code === 0 && output.includes('[Smoke] PASS') && fs.existsSync(screenshot);
   console.log(output.trim());
+  if (timedOut) console.error('Smoke test exceeded 60 seconds. Inspect the last screenshot and console output above.');
   console.log(`Smoke ${passed ? 'PASS' : 'FAIL'}; isolated screenshot: ${screenshot}`);
   process.exitCode = passed ? 0 : 1;
 });
