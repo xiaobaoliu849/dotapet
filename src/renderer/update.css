@@ -1,7 +1,8 @@
 :root { color-scheme: light; font: 17px/1.6 "Segoe UI", "Microsoft YaHei", sans-serif; color: #26372f; background: #f7f8f4; }
 * { box-sizing: border-box; }
 body { margin: 0; }
-main { min-height: 100vh; padding: 30px 38px 22px; display: flex; flex-direction: column; }
+/* Shown beside the settings center sidebar; a narrow column keeps the one action obvious. */
+main { min-height: 100vh; max-width: 640px; margin: 0 auto; padding: 30px 38px 22px; display: flex; flex-direction: column; }
 header { display: flex; gap: 14px; align-items: center; margin-bottom: 30px; }
 header img { width: 56px; height: 56px; border-radius: 15px; }
 .eyebrow { font-size: 19px; font-weight: 650; }

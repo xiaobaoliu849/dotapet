@@ -313,10 +313,9 @@ function chooseTranslator(id) {
     feedback(`翻译已改用${providerNames[id]}。`, 'success', 'translate-feedback');
   });
 }
-/** Main asks for a purpose when a feature needs setup or help; bring that part forward. */
+/** Main asks for a purpose when a feature needs setup; bring that part forward. */
 function choosePurpose(purpose) {
-  if (!settings || !['voice', 'translate', 'help'].includes(purpose)) return;
-  if (purpose === 'help') { byId('help').open = true; byId('help').scrollIntoView?.({ block: 'start' }); return; }
+  if (!settings || !['voice', 'translate'].includes(purpose)) return;
   const card = byId(purpose === 'translate' ? 'translate-card' : 'voice-card');
   card.scrollIntoView?.({ block: 'center' });
   card.classList?.add('attention');
@@ -325,6 +324,8 @@ function choosePurpose(purpose) {
   else focusCredential();
 }
 api.onSettingsPurpose?.(choosePurpose);
+// Switching to another sidebar page ends a microphone check in progress.
+api.onHidden?.(() => window.stopMicrophoneCheck?.());
 byId('google-mode').addEventListener('change', () => {
   rememberDraft(); window.stopMicrophoneCheck?.(); renderProfile(); status(lastStatus);
   feedback(byId('google-mode').value === 'google-translate' ? '已切换为实时语音翻译，密钥与 Gemini 聊天共用。' : '已切换为 Gemini 语音聊天。');
@@ -340,10 +341,6 @@ byId('custom-voice-id').addEventListener('input', () => { byId('voice-custom').v
 for (const id of ['model', 'workspace']) byId(id).addEventListener('input', markDirty);
 byId('region').addEventListener('change', markDirty);
 byId('translate-change').addEventListener('click', () => { changingTranslateKey = true; renderTranslator(); byId('translate-secret')?.focus?.(); });
-byId('open-phrases').addEventListener('click', () => action(async () => {
-  const response = await api.openPhrases();
-  if (!response.ok) throw new Error(response.error);
-}));
 function requireCredentials(item = profile()) {
   const missing = item.fields.find(field => !field.optional && !field.configured && !keyDrafts.get(field.account)?.trim());
   if (missing) throw new Error(`请先粘贴 ${keyName(missing)}。`);
@@ -412,7 +409,6 @@ api.onVoiceStatus(status);
 setBusy(true);
 api.getAISettings().then(response => {
   if (!response.ok) throw new Error(response.error);
-  if (byId('settings-version')) byId('settings-version').textContent = response.version ? `· v${response.version}` : '';
   if (['aurora_wolf', 'donkey_courier', 'treant_sapling', 'mischievous_greevil', 'baby_roshan'].includes(response.companionPet)) {
     byId('welcome-pet').src = `assets/pets/${response.companionPet}/idle.svg`;
   }

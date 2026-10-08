@@ -1,6 +1,6 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
-// Only settings actions are exposed; finishing closes this settings window.
+// Only settings actions are exposed; finishing closes the settings center.
 contextBridge.exposeInMainWorld('electronAPI', {
   getAISettings: () => ipcRenderer.invoke('ai:get-settings'),
   saveAISettings: settings => ipcRenderer.invoke('ai:save-settings', settings),
@@ -14,11 +14,15 @@ contextBridge.exposeInMainWorld('electronAPI', {
   finishAISetup: () => ipcRenderer.invoke('ai:finish-setup'),
   openAIKeyPage: provider => ipcRenderer.invoke('ai:open-key-page', provider),
   openMicrophonePrivacy: () => ipcRenderer.invoke('ai:microphone-privacy'),
-  openPhrases: () => ipcRenderer.invoke('ai:open-phrases'),
   onSettingsPurpose: callback => {
     const listener = (_event, value) => callback(value);
     ipcRenderer.on('settings:purpose', listener);
     return () => ipcRenderer.removeListener('settings:purpose', listener);
+  },
+  onHidden: callback => {
+    const listener = () => callback();
+    ipcRenderer.on('settings:hidden', listener);
+    return () => ipcRenderer.removeListener('settings:hidden', listener);
   },
   onVoiceStatus: callback => {
     const listener = (_event, value) => callback(value);

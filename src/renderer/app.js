@@ -875,14 +875,12 @@ const elements = {
   ctxAttrBadge: document.getElementById('ctx-attr-badge'),
   ctxBtnVoice: document.getElementById('ctx-btn-voice'),
   ctxBtnTranslate: document.getElementById('ctx-btn-translate'),
-  ctxBtnPhrases: document.getElementById('ctx-btn-phrases'),
   ctxBtnPin: document.getElementById('ctx-btn-pin'),
   ctxBtnScale: document.getElementById('ctx-btn-scale'),
   ctxScaleLabel: document.getElementById('ctx-scale-label'),
   ctxBtnProvider: document.getElementById('ctx-btn-provider'),
   ctxProviderLabel: document.getElementById('ctx-provider-label'),
   ctxBtnWardrobe: document.getElementById('ctx-btn-wardrobe'),
-  ctxBtnHeroes: document.getElementById('ctx-btn-heroes'),
   ctxBtnSnapBr: document.getElementById('ctx-btn-snap-br'),
   ctxBtnSnapBl: document.getElementById('ctx-btn-snap-bl'),
   ctxBtnCenter: document.getElementById('ctx-btn-center'),
@@ -2700,16 +2698,6 @@ function setupEventListeners() {
     elements.ctxBtnWardrobe?.addEventListener('click', () => {
       closePetContextMenu();
       window.electronAPI?.openCustomization?.().then(result => { if (result && !result.ok) showToast(result.error); });
-    });
-
-    elements.ctxBtnPhrases?.addEventListener('click', () => {
-      closePetContextMenu();
-      window.electronAPI?.togglePhrasesWindow?.();
-    });
-
-    elements.ctxBtnHeroes?.addEventListener('click', () => {
-      closePetContextMenu();
-      openHeroModal(state.isPetMode ? 'pet-matrix' : 'heroes');
     });
 
     elements.ctxBtnSnapBr?.addEventListener('click', () => {

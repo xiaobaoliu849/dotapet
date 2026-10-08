@@ -19,6 +19,7 @@ import { isTrustedSettingsSender, aiKeyPage, settingsAffectVoice } from './aiSet
 import { createCustomizationController } from './customizationIpc.js';
 import { runCustomizationSmoke } from './customizationSmoke.js';
 import { createWelcomeController } from './welcomeController.js';
+import { createControlCenter } from './controlCenter.js';
 import { presentSettingsWhenReady, settingsWindowBounds } from './settingsPresentation.js';
 import { UpdateService } from './updateService.js';
 import { createUpdateController } from './updateController.js';
@@ -88,7 +89,9 @@ let roamEngine = null;
 let gsiServer = null;
 let heroesConfig = null;
 let aiSettingsStore = null;
-let aiSettingsWindow = null;
+// One settings window with a sidebar; its 语音与翻译 page is ai-settings.html.
+let controlCenter = null;
+const settingsPage = () => controlCenter?.contents('services') || null;
 let connectionTest = null;
 let customizationController = null;
 let welcomeController = null;
@@ -98,9 +101,8 @@ let lastVoiceStatus = { status: 'disconnected', provider: '未连接' };
 
 function publishVoiceStatus(data) {
   lastVoiceStatus = data?.status === 'error' ? { ...data, error: connectionError(data.error) } : data;
-  for (const win of [mainWindow, aiSettingsWindow]) {
-    if (win && !win.isDestroyed()) win.webContents.send('voice:status', lastVoiceStatus);
-  }
+  if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('voice:status', lastVoiceStatus);
+  settingsPage()?.send('voice:status', lastVoiceStatus);
 }
 
 function cancelConnectionTest() {
@@ -119,49 +121,52 @@ function stopVoiceForSettings() {
 
 let settingsPurpose = '';
 let settingsFirstRun = false;
+/**
+ * Open the settings center. A purpose picks the page (and, for voice or
+ * translation, the card to bring forward); without one the window reopens on
+ * whatever page it last showed.
+ */
 function openAISettings(purpose = '', { firstRun = false } = {}) {
-  settingsPurpose = ['voice', 'translate', 'help'].includes(purpose) ? purpose : '';
   settingsFirstRun ||= firstRun;
-  if (aiSettingsWindow && !aiSettingsWindow.isDestroyed()) {
-    if (settingsPurpose) aiSettingsWindow.webContents.send('settings:purpose', settingsPurpose);
-    if (!smokeTest) { if (aiSettingsWindow.isMinimized()) aiSettingsWindow.restore(); aiSettingsWindow.show(); aiSettingsWindow.focus(); aiSettingsWindow.moveTop(); }
-    return aiSettingsWindow;
+  if (purpose === 'help') return controlCenter.open('help');
+  if (!['voice', 'translate'].includes(purpose)) return controlCenter.open();
+  settingsPurpose = purpose;
+  const loaded = settingsPage();
+  const window = controlCenter.open('services');
+  // A loaded page is told directly; a loading one reads it at startup.
+  if (loaded) { loaded.send('settings:purpose', purpose); if (!loaded.isLoading()) settingsPurpose = ''; }
+  return window;
+}
+
+function onSettingsCenterClosed() {
+  cancelConnectionTest();
+  settingsPurpose = '';
+  if (settingsFirstRun) {
+    try { welcomeController.store.dismiss(app.getVersion()); }
+    catch (error) { console.warn('[Settings] Could not save first-run preference:', error.message); }
+    // Teach the pet where it lives instead of showing a tutorial.
+    if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('onboarding:hint');
   }
-  aiSettingsWindow = new BrowserWindow({
-    icon: appIcon,
-    ...settingsWindowBounds(screen.getPrimaryDisplay().workArea),
-    title: '刀塔宠物 · 翻译与语音设置', titleBarStyle: 'hidden',
-    titleBarOverlay: { color: '#f7f8f4', symbolColor: '#52604f', height: 48 },
-    autoHideMenuBar: true, show: false, backgroundColor: '#f7f8f4',
-    parent: mainWindow || undefined,
-    webPreferences: { preload: path.join(__dirname, '../preload/ai-settings.js'), contextIsolation: true, nodeIntegration: false, sandbox: true, backgroundThrottling: false },
-  });
-  aiSettingsWindow.webContents.on('will-navigate', event => event.preventDefault());
-  aiSettingsWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
-  presentSettingsWhenReady(aiSettingsWindow, { smokeTest });
-  aiSettingsWindow.on('closed', () => {
-    cancelConnectionTest(); aiSettingsWindow = null;
-    if (settingsFirstRun) {
-      try { welcomeController.store.dismiss(app.getVersion()); }
-      catch (error) { console.warn('[Settings] Could not save first-run preference:', error.message); }
-      // Teach the pet where it lives instead of showing a tutorial.
-      if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('onboarding:hint');
-    }
-    settingsFirstRun = false;
-  });
-  aiSettingsWindow.loadFile(path.join(__dirname, '../renderer/ai-settings.html'));
-  return aiSettingsWindow;
+  settingsFirstRun = false;
 }
 
 async function runCompanionSmokeTest() {
   if (mainWindow.getTitle() !== '刀塔宠物 · DotaPet') throw new Error('Desktop still shows legacy branding');
+  const { pageLoaded, captureHub, navigateHub } = await import('./controlCenterSmoke.js');
   const firstSetup = welcomeController.showOnFirstRun();
-  if (!firstSetup || firstSetup !== aiSettingsWindow) throw new Error('First launch did not open configuration directly');
+  if (!firstSetup || firstSetup !== controlCenter.window || controlCenter.active !== 'services') throw new Error('First launch did not open configuration directly');
   const firstSetupClosed = new Promise(resolve => firstSetup.once('closed', resolve));
-  await new Promise(resolve => firstSetup.webContents.once('did-finish-load', resolve));
+  await Promise.all([pageLoaded(settingsPage()), pageLoaded(firstSetup.webContents)]);
   firstSetup.setSize(620, 640);
   await new Promise(resolve => setTimeout(resolve, 150));
   await firstSetup.webContents.executeJavaScript(`(async () => {
+    for (let i=0; i<100 && document.body.dataset.compact !== 'true'; i++) await new Promise(resolve=>setTimeout(resolve,20));
+    if (document.body.dataset.compact !== 'true') throw new Error('Narrow settings center kept the wide sidebar');
+    const current = document.querySelector('.nav-item[aria-current=page]');
+    if (current?.dataset.page !== 'services') throw new Error('Sidebar does not mark the setup page');
+    if (document.querySelector('.nav-item[data-page=update]').hidden === false) throw new Error('Update entry shown without an updater');
+  })()`);
+  await settingsPage().executeJavaScript(`(async () => {
     for (let i=0; i<100 && document.getElementById('provider').disabled; i++) await new Promise(resolve=>setTimeout(resolve,40));
     if(document.querySelectorAll('.provider-option').length !== 4) throw new Error('First launch did not show all four services');
     if(!document.getElementById('translate-card') || document.getElementById('translate-secret')) throw new Error('First launch should share the Qwen key with translation');
@@ -177,9 +182,10 @@ async function runCompanionSmokeTest() {
   const reloaded = new AISettingsStore({ filePath: aiSettingsStore.filePath, safeStorage });
   if (reloaded.getPrivate('google').apiKey !== 'smoke-encrypted-key') throw new Error('Encrypted key did not survive reload');
   aiSettingsStore.deleteSecrets('google');
-  const win = openAISettings();
-  await new Promise(resolve => win.webContents.once('did-finish-load', resolve));
-  const result = await win.webContents.executeJavaScript(`(async () => {
+  openAISettings();
+  const page = settingsPage();
+  await Promise.all([pageLoaded(page), pageLoaded(controlCenter.window.webContents)]);
+  const result = await page.executeJavaScript(`(async () => {
     const waitFor = async predicate => {
       for (let i = 0; i < 100; i++) { if (predicate()) return; await new Promise(resolve => setTimeout(resolve, 40)); }
       throw new Error('Settings UI timed out');
@@ -227,7 +233,7 @@ async function runCompanionSmokeTest() {
     return { providerCount: state.settings.providers.length, visibleVoiceProviders: 4, directFirstSetup: true, encryptedStorage: state.settings.encryptionAvailable };
   })()`);
   // The microphone check and help now live in settings; the old guide window is gone.
-  const onboarding = await win.webContents.executeJavaScript(`(async () => {
+  const onboarding = await page.executeJavaScript(`(async () => {
     const waitFor = async predicate => { for(let i=0;i<350;i++){ if(predicate()) return; await new Promise(r=>setTimeout(r,40)); } throw new Error('Microphone check timed out: '+document.getElementById('mic-status').textContent); };
     const get = id => document.getElementById(id);
     const acquired=[]; const original=navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
@@ -245,33 +251,51 @@ async function runCompanionSmokeTest() {
     get('provider').value='doubao'; get('provider').dispatchEvent(new Event('change'));
     if(acquired.some(stream=>stream.getTracks().some(track=>track.readyState!=='ended'))) throw new Error('Changing provider left microphone open');
     get('provider').value='qwen'; get('provider').dispatchEvent(new Event('change'));
-    get('advanced').open = false;
+    get('mic-start').click(); await waitFor(()=>acquired.length===3);
+    window.__micStreams = acquired;
     return { localMicrophone:true, detectedSound, stoppedOnNavigation:true };
   })()`);
+  // Leaving the page in the sidebar must release the microphone and keep unsaved input.
+  await page.executeJavaScript(`(() => {
+    const provider = document.getElementById('provider'); provider.value = 'doubao'; provider.dispatchEvent(new Event('change'));
+    const input = document.getElementById('secret-apiKey'); input.value = 'smoke-unsaved-draft'; input.dispatchEvent(new Event('input'));
+  })()`);
+  await navigateHub(controlCenter, 'appearance');
+  await pageLoaded(controlCenter.contents('appearance'));
+  await page.executeJavaScript(`(async () => {
+    for (let i=0; i<100 && window.__micStreams.some(s=>s.getTracks().some(t=>t.readyState!=='ended')); i++) await new Promise(r=>setTimeout(r,20));
+    if (window.__micStreams.some(s=>s.getTracks().some(t=>t.readyState!=='ended'))) throw new Error('Switching pages left microphone open');
+  })()`);
   openAISettings('help');
-  await win.webContents.executeJavaScript(`(async () => {
-    for (let i=0; i<50 && !document.getElementById('help').open; i++) await new Promise(r=>setTimeout(r,20));
-    if (!document.getElementById('help').open) throw new Error('Help request did not open shortcuts and help');
+  if (controlCenter.active !== 'help') throw new Error('Help request did not open the help page');
+  await controlCenter.window.webContents.executeJavaScript(`(async () => {
+    for (let i=0; i<100 && document.getElementById('page-help').hidden; i++) await new Promise(r=>setTimeout(r,20));
+    if (document.getElementById('page-help').hidden || !document.getElementById('page-phrases').hidden) throw new Error('Help page not shown alone');
     if (document.documentElement.scrollWidth > document.documentElement.clientWidth) throw new Error('Help overflows horizontally');
   })()`);
+  openAISettings('translate');
+  if (controlCenter.active !== 'services' || settingsPage() !== page) throw new Error('Translate request did not return to the same settings page');
+  await page.executeJavaScript(`(async () => {
+    const get = id => document.getElementById(id);
+    if (get('provider').value !== 'doubao' || get('secret-apiKey').value !== 'smoke-unsaved-draft') throw new Error('Switching pages lost an unsaved key');
+    get('secret-apiKey').value = ''; get('secret-apiKey').dispatchEvent(new Event('input'));
+    get('provider').value = 'qwen'; get('provider').dispatchEvent(new Event('change'));
+    get('advanced').open = false;
+  })()`);
+  openAISettings();
+  if (controlCenter.active !== 'services') throw new Error('Reopening without a purpose changed the page');
   const vault = fs.readFileSync(aiSettingsStore.filePath, 'utf8');
   if (vault.includes('smoke-google-key')) throw new Error('Vault contains plaintext');
   const outputArg = process.argv.find(value => value.startsWith('--companion-smoke-output='));
   if (outputArg) {
-    const capture = async () => {
-      // A hidden native window can return the previous compositor frame first.
-      // Prime capture, then wait for two renderer frames before saving the image.
-      await win.webContents.capturePage();
-      await win.webContents.executeJavaScript('new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))');
-      return win.webContents.capturePage();
-    };
+    const capture = () => captureHub(controlCenter, nativeImage);
     const image = await capture();
     if (image.isEmpty()) throw new Error('Settings screenshot is empty');
     const output = path.resolve(outputArg.slice('--companion-smoke-output='.length));
     fs.writeFileSync(output, image.toPNG());
     for (const state of ['connecting', 'connected', 'error']) {
-      win.webContents.send('voice:status', { status: state, providerId: 'qwen', ...(state === 'error' ? { error: '请检查密钥与网络后重试。' } : {}) });
-      await win.webContents.executeJavaScript(`(async () => {
+      page.send('voice:status', { status: state, providerId: 'qwen', ...(state === 'error' ? { error: '请检查密钥与网络后重试。' } : {}) });
+      await page.executeJavaScript(`(async () => {
         for (let i=0; i<100 && document.getElementById('connection-status').dataset.state !== '${state}'; i++) await new Promise(resolve=>setTimeout(resolve,20));
         if (document.getElementById('connection-status').dataset.state !== '${state}') throw new Error('Connection state did not update');
         if ('${state}' === 'connecting' && !document.getElementById('connect').disabled) throw new Error('Connecting allowed duplicate starts');
@@ -279,12 +303,13 @@ async function runCompanionSmokeTest() {
       })()`);
       fs.writeFileSync(output.replace(/\.png$/, `-${state}.png`), (await capture()).toPNG());
     }
-    win.webContents.send('voice:status', { status: 'disconnected', providerId: 'qwen' });
-    await win.webContents.executeJavaScript("document.getElementById('feedback').textContent = ''; document.getElementById('feedback').dataset.kind = ''");
-    await win.webContents.executeJavaScript("document.getElementById('advanced').open = true; window.scrollTo(0, document.body.scrollHeight)");
+    page.send('voice:status', { status: 'disconnected', providerId: 'qwen' });
+    await page.executeJavaScript("document.getElementById('feedback').textContent = ''; document.getElementById('feedback').dataset.kind = ''");
+    await page.executeJavaScript("document.getElementById('advanced').open = true; window.scrollTo(0, document.body.scrollHeight)");
     fs.writeFileSync(output.replace(/\.png$/, '-actions.png'), (await capture()).toPNG());
-    await win.webContents.executeJavaScript("document.getElementById('help').scrollIntoView()");
+    await navigateHub(controlCenter, 'help');
     fs.writeFileSync(output.replace(/\.png$/, '-help.png'), (await capture()).toPNG());
+    await navigateHub(controlCenter, 'services');
     // The pet rests alone; toolbars appear on hover; right-click holds the everyday actions.
     const petShot = async (script, name) => {
       await mainWindow.webContents.executeJavaScript(`${script}; new Promise(resolve => setTimeout(resolve, 300))`);
@@ -296,24 +321,25 @@ async function runCompanionSmokeTest() {
     // A hidden smoke window does not advance the menu's fade-in animation.
     await petShot("const menu = document.getElementById('pet-context-menu'); menu.style.animation = 'none'; menu.classList.remove('hidden')", 'pet-menu');
     await mainWindow.webContents.executeJavaScript("document.getElementById('pet-context-menu').style.animation = ''; document.getElementById('pet-context-menu').classList.add('hidden'); document.body.classList.remove('hud-awake')");
-    await win.webContents.executeJavaScript("document.getElementById('advanced').open = false; document.getElementById('provider').value = 'doubao'; document.getElementById('provider').dispatchEvent(new Event('change')); window.scrollTo(0,0)");
+    await page.executeJavaScript("document.getElementById('advanced').open = false; document.getElementById('provider').value = 'doubao'; document.getElementById('provider').dispatchEvent(new Event('change')); window.scrollTo(0,0)");
     fs.writeFileSync(output.replace(/\.png$/, '-doubao.png'), (await capture()).toPNG());
-    win.setSize(620, 730);
+    controlCenter.window.setSize(620, 730);
     await new Promise(resolve => setTimeout(resolve, 150));
-    const overflow = await win.webContents.executeJavaScript('document.documentElement.scrollWidth > document.documentElement.clientWidth');
+    const overflow = await page.executeJavaScript('document.documentElement.scrollWidth > document.documentElement.clientWidth');
     if (overflow) throw new Error('Narrow settings page overflows horizontally');
     fs.writeFileSync(output.replace(/\.png$/, '-narrow.png'), (await capture()).toPNG());
-    win.setSize(940, 820);
-    await win.webContents.executeJavaScript("document.getElementById('provider').value = 'qwen'; document.getElementById('provider').dispatchEvent(new Event('change')); document.querySelector('#translator-options [data-provider=deepseek]').click(); document.getElementById('translate-card').scrollIntoView()");
+    controlCenter.window.setSize(1060, 820);
+    await new Promise(resolve => setTimeout(resolve, 150));
+    await page.executeJavaScript("document.getElementById('provider').value = 'qwen'; document.getElementById('provider').dispatchEvent(new Event('change')); document.querySelector('#translator-options [data-provider=deepseek]').click(); document.getElementById('translate-card').scrollIntoView()");
     fs.writeFileSync(output.replace(/\.png$/, '-translation.png'), (await capture()).toPNG());
-    await win.webContents.executeJavaScript("if(!document.getElementById('translate-secret')) throw new Error('DeepSeek translation did not ask for its key'); document.querySelector('#translator-options [data-provider=qwen]').click(); window.scrollTo(0,0)");
+    await page.executeJavaScript("if(!document.getElementById('translate-secret')) throw new Error('DeepSeek translation did not ask for its key'); document.querySelector('#translator-options [data-provider=qwen]').click(); window.scrollTo(0,0)");
   }
-  const customizationResult = await runCustomizationSmoke({ controller: customizationController, mainWindow, dialog, outputDirectory: app.getPath('userData') });
+  const customizationResult = await runCustomizationSmoke({ controller: customizationController, controlCenter, mainWindow, dialog, nativeImage, outputDirectory: app.getPath('userData') });
   const { runPhrasesSmoke } = await import('./phrasesSmoke.js');
-  const phrases = await runPhrasesSmoke({ settingsWindow: win, getWindow: () => phrasesWindow,
-    getCopiedText: () => smokeClipboardText, outputDirectory: app.getPath('userData') });
+  const phrases = await runPhrasesSmoke({ controlCenter, getWindow: () => phrasesWindow,
+    getCopiedText: () => smokeClipboardText, nativeImage, outputDirectory: app.getPath('userData') });
   const { runUpdateSmoke } = await import('./updateSmoke.js');
-  const updates = await runUpdateSmoke({ electron, rendererDirectory: path.join(__dirname, '../renderer'), icon: appIcon, outputDirectory: app.getPath('userData') });
+  const updates = await runUpdateSmoke({ electron, rendererDirectory: path.join(__dirname, '../renderer'), controlCenter, icon: appIcon, outputDirectory: app.getPath('userData') });
   console.log('[Smoke] PASS', JSON.stringify({ ...result, onboarding, customization: customizationResult, phrases, updates }));
   app.exit(0);
 }
@@ -844,7 +870,7 @@ function createWindow() {
     if (!mainWindow || mainWindow.isDestroyed()) return;
     mainWindow.show();
     mainWindow.setAlwaysOnTop(true, TOPMOST_LEVEL);
-    if (!aiSettingsWindow || aiSettingsWindow.isDestroyed()) {
+    if (!controlCenter?.window) {
       mainWindow.focus();
       mainWindow.moveTop();
     }
@@ -914,8 +940,7 @@ function createWindow() {
       if (!mainWindow || mainWindow.isDestroyed() || !mainWindow.isVisible() || mainWindow.isMinimized()) return;
       // While the phrase editor has focus the user is at the desktop working
       // in it — don't yank the pet above the editor every half second.
-      const settingsActive = aiSettingsWindow && !aiSettingsWindow.isDestroyed()
-        && aiSettingsWindow.isVisible() && !aiSettingsWindow.isMinimized();
+      const settingsActive = Boolean(controlCenter?.isOpen());
       const phrasesActive = phrasesWindow && !phrasesWindow.isDestroyed()
         && phrasesWindow.isVisible() && phrasesWindow.isFocused();
       if (settingsActive || phrasesActive) return;
@@ -1282,10 +1307,11 @@ function updateTrayMenu() {
         : '未连接 (选择后才开始连接)'}`,
       submenu: providerSubmenu,
     },
-    { label: '⚙️ 设置与帮助', click: () => openAISettings() },
-    { label: '🎨 形象与背景', click: () => customizationController?.open() },
-    { label: updateService?.state.version && ['available', 'ready', 'downloading'].includes(updateService.state.phase)
-      ? `⬆️ 更新到 v${updateService.state.version}` : `⬆️ 检查更新 · v${app.getVersion()}`, click: () => updateController?.open() },
+    // Voice, appearance, phrases, help and updates all live in the settings center.
+    { label: '⚙️ 设置中心', click: () => openAISettings() },
+    // Updates have their own sidebar page; the tray only speaks up when one is waiting.
+    ...(updateService?.state.version && ['available', 'ready', 'downloading'].includes(updateService.state.phase)
+      ? [{ label: `⬆️ 更新到 v${updateService.state.version}`, click: () => updateController?.open() }] : []),
     {
       label: '📍 吸附位置',
       submenu: [
@@ -1302,12 +1328,6 @@ function updateTrayMenu() {
           click: () => snapWindow('bottom-left'),
         },
       ],
-    },
-    {
-      label: '⚡ 快捷短语 (F6)',
-      click: () => {
-        togglePhrasesWindow();
-      },
     },
     {
       label: mainWindow?.isVisible() ? '👁️ 隐藏桌宠' : '👁️ 显示桌宠',
@@ -1446,7 +1466,7 @@ function setupServices() {
 
 function setupIPC() {
   const settingsHandler = handler => async (event, payload) => {
-    if (!isTrustedSettingsSender(event, aiSettingsWindow, aiSettingsURL)) {
+    if (!isTrustedSettingsSender(event, settingsPage(), aiSettingsURL)) {
       return { ok: false, error: '此窗口无权访问 AI 设置。' };
     }
     try { return { ok: true, ...await handler(payload) }; }
@@ -1457,11 +1477,10 @@ function setupIPC() {
     await shell.openExternal('ms-settings:privacy-microphone');
     return {};
   }));
-  ipcMain.handle('ai:open-phrases', settingsHandler(() => { createPhrasesWindow(); return {}; }));
   ipcMain.handle('ai:finish-setup', settingsHandler(() => {
     // Return before closing so the calling renderer receives its result.
-    const window = aiSettingsWindow;
-    setImmediate(() => { if (!smokeTest) mainWindow?.show(); window?.close(); });
+    const window = controlCenter.window;
+    setImmediate(() => { if (!smokeTest) mainWindow?.show(); if (window && !window.isDestroyed()) window.close(); });
     return {};
   }));
   ipcMain.handle('ai:open-key-page', settingsHandler(async provider => {
@@ -1471,8 +1490,10 @@ function setupIPC() {
   ipcMain.handle('ai:get-settings', settingsHandler(() => {
     const pet = activePetPersona?.id?.replace(/^pet:/, '');
     const allowedPets = ['aurora_wolf', 'donkey_courier', 'treant_sapling', 'mischievous_greevil', 'baby_roshan'];
+    // A purpose is a one-time request; a later visit to the page must not replay it.
+    const purpose = settingsPurpose; settingsPurpose = '';
     return { settings: aiSettingsStore.publicSettings(), status: lastVoiceStatus,
-      version: app.getVersion(), purpose: settingsPurpose,
+      version: app.getVersion(), purpose,
       companionPet: allowedPets.includes(pet) ? pet : 'mischievous_greevil' };
   }));
   ipcMain.handle('ai:save-settings', settingsHandler(payload => {
@@ -1490,7 +1511,7 @@ function setupIPC() {
     return { settings };
   }));
   ipcMain.handle('ai:import-config', settingsHandler(async () => {
-    const selected = await dialog.showOpenDialog(aiSettingsWindow || mainWindow, {
+    const selected = await dialog.showOpenDialog(controlCenter.window || mainWindow, {
       title: '主动导入已有配置（文件只在本机读取）', properties: ['openFile'], filters: [{ name: 'JSON 配置', extensions: ['json'] }],
     });
     if (selected.canceled) return { cancelled: true };
@@ -1796,13 +1817,18 @@ if (app?.whenReady) {  app.whenReady().then(() => {
     catch (error) { lastVoiceStatus = { status: 'error', error: connectionError(error.message) }; }
     loadHeroesConfig();
     loadTranslateTargetLanguage();
+    // Created before anything that can ask for settings (pet window, tray, IPC).
+    controlCenter = createControlCenter({ electron, rendererDirectory: path.join(__dirname, '../renderer'), icon: appIcon, smokeTest,
+      getParent: () => mainWindow, onClosed: onSettingsCenterClosed, openPhrases: () => createPhrasesWindow() });
+    controlCenter.register('services', { file: 'ai-settings.html', preload: '../preload/ai-settings.js', background: '#f6f7f2', backgroundThrottling: false,
+      onHide: contents => contents.send('settings:hidden') });
     createWindow();
     if (!smokeTest) { setupTray(); setupServices(); }
     setupIPC();
     customizationController = createCustomizationController({ electron, rendererDirectory: path.join(__dirname, '../renderer'),
-      getMainWindow: () => mainWindow, getHeroesConfig: () => heroesConfig,
+      hub: controlCenter, getMainWindow: () => mainWindow, getHeroesConfig: () => heroesConfig,
       getCompanionHero: () => COMPANION_PSEUDO_HERO,
-      getActiveKey: () => activePetPersona?.id || `hero:${currentHeroId}`, smokeTest });
+      getActiveKey: () => activePetPersona?.id || `hero:${currentHeroId}` });
     welcomeController = createWelcomeController({ electron, openSettings: openAISettings });
 
     if (smokeTest) {
@@ -1820,7 +1846,8 @@ if (app?.whenReady) {  app.whenReady().then(() => {
       runCompanionSmokeTest().catch(async error => {
         console.error('[Smoke]', error.message);
         try {
-          if (aiSettingsWindow && !aiSettingsWindow.isDestroyed()) fs.writeFileSync(path.join(app.getPath('userData'), 'smoke-failure.png'), (await aiSettingsWindow.webContents.capturePage()).toPNG());
+          const { captureHub } = await import('./controlCenterSmoke.js');
+          if (controlCenter?.window) fs.writeFileSync(path.join(app.getPath('userData'), 'smoke-failure.png'), (await captureHub(controlCenter, nativeImage)).toPNG());
         } catch { /* Preserve the original failure even if capture is unavailable. */ }
         app.exit(1);
       }); return;
@@ -1829,7 +1856,7 @@ if (app?.whenReady) {  app.whenReady().then(() => {
     // Load the CJS updater only in a real session; isolated smoke tests never dial out.
     import('electron-updater').then(({ default: electronUpdater }) => {
       updateService = new UpdateService({ updater: electronUpdater.autoUpdater, currentVersion: app.getVersion(), enabled: app.isPackaged && process.platform === 'win32' });
-      updateController = createUpdateController({ electron, service: updateService, rendererDirectory: path.join(__dirname, '../renderer'), icon: appIcon, onState: updateTrayMenu });
+      updateController = createUpdateController({ electron, service: updateService, rendererDirectory: path.join(__dirname, '../renderer'), hub: controlCenter, icon: appIcon, onState: updateTrayMenu });
       updateService.start();
       updateTrayMenu();
     }).catch(error => console.warn('[Updates] Could not initialize updater:', error.message));

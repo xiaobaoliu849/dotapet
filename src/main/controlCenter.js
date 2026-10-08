@@ -1,0 +1,189 @@
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { presentSettingsWhenReady, settingsWindowBounds } from './settingsPresentation.js';
+import { isTrustedSettingsSender } from './aiSettingsIpc.js';
+
+/** Height of the shell's top bar; the native window buttons sit inside it. */
+export const HUB_TOP = 40;
+/** Pages drawn by the shell itself; every other page is an isolated view. */
+export const NATIVE_PAGES = ['phrases', 'help'];
+export const PAGE_ORDER = ['services', 'appearance', 'phrases', 'help', 'update'];
+
+/** Main owns the geometry so the sidebar and the page view never disagree. */
+export function hubLayout(width, height) {
+  const compact = width < 760;
+  const sidebar = compact ? 64 : 196;
+  return { compact, sidebar,
+    content: { x: sidebar, y: HUB_TOP, width: Math.max(0, width - sidebar), height: Math.max(0, height - HUB_TOP) } };
+}
+
+/**
+ * One settings window with a sidebar. Each registered page keeps its own
+ * document, preload and IPC trust, so a page cannot reach another page's API
+ * and its unsaved input survives switching pages.
+ */
+export function createControlCenter({ electron, rendererDirectory, icon, smokeTest = false, getParent = () => null, onClosed = () => {}, openPhrases = () => {} }) {
+  const { BrowserWindow, WebContentsView, ipcMain, screen, app } = electron;
+  const shellURL = pathToFileURL(path.join(rendererDirectory, 'control-center.html')).href;
+  const pages = new Map();
+  const views = new Map();
+  let window = null;
+  let active = 'services';
+  let geometry = hubLayout(1060, 820);
+
+  const alive = () => Boolean(window && !window.isDestroyed());
+  const available = () => PAGE_ORDER.filter(id => NATIVE_PAGES.includes(id) || pages.has(id));
+  const state = () => ({ pages: available(), active, compact: geometry.compact, sidebar: geometry.sidebar, top: HUB_TOP,
+    version: app?.getVersion?.() || '' });
+  function publishState() {
+    if (alive() && !window.webContents.isDestroyed()) window.webContents.send('hub:state', state());
+  }
+  function layout() {
+    if (!alive()) return;
+    const previous = geometry;
+    geometry = hubLayout(...window.getContentSize());
+    for (const view of views.values()) view.setBounds(geometry.content);
+    if (geometry.sidebar !== previous.sidebar) publishState();
+  }
+  function detach(id, view) {
+    if (views.get(id) !== view) return false;
+    views.delete(id);
+    if (alive()) window.contentView.removeChildView(view);
+    return true;
+  }
+  function closeView(id) {
+    const view = views.get(id);
+    if (view && detach(id, view) && !view.webContents.isDestroyed()) view.webContents.close();
+  }
+  /**
+   * Focus inside a page cannot Tab back to the sidebar (separate documents),
+   * so the usual tab-switching keys move between pages from anywhere.
+   */
+  function switchKeys(event, input) {
+    if (input.type !== 'keyDown' || !input.control || input.alt || input.meta) return;
+    const forward = input.key === 'Tab' ? !input.shift : input.key === 'PageDown' ? true : input.key === 'PageUp' ? false : null;
+    if (forward === null) return;
+    event.preventDefault();
+    const order = available();
+    show(order[(order.indexOf(active) + (forward ? 1 : order.length - 1)) % order.length]);
+  }
+  function createView(id) {
+    const page = pages.get(id);
+    const view = new WebContentsView({ webPreferences: {
+      preload: path.join(rendererDirectory, page.preload), contextIsolation: true, nodeIntegration: false, sandbox: true,
+      backgroundThrottling: page.backgroundThrottling ?? true,
+    } });
+    view.setBackgroundColor(page.background || '#f6f7f2');
+    const contents = view.webContents;
+    contents.on('will-navigate', event => event.preventDefault());
+    contents.setWindowOpenHandler(() => ({ action: 'deny' }));
+    contents.on('before-input-event', switchKeys);
+    contents.once('destroyed', () => detach(id, view));
+    // A crashed page is rebuilt (unsaved input is already lost) instead of staying blank.
+    contents.on('render-process-gone', (_event, details) => {
+      if (details?.reason === 'clean-exit' || views.get(id) !== view) return;
+      setImmediate(() => {
+        if (views.get(id) !== view) return;
+        closeView(id);
+        if (active === id) show(id);
+      });
+    });
+    views.set(id, view);
+    window.contentView.addChildView(view);
+    view.setBounds(geometry.content);
+    page.onCreated?.(contents);
+    contents.loadFile(path.join(rendererDirectory, page.file));
+    return view;
+  }
+  function show(id) {
+    if (!alive()) return;
+    if (!available().includes(id)) id = 'services';
+    const previous = active;
+    active = id;
+    const target = NATIVE_PAGES.includes(id) ? null : views.get(id) || createView(id);
+    for (const [key, view] of views) view.setVisible(key === id);
+    // Pages release what they hold while out of sight (the microphone check).
+    if (previous !== id && views.has(previous)) pages.get(previous)?.onHide?.(views.get(previous).webContents);
+    layout();
+    publishState();
+    if (target) {
+      if (window.isVisible()) target.webContents.focus();
+      pages.get(id).onShow?.(target.webContents);
+    } else if (window.isVisible()) window.webContents.focus();
+  }
+  function create() {
+    window = new BrowserWindow({
+      icon, ...settingsWindowBounds(screen.getPrimaryDisplay().workArea, { width: 1060, height: 820, minWidth: 620, minHeight: 640 }),
+      title: '刀塔宠物 · 设置中心', titleBarStyle: 'hidden',
+      titleBarOverlay: { color: '#eef1ea', symbolColor: '#52604f', height: HUB_TOP },
+      autoHideMenuBar: true, show: false, backgroundColor: '#f6f7f2',
+      parent: getParent() || undefined,
+      webPreferences: { preload: path.join(rendererDirectory, '../preload/control-center.js'), contextIsolation: true, nodeIntegration: false, sandbox: true },
+    });
+    const created = window;
+    created.webContents.on('will-navigate', event => event.preventDefault());
+    created.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+    created.webContents.on('before-input-event', switchKeys);
+    for (const event of ['resize', 'maximize', 'unmaximize', 'restore']) created.on(event, layout);
+    // The window has focus when shown; hand it to the visible page.
+    created.on('focus', () => { const view = views.get(active); if (view && !view.webContents.isDestroyed()) view.webContents.focus(); });
+    presentSettingsWhenReady(created, { smokeTest });
+    // Views switched inside a never-shown window lose their surface, so smoke
+    // tests show the window invisibly to exercise the real, visible path.
+    if (smokeTest) { created.setOpacity(0); created.setSkipTaskbar(true); created.showInactive(); }
+    // Synchronous, like closing the old standalone windows: nothing may slip in before it.
+    created.on('close', () => { for (const page of pages.values()) page.onHubClose?.(); });
+    created.on('closed', () => {
+      for (const id of [...views.keys()]) closeView(id);
+      if (window === created) window = null;
+      onClosed();
+    });
+    created.loadFile(path.join(rendererDirectory, 'control-center.html'));
+  }
+
+  /** Open on a page, or on the page last shown when none is named. */
+  function open(id) {
+    const existed = alive();
+    if (!existed) { create(); active = 'services'; }
+    show(id || active);
+    if (existed && !smokeTest) {
+      if (window.isMinimized()) window.restore();
+      window.show(); window.focus(); window.moveTop();
+    }
+    return window;
+  }
+  function register(id, page) {
+    if (NATIVE_PAGES.includes(id) || !PAGE_ORDER.includes(id)) throw new Error(`Unknown settings page: ${id}`);
+    pages.set(id, page);
+    publishState();
+  }
+  function unregister(id) {
+    closeView(id);
+    pages.delete(id);
+    if (active === id) show('services');
+    else publishState();
+  }
+
+  const trustedShell = event => isTrustedSettingsSender(event, window, shellURL);
+  ipcMain.handle('hub:state', event => trustedShell(event) ? { ok: true, state: state() } : { ok: false });
+  ipcMain.handle('hub:navigate', (event, id) => {
+    if (!trustedShell(event) || !available().includes(id)) return { ok: false };
+    show(id);
+    return { ok: true, state: state() };
+  });
+  ipcMain.handle('hub:open-phrases', event => {
+    if (!trustedShell(event)) return { ok: false };
+    openPhrases();
+    return { ok: true };
+  });
+
+  return {
+    open, register, unregister,
+    get window() { return alive() ? window : null; },
+    get active() { return active; },
+    /** Live contents of a page, or null; IPC trust checks compare against this. */
+    contents(id) { const contents = views.get(id)?.webContents; return contents && !contents.isDestroyed() ? contents : null; },
+    close() { if (alive()) window.close(); },
+    isOpen: () => alive() && window.isVisible() && !window.isMinimized(),
+  };
+}

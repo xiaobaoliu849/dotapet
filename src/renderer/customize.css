@@ -2,7 +2,6 @@
 * { box-sizing: border-box; }
 body { margin: 0; color: var(--ink); background: #faf6ef; font: 13px/1.65 "Segoe UI", "Microsoft YaHei", sans-serif; }
 header { display: flex; justify-content: space-between; gap: 24px; align-items: center; max-width: 1200px; margin: auto; padding: 26px 30px 20px; }
-.eyebrow { font-size: 11px; letter-spacing: .15em; color: #8c775c; }
 h1 { font-size: 25px; margin: 4px 0; font-weight: 650; }
 header p { margin: 0; color: var(--muted); }
 .active-badge { padding: 8px 12px; border-radius: 20px; background: #edf0e7; color: #526a4d; font-size: 11px; white-space: nowrap; }

@@ -1,15 +1,28 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { captureHub, navigateHub } from './controlCenterSmoke.js';
 
-/** Exercise the real settings entry, phrase editor, and isolated persistence. */
-export async function runPhrasesSmoke({ settingsWindow, getWindow, getCopiedText, outputDirectory }) {
-  await settingsWindow.webContents.executeJavaScript(`(async () => {
-    document.getElementById('open-phrases').click();
-    for (let i = 0; i < 100 && document.getElementById('open-phrases').disabled; i++) await new Promise(r => setTimeout(r, 20));
-    if (document.getElementById('feedback').dataset.kind === 'error') throw new Error('Settings could not open phrases');
+/** Exercise the real sidebar entry, phrase editor, and isolated persistence. */
+export async function runPhrasesSmoke({ controlCenter, getWindow, getCopiedText, nativeImage, outputDirectory }) {
+  controlCenter.open('services');
+  // Keyboard users switch pages from inside a page, where Tab cannot reach the sidebar.
+  const page = controlCenter.contents('services');
+  page.focus();
+  page.sendInputEvent({ type: 'keyDown', keyCode: 'Tab', modifiers: ['control'] });
+  for (let i = 0; i < 50 && controlCenter.active !== 'appearance'; i++) await new Promise(r => setTimeout(r, 20));
+  if (controlCenter.active !== 'appearance') throw new Error('Ctrl+Tab did not switch settings pages');
+  await navigateHub(controlCenter, 'phrases');
+  fs.writeFileSync(path.join(outputDirectory, 'phrases-page.png'), (await captureHub(controlCenter, nativeImage)).toPNG());
+  await controlCenter.window.webContents.executeJavaScript(`(async () => {
+    if (document.getElementById('page-phrases').hidden) throw new Error('Phrases page not shown');
+    if ('getAISettings' in window.controlCenter || 'copyToClipboard' in window.controlCenter) throw new Error('Sidebar exposes page controls');
+    const open = document.getElementById('open-phrases');
+    open.click();
+    for (let i = 0; i < 100 && open.disabled; i++) await new Promise(r => setTimeout(r, 20));
+    if (document.getElementById('phrases-feedback').textContent) throw new Error('Sidebar could not open phrases');
   })()`);
   const window = getWindow();
-  if (!window) throw new Error('Settings phrase entry did not create the editor');
+  if (!window) throw new Error('Sidebar phrase entry did not create the editor');
   // loadFile can finish before we attach the listener; wait on the actual DOM.
   const copy = await window.webContents.executeJavaScript(`(async () => {
     const wait = async fn => { for(let i=0; i<150; i++) { if(fn()) return; await new Promise(r=>setTimeout(r,20)); } throw new Error('Phrase editor timed out'); };
@@ -69,5 +82,5 @@ export async function runPhrasesSmoke({ settingsWindow, getWindow, getCopiedText
   await window.webContents.executeJavaScript('new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))');
   fs.writeFileSync(path.join(outputDirectory, 'phrases-narrow.png'), (await window.webContents.capturePage()).toPNG());
   window.close();
-  return { settingsEntry: true, bilingualCopy: true, saveKeepsOpen: true, narrowLayout: true };
+  return { sidebarEntry: true, bilingualCopy: true, saveKeepsOpen: true, narrowLayout: true };
 }

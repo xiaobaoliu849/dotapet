@@ -5,8 +5,9 @@ import { CustomizationStore } from './customizationStore.js';
 import { classifySkin, validCharacterKey } from '../services/appearance.js';
 import { isTrustedSettingsSender } from './aiSettingsIpc.js';
 
-export function createCustomizationController({ electron, rendererDirectory, getMainWindow, getHeroesConfig, getCompanionHero, getActiveKey, smokeTest }) {
-  const { app, BrowserWindow, ipcMain, dialog, nativeImage } = electron;
+/** The editor is the settings center's 形象与背景 page; `hub` hosts it. */
+export function createCustomizationController({ electron, rendererDirectory, hub, getMainWindow, getHeroesConfig, getCompanionHero, getActiveKey }) {
+  const { app, ipcMain, dialog, nativeImage } = electron;
   const editorURL = pathToFileURL(path.join(rendererDirectory, 'customize.html')).href;
   const desktopURL = pathToFileURL(path.join(rendererDirectory, 'index.html')).href;
   const store = new CustomizationStore(app.getPath('userData'), {
@@ -34,7 +35,8 @@ export function createCustomizationController({ electron, rendererDirectory, get
       if (image.isEmpty() || size.width > 8192 || size.height > 8192) throw new Error('图片无法读取，或尺寸超过 8192 像素。');
     },
   });
-  let window = null;
+  const editor = () => hub?.contents('appearance') || null;
+  hub?.register('appearance', { file: 'customize.html', preload: '../preload/customize.js', background: '#faf6ef' });
   const assetURL = src => !src || /^(https?:|data:|file:)/.test(src) ? src : pathToFileURL(path.join(rendererDirectory, src)).href;
   const sprites = value => Object.fromEntries(Object.entries(value || {}).map(([key, src]) => [key, assetURL(src)]));
   function characters() {
@@ -62,27 +64,15 @@ export function createCustomizationController({ electron, rendererDirectory, get
   }
   function snapshot() { return { ...store.snapshot(), activeKey: getActiveKey(), characters: characters() }; }
   function publish() {
-    for (const target of [getMainWindow(), window]) {
-      if (target && !target.isDestroyed()) target.webContents.send('customization:changed');
-    }
+    const desktop = getMainWindow();
+    if (desktop && !desktop.isDestroyed()) desktop.webContents.send('customization:changed');
+    editor()?.send('customization:changed');
   }
-  function open() {
-    if (window && !window.isDestroyed()) { window.show(); window.focus(); return window; }
-    window = new BrowserWindow({
-      icon: path.join(rendererDirectory, 'assets/app-icon.png'),
-      width: 1000, height: 800, minWidth: 680, minHeight: 650, title: '刀塔宠物 · DOTA2 桌面宠物 · 自定义',
-      backgroundColor: '#faf6ef', autoHideMenuBar: true, show: false,
-      webPreferences: { preload: path.join(rendererDirectory, '../preload/customize.js'), contextIsolation: true, nodeIntegration: false, sandbox: true },
-    });
-    window.webContents.on('will-navigate', event => event.preventDefault());
-    window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
-    window.once('ready-to-show', () => { if (!smokeTest) window?.show(); });
-    window.on('closed', () => { window = null; });
-    window.loadFile(path.join(rendererDirectory, 'customize.html'));
-    return window;
-  }
+  function open() { return hub.open('appearance'); }
+  // File dialogs stay attached to the settings center while it is open.
+  const withParent = (method, options) => hub?.window ? dialog[method](hub.window, options) : dialog[method](options);
   const handler = (operation, desktopAllowed = false) => async (event, payload) => {
-    const trusted = isTrustedSettingsSender(event, window, editorURL)
+    const trusted = isTrustedSettingsSender(event, editor(), editorURL)
       || (desktopAllowed && isTrustedSettingsSender(event, getMainWindow(), desktopURL));
     if (!trusted) return { ok: false, error: '此窗口无权访问自定义设置。' };
     try { return { ok: true, ...await operation(payload) }; }
@@ -111,13 +101,13 @@ export function createCustomizationController({ electron, rendererDirectory, get
   ipcMain.handle('customization:remove-preset', handler(changed(id => store.removePreset(id))));
   ipcMain.handle('customization:export-preset', handler(async id => {
     const bundle = store.exportPreset(id);
-    const selected = await dialog.showSaveDialog(window, { title: '导出外观预设', defaultPath: 'companion-preset.json', filters: [{ name: '伙伴外观预设', extensions: ['json'] }] });
+    const selected = await withParent('showSaveDialog', { title: '导出外观预设', defaultPath: 'companion-preset.json', filters: [{ name: '伙伴外观预设', extensions: ['json'] }] });
     if (selected.canceled || !selected.filePath) return { cancelled: true };
     fs.writeFileSync(selected.filePath, JSON.stringify(bundle, null, 2), 'utf8');
     return {};
   }));
   ipcMain.handle('customization:import-preset', handler(async () => {
-    const selected = await dialog.showOpenDialog(window, { title: '导入外观预设', properties: ['openFile'], filters: [{ name: '伙伴外观预设', extensions: ['json'] }] });
+    const selected = await withParent('showOpenDialog', { title: '导入外观预设', properties: ['openFile'], filters: [{ name: '伙伴外观预设', extensions: ['json'] }] });
     if (selected.canceled) return { cancelled: true };
     if (fs.statSync(selected.filePaths[0]).size > 40 * 1024 * 1024) throw new Error('预设文件不能超过 40 MB。');
     const preset = store.importPreset(JSON.parse(fs.readFileSync(selected.filePaths[0], 'utf8')));

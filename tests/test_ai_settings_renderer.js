@@ -31,10 +31,10 @@ async function renderer(overrides = {}) {
     }
     click() { return this.listeners.click?.(); }
   }
-  for (const id of ['feedback', 'translate-feedback', 'provider-help', 'secret-fields', 'optional-secret-fields', 'workspace-fields', 'voice-fields', 'connection-status', 'provider-options', 'translator-options', 'translate-state', 'translate-key', 'translate-model-fields', 'all-voice-fields', 'custom-voice-fields', 'google-mode-fields', 'voice-card', 'translate-card', 'help', 'settings-version', 'welcome-pet']) nodes.set(id, new Element('div', id));
+  for (const id of ['feedback', 'translate-feedback', 'provider-help', 'secret-fields', 'optional-secret-fields', 'workspace-fields', 'voice-fields', 'connection-status', 'provider-options', 'translator-options', 'translate-state', 'translate-key', 'translate-model-fields', 'all-voice-fields', 'custom-voice-fields', 'google-mode-fields', 'voice-card', 'translate-card', 'welcome-pet']) nodes.set(id, new Element('div', id));
   for (const id of ['provider', 'voice', 'region', 'google-mode', 'all-voices']) nodes.set(id, new Element('select', id));
   for (const id of ['model', 'workspace', 'voice-custom', 'custom-voice-id', 'translate-model']) nodes.set(id, new Element('input', id));
-  for (const id of ['connect', 'disconnect', 'save', 'test', 'cancel', 'import', 'voice-test', 'finish', 'skip', 'translate-change', 'open-phrases']) nodes.set(id, new Element('button', id));
+  for (const id of ['connect', 'disconnect', 'save', 'test', 'cancel', 'import', 'voice-test', 'finish', 'skip', 'translate-change']) nodes.set(id, new Element('button', id));
   const settings = { selectedProvider: 'qwen', translationProvider: 'qwen', encryptionAvailable: true,
     providers: AI_PROVIDERS.map(item => ({ ...item, fields: item.fields.map(field => ({ ...field, account: credentialAccount(item.id, field.id), configured: false })) })) };
   const calls = { test: 0, cancel: 0, save: 0, connect: 0, finish: 0, saves: [] };
@@ -46,7 +46,6 @@ async function renderer(overrides = {}) {
     cancelAITest: async () => { calls.cancel++; return { ok: true }; },
     connectAI: async provider => { calls.connect++; calls.connectedProvider = provider; return { ok: true, status: { status: 'connected', providerId: provider } }; },
     finishAISetup: async () => { calls.finish++; return { ok: true }; },
-    openPhrases: async () => { calls.phrases = (calls.phrases || 0) + 1; return { ok: true }; },
     deleteAISecrets: async (provider, field) => { calls.deleted = [provider, field]; return { ok: true, settings }; },
     onVoiceStatus(listener) { calls.statusListener = listener; }, ...overrides,
   };
@@ -155,13 +154,6 @@ test('a saved key is removed only after a confirming second click', async () => 
   assert.match(remove.textContent, /确认/);
   remove.click(); await tick();
   assert.deepEqual(ui.calls.deleted, ['qwen', 'apiKey']);
-});
-
-test('settings exposes the phrase panel without saving or connecting', async () => {
-  const ui = await renderer();
-  await ui.nodes.get('open-phrases').click();
-  assert.equal(ui.calls.phrases, 1);
-  assert.equal(ui.calls.save + ui.calls.connect + ui.calls.test, 0);
 });
 
 test('cancelling while settings save is pending prevents any provider test request', async () => {
@@ -305,10 +297,14 @@ test('choosing a provider focuses its key field and Enter starts configuration',
   assert.equal(ui.calls.connectedProvider, 'doubao');
 });
 
-test('a help request opens shortcuts and help without saving or connecting', async () => {
+test('a purpose request brings the asked card forward without saving or connecting', async () => {
   let request;
   const ui = await renderer({ onSettingsPurpose: listener => { request = listener; } });
+  ui.nodes.get('voice-card').scrollIntoView = () => {};
+  ui.nodes.get('voice-card').classList = { add(name) { ui.nodes.get('voice-card').highlighted = name; }, remove() {} };
   request('help');
-  assert.equal(ui.nodes.get('help').open, true);
+  assert.equal(ui.nodes.get('voice-card').highlighted, undefined, 'help now lives in its own sidebar page');
+  request('voice');
+  assert.equal(ui.nodes.get('voice-card').highlighted, 'attention');
   assert.equal(ui.calls.save + ui.calls.connect + ui.calls.test, 0);
 });

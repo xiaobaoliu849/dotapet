@@ -1,10 +1,16 @@
 import { credentialAccount, providerDefinition } from './aiSettingsStore.js';
 
-/** Trust only the top-level frame of the exact local settings document. */
-export function isTrustedSettingsSender(event, window, expectedURL) {
-  return Boolean(window && !window.isDestroyed()
-    && event.sender === window.webContents
-    && event.senderFrame === window.webContents.mainFrame
+/**
+ * Trust only the top-level frame of the exact local settings document.
+ * `target` is a window, or the web contents of one settings page.
+ */
+export function isTrustedSettingsSender(event, target, expectedURL) {
+  // Check first: a destroyed window throws when its properties are read.
+  if (!target || target.isDestroyed?.()) return false;
+  const contents = target.webContents || target;
+  return Boolean(contents
+    && event.sender === contents
+    && event.senderFrame === contents.mainFrame
     && event.senderFrame?.url === expectedURL);
 }
 

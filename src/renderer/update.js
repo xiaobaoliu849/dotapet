@@ -4,8 +4,8 @@ const views = {
   idle: ['保持新鲜', '让陪伴更好一点', '自动检查新版本，一键更新并重新打开桌宠。', '检查更新'],
   checking: ['正在检查', '看看有没有新版本', '正在连接发布页，请稍候。', '检查中…'],
   current: ['已是最新', '你的桌宠已准备好', '当前已是最新发布版本，继续享受陪伴吧。', '再次检查'],
-  available: ['新版本已发布', '有一点新变化', '点击后下载并自动重启。关闭此窗口可保留下载，稍后安装。', '更新并重启'],
-  downloading: ['正在下载', '马上就准备好了', '下载完成并校验后自动重启。关闭此窗口可稍后安装。', '正在下载…'],
+  available: ['新版本已发布', '有一点新变化', '点击后下载并自动重启。关闭设置中心可保留下载，稍后安装。', '更新并重启'],
+  downloading: ['正在下载', '马上就准备好了', '下载完成并校验后自动重启。关闭设置中心可稍后安装。', '正在下载…'],
   ready: ['已下载', '新版本准备好了', '更新包已校验，点击后安装并重新打开桌宠。', '安装并重启'],
   installing: ['正在安装', '很快再见', '桌宠将关闭，安装完成后自动重新打开。', '正在重启…'],
   error: ['暂时未完成', '稍后再试也没关系', '', '重试检查'],
@@ -31,8 +31,8 @@ async function action(name) {
   try {
     const reply = await window.petUpdates.action(name);
     if (reply.state) render(reply.state);
-    else if (!reply.ok) render({ ...state, phase: 'error', error: '暂时无法操作，请重新打开更新窗口。' });
-  } catch { render({ ...state, phase: 'error', error: '暂时无法操作，请重新打开更新窗口。' }); }
+    else if (!reply.ok) render({ ...state, phase: 'error', error: '暂时无法操作，请重新打开设置中心。' });
+  } catch { render({ ...state, phase: 'error', error: '暂时无法操作，请重新打开设置中心。' }); }
 }
 $('primary').addEventListener('click', () => action(['available', 'ready'].includes(state.phase) ? 'install' : state.phase === 'disabled' ? 'releases' : 'check'));
 $('postpone').addEventListener('click', () => action('postpone'));
