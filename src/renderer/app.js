@@ -1864,7 +1864,7 @@ function copyText(text) {
 
 let toastTimer = null;
 
-function showToast(message) {
+function showToast(message, duration = 1800) {
   elements.toast.textContent = message;
   elements.toast.classList.remove('hidden');
   // Clear the previous dismissal first, or a rapid second toast gets hidden
@@ -1872,7 +1872,7 @@ function showToast(message) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => {
     elements.toast.classList.add('hidden');
-  }, 1800);
+  }, duration);
 }
 
 
@@ -2738,6 +2738,10 @@ function setupEventListeners() {
       applyScaleMode(data?.scaleMode, data?.label, true);
     });
 
+    window.electronAPI.onOnboardingHint?.(() => {
+      showToast('右键我打开菜单 · Alt+Q 说话 · Alt+T 翻译', 7000);
+    });
+
     window.electronAPI.onVoiceProviderCycled?.((data) => {
       const providerLabelEl = document.getElementById('ctx-provider-label');
       if (providerLabelEl && data?.label) {
@@ -3099,10 +3103,6 @@ function setupEventListeners() {
 
 // Initialization
 window.addEventListener('DOMContentLoaded', async () => {
-  document.getElementById('ctx-btn-welcome')?.addEventListener('click', () => {
-    document.getElementById('pet-context-menu')?.classList.add('hidden');
-    window.electronAPI?.openWelcome?.();
-  });
   for (const id of ['btn-ai-settings', 'ctx-btn-ai-settings']) {
     document.getElementById(id)?.addEventListener('click', () => {
       document.getElementById('pet-context-menu')?.classList.add('hidden');

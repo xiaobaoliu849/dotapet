@@ -120,7 +120,7 @@ function stopVoiceForSettings() {
 let settingsPurpose = '';
 let settingsFirstRun = false;
 function openAISettings(purpose = '', { firstRun = false } = {}) {
-  settingsPurpose = ['voice', 'translate'].includes(purpose) ? purpose : '';
+  settingsPurpose = ['voice', 'translate', 'help'].includes(purpose) ? purpose : '';
   settingsFirstRun ||= firstRun;
   if (aiSettingsWindow && !aiSettingsWindow.isDestroyed()) {
     if (settingsPurpose) aiSettingsWindow.webContents.send('settings:purpose', settingsPurpose);
@@ -144,6 +144,8 @@ function openAISettings(purpose = '', { firstRun = false } = {}) {
     if (settingsFirstRun) {
       try { welcomeController.store.dismiss(app.getVersion()); }
       catch (error) { console.warn('[Settings] Could not save first-run preference:', error.message); }
+      // Teach the pet where it lives instead of showing a tutorial.
+      if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('onboarding:hint');
     }
     settingsFirstRun = false;
   });
@@ -170,48 +172,6 @@ async function runCompanionSmokeTest() {
   })()`);
   await firstSetupClosed;
   if (!welcomeController.store.state.dismissed || welcomeController.showOnFirstRun()) throw new Error('First setup dismissal was not persisted');
-  const welcome = welcomeController.open();
-  await new Promise(resolve => welcome.webContents.once('did-finish-load', resolve));
-  const onboarding = await welcome.webContents.executeJavaScript(`(async () => {
-    const waitFor = async predicate => { for(let i=0;i<350;i++){ if(predicate()) return; await new Promise(r=>setTimeout(r,40)); } throw new Error('Welcome UI timed out: '+predicate.toString()+' / '+document.getElementById('mic-status').textContent+' / '+document.getElementById('guide-feedback').textContent); };
-    const get = id => document.getElementById(id);
-    await waitFor(()=>get('app-version').textContent.includes('v'));
-    if ('sendAudioChunk' in window.welcomeAPI) throw new Error('Guide exposes audio upload');
-    const acquired=[]; const original=navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
-    navigator.mediaDevices.getUserMedia=async options=>{const stream=await original(options);acquired.push(stream);return stream;};
-    get('guide-next').click();
-    if(get('step-1').hidden) throw new Error('Guide did not advance');
-    get('mic-start').click();
-    // Hosted Windows runners can open Chromium's fake device but have no active
-    // audio output clock. Both detected sound and a clean silent result are valid;
-    // signal classification is covered separately by the microphone unit tests.
-    await waitFor(()=>get('mic-status').textContent.includes('麦克风已关闭'));
-    const detectedSound=get('mic-status').textContent.includes('检查通过');
-    if(!detectedSound && !get('mic-status').textContent.includes('设备已打开，但没有检测到明显声音')) throw new Error('Unexpected microphone result');
-    if(acquired.some(stream=>stream.getTracks().some(track=>track.readyState!=='ended'))) throw new Error('Check left microphone open');
-    get('mic-start').click(); await waitFor(()=>acquired.length===2);
-    get('guide-next').click();
-    if(acquired.some(stream=>stream.getTracks().some(track=>track.readyState!=='ended'))) throw new Error('Step change left microphone open');
-    if(document.documentElement.scrollWidth>document.documentElement.clientWidth) throw new Error('Welcome overflows');
-    return { localMicrophone:true, detectedSound, stoppedOnNavigation:true };
-  })()`);
-  const outputArgument = process.argv.find(value => value.startsWith('--companion-smoke-output='));
-  if (outputArgument) {
-    const outputDirectory = path.dirname(path.resolve(outputArgument.slice('--companion-smoke-output='.length)));
-    await welcome.webContents.executeJavaScript("document.querySelector('[data-step=\"0\"]').click()");
-    await welcome.webContents.capturePage();
-    await new Promise(resolve => setTimeout(resolve, 150));
-    fs.writeFileSync(path.join(outputDirectory, 'welcome.png'), (await welcome.webContents.capturePage()).toPNG());
-    welcome.setSize(620, 730);
-    await new Promise(resolve => setTimeout(resolve, 150));
-    await welcome.webContents.executeJavaScript("if(document.documentElement.scrollWidth>document.documentElement.clientWidth) throw new Error('Narrow welcome overflows'); document.querySelector('[data-step=\"1\"]').click()");
-    await welcome.webContents.capturePage();
-    await new Promise(resolve => setTimeout(resolve, 150));
-    fs.writeFileSync(path.join(outputDirectory, 'welcome-microphone.png'), (await welcome.webContents.capturePage()).toPNG());
-  }
-  await welcome.webContents.executeJavaScript("document.getElementById('guide-skip').click()");
-  await new Promise(resolve => setTimeout(resolve, 100));
-  if (!welcomeController.store.state.dismissed) throw new Error('Skip did not persist welcome preference');
   aiSettingsStore.save({ provider: 'google', secrets: { apiKey: 'smoke-encrypted-key' } });
   if (fs.readFileSync(aiSettingsStore.filePath, 'utf8').includes('smoke-encrypted-key')) throw new Error('Vault contains plaintext');
   const reloaded = new AISettingsStore({ filePath: aiSettingsStore.filePath, safeStorage });
@@ -266,6 +226,34 @@ async function runCompanionSmokeTest() {
     if (primary.bottom > innerHeight) throw new Error('Primary setup action requires scrolling');
     return { providerCount: state.settings.providers.length, visibleVoiceProviders: 4, directFirstSetup: true, encryptedStorage: state.settings.encryptionAvailable };
   })()`);
+  // The microphone check and help now live in settings; the old guide window is gone.
+  const onboarding = await win.webContents.executeJavaScript(`(async () => {
+    const waitFor = async predicate => { for(let i=0;i<350;i++){ if(predicate()) return; await new Promise(r=>setTimeout(r,40)); } throw new Error('Microphone check timed out: '+document.getElementById('mic-status').textContent); };
+    const get = id => document.getElementById(id);
+    const acquired=[]; const original=navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+    navigator.mediaDevices.getUserMedia=async options=>{const stream=await original(options);acquired.push(stream);return stream;};
+    get('advanced').open = true;
+    get('mic-start').click();
+    // Hosted Windows runners can open Chromium's fake device but have no active
+    // audio output clock. Both detected sound and a clean silent result are valid;
+    // signal classification is covered separately by the microphone unit tests.
+    await waitFor(()=>get('mic-status').textContent.includes('麦克风已关闭'));
+    const detectedSound=get('mic-status').textContent.includes('检查通过');
+    if(!detectedSound && !get('mic-status').textContent.includes('设备已打开，但没有检测到明显声音')) throw new Error('Unexpected microphone result');
+    if(acquired.some(stream=>stream.getTracks().some(track=>track.readyState!=='ended'))) throw new Error('Check left microphone open');
+    get('mic-start').click(); await waitFor(()=>acquired.length===2);
+    get('provider').value='doubao'; get('provider').dispatchEvent(new Event('change'));
+    if(acquired.some(stream=>stream.getTracks().some(track=>track.readyState!=='ended'))) throw new Error('Changing provider left microphone open');
+    get('provider').value='qwen'; get('provider').dispatchEvent(new Event('change'));
+    get('advanced').open = false;
+    return { localMicrophone:true, detectedSound, stoppedOnNavigation:true };
+  })()`);
+  openAISettings('help');
+  await win.webContents.executeJavaScript(`(async () => {
+    for (let i=0; i<50 && !document.getElementById('help').open; i++) await new Promise(r=>setTimeout(r,20));
+    if (!document.getElementById('help').open) throw new Error('Help request did not open shortcuts and help');
+    if (document.documentElement.scrollWidth > document.documentElement.clientWidth) throw new Error('Help overflows horizontally');
+  })()`);
   const vault = fs.readFileSync(aiSettingsStore.filePath, 'utf8');
   if (vault.includes('smoke-google-key')) throw new Error('Vault contains plaintext');
   const outputArg = process.argv.find(value => value.startsWith('--companion-smoke-output='));
@@ -295,6 +283,8 @@ async function runCompanionSmokeTest() {
     await win.webContents.executeJavaScript("document.getElementById('feedback').textContent = ''; document.getElementById('feedback').dataset.kind = ''");
     await win.webContents.executeJavaScript("document.getElementById('advanced').open = true; window.scrollTo(0, document.body.scrollHeight)");
     fs.writeFileSync(output.replace(/\.png$/, '-actions.png'), (await capture()).toPNG());
+    await win.webContents.executeJavaScript("document.getElementById('help').scrollIntoView()");
+    fs.writeFileSync(output.replace(/\.png$/, '-help.png'), (await capture()).toPNG());
     await win.webContents.executeJavaScript("document.getElementById('advanced').open = false; document.getElementById('provider').value = 'doubao'; document.getElementById('provider').dispatchEvent(new Event('change')); window.scrollTo(0,0)");
     fs.writeFileSync(output.replace(/\.png$/, '-doubao.png'), (await capture()).toPNG());
     win.setSize(620, 730);
@@ -1281,9 +1271,8 @@ function updateTrayMenu() {
         : '未连接 (选择后才开始连接)'}`,
       submenu: providerSubmenu,
     },
-    { label: '⚙️ AI 设置 / 自己的 API Key', click: () => openAISettings() },
-    { label: '🏡 新手引导 / 使用帮助', click: () => welcomeController?.open() },
-    { label: '🎨 自定义形象 / 背景', click: () => customizationController?.open() },
+    { label: '⚙️ 设置与帮助', click: () => openAISettings() },
+    { label: '🎨 形象与背景', click: () => customizationController?.open() },
     { label: updateService?.state.version && ['available', 'ready', 'downloading'].includes(updateService.state.phase)
       ? `⬆️ 更新到 v${updateService.state.version}` : `⬆️ 检查更新 · v${app.getVersion()}`, click: () => updateController?.open() },
     {
@@ -1453,7 +1442,6 @@ function setupIPC() {
     catch (error) { return { ok: false, error: error.message }; }
   };
   ipcMain.on('ai:open-settings', (_event, purpose) => openAISettings(purpose));
-  ipcMain.on('welcome:open', () => welcomeController?.open());
   ipcMain.handle('ai:microphone-privacy', settingsHandler(async () => {
     await shell.openExternal('ms-settings:privacy-microphone');
     return {};
@@ -1786,7 +1774,7 @@ function reportShortcutFailures(failures) {
 // App lifecycle
 if (app?.whenReady) {  app.whenReady().then(() => {
     app.setAppUserModelId?.('fun.dota2bot.companion');
-    const mediaDocuments = ['index.html', 'ai-settings.html', 'welcome.html'].map(file => pathToFileURL(path.join(__dirname, '../renderer', file)).href);
+    const mediaDocuments = ['index.html', 'ai-settings.html'].map(file => pathToFileURL(path.join(__dirname, '../renderer', file)).href);
     session?.defaultSession?.setPermissionRequestHandler((contents, permission, callback, details) => {
       callback(permission === 'media' && mediaDocuments.includes(contents?.getURL()) && !details.mediaTypes?.includes('video'));
     });
@@ -1804,8 +1792,7 @@ if (app?.whenReady) {  app.whenReady().then(() => {
       getMainWindow: () => mainWindow, getHeroesConfig: () => heroesConfig,
       getCompanionHero: () => COMPANION_PSEUDO_HERO,
       getActiveKey: () => activePetPersona?.id || `hero:${currentHeroId}`, smokeTest });
-    welcomeController = createWelcomeController({ electron, rendererDirectory: path.join(__dirname, '../renderer'), icon: appIcon,
-      openSettings: openAISettings, openCustomization: () => customizationController?.open(), getMainWindow: () => mainWindow, smokeTest });
+    welcomeController = createWelcomeController({ electron, openSettings: openAISettings });
 
     if (smokeTest) {
       if (process.argv.includes('--companion-upgrade-check')) {

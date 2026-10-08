@@ -313,9 +313,10 @@ function chooseTranslator(id) {
     feedback(`翻译已改用${providerNames[id]}。`, 'success', 'translate-feedback');
   });
 }
-/** Main asks for a purpose when a feature needs setup; bring that card forward. */
+/** Main asks for a purpose when a feature needs setup or help; bring that part forward. */
 function choosePurpose(purpose) {
-  if (!settings || !['voice', 'translate'].includes(purpose)) return;
+  if (!settings || !['voice', 'translate', 'help'].includes(purpose)) return;
+  if (purpose === 'help') { byId('help').open = true; byId('help').scrollIntoView?.({ block: 'start' }); return; }
   const card = byId(purpose === 'translate' ? 'translate-card' : 'voice-card');
   card.scrollIntoView?.({ block: 'center' });
   card.classList?.add('attention');

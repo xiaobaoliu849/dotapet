@@ -31,7 +31,7 @@ async function renderer(overrides = {}) {
     }
     click() { return this.listeners.click?.(); }
   }
-  for (const id of ['feedback', 'translate-feedback', 'provider-help', 'secret-fields', 'optional-secret-fields', 'workspace-fields', 'voice-fields', 'connection-status', 'provider-options', 'translator-options', 'translate-state', 'translate-key', 'translate-model-fields', 'all-voice-fields', 'custom-voice-fields', 'google-mode-fields', 'voice-card', 'translate-card', 'settings-version', 'welcome-pet']) nodes.set(id, new Element('div', id));
+  for (const id of ['feedback', 'translate-feedback', 'provider-help', 'secret-fields', 'optional-secret-fields', 'workspace-fields', 'voice-fields', 'connection-status', 'provider-options', 'translator-options', 'translate-state', 'translate-key', 'translate-model-fields', 'all-voice-fields', 'custom-voice-fields', 'google-mode-fields', 'voice-card', 'translate-card', 'help', 'settings-version', 'welcome-pet']) nodes.set(id, new Element('div', id));
   for (const id of ['provider', 'voice', 'region', 'google-mode', 'all-voices']) nodes.set(id, new Element('select', id));
   for (const id of ['model', 'workspace', 'voice-custom', 'custom-voice-id', 'translate-model']) nodes.set(id, new Element('input', id));
   for (const id of ['connect', 'disconnect', 'save', 'test', 'cancel', 'import', 'voice-test', 'finish', 'skip', 'translate-change', 'open-phrases']) nodes.set(id, new Element('button', id));
@@ -303,4 +303,12 @@ test('choosing a provider focuses its key field and Enter starts configuration',
   input.listeners.keydown({ key: 'Enter', preventDefault() {} });
   await tick();
   assert.equal(ui.calls.connectedProvider, 'doubao');
+});
+
+test('a help request opens shortcuts and help without saving or connecting', async () => {
+  let request;
+  const ui = await renderer({ onSettingsPurpose: listener => { request = listener; } });
+  request('help');
+  assert.equal(ui.nodes.get('help').open, true);
+  assert.equal(ui.calls.save + ui.calls.connect + ui.calls.test, 0);
 });
