@@ -1,13 +1,13 @@
 # Companion customization
 
-Start the desktop companion with `npm start`. Right-click the companion and choose **自定义形象 / 背景**, or open **英雄展厅 → 自定义 → 打开自定义面板**. The tray menu also opens the editor.
+Start the desktop companion with `npm start`. Right-click the companion and choose **换个形象**, then **自定义 → 打开自定义面板**. The tray's **形象与背景** opens the editor directly.
 
 ## Choose and apply an appearance
 
 1. Choose a hero, pet, or the free-chat companion under **编辑角色**.
 2. Choose its built-in image or a picture from your library. Adjust color style, fit, size and position while watching the preview.
 3. Choose a transparent, solid-color or image background. **只在自定义面板** keeps the desktop transparent; **桌面伙伴场景** adds the background behind the floating companion.
-4. Click **应用到此角色** to save. If you edited another character, click **切换为此伙伴** to put it on the desktop.
+4. Click the button at the bottom right. For the companion on the desktop it reads **应用到桌面伙伴**; for another companion it reads **应用并换上此伙伴** (or **换上此伙伴** when nothing was edited) and also puts it on the desktop. It shows **已应用** when there is nothing to apply.
 
 Preview edits remain local to the editor until applied. Switching between characters retains their unapplied drafts while the editor stays open. **恢复此角色的默认外观** previews the default; click Apply to finish restoring it. Cosmetic edits do not change the voice persona or provider.
 
