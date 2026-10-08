@@ -16,7 +16,8 @@ button:hover { background: #ecdfcb; }
 button:disabled { cursor: default; opacity: .5; }
 button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid #668069; outline-offset: 3px; }
 .quiet { background: transparent; font-size: 11px; }
-#activate { margin: 10px 0; width: 100%; }
+.desk-status { margin: 8px 2px 12px; font-size: 12px; color: #8a8173; }
+.desk-status[data-active='true'] { color: #4f7a5a; font-weight: 600; }
 .preview-stage { position: relative; isolation: isolate; height: 250px; overflow: hidden; border: 1px solid #ded4c4; border-radius: 18px; background-color: #fffdf9; background-image: linear-gradient(45deg,#eae5dc 25%,transparent 25%),linear-gradient(-45deg,#eae5dc 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#eae5dc 75%),linear-gradient(-45deg,transparent 75%,#eae5dc 75%); background-size: 20px 20px; background-position: 0 0,0 10px,10px -10px,-10px 0; display: grid; place-items: center; }
 .background-layer { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
 .preview-tag { position: absolute; top: 12px; left: 13px; font-size: 10px; padding: 3px 8px; border-radius: 9px; background: #fffdf9df; color: #6e6355; }

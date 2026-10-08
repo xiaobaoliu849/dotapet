@@ -9,9 +9,16 @@ const character = () => data?.characters.find(item => item.key === key);
 const option = (select, value, text) => { const item = document.createElement('option'); item.value = value; item.textContent = text; select.append(item); };
 const message = (text, error = false) => { $('feedback').textContent = text; $('feedback').dataset.error = String(error); };
 const isDirty = () => JSON.stringify(draft) !== JSON.stringify(normalizeProfile(data?.profiles[key]));
+const onDesktop = () => Boolean(data) && data.activeKey === key;
+/** One main action: apply edits and, for another companion, put it on the desktop. */
 function draftStatus() {
-  $('draft-status').textContent = isDirty() ? '未应用 · 改动只显示在预览中' : '已保存 · 可继续搭配';
-  $('apply').disabled = busy || !data;
+  const dirty = isDirty(), active = onDesktop();
+  $('draft-status').textContent = dirty ? '有改动未应用 · 目前只在预览中' : active ? '已应用 · 桌面伙伴正在使用这套外观' : '已保存 · 还没有换到桌面上';
+  $('apply').textContent = active ? (dirty ? '应用到桌面伙伴' : '已应用') : dirty ? '应用并换上此伙伴' : '换上此伙伴';
+  // Nothing to do for the companion already on the desktop with no edits.
+  $('apply').disabled = busy || !data || (active && !dirty);
+  $('desk-status').textContent = active ? '✓ 正在桌面上' : '不在桌面上，应用后会换上它';
+  $('desk-status').dataset.active = String(active);
 }
 async function call(operation, success) {
   if (busy) return null;
@@ -147,7 +154,7 @@ function renderPresets() {
     row.append(name, button('预览', () => {
       draft = normalizeProfile(preset.profile);
       if (draft.appearance.builtinId && !character().options.some(look => look.id === draft.appearance.builtinId && look.kind === 'appearance')) draft.appearance.builtinId = null;
-      drafts.set(key, structuredClone(draft)); fillControls(); message('已载入预设预览，点击「应用」保存到此角色。');
+      drafts.set(key, structuredClone(draft)); fillControls(); message('已载入预设预览，满意后点击右下角按钮应用。');
     }), button('导出', () => call(() => api.exportPreset(preset.id), '预设已导出。')),
     button('删除', () => call(() => api.removePreset(preset.id), '预设已删除。')));
     $('preset-list').append(row);
@@ -164,13 +171,12 @@ async function importFile(file) {
     // Decode before importing so corrupt images cannot become an applied appearance.
     await new Promise((resolve, reject) => { const image = new Image(); image.onload = () => image.naturalWidth <= 8192 && image.naturalHeight <= 8192 ? resolve() : reject(new Error('图片尺寸不能超过 8192 像素。')); image.onerror = () => reject(new Error('图片无法读取。')); image.src = dataUrl; });
     return api.importImage({ dataUrl, name: file.name.replace(/\.[^.]+$/, '') });
-  }).then(result => { if (result?.asset) { selectAsset(result.asset.id, role); message('图片已加入共享图库。预览满意后点击「应用」。'); } });
+  }).then(result => { if (result?.asset) { selectAsset(result.asset.id, role); message('图片已加入共享图库，满意后点击右下角按钮应用。'); } });
   $('image-file').value = '';
 }
 
 for (const [id, style] of Object.entries(APPEARANCE_STYLES)) option($('appearance-style'), id, style.name);
 $('character').addEventListener('change', () => { drafts.set(key, structuredClone(draft)); key = $('character').value; draft = normalizeProfile(drafts.get(key) || data.profiles[key]); fillControls(); message(''); });
-$('activate').addEventListener('click', () => call(() => api.activate(key), '已切换桌面伙伴；预览改动仍需点击「应用」。'));
 $('appearance-source').addEventListener('change', () => edit(() => { const value = $('appearance-source').value; draft.appearance.assetId = value.startsWith('asset_') ? value : null; draft.appearance.builtinId = value.startsWith('builtin:') ? value.slice(8) : null; }));
 for (const [control, field, numeric] of [['appearance-style','style'],['appearance-fit','fit'],['appearance-scale','scale',100],['appearance-x','x',1],['appearance-y','y',1]]) {
   $(control).addEventListener('input', () => edit(() => { draft.appearance[field] = numeric ? Number($(control).value) / numeric : $(control).value; }));
@@ -181,14 +187,32 @@ for (const field of ['mode','scope','fit','color','asset','opacity','dim']) {
   $(`background-${field}`).addEventListener('input', () => edit(() => { const value = $(`background-${field}`).value; draft.background[field === 'asset' ? 'assetId' : field] = ['opacity','dim'].includes(field) ? Number(value) / 100 : value || null; }));
 }
 for (const b of document.querySelectorAll('[data-state]')) b.addEventListener('click', () => { previewState = b.dataset.state; for (const item of document.querySelectorAll('[data-state]')) item.setAttribute('aria-pressed', String(item === b)); renderPreview(); });
-$('restore').addEventListener('click', () => { draft = normalizeProfile(); drafts.set(key, structuredClone(draft)); fillControls(); message('已预览默认外观，点击「应用」完成恢复。'); });
+$('restore').addEventListener('click', () => { draft = normalizeProfile(); drafts.set(key, structuredClone(draft)); fillControls(); message('已预览默认外观，点击右下角按钮完成恢复。'); });
+/** The desktop switches asynchronously; wait until it reports the new companion. */
+async function waitForDesktop(target) {
+  for (let i = 0; i < 40; i++) {
+    const result = await api.get();
+    if (result?.ok && result.state.activeKey === target) return result;
+    await new Promise(resolve => setTimeout(resolve, 75));
+  }
+  return { ok: false, error: '桌面伙伴没有响应，请稍后再试。' };
+}
 $('apply').addEventListener('click', async () => {
   if (draft.background.mode === 'image' && !draft.background.assetId) { message('请先选择背景图片。', true); return; }
-  const result = await call(() => api.saveProfile({ key, profile: draft }));
-  if (result) {
-    drafts.delete(key); draft = normalizeProfile(result.state.profiles[key]); fillControls();
-    message(result.state.activeKey === key ? '外观已保存，桌面伙伴已更新。' : `已保存到${character().name}。切换为此伙伴即可使用。`);
+  const target = key, name = character().name, dirty = isDirty(), switching = !onDesktop();
+  if (dirty) {
+    const result = await call(() => api.saveProfile({ key: target, profile: draft }));
+    if (!result) return;
+    drafts.delete(target); draft = normalizeProfile(result.state.profiles[target]); fillControls();
   }
+  if (switching) {
+    const switched = await call(async () => {
+      const response = await api.activate(target);
+      return response?.ok ? waitForDesktop(target) : response;
+    });
+    if (!switched) return;
+  }
+  message(switching ? `已换上${name}${dirty ? '，外观已应用' : ''}。` : '外观已应用到桌面伙伴。');
 });
 for (const role of ['appearance','background']) $(`import-${role}`).addEventListener('click', () => { importRole = role; $('image-file').click(); });
 $('image-file').addEventListener('change', event => importFile(event.target.files[0]));
