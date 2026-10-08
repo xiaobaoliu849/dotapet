@@ -1,0 +1,29 @@
+# Dependencies and generated installers
+node_modules/
+dist/
+release/
+coverage/
+
+# Local credentials, settings and personal images
+.env
+.env.*
+!.env.example
+ai-settings.json
+voicespirit_settings.json
+custom_phrases.json
+welcome.json
+customization.json
+customization-assets/
+*.pem
+*.key
+*.pfx
+*.p12
+
+# Temporary files
+*.log
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

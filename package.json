@@ -1,0 +1,38 @@
+{
+  "name": "dotapet",
+  "version": "0.1.0",
+  "description": "刀塔Pet · DOTA2 desktop pet with AI voice chat and in-game chat translation",
+  "repository": { "type": "git", "url": "git+https://github.com/xiaobaoliu849/dotapet.git" },
+  "homepage": "https://github.com/xiaobaoliu849/dotapet#readme",
+  "bugs": { "url": "https://github.com/xiaobaoliu849/dotapet/issues" },
+  "main": "src/main/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --enable-logging",
+    "test": "node --test tests/test_onboarding.js tests/test_customization.js tests/test_ai_settings.js tests/test_ai_settings_renderer.js tests/test_gsi_server.js tests/test_lazy_voice_connect.js tests/test_doubao_duplex.js tests/test_google_live.js tests/test_pet_persona.js tests/test_voice_tts_fallback.js tests/test_transcript_streaming.js tests/test_qwen_realtime.js tests/test_desktop_roam_engine.js tests/test_roam_motor.js tests/test_pet_matrix.js tests/test_phrases_panel.js tests/test_game_chat_translate.js tests/test_screenshot_translate.js",
+    "build:icons": "node scripts/build-icons.mjs",
+    "test:onboarding": "node --test tests/test_onboarding.js",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --win --x64 --publish never",
+    "smoke": "node scripts/smoke-desktop.mjs",
+    "verify:installer": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify-installer.ps1"
+  },
+  "keywords": [
+    "dota2",
+    "voicespirit",
+    "desktop-pet",
+    "translator",
+    "electron",
+    "realtime-ai"
+  ],
+  "author": "xiaobaoliu849",
+  "license": "MIT",
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^26.15.3"
+  }
+}
