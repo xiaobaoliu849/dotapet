@@ -285,6 +285,17 @@ async function runCompanionSmokeTest() {
     fs.writeFileSync(output.replace(/\.png$/, '-actions.png'), (await capture()).toPNG());
     await win.webContents.executeJavaScript("document.getElementById('help').scrollIntoView()");
     fs.writeFileSync(output.replace(/\.png$/, '-help.png'), (await capture()).toPNG());
+    // The pet rests alone; toolbars appear on hover; right-click holds the everyday actions.
+    const petShot = async (script, name) => {
+      await mainWindow.webContents.executeJavaScript(`${script}; new Promise(resolve => setTimeout(resolve, 300))`);
+      await mainWindow.webContents.capturePage();
+      fs.writeFileSync(output.replace(/\.png$/, `-${name}.png`), (await mainWindow.webContents.capturePage()).toPNG());
+    };
+    await petShot("document.body.classList.remove('hud-awake')", 'pet-rest');
+    await petShot("document.body.classList.add('hud-awake')", 'pet-hover');
+    // A hidden smoke window does not advance the menu's fade-in animation.
+    await petShot("const menu = document.getElementById('pet-context-menu'); menu.style.animation = 'none'; menu.classList.remove('hidden')", 'pet-menu');
+    await mainWindow.webContents.executeJavaScript("document.getElementById('pet-context-menu').style.animation = ''; document.getElementById('pet-context-menu').classList.add('hidden'); document.body.classList.remove('hud-awake')");
     await win.webContents.executeJavaScript("document.getElementById('advanced').open = false; document.getElementById('provider').value = 'doubao'; document.getElementById('provider').dispatchEvent(new Event('change')); window.scrollTo(0,0)");
     fs.writeFileSync(output.replace(/\.png$/, '-doubao.png'), (await capture()).toPNG());
     win.setSize(620, 730);

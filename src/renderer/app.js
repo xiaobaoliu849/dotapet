@@ -1282,6 +1282,26 @@ function setupHitTesting() {
 }
 
 /**
+ * Calm resting state: the toolbars show only while the mouse is over the
+ * companion, so the desktop normally shows just the pet.
+ */
+function setupHudAutoHide() {
+  let sleepTimer = null;
+  const awakeAreas = '.hud-top-bar, .hud-bottom-dock, .pet-wrapper, .pet-context-menu, .dialogue-bubble, .transcript-panel, .snap-popover, .pet-matrix-popover, .hero-picker-modal';
+  const wake = () => { clearTimeout(sleepTimer); document.body.classList.add('hud-awake'); };
+  const sleep = delay => {
+    clearTimeout(sleepTimer);
+    sleepTimer = setTimeout(() => document.body.classList.remove('hud-awake'), delay);
+  };
+  window.addEventListener('mousemove', event => {
+    const el = document.elementFromPoint(event.clientX, event.clientY);
+    if (el?.closest(awakeAreas)) wake();
+    else sleep(1500);
+  });
+  window.addEventListener('mouseleave', () => sleep(800));
+}
+
+/**
  * Get active skin data for a hero (checking localStorage overrides)
  */
 function getActiveHeroSkin(hero) {
@@ -3110,6 +3130,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     });
   }
   setupHitTesting();
+  setupHudAutoHide();
   setupWindowDragging();
   setupEventListeners();
   await loadHeroConfig();
