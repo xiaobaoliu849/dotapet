@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <radialGradient id="wolfFur" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="60%" stop-color="#e0f2fe"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </radialGradient>
+    <radialGradient id="wolfBelly" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f0f9ff"/>
+    </radialGradient>
+    <radialGradient id="frostGem" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#bae6fd"/>
+      <stop offset="60%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </radialGradient>
+    <filter id="howlGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3.5" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Howling Sound / Frost Waves -->
+  <path d="M125 35 Q145 25 165 30" stroke="#38bdf8" stroke-width="3" fill="none" stroke-linecap="round" filter="url(#howlGlow)"/>
+  <path d="M135 48 Q155 42 175 52" stroke="#7dd3fc" stroke-width="2.5" fill="none" stroke-linecap="round" filter="url(#howlGlow)"/>
+  <path d="M128 62 Q148 60 168 70" stroke="#bae6fd" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+  <!-- Tail (High Wagging) -->
+  <path d="M145 130 C185 110, 190 70, 165 55 C150 45, 142 80, 130 115 Z" fill="url(#wolfFur)" filter="url(#howlGlow)"/>
+
+  <!-- Hind Legs -->
+  <ellipse cx="130" cy="150" rx="18" ry="14" fill="#bae6fd"/>
+  <ellipse cx="140" cy="160" rx="10" ry="7" fill="#ffffff"/>
+
+  <!-- Body (Stretched in Howl) -->
+  <ellipse cx="100" cy="135" rx="35" ry="30" fill="url(#wolfFur)"/>
+  <ellipse cx="95" cy="140" rx="22" ry="20" fill="url(#wolfBelly)"/>
+
+  <!-- Front Paws Planted Firmly -->
+  <ellipse cx="75" cy="162" rx="10" ry="7" fill="#ffffff"/>
+  <ellipse cx="100" cy="162" rx="10" ry="7" fill="#ffffff"/>
+
+  <!-- Ears (Tilted Back in Howl) -->
+  <polygon points="60,65 30,35 68,48" fill="url(#wolfFur)"/>
+  <polygon points="58,60 38,40 66,50" fill="#fbcfe8"/>
+  <polygon points="95,60 110,25 90,45" fill="url(#wolfFur)"/>
+  <polygon points="94,56 104,32 90,46" fill="#fbcfe8"/>
+
+  <!-- Head (Upturned toward sky) -->
+  <g transform="rotate(-25 90 85)">
+    <ellipse cx="90" cy="85" rx="36" ry="28" fill="url(#wolfFur)"/>
+    <ellipse cx="98" cy="92" rx="20" ry="14" fill="url(#wolfBelly)"/>
+
+    <path d="M68 112 Q90 125 112 112" stroke="#0284c7" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <polygon points="90,116 96,124 90,132 84,124" fill="url(#frostGem)" filter="url(#howlGlow)"/>
+
+    <!-- Closed Eyes in Deep Howl -->
+    <path d="M78 80 Q85 73 92 80" stroke="#0284c7" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+    <!-- Muzzle Pointed Up -->
+    <ellipse cx="112" cy="74" rx="14" ry="12" fill="url(#wolfFur)"/>
+    <ellipse cx="122" cy="68" rx="4.5" ry="3.5" fill="#0f172a"/>
+
+    <!-- Open Howling Mouth (Awoooo!) -->
+    <ellipse cx="120" cy="78" rx="6" ry="7" fill="#0f172a"/>
+    <ellipse cx="120" cy="80" rx="3.5" ry="4" fill="#f43f5e"/>
+  </g>
+</svg>

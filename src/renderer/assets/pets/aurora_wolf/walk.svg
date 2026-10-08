@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <radialGradient id="wolfFur" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="60%" stop-color="#e0f2fe"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </radialGradient>
+    <radialGradient id="wolfBelly" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f0f9ff"/>
+    </radialGradient>
+    <radialGradient id="frostGem" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#bae6fd"/>
+      <stop offset="60%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </radialGradient>
+    <filter id="iceGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Snow Dust Paws Trail -->
+  <circle cx="45" cy="168" r="4" fill="#bae6fd" opacity="0.6" filter="url(#iceGlow)"/>
+  <circle cx="35" cy="172" r="2.5" fill="#e0f2fe" opacity="0.4"/>
+  <polygon points="25,160 28,165 33,167 28,169 25,174 22,169 17,167 22,165" fill="#bae6fd" opacity="0.7" filter="url(#iceGlow)"/>
+
+  <!-- Fluffy Wolf Tail (Running Up) -->
+  <path d="M50 120 C20 100, 30 65, 55 60 C65 58, 65 85, 65 105 Z" fill="url(#wolfFur)" filter="url(#iceGlow)"/>
+
+  <!-- Hind Legs (Stepping/Running) -->
+  <ellipse cx="65" cy="148" rx="14" ry="10" fill="#bae6fd" transform="rotate(-20 65 148)"/>
+  <ellipse cx="50" cy="165" rx="9" ry="6" fill="#ffffff"/>
+
+  <!-- Body (Tilted Forward) -->
+  <ellipse cx="100" cy="130" rx="36" ry="26" fill="url(#wolfFur)" transform="rotate(8 100 130)"/>
+  <ellipse cx="105" cy="136" rx="22" ry="16" fill="url(#wolfBelly)" transform="rotate(8 105 136)"/>
+
+  <!-- Rear Hind Leg -->
+  <ellipse cx="78" cy="145" rx="10" ry="8" fill="#7dd3fc"/>
+  <ellipse cx="70" cy="160" rx="8" ry="5" fill="#ffffff"/>
+
+  <!-- Front Paws (Running Forward) -->
+  <ellipse cx="130" cy="158" rx="9" ry="6" fill="#ffffff" transform="rotate(15 130 158)"/>
+  <ellipse cx="150" cy="150" rx="9" ry="6" fill="#ffffff" transform="rotate(-20 150 150)"/>
+
+  <!-- Ears (Streamlined in wind) -->
+  <polygon points="95,70 70,35 110,50" fill="url(#wolfFur)"/>
+  <polygon points="96,65 76,40 105,52" fill="#fbcfe8"/>
+  <polygon points="145,68 150,25 125,48" fill="url(#wolfFur)"/>
+  <polygon points="143,64 146,33 128,50" fill="#fbcfe8"/>
+
+  <!-- Head (Leaning Forward) -->
+  <ellipse cx="120" cy="85" rx="32" ry="28" fill="url(#wolfFur)"/>
+  <ellipse cx="128" cy="95" rx="18" ry="13" fill="url(#wolfBelly)"/>
+
+  <!-- Frost Collar -->
+  <path d="M100 110 Q120 120 140 108" stroke="#0284c7" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <polygon points="122,114 127,121 122,128 117,121" fill="url(#frostGem)" filter="url(#iceGlow)"/>
+
+  <!-- Focused Running Eyes -->
+  <ellipse cx="112" cy="80" rx="6.5" ry="5.5" fill="#ffffff"/>
+  <circle cx="114" cy="80" r="4" fill="#0284c7"/>
+  <circle cx="115" cy="78" r="1.5" fill="#ffffff"/>
+
+  <ellipse cx="138" cy="80" rx="6.5" ry="5.5" fill="#ffffff"/>
+  <circle cx="140" cy="80" r="4" fill="#0284c7"/>
+  <circle cx="141" cy="78" r="1.5" fill="#ffffff"/>
+
+  <!-- Nose -->
+  <ellipse cx="132" cy="92" rx="4" ry="3" fill="#0f172a"/>
+  <!-- Happy Open Mouth with Tongue -->
+  <path d="M128 97 Q133 103 138 97" stroke="#0f172a" stroke-width="2" fill="none"/>
+  <path d="M130 99 Q134 107 138 99 Z" fill="#f43f5e"/>
+</svg>

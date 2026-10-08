@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <radialGradient id="wolfFur" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="60%" stop-color="#e0f2fe"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </radialGradient>
+    <radialGradient id="frostNova" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#7dd3fc"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </radialGradient>
+    <filter id="iceGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Freezing Field / Frost Nova Ring -->
+  <g filter="url(#iceGlow)">
+    <circle cx="100" cy="100" r="85" stroke="#38bdf8" stroke-width="3.5" fill="none" stroke-dasharray="10 6"/>
+    <polygon points="100,15 106,30 120,32 108,42 112,56 100,48 88,56 92,42 80,32 94,30" fill="url(#frostNova)"/>
+    <polygon points="30,100 34,108 42,109 36,114 38,122 30,118 22,122 24,114 18,109 26,108" fill="#bae6fd"/>
+    <polygon points="170,100 174,108 182,109 176,114 178,122 170,118 162,122 164,114 158,109 166,108" fill="#bae6fd"/>
+  </g>
+
+  <!-- Wolf Body in Howl Pose -->
+  <ellipse cx="100" cy="130" rx="36" ry="30" fill="url(#wolfFur)"/>
+  <ellipse cx="100" cy="136" rx="22" ry="20" fill="#f0f9ff"/>
+
+  <!-- Paws -->
+  <ellipse cx="80" cy="158" rx="10" ry="7" fill="#ffffff"/>
+  <ellipse cx="120" cy="158" rx="10" ry="7" fill="#ffffff"/>
+
+  <!-- Ears back during howl -->
+  <polygon points="65,75 45,35 85,55" fill="url(#wolfFur)"/>
+  <polygon points="135,75 155,35 115,55" fill="url(#wolfFur)"/>
+
+  <!-- Head tilted up howling -->
+  <ellipse cx="100" cy="80" rx="34" ry="30" fill="url(#wolfFur)"/>
+  <ellipse cx="100" cy="70" rx="16" ry="14" fill="#0f172a"/>
+  <!-- Open mouth howling -->
+  <ellipse cx="100" cy="74" rx="8" ry="10" fill="#f43f5e"/>
+</svg>

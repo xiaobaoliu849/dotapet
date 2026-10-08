@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'" />
+  <title>DOTA 2 快捷短语面板</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Standalone editor window: the modal overlay doubles as the page body.
+       The card fills the window so all 10 rows stay visible without scrolling;
+       the OS title bar close button is the only close affordance. */
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #1c1611;
+    }
+
+    .phrases-picker-modal {
+      padding: 10px 12px;
+    }
+
+    .phrases-modal-card {
+      max-height: none;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <!-- Same card structure as the legacy in-pet modal so all .phrases-* styles apply unchanged -->
+  <div class="phrases-picker-modal no-drag interactive">
+    <div class="phrases-modal-card">
+      <div class="phrases-modal-header">
+        <div class="phrases-modal-title">
+          <span class="phrases-title-icon">⚡</span>
+          <span class="phrases-title-text">DOTA 2 快捷短语面板</span>
+          <span class="phrases-title-badge">局内热键: Ctrl+1~0 (中文) / Alt+1~0 (英文)</span>
+        </div>
+      </div>
+
+      <div class="phrases-modal-body">
+        <!-- Preset Template Importer Strip -->
+        <div class="preset-import-strip">
+          <span class="preset-label">💡 快速导入精简模板：</span>
+          <select id="select-preset-template" class="preset-dropdown">
+            <!-- Dynamically populated from SIMPLIFIED_PRESETS -->
+          </select>
+          <span class="preset-to-label">→ 第</span>
+          <select id="select-preset-target-row" class="preset-row-dropdown">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="0">0</option>
+          </select>
+          <span class="preset-unit-label">行</span>
+          <button id="btn-import-preset" class="btn-import-preset">⚡ 导入此条</button>
+        </div>
+
+        <!-- Table Header -->
+        <div class="phrases-table-header">
+          <div class="col-num">#</div>
+          <div class="col-cn">🇨🇳 中文短语 (局内 Ctrl + 数字/0)</div>
+          <div class="col-en">🇺🇸 英文短语 (局内 Alt + 数字/0)</div>
+          <div class="col-actions">操作</div>
+        </div>
+
+        <!-- Phrases 10 Rows List -->
+        <div class="phrases-rows-list" id="phrases-rows-container">
+          <!-- Dynamically populated 10 rows -->
+        </div>
+      </div>
+
+      <div class="phrases-modal-footer">
+        <div class="footer-left">
+          <button id="btn-translate-all-phrases" class="btn-secondary-action">⚡ 一键 AI 翻译补全 (Qwen-Flash)</button>
+          <button id="btn-reset-default-phrases" class="btn-secondary-action btn-dim">🔄 恢复精简默认值</button>
+        </div>
+        <div class="footer-right">
+          <button id="btn-save-phrases" class="btn-primary-action">💾 保存并生效 (Save & Apply)</button>
+          <button id="btn-cancel-phrases" class="btn-secondary-action">取消 (ESC)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="hud-toast" class="toast hidden">已保存</div>
+
+  <script src="phrases.js"></script>
+</body>
+</html>

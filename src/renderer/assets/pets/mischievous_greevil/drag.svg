@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <radialGradient id="greevilBody" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#f472b6"/>
+      <stop offset="50%" stop-color="#db2777"/>
+      <stop offset="100%" stop-color="#831843"/>
+    </radialGradient>
+    <radialGradient id="greevilBelly" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </radialGradient>
+    <radialGradient id="hornGold" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="70%" stop-color="#eab308"/>
+      <stop offset="100%" stop-color="#a16207"/>
+    </radialGradient>
+    <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  
+
+  <!-- Tiny Dragon Tail -->
+  <path d="M140 135 C175 140, 185 110, 175 95 C165 90, 160 115, 135 125 Z" fill="url(#greevilBody)"/>
+  <polygon points="175,95 185,90 180,105" fill="url(#hornGold)"/>
+
+  <!-- Plump Round Body -->
+  <ellipse cx="100" cy="130" rx="42" ry="36" fill="url(#greevilBody)"/>
+  <!-- Golden Chubby Belly -->
+  <ellipse cx="100" cy="136" rx="26" ry="22" fill="url(#greevilBelly)"/>
+
+  <!-- Stubby Feet -->
+  <ellipse cx="78" cy="162" rx="14" ry="9" fill="#9d174d" transform="rotate(-30, 78, 162)"/>
+  <ellipse cx="122" cy="162" rx="14" ry="9" fill="#9d174d" transform="rotate(30, 122, 162)"/>
+
+  <!-- Tiny Wings -->
+  <path d="M60 110 C35 90, 45 65, 65 85 Z" fill="#a855f7" opacity="0.9"/>
+  <path d="M140 110 C165 90, 155 65, 135 85 Z" fill="#a855f7" opacity="0.9"/>
+
+  <!-- Cute Mischievous Horns -->
+  <path d="M75 65 C60 30, 45 40, 60 68 Z" fill="url(#hornGold)" filter="url(#goldGlow)"/>
+  <path d="M125 65 C140 30, 155 40, 140 68 Z" fill="url(#hornGold)" filter="url(#goldGlow)"/>
+
+  <!-- Big Round Head -->
+  <ellipse cx="100" cy="88" rx="36" ry="32" fill="url(#greevilBody)"/>
+
+  <!-- Big Googly Eyes -->
+  <ellipse cx="80" cy="80" rx="9" ry="9" fill="#ffffff"/>
+  <circle cx="82" cy="80" r="5" fill="#4c1d95"/><circle cx="84" cy="78" r="2" fill="#ffffff"/>
+
+  <ellipse cx="120" cy="80" rx="9" ry="9" fill="#ffffff"/>
+  <circle cx="118" cy="80" r="5" fill="#4c1d95"/><circle cx="116" cy="78" r="2" fill="#ffffff"/>
+
+  <!-- Mischievous Grin & Tongue -->
+  <path d="M78 98 Q100 118 122 98" stroke="#4c1d95" stroke-width="3.5" fill="#831843"/>
+  <path d="M92 105 Q100 120 108 105 Z" fill="#f43f5e"/>
+
+  
+
+  
+
+  
+
+  
+</svg>

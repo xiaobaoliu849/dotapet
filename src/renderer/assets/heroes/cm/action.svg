@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <radialGradient id="freezingField" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#7dd3fc"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </radialGradient>
+    <filter id="iceBlizzard" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Freezing Field Blizzard Crystals -->
+  <circle cx="100" cy="100" r="90" fill="url(#freezingField)" opacity="0.25" filter="url(#iceBlizzard)"/>
+  <polygon points="30,30 35,45 50,50 35,55 30,70 25,55 10,50 25,45" fill="#e0f2fe"/>
+  <polygon points="160,30 165,45 180,50 165,55 160,70 155,55 140,50 155,45" fill="#e0f2fe"/>
+
+  <!-- Fur Cape Floating -->
+  <path d="M40 180 C 25 110, 50 85, 100 85 C 150 85, 175 110, 160 180 Z" fill="#0284c7"/>
+  <path d="M45 95 Q 100 75 155 95 Q 100 110 45 95 Z" fill="#f8fafc"/>
+
+  <!-- Head -->
+  <ellipse cx="100" cy="85" rx="34" ry="36" fill="#ffedd5"/>
+
+  <!-- Glowing Cyan Eyes (Channelling Ultimate) -->
+  <circle cx="86" cy="82" r="6" fill="#38bdf8" filter="url(#iceBlizzard)"/>
+  <circle cx="86" cy="82" r="3" fill="#ffffff"/>
+  <circle cx="114" cy="82" r="6" fill="#38bdf8" filter="url(#iceBlizzard)"/>
+  <circle cx="114" cy="82" r="3" fill="#ffffff"/>
+
+  <!-- Channelling Expression -->
+  <path d="M78 74 Q 86 70 94 74" stroke="#0369a1" stroke-width="3" fill="none"/>
+  <path d="M106 74 Q 114 70 122 74" stroke="#0369a1" stroke-width="3" fill="none"/>
+
+  <!-- Chanting Mouth -->
+  <ellipse cx="100" cy="104" rx="6" ry="5" fill="#be123c"/>
+</svg>

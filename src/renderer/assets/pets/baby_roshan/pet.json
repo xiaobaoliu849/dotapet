@@ -1,0 +1,115 @@
+{
+  "name": "baby_roshan",
+  "displayName": "不朽萌王 · 肉山宝宝 (Baby Roshan)",
+  "version": "1.0.0",
+  "author": "DOTA 2 VoiceSpirit",
+  "heroCompanion": null,
+  "description": "DOTA 2 史上最尊贵的传奇信使！虽然体型 mini，但继承了肉山大魔王的熔岩坚甲与不朽之守护威严，最爱啃奶酪！",
+  "themeColor": "#ef4444",
+  "secondaryColor": "#fee2e2",
+  "specialSkill": {
+    "id": "aegis_roar",
+    "name": "不朽咆哮 (Aegis Roar)",
+    "description": "震颤咆哮召唤迷你不朽盾环绕自身，点燃地底熔岩霸气护体！",
+    "icon": "🛡️",
+    "duration": 3000
+  },
+  "states": {
+    "idle": {
+      "name": "idle",
+      "label": "熔岩吐息",
+      "svg": "idle.svg",
+      "duration": 400,
+      "loop": true,
+      "quote": "嗷呜~ 召唤师，我的奶酪和不朽盾已经准备好啦！"
+    },
+    "walk": {
+      "name": "walk",
+      "label": "霸气踱步",
+      "svg": "walk.svg",
+      "duration": 200,
+      "loop": true,
+      "particle": "lava-step"
+    },
+    "pet": {
+      "name": "pet",
+      "label": "抚摸龙角",
+      "svg": "pet.svg",
+      "duration": 300,
+      "loop": true,
+      "quote": "嗷呜~（舒服地闭上眼睛）虽然我是肉山大王，但摸角角很舒服❤️"
+    },
+    "drag": {
+      "name": "drag",
+      "label": "挥舞肉爪",
+      "svg": "drag.svg",
+      "duration": 150,
+      "loop": true,
+      "quote": "哇呀呀！放我下来，不然本宝宝要放雷霆一击了！"
+    },
+    "feed_tango": {
+      "name": "feed_tango",
+      "label": "咀嚼硬树",
+      "svg": "feed_tango.svg",
+      "duration": 250,
+      "loop": false,
+      "quote": "咔嚓咔嚓！这树吃起来像脆烤石块，岩浆胃表示很赞！"
+    },
+    "feed_salve": {
+      "name": "feed_salve",
+      "label": "畅饮熔岩药",
+      "svg": "feed_salve.svg",
+      "duration": 250,
+      "loop": false,
+      "quote": "咕咚咕咚！熔岩大药灌满，岩石外壳更加坚硬了！"
+    },
+    "feed_rapier": {
+      "name": "feed_rapier",
+      "label": "握持圣剑",
+      "svg": "feed_rapier.svg",
+      "duration": 350,
+      "loop": true,
+      "quote": "咆哮吧！双持圣剑与不朽盾，肉山巢穴谁来谁死！+350 攻击力！"
+    },
+    "fetch": {
+      "name": "fetch",
+      "label": "夺回奶酪",
+      "svg": "fetch.svg",
+      "duration": 120,
+      "loop": true,
+      "quote": "谁把本宝宝的奶酪扔出去了？看我一口飞扑抢回来！"
+    },
+    "sleep": {
+      "name": "sleep",
+      "label": "熔岩打呼",
+      "svg": "sleep.svg",
+      "duration": 800,
+      "loop": true,
+      "quote": "Zzz... 呼噜呼噜... 梦见下一次在肉山巢穴 8-11 分钟后刷新..."
+    },
+    "think": {
+      "name": "think",
+      "label": "凝视洞口",
+      "svg": "think.svg",
+      "duration": 300,
+      "loop": true,
+      "quote": "龙角微亮，在推算肉山刷新的确切时间与神符位置..."
+    },
+    "speak": {
+      "name": "speak",
+      "label": "不朽怒吼",
+      "svg": "speak.svg",
+      "duration": 200,
+      "loop": true,
+      "quote": "嗷吼————！不朽之盾已在此刻重铸！肉山大魔王不可战胜！"
+    },
+    "special": {
+      "name": "special",
+      "label": "不朽咆哮",
+      "svg": "special.svg",
+      "duration": 400,
+      "loop": false,
+      "quote": "🛡️ 不朽咆哮！召唤远古熔岩与金光不朽盾！全场震颤！"
+    }
+  }
+}

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <radialGradient id="invokerCape" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#dc2626"/>
+      <stop offset="100%" stop-color="#7f1d1d"/>
+    </radialGradient>
+    <radialGradient id="invokerHair" cx="40%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="100%" stop-color="#ca8a04"/>
+    </radialGradient>
+    <filter id="glowSpeaking" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Orbs Glowing Intensely -->
+  <circle cx="40" cy="50" r="16" fill="#38bdf8" filter="url(#glowSpeaking)"/>
+  <circle cx="36" cy="46" r="5" fill="#ffffff"/>
+  <circle cx="100" cy="22" r="16" fill="#c084fc" filter="url(#glowSpeaking)"/>
+  <circle cx="96" cy="18" r="5" fill="#ffffff"/>
+  <circle cx="160" cy="50" r="16" fill="#fb923c" filter="url(#glowSpeaking)"/>
+  <circle cx="156" cy="46" r="5" fill="#ffffff"/>
+
+  <!-- Cape -->
+  <path d="M38 180 C 38 115, 58 95, 100 95 C 142 95, 162 115, 162 180 Z" fill="url(#invokerCape)"/>
+  <path d="M50 180 L 100 120 L 150 180 Z" fill="#b91c1c"/>
+  <path d="M70 125 L 100 155 L 130 125" stroke="#facc15" stroke-width="4" fill="none"/>
+
+  <!-- Head -->
+  <ellipse cx="100" cy="95" rx="36" ry="40" fill="#fed7aa"/>
+
+  <!-- Eyes Speaking/Passionate -->
+  <ellipse cx="85" cy="93" rx="7" ry="5" fill="#ffffff"/>
+  <circle cx="86" cy="93" r="3.5" fill="#0284c7"/>
+  <circle cx="88" cy="91" r="1.5" fill="#ffffff"/>
+  <ellipse cx="115" cy="93" rx="7" ry="5" fill="#ffffff"/>
+  <circle cx="114" cy="93" r="3.5" fill="#0284c7"/>
+  <circle cx="116" cy="91" r="1.5" fill="#ffffff"/>
+
+  <!-- Eyebrows Active -->
+  <path d="M76 85 Q 86 82 95 87" stroke="#854d0e" stroke-width="3" fill="none"/>
+  <path d="M105 87 Q 114 82 124 85" stroke="#854d0e" stroke-width="3" fill="none"/>
+
+  <!-- Mouth Open / Speaking -->
+  <ellipse cx="100" cy="116" rx="8" ry="7" fill="#7f1d1d"/>
+  <path d="M95 119 Q 100 122 105 119" stroke="#fca5a5" stroke-width="2" fill="none"/>
+
+  <!-- Elven Ears & Hair -->
+  <polygon points="58,92 48,84 62,100" fill="#fed7aa"/>
+  <polygon points="142,92 152,84 138,100" fill="#fed7aa"/>
+  <path d="M60 85 C 60 45, 140 45, 140 85 C 145 95, 148 115, 142 135 C 136 115, 130 90, 120 75 C 100 65, 80 75, 60 85 Z" fill="url(#invokerHair)"/>
+</svg>

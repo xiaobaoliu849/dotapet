@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <radialGradient id="wolfFur" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="60%" stop-color="#e0f2fe"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </radialGradient>
+    <radialGradient id="wolfBelly" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f0f9ff"/>
+    </radialGradient>
+    <linearGradient id="rapierGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="50%" stop-color="#eab308"/>
+      <stop offset="100%" stop-color="#ca8a04"/>
+    </linearGradient>
+    <linearGradient id="rapierBlade" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#e0f2fe"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+    <filter id="goldGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3.5" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Golden Radiance Stars (+350 DMG Rapier) -->
+  <polygon points="30,30 35,42 47,47 35,52 30,64 25,52 13,47 25,42" fill="#facc15" filter="url(#goldGlow)"/>
+  <polygon points="170,25 174,34 183,38 174,42 170,51 166,42 157,38 166,34" fill="#facc15" filter="url(#goldGlow)"/>
+  <text x="130" y="70" font-family="'Segoe UI', sans-serif" font-weight="bold" font-size="13" fill="#eab308" filter="url(#goldGlow)">+350 DMG</text>
+
+  <!-- Tail (Proudly High) -->
+  <path d="M145 130 C185 110, 190 70, 165 55 C150 45, 142 80, 130 115 Z" fill="url(#wolfFur)" filter="url(#goldGlow)"/>
+
+  <!-- Hind Legs -->
+  <ellipse cx="130" cy="150" rx="18" ry="14" fill="#bae6fd"/>
+  <ellipse cx="140" cy="160" rx="10" ry="7" fill="#ffffff"/>
+
+  <!-- Body -->
+  <ellipse cx="105" cy="135" rx="35" ry="30" fill="url(#wolfFur)"/>
+  <ellipse cx="100" cy="140" rx="22" ry="20" fill="url(#wolfBelly)"/>
+
+  <!-- Front Paws Standing Proud -->
+  <ellipse cx="78" cy="162" rx="10" ry="7" fill="#ffffff"/>
+  <ellipse cx="106" cy="162" rx="10" ry="7" fill="#ffffff"/>
+
+  <!-- Proud Raised Ears -->
+  <polygon points="65,72 45,25 80,50" fill="url(#wolfFur)"/>
+  <polygon points="65,68 52,32 76,52" fill="#fbcfe8"/>
+  <polygon points="125,72 145,25 110,50" fill="url(#wolfFur)"/>
+  <polygon points="125,68 138,32 114,52" fill="#fbcfe8"/>
+
+  <!-- Head -->
+  <ellipse cx="95" cy="88" rx="36" ry="32" fill="url(#wolfFur)"/>
+  <ellipse cx="95" cy="100" rx="20" ry="15" fill="url(#wolfBelly)"/>
+
+  <!-- Confident Eyes (Smug & Strong) -->
+  <ellipse cx="80" cy="82" rx="7" ry="6" fill="#ffffff"/>
+  <circle cx="82" cy="82" r="4.5" fill="#ca8a04"/>
+  <circle cx="83.5" cy="80" r="1.8" fill="#ffffff"/>
+
+  <ellipse cx="110" cy="82" rx="7" ry="6" fill="#ffffff"/>
+  <circle cx="112" cy="82" r="4.5" fill="#ca8a04"/>
+  <circle cx="113.5" cy="80" r="1.8" fill="#ffffff"/>
+
+  <!-- Nose -->
+  <ellipse cx="95" cy="94" rx="4" ry="3" fill="#0f172a"/>
+
+  <!-- DOTA 2 Divine Rapier (Held Firmly in Wolf's Mouth) -->
+  <g transform="rotate(-15 95 105)">
+    <!-- Blade -->
+    <polygon points="35,103 145,103 165,106 145,109 35,109" fill="url(#rapierBlade)" filter="url(#goldGlow)"/>
+    <line x1="45" y1="106" x2="155" y2="106" stroke="#ffffff" stroke-width="1.5"/>
+    <!-- Guard (Winged Crossguard) -->
+    <path d="M42 94 C46 102, 46 110, 42 118 C38 110, 38 102, 42 94 Z" fill="url(#rapierGold)" filter="url(#goldGlow)"/>
+    <circle cx="42" cy="106" r="4" fill="#38bdf8" filter="url(#goldGlow)"/>
+    <!-- Hilt & Pommel -->
+    <rect x="25" y="104" width="15" height="4" rx="1" fill="#78350f"/>
+    <circle cx="23" cy="106" r="4.5" fill="url(#rapierGold)"/>
+  </g>
+</svg>

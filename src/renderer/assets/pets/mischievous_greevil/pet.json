@@ -1,0 +1,115 @@
+{
+  "name": "mischievous_greevil",
+  "displayName": "淘气小贪魔 · 贪魔节使者 (Greevil)",
+  "version": "1.0.0",
+  "author": "DOTA 2 VoiceSpirit",
+  "heroCompanion": null,
+  "description": "迎霜节里破壳而出的淘气魔法小龙兽，最喜欢偷藏亮闪闪的金币、做鬼脸和喷洒节日糖果彩带！",
+  "themeColor": "#ec4899",
+  "secondaryColor": "#fce7f3",
+  "specialSkill": {
+    "id": "gold_shower",
+    "name": "贪魔金币狂欢 (Gold Fountain)",
+    "description": "淘气翻跟头并狂喷金色金币雨与贪魔糖果，金光闪耀！",
+    "icon": "🪙",
+    "duration": 3000
+  },
+  "states": {
+    "idle": {
+      "name": "idle",
+      "label": "摇摆吐舌",
+      "svg": "idle.svg",
+      "duration": 400,
+      "loop": true,
+      "quote": "咕噜噜~ 贪魔的口袋里塞满了亮闪闪的金币！"
+    },
+    "walk": {
+      "name": "walk",
+      "label": "蹦蹦跳跳",
+      "svg": "walk.svg",
+      "duration": 200,
+      "loop": true,
+      "particle": "gold-spark"
+    },
+    "pet": {
+      "name": "pet",
+      "label": "挠挠小肚皮",
+      "svg": "pet.svg",
+      "duration": 300,
+      "loop": true,
+      "quote": "咯咯咯~ 别挠贪魔肚皮！要笑得喷金币啦！💰"
+    },
+    "drag": {
+      "name": "drag",
+      "label": "挥舞小爪",
+      "svg": "drag.svg",
+      "duration": 150,
+      "loop": true,
+      "quote": "咿呀！贪魔飞起来啦！快看我的小肚腩！"
+    },
+    "feed_tango": {
+      "name": "feed_tango",
+      "label": "嚼脆糖吃树",
+      "svg": "feed_tango.svg",
+      "duration": 250,
+      "loop": false,
+      "quote": "咔嚓咔嚓！味道像薄荷味贪魔硬糖，好吃！"
+    },
+    "feed_salve": {
+      "name": "feed_salve",
+      "label": "灌草莓大药",
+      "svg": "feed_salve.svg",
+      "duration": 250,
+      "loop": false,
+      "quote": "咕噜噜！大药下肚，贪魔活力值爆表，可以偷更多金币了！"
+    },
+    "feed_rapier": {
+      "name": "feed_rapier",
+      "label": "啃咬圣剑",
+      "svg": "feed_rapier.svg",
+      "duration": 350,
+      "loop": true,
+      "quote": "哇！超级大金剑！贪魔要把它藏在最深的龙窝里！+350！"
+    },
+    "fetch": {
+      "name": "fetch",
+      "label": "飞扑金币",
+      "svg": "fetch.svg",
+      "duration": 120,
+      "loop": true,
+      "quote": "咻——！金币在哪贪魔就在哪！一口叼住！"
+    },
+    "sleep": {
+      "name": "sleep",
+      "label": "抱金大睡",
+      "svg": "sleep.svg",
+      "duration": 800,
+      "loop": true,
+      "quote": "Zzz... 呼噜呼噜... 梦到金币堆成了一座大山..."
+    },
+    "think": {
+      "name": "think",
+      "label": "转动眼珠",
+      "svg": "think.svg",
+      "duration": 300,
+      "loop": true,
+      "quote": "小眼睛滴溜溜转，正在策划下一个恶作剧呢..."
+    },
+    "speak": {
+      "name": "speak",
+      "label": "贪魔狂笑",
+      "svg": "speak.svg",
+      "duration": 200,
+      "loop": true,
+      "quote": "嘻嘻嘻哈哈！迎霜节快乐！把金币统统交出来！"
+    },
+    "special": {
+      "name": "special",
+      "label": "金币狂欢",
+      "svg": "special.svg",
+      "duration": 400,
+      "loop": false,
+      "quote": "🪙 贪魔金币大狂欢！亮闪闪金币喷泉！恭喜发财！"
+    }
+  }
+}

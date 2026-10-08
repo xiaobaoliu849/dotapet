@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <radialGradient id="donkeyCoat" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#fde68a"/>
+      <stop offset="50%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#92400e"/>
+    </radialGradient>
+    <radialGradient id="donkeyMuzzle" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fffbeb"/>
+      <stop offset="100%" stop-color="#fde68a"/>
+    </radialGradient>
+    <radialGradient id="saddleLeather" cx="40%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#b45309"/>
+      <stop offset="100%" stop-color="#451a03"/>
+    </radialGradient>
+    <linearGradient id="goldGleam" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="50%" stop-color="#eab308"/>
+      <stop offset="100%" stop-color="#ca8a04"/>
+    </linearGradient>
+    <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  
+
+  <!-- Little Courier Wings -->
+  <g transform="translate(115, 80) rotate(-5)" opacity="1">
+    <path d="M0 0 C25 -35, 55 -20, 45 10 C35 30, 15 15, 0 0 Z" fill="#ffffff" stroke="#fde68a" stroke-width="2" filter="url(#goldGlow)"/>
+    <path d="M10 -5 C28 -25, 45 -12, 38 8" stroke="#f59e0b" stroke-width="1.5" fill="none" opacity="0.6"/>
+  </g>
+
+  <!-- Tail -->
+  <path d="M145 130 C175 140, 170 165, 180 175 C165 170, 155 155, 140 140 Z" fill="#78350f"/>
+  <ellipse cx="180" cy="175" rx="6" ry="10" fill="#451a03" transform="rotate(30, 180, 175)"/>
+
+  <!-- Back Legs -->
+  <ellipse cx="135" cy="155" rx="14" ry="20" fill="#92400e" transform="none"/>
+  <rect x="127" y="165" width="16" height="12" rx="3" fill="#1c1917"/>
+
+  <!-- Donkey Body -->
+  <ellipse cx="105" cy="135" rx="38" ry="28" fill="url(#donkeyCoat)"/>
+
+  <!-- Courier Saddle & Sacks -->
+  <rect x="90" y="118" width="34" height="28" rx="6" fill="url(#saddleLeather)" stroke="#d97706" stroke-width="2"/>
+  <circle cx="107" cy="132" r="5" fill="url(#goldGleam)" filter="url(#goldGlow)"/>
+  <!-- DOTA 2 Logo Icon on Saddle -->
+  <path d="M104 129 L110 135 M104 135 L106 133 M108 131 L110 129" stroke="#78350f" stroke-width="1.5"/>
+
+  <!-- Front Legs -->
+  <ellipse cx="78" cy="158" rx="12" ry="18" fill="#b45309" transform="none"/>
+  <rect x="72" y="167" width="14" height="12" rx="3" fill="#1c1917"/>
+
+  <!-- Mane -->
+  <path d="M72 65 C68 45, 80 40, 85 55 C90 42, 102 45, 98 68 Z" fill="#451a03"/>
+
+  <!-- Long Cute Ears -->
+  <g transform="translate(68, 55) rotate(-10)">
+    <ellipse cx="0" cy="-25" rx="9" ry="26" fill="url(#donkeyCoat)"/>
+    <ellipse cx="0" cy="-24" rx="5" ry="18" fill="#fbcfe8"/>
+  </g>
+  <g transform="translate(102, 55) rotate(15)">
+    <ellipse cx="0" cy="-25" rx="9" ry="26" fill="url(#donkeyCoat)"/>
+    <ellipse cx="0" cy="-24" rx="5" ry="18" fill="#fbcfe8"/>
+  </g>
+
+  <!-- Head -->
+  <ellipse cx="88" cy="85" rx="30" ry="26" fill="url(#donkeyCoat)"/>
+
+  <!-- Big Muzzle -->
+  <ellipse cx="76" cy="98" rx="20" ry="16" fill="url(#donkeyMuzzle)"/>
+  <!-- Nostrils -->
+  <ellipse cx="70" cy="96" rx="3" ry="4" fill="#451a03"/>
+  <ellipse cx="80" cy="96" rx="3" ry="4" fill="#451a03"/>
+  
+  <!-- Eyes -->
+  <g transform="translate(85, 78) scale(1, 1)">
+    <ellipse cx="0" cy="0" rx="6" ry="6" fill="#1e1b4b"/>
+    <circle cx="2" cy="-2" r="2.2" fill="#ffffff"/>
+  </g>
+  <g transform="translate(66, 78) scale(1, 1)">
+    <ellipse cx="0" cy="0" rx="6" ry="6" fill="#1e1b4b"/>
+    <circle cx="2" cy="-2" r="2.2" fill="#ffffff"/>
+  </g>
+
+  
+
+  
+
+  
+
+  
+
+  
+  <!-- Courier Bottle -->
+  <path d="M48 95 C45 80, 70 80, 68 95 C68 110, 48 110, 48 95 Z" fill="#06b6d4" stroke="#0891b2" stroke-width="2" filter="url(#goldGlow)"/>
+  
+
+  
+</svg>

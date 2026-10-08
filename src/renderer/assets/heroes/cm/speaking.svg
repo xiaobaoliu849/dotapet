@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <radialGradient id="cmCape" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </radialGradient>
+    <radialGradient id="cmHair" cx="40%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="100%" stop-color="#eab308"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Frost Crystals Speaking -->
+  <circle cx="40" cy="50" r="10" fill="#38bdf8" opacity="0.7"/>
+  <circle cx="160" cy="50" r="10" fill="#38bdf8" opacity="0.7"/>
+
+  <!-- Fur Cape Hood -->
+  <path d="M45 180 C 35 120, 55 90, 100 90 C 145 90, 165 120, 155 180 Z" fill="url(#cmCape)"/>
+  <path d="M50 100 Q 100 80 150 100 Q 100 115 50 100 Z" fill="#f8fafc"/>
+
+  <!-- Head -->
+  <ellipse cx="100" cy="95" rx="34" ry="38" fill="#ffedd5"/>
+
+  <!-- Eyes Speaking -->
+  <ellipse cx="86" cy="93" rx="7" ry="5.5" fill="#ffffff"/>
+  <circle cx="86" cy="93" r="3.5" fill="#0284c7"/>
+  <circle cx="88" cy="91" r="1.5" fill="#ffffff"/>
+  <ellipse cx="114" cy="93" rx="7" ry="5.5" fill="#ffffff"/>
+  <circle cx="114" cy="93" r="3.5" fill="#0284c7"/>
+  <circle cx="116" cy="91" r="1.5" fill="#ffffff"/>
+
+  <!-- Soft Eyebrows -->
+  <path d="M78 86 Q 86 82 94 86" stroke="#ca8a04" stroke-width="2.5" fill="none"/>
+  <path d="M106 86 Q 114 82 122 86" stroke="#ca8a04" stroke-width="2.5" fill="none"/>
+
+  <!-- Open Mouth Speaking -->
+  <ellipse cx="100" cy="116" rx="6.5" ry="5.5" fill="#be123c"/>
+  <path d="M96 118 Q 100 120 104 118" stroke="#fda4af" stroke-width="1.5" fill="none"/>
+
+  <!-- Blonde Braids & Hair -->
+  <path d="M60 85 C 60 45, 140 45, 140 85 C 145 105, 150 135, 142 165 C 136 135, 130 95, 120 75 C 100 65, 80 75, 60 85 Z" fill="url(#cmHair)"/>
+  <path d="M60 85 C 55 105, 50 135, 58 165 C 64 135, 70 95, 80 75" fill="url(#cmHair)"/>
+</svg>

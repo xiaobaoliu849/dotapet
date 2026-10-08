@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <radialGradient id="wolfFur" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="60%" stop-color="#e0f2fe"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </radialGradient>
+    <radialGradient id="wolfBelly" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f0f9ff"/>
+    </radialGradient>
+    <radialGradient id="tangoGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#4ade80"/>
+      <stop offset="60%" stop-color="#16a34a"/>
+      <stop offset="100%" stop-color="#14532d"/>
+    </radialGradient>
+    <filter id="healGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Green Healing Sparkles (+HP Heal) -->
+  <polygon points="35,45 38,52 45,55 38,58 35,65 32,58 25,55 32,52" fill="#4ade80" filter="url(#healGlow)"/>
+  <polygon points="160,35 163,42 170,45 163,48 160,55 157,48 150,45 157,42" fill="#4ade80" filter="url(#healGlow)"/>
+  <text x="145" y="75" font-family="'Segoe UI', sans-serif" font-weight="bold" font-size="14" fill="#22c55e" filter="url(#healGlow)">+115 HP</text>
+
+  <!-- Tail (Wagging) -->
+  <path d="M140 135 C175 125, 185 85, 160 70 C145 60, 140 90, 130 115 Z" fill="url(#wolfFur)"/>
+
+  <!-- Hind Legs -->
+  <ellipse cx="130" cy="150" rx="18" ry="14" fill="#bae6fd"/>
+  <ellipse cx="140" cy="160" rx="10" ry="7" fill="#ffffff"/>
+
+  <!-- Body -->
+  <ellipse cx="105" cy="135" rx="35" ry="30" fill="url(#wolfFur)"/>
+  <ellipse cx="100" cy="140" rx="22" ry="20" fill="url(#wolfBelly)"/>
+
+  <!-- Front Paws (Holding branch) -->
+  <ellipse cx="75" cy="155" rx="10" ry="8" fill="#ffffff"/>
+  <ellipse cx="105" cy="155" rx="10" ry="8" fill="#ffffff"/>
+
+  <!-- Ears -->
+  <polygon points="65,75 50,30 85,55" fill="url(#wolfFur)"/>
+  <polygon points="66,70 56,38 80,56" fill="#fbcfe8"/>
+  <polygon points="125,75 140,30 105,55" fill="url(#wolfFur)"/>
+  <polygon points="124,70 134,38 110,56" fill="#fbcfe8"/>
+
+  <!-- Head -->
+  <ellipse cx="95" cy="90" rx="36" ry="32" fill="url(#wolfFur)"/>
+  <ellipse cx="95" cy="102" rx="20" ry="15" fill="url(#wolfBelly)"/>
+
+  <!-- Happy Chewing Eyes (^ _ ^) -->
+  <path d="M76 86 Q83 78 90 86" stroke="#0284c7" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <path d="M100 86 Q107 78 114 86" stroke="#0284c7" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+
+  <!-- Cute Nose -->
+  <ellipse cx="95" cy="96" rx="4.5" ry="3.5" fill="#0f172a"/>
+
+  <!-- DOTA 2 Tango Branch in Mouth -->
+  <!-- Branch Stem -->
+  <path d="M55 120 C75 105, 115 105, 135 120" stroke="#78350f" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <!-- Tango Glowing Green Leaves -->
+  <path d="M60 115 C50 100, 70 95, 75 108 Z" fill="url(#tangoGlow)" filter="url(#healGlow)"/>
+  <path d="M130 115 C140 100, 120 95, 115 108 Z" fill="url(#tangoGlow)" filter="url(#healGlow)"/>
+  <circle cx="95" cy="108" r="8" fill="url(#tangoGlow)" filter="url(#healGlow)"/>
+
+  <!-- Chewing Crumbs -->
+  <circle cx="85" cy="118" r="2" fill="#22c55e"/>
+  <circle cx="105" cy="120" r="2.5" fill="#22c55e"/>
+</svg>

@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <radialGradient id="wolfFur" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="60%" stop-color="#e0f2fe"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </radialGradient>
+    <radialGradient id="frostSnow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e0f2fe"/>
+      <stop offset="100%" stop-color="#bae6fd"/>
+    </radialGradient>
+    <filter id="sleepGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Snow Pad / Ground -->
+  <ellipse cx="100" cy="165" rx="80" ry="18" fill="url(#frostSnow)" opacity="0.6"/>
+
+  <!-- Fluffy Tail Wrapped Around Body -->
+  <path d="M45 130 C25 155, 70 178, 140 170 C165 168, 175 145, 155 125 C135 110, 110 135, 75 145 Z" fill="url(#wolfFur)"/>
+
+  <!-- Curled Body -->
+  <ellipse cx="105" cy="140" rx="42" ry="28" fill="url(#wolfFur)"/>
+
+  <!-- Folded Paws -->
+  <ellipse cx="65" cy="155" rx="10" ry="6" fill="#ffffff"/>
+  <ellipse cx="85" cy="158" rx="9" ry="5" fill="#ffffff"/>
+
+  <!-- Drooped Sleepy Ears -->
+  <polygon points="50,115 30,95 65,100" fill="url(#wolfFur)"/>
+  <polygon points="52,112 36,98 62,102" fill="#fbcfe8"/>
+  <polygon points="95,105 115,80 85,95" fill="url(#wolfFur)"/>
+  <polygon points="93,103 108,86 87,97" fill="#fbcfe8"/>
+
+  <!-- Head Resting on Paws -->
+  <ellipse cx="75" cy="125" rx="28" ry="22" fill="url(#wolfFur)"/>
+
+  <!-- Closed Sleeping Line Eyes -->
+  <path d="M60 125 Q68 130 76 125" stroke="#0369a1" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+  <!-- Cute Nose -->
+  <ellipse cx="52" cy="132" rx="3.5" ry="2.5" fill="#0f172a"/>
+
+  <!-- Snot/Dream Ice Bubble -->
+  <circle cx="43" cy="124" r="8" fill="#bae6fd" opacity="0.85" filter="url(#sleepGlow)"/>
+  <circle cx="40" cy="121" r="2.5" fill="#ffffff"/>
+
+  <!-- Zzz Floating Text -->
+  <text x="135" y="70" font-family="'Segoe UI', sans-serif" font-weight="bold" font-size="20" fill="#38bdf8" filter="url(#sleepGlow)">Z</text>
+  <text x="155" y="50" font-family="'Segoe UI', sans-serif" font-weight="bold" font-size="16" fill="#7dd3fc" filter="url(#sleepGlow)">z</text>
+  <text x="170" y="35" font-family="'Segoe UI', sans-serif" font-weight="bold" font-size="12" fill="#bae6fd" filter="url(#sleepGlow)">z</text>
+</svg>

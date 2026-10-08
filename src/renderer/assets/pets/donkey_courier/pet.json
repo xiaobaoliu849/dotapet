@@ -1,0 +1,115 @@
+{
+  "name": "donkey_courier",
+  "displayName": "经典信使 · 小毛驴 (Donkey)",
+  "version": "1.0.0",
+  "author": "DOTA 2 VoiceSpirit",
+  "heroCompanion": null,
+  "description": "DOTA 2 史上最经典的战场功勋信使！无论狂风暴雨还是刀光剑影，它都会坚韧地把魔瓶、跳刀与圣剑送达战场前线。",
+  "themeColor": "#f59e0b",
+  "secondaryColor": "#fef3c7",
+  "specialSkill": {
+    "id": "speed_boost",
+    "name": "飞天加速 (Speed Burst)",
+    "description": "展开羽翼开启全速推进，喷射金色尾焰并为你速递魔瓶！",
+    "icon": "🚀",
+    "duration": 3000
+  },
+  "states": {
+    "idle": {
+      "name": "idle",
+      "label": "甩尾待命",
+      "svg": "idle.svg",
+      "duration": 400,
+      "loop": true,
+      "quote": "咿昂~ 召唤师，今天有什么宝贝要送往河道吗？"
+    },
+    "walk": {
+      "name": "walk",
+      "label": "小步快跑",
+      "svg": "walk.svg",
+      "duration": 200,
+      "loop": true,
+      "particle": "gold-hoof"
+    },
+    "pet": {
+      "name": "pet",
+      "label": "抚摸长耳",
+      "svg": "pet.svg",
+      "duration": 300,
+      "loop": true,
+      "quote": "咿昂~ 耳朵揉得好舒服！（开心地哒哒踏蹄）❤️"
+    },
+    "drag": {
+      "name": "drag",
+      "label": "悬空扑腾",
+      "svg": "drag.svg",
+      "duration": 150,
+      "loop": true,
+      "quote": "哎呀！四只蹄子悬空啦！包裹快掉啦~"
+    },
+    "feed_tango": {
+      "name": "feed_tango",
+      "label": "嚼青脆吃树",
+      "svg": "feed_tango.svg",
+      "duration": 250,
+      "loop": false,
+      "quote": "咔嚓咔嚓！多汁的树叶~ 奔跑速度 +15%！"
+    },
+    "feed_salve": {
+      "name": "feed_salve",
+      "label": "痛饮大药",
+      "svg": "feed_salve.svg",
+      "duration": 250,
+      "loop": false,
+      "quote": "咕咚咕咚！信使血量已回满，再也不怕被赏金偷袭了！"
+    },
+    "feed_rapier": {
+      "name": "feed_rapier",
+      "label": "运载圣剑",
+      "svg": "feed_rapier.svg",
+      "duration": 350,
+      "loop": true,
+      "quote": "哇！无坚不摧的圣剑！小毛驴化身神装大核！+350 攻击力！"
+    },
+    "fetch": {
+      "name": "fetch",
+      "label": "速递魔瓶",
+      "svg": "fetch.svg",
+      "duration": 120,
+      "loop": true,
+      "quote": "看我百米冲刺！三格满水魔瓶立刻送到你手上！"
+    },
+    "sleep": {
+      "name": "sleep",
+      "label": "打盹休息",
+      "svg": "sleep.svg",
+      "duration": 800,
+      "loop": true,
+      "quote": "Zzz... 梦到送了一整局跳刀，泉水真暖和..."
+    },
+    "think": {
+      "name": "think",
+      "label": "长耳侦听",
+      "svg": "think.svg",
+      "duration": 300,
+      "loop": true,
+      "quote": "大耳朵转向了河道！正在侦听敌方动向..."
+    },
+    "speak": {
+      "name": "speak",
+      "label": "欢快鸣叫",
+      "svg": "speak.svg",
+      "duration": 200,
+      "loop": true,
+      "quote": "咿昂————！货物已全部安全送达！"
+    },
+    "special": {
+      "name": "special",
+      "label": "飞天加速",
+      "svg": "special.svg",
+      "duration": 400,
+      "loop": false,
+      "quote": "🚀 展开神行双翼！信使加速推进中！谁也别想截杀我！"
+    }
+  }
+}

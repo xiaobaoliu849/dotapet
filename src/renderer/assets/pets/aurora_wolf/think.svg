@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <radialGradient id="wolfFur" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="60%" stop-color="#e0f2fe"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </radialGradient>
+    <radialGradient id="wolfBelly" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f0f9ff"/>
+    </radialGradient>
+    <radialGradient id="frostGem" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#bae6fd"/>
+      <stop offset="60%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </radialGradient>
+    <filter id="thinkGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Thinking Pulse Rings -->
+  <circle cx="150" cy="45" r="14" fill="none" stroke="#38bdf8" stroke-width="2" opacity="0.4" filter="url(#thinkGlow)"/>
+  <circle cx="150" cy="45" r="8" fill="none" stroke="#7dd3fc" stroke-width="2" opacity="0.7"/>
+  <!-- Question Mark / Sparkle -->
+  <text x="145" y="52" font-family="'Segoe UI', sans-serif" font-weight="bold" font-size="20" fill="#0284c7" filter="url(#thinkGlow)">?</text>
+
+  <!-- Tail -->
+  <path d="M140 135 C175 125, 185 85, 160 70 C145 60, 140 90, 130 115 Z" fill="url(#wolfFur)"/>
+
+  <!-- Hind Legs -->
+  <ellipse cx="130" cy="150" rx="18" ry="14" fill="#bae6fd"/>
+  <ellipse cx="140" cy="160" rx="10" ry="7" fill="#ffffff"/>
+
+  <!-- Body -->
+  <ellipse cx="105" cy="135" rx="35" ry="30" fill="url(#wolfFur)"/>
+  <ellipse cx="100" cy="140" rx="22" ry="20" fill="url(#wolfBelly)"/>
+
+  <!-- Front Paws -->
+  <ellipse cx="80" cy="162" rx="10" ry="7" fill="#ffffff"/>
+  <ellipse cx="105" cy="162" rx="10" ry="7" fill="#ffffff"/>
+
+  <!-- Ears (One perked up high listening curiously, one tilted) -->
+  <polygon points="65,70 45,22 80,50" fill="url(#wolfFur)"/>
+  <polygon points="65,65 52,30 76,52" fill="#fbcfe8"/>
+  <polygon points="120,78 150,45 110,60" fill="url(#wolfFur)"/>
+  <polygon points="120,74 142,50 114,62" fill="#fbcfe8"/>
+
+  <!-- Head (Tilted curiously to the right) -->
+  <g transform="rotate(8 95 90)">
+    <ellipse cx="95" cy="90" rx="36" ry="32" fill="url(#wolfFur)"/>
+    <ellipse cx="95" cy="102" rx="20" ry="15" fill="url(#wolfBelly)"/>
+
+    <path d="M72 118 Q95 132 118 118" stroke="#0284c7" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <polygon points="95,122 101,130 95,138 89,130" fill="url(#frostGem)"/>
+
+    <!-- Curious Big Looking Eyes Upwards -->
+    <ellipse cx="80" cy="83" rx="7" ry="7" fill="#ffffff"/>
+    <circle cx="81" cy="80" r="4.5" fill="#0284c7"/>
+    <circle cx="83" cy="78" r="1.8" fill="#ffffff"/>
+
+    <ellipse cx="110" cy="83" rx="7" ry="7" fill="#ffffff"/>
+    <circle cx="111" cy="80" r="4.5" fill="#0284c7"/>
+    <circle cx="113" cy="78" r="1.8" fill="#ffffff"/>
+
+    <ellipse cx="95" cy="96" rx="4.5" ry="3.5" fill="#0f172a"/>
+    <path d="M91 101 Q95 104 99 101" stroke="#0f172a" stroke-width="2" fill="none"/>
+  </g>
+</svg>

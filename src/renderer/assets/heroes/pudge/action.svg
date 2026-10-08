@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <radialGradient id="pudgeSkin" cx="45%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#bef264"/>
+      <stop offset="60%" stop-color="#4d7c0f"/>
+      <stop offset="100%" stop-color="#14532d"/>
+    </radialGradient>
+    <filter id="hookGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Meat Hook Chain Flying Forward -->
+  <line x1="120" y1="120" x2="185" y2="60" stroke="#94a3b8" stroke-width="6" stroke-dasharray="6,4"/>
+  <!-- Giant Glowing Hook at front -->
+  <path d="M165 40 Q 195 50 185 80 Q 175 100 150 90" stroke="#f87171" stroke-width="9" fill="none" stroke-linecap="round" filter="url(#hookGlow)"/>
+
+  <!-- Body in Throwing Pose -->
+  <path d="M35 180 C 30 115, 55 105, 95 105 C 135 105, 160 115, 155 180 Z" fill="#78350f"/>
+  <path d="M55 115 L 135 115 L 125 180 L 65 180 Z" fill="#d97706"/>
+
+  <!-- Head -->
+  <ellipse cx="90" cy="85" rx="42" ry="42" fill="url(#pudgeSkin)"/>
+
+  <!-- Stitches -->
+  <path d="M65 55 Q 85 65 110 58" stroke="#1c1917" stroke-width="2.5" fill="none"/>
+
+  <!-- Eyes Focused on Target Hook -->
+  <circle cx="70" cy="78" r="10" fill="#ffffff"/>
+  <circle cx="73" cy="76" r="5" fill="#ef4444"/>
+  <circle cx="110" cy="76" r="9" fill="#ffffff"/>
+  <circle cx="113" cy="74" r="5" fill="#ef4444"/>
+
+  <!-- Screaming Hook Expression -->
+  <path d="M65 100 Q 95 130 120 100" stroke="#1c1917" stroke-width="4" fill="#450a0a"/>
+  <polygon points="70,102 76,102 73,110" fill="#ffffff"/>
+  <polygon points="82,105 88,105 85,114" fill="#ffffff"/>
+  <polygon points="98,106 104,106 101,115" fill="#ffffff"/>
+</svg>

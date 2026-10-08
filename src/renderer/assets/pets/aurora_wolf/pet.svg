@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <radialGradient id="wolfFur" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="60%" stop-color="#e0f2fe"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </radialGradient>
+    <radialGradient id="wolfBelly" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f0f9ff"/>
+    </radialGradient>
+    <radialGradient id="frostGem" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#bae6fd"/>
+      <stop offset="60%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </radialGradient>
+    <filter id="heartGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Love Hearts -->
+  <path d="M45 45 C45 35, 30 35, 30 45 C30 55, 45 65, 45 65 C45 65, 60 55, 60 45 C60 35, 45 35, 45 45 Z" fill="#f43f5e" filter="url(#heartGlow)"/>
+  <path d="M155 35 C155 27, 142 27, 142 35 C142 43, 155 52, 155 52 C155 52, 168 43, 168 35 C168 27, 155 27, 155 35 Z" fill="#f43f5e" filter="url(#heartGlow)"/>
+
+  <!-- Fluffy Tail Wagging Fast (Blur Effect) -->
+  <path d="M140 130 C185 110, 190 70, 165 55 C150 45, 142 80, 130 115 Z" fill="url(#wolfFur)" opacity="0.9"/>
+  <path d="M135 125 C175 140, 185 100, 160 85" stroke="#bae6fd" stroke-width="4" fill="none" opacity="0.6"/>
+
+  <!-- Hind Legs -->
+  <ellipse cx="130" cy="152" rx="18" ry="14" fill="#bae6fd"/>
+  <ellipse cx="140" cy="162" rx="10" ry="7" fill="#ffffff"/>
+
+  <!-- Body -->
+  <ellipse cx="105" cy="138" rx="35" ry="30" fill="url(#wolfFur)"/>
+  <ellipse cx="100" cy="143" rx="22" ry="20" fill="url(#wolfBelly)"/>
+
+  <!-- Front Paws -->
+  <ellipse cx="80" cy="164" rx="10" ry="7" fill="#ffffff"/>
+  <ellipse cx="105" cy="164" rx="10" ry="7" fill="#ffffff"/>
+
+  <!-- Flattened Relaxed Ears (Purring/Pet Mode) -->
+  <polygon points="65,82 35,60 75,68" fill="url(#wolfFur)"/>
+  <polygon points="63,78 40,63 70,69" fill="#fbcfe8"/>
+  <polygon points="125,82 155,60 115,68" fill="url(#wolfFur)"/>
+  <polygon points="127,78 150,63 120,69" fill="#fbcfe8"/>
+
+  <!-- Head -->
+  <ellipse cx="95" cy="94" rx="36" ry="32" fill="url(#wolfFur)"/>
+  <ellipse cx="95" cy="106" rx="20" ry="15" fill="url(#wolfBelly)"/>
+
+  <!-- Collar -->
+  <path d="M72 122 Q95 136 118 122" stroke="#0284c7" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <polygon points="95,126 101,134 95,142 89,134" fill="url(#frostGem)"/>
+
+  <!-- Closed Happy Curved Eyes (^_^ Enjoying head pats) -->
+  <path d="M75 90 Q82 82 89 90" stroke="#0284c7" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <path d="M101 90 Q108 82 115 90" stroke="#0284c7" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+
+  <!-- Blushing Cheeks -->
+  <ellipse cx="73" cy="98" rx="7" ry="4" fill="#f43f5e" opacity="0.6"/>
+  <ellipse cx="117" cy="98" rx="7" ry="4" fill="#f43f5e" opacity="0.6"/>
+
+  <!-- Nose -->
+  <ellipse cx="95" cy="101" rx="4.5" ry="3.5" fill="#0f172a"/>
+  <!-- Sweet Smile -->
+  <path d="M89 106 Q95 113 101 106" stroke="#0f172a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Tongue sticking out happily -->
+  <path d="M92 108 Q95 116 98 108 Z" fill="#f43f5e"/>
+</svg>

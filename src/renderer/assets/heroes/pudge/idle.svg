@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <radialGradient id="pudgeSkin" cx="45%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#a3e635"/>
+      <stop offset="60%" stop-color="#4d7c0f"/>
+      <stop offset="100%" stop-color="#365314"/>
+    </radialGradient>
+    <radialGradient id="rotGas" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#84cc16"/>
+      <stop offset="100%" stop-color="#14532d"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Toxic Rot Gas Clouds -->
+  <circle cx="40" cy="150" r="22" fill="url(#rotGas)" opacity="0.4"/>
+  <circle cx="165" cy="155" r="25" fill="url(#rotGas)" opacity="0.4"/>
+  <circle cx="150" cy="80" r="16" fill="url(#rotGas)" opacity="0.3"/>
+
+  <!-- Apron & Stitched Body -->
+  <path d="M40 180 C 35 120, 60 110, 100 110 C 140 110, 165 120, 160 180 Z" fill="#78350f"/>
+  <path d="M60 120 L 140 120 L 130 180 L 70 180 Z" fill="#d97706"/>
+  <!-- Meat Cleaver in hand -->
+  <rect x="25" y="120" width="15" height="35" fill="#94a3b8" rx="2" transform="rotate(-20 25 120)"/>
+  <rect x="28" y="150" width="6" height="18" fill="#713f12" transform="rotate(-20 28 150)"/>
+
+  <!-- Meat Hook over shoulder -->
+  <path d="M150 110 Q 175 115 170 135 Q 165 155 145 145" stroke="#cbd5e1" stroke-width="8" fill="none" stroke-linecap="round"/>
+
+  <!-- Big Round Head -->
+  <ellipse cx="100" cy="85" rx="42" ry="42" fill="url(#pudgeSkin)"/>
+
+  <!-- Stitches on Head -->
+  <path d="M75 55 Q 95 65 120 58" stroke="#1c1917" stroke-width="2.5" fill="none"/>
+  <line x1="82" y1="52" x2="82" y2="60" stroke="#1c1917" stroke-width="2"/>
+  <line x1="95" y1="56" x2="95" y2="64" stroke="#1c1917" stroke-width="2"/>
+  <line x1="110" y1="55" x2="110" y2="63" stroke="#1c1917" stroke-width="2"/>
+
+  <!-- Googly Eyes (Mismatched) -->
+  <circle cx="80" cy="80" r="10" fill="#ffffff"/>
+  <circle cx="81" cy="81" r="5" fill="#dc2626"/>
+  <circle cx="120" cy="78" r="8" fill="#ffffff"/>
+  <circle cx="122" cy="79" r="4" fill="#dc2626"/>
+
+  <!-- Big Stitched Teeth Grin (Idle) -->
+  <path d="M70 100 Q 100 125 130 100" stroke="#1c1917" stroke-width="4" fill="#450a0a"/>
+  <polygon points="76,102 82,102 79,108" fill="#ffffff"/>
+  <polygon points="88,105 94,105 91,114" fill="#ffffff"/>
+  <polygon points="104,106 110,106 107,115" fill="#ffffff"/>
+  <polygon points="118,103 124,103 121,110" fill="#ffffff"/>
+
+  <!-- Top Knot Hair -->
+  <path d="M96 45 C 96 35, 104 35, 104 45 Z" fill="#292524"/>
+</svg>

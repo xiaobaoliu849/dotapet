@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' data: blob: https://cdn.cloudflare.steamstatic.com https://dashscope.aliyuncs.com https://api.deepseek.com https://api.cartesia.ai wss://dashscope.aliyuncs.com wss://api.cartesia.ai ws://localhost:*; img-src 'self' file: data: blob: https://cdn.cloudflare.steamstatic.com;">
+  <title>DOTA 2 VoiceSpirit Companion</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="transparent-body">
+  <div id="companion-root" class="companion-container">
+    <div id="companion-scene-background" class="companion-scene-background" hidden></div>
+    
+    <!-- Top Floating Mini Toolbar -->
+    <header class="hud-top-bar" id="hud-top-bar">
+      <div class="hero-tag-badge" id="hero-badge" title="点击切换英雄伴侣 (Alt+H)">
+        <span class="hero-dot" id="hero-dot"></span>
+        <span class="hero-name" id="hero-name">祈求者 · 卡尔</span>
+      </div>
+
+      <div class="gsi-badge" id="gsi-badge" title="DOTA 2 GSI 游戏联动状态 (点击检测/安装配置)">
+        <span class="gsi-dot" id="gsi-dot"></span>
+        <span class="gsi-label" id="gsi-label">GSI 待机</span>
+      </div>
+
+      <div class="window-controls">
+        <button id="btn-roam" class="icon-btn" title="桌宠桌面漫游 (Alt+M)">🐾</button>
+        <button id="btn-pin" class="icon-btn btn-pin" title="固定位置 (Alt+L): 锁定后不可拖拽/漫游，始终置顶">📌</button>
+        <button id="btn-scale" class="icon-btn btn-scale" title="伴侣缩放 (Alt+C): 标准 (100%) / 精简缩小 (75%) / 极简迷你 (55%)">📐</button>
+        <button id="btn-transcript" class="icon-btn" title="实时对话转写记录 (语音对话时自动弹出)">💬</button>
+        <button id="btn-snap" class="icon-btn" title="边缘吸附">📍</button>
+        <button id="btn-minimize" class="icon-btn" title="隐藏 (Alt+Shift+M)">➖</button>
+        <button id="btn-close" class="icon-btn btn-close" title="退出桌面伴侣">👋</button>
+      </div>
+    </header>
+
+    <!-- Real-time In-Game GSI Bar (Visible when in match) -->
+    <div id="gsi-hud-bar" class="gsi-hud-bar hidden">
+      <span class="gsi-stat" id="gsi-stat-clock">⏱️ 00:00</span>
+      <span class="gsi-stat" id="gsi-stat-kda">⚔️ 0/0/0</span>
+      <span class="gsi-stat" id="gsi-stat-gold">🪙 600</span>
+    </div>
+
+    <!-- Quick Snap Position Popover -->
+    <div id="snap-popover" class="snap-popover hidden">
+      <button class="snap-opt-btn" data-snap="bottom-right">📌 右下角 (推荐)</button>
+      <button class="snap-opt-btn" data-snap="center">📌 屏幕中央</button>
+      <button class="snap-opt-btn" data-snap="bottom-left">📌 左下角</button>
+    </div>
+
+    <!-- Quick Pet Matrix Selector Popover -->
+    <div id="pet-matrix-popover" class="pet-matrix-popover hidden">
+      <div class="popover-title">🐾 切换桌宠跟班矩阵</div>
+      <div class="pet-matrix-grid">
+        <button class="pet-card-btn active" data-pet="aurora_wolf" title="极地小狼 · 极光">
+          <span class="pet-btn-icon">🐺</span>
+          <span class="pet-btn-name">极光小狼</span>
+        </button>
+        <button class="pet-card-btn" data-pet="donkey_courier" title="经典信使 · 小毛驴">
+          <span class="pet-btn-icon">🫏</span>
+          <span class="pet-btn-name">信使小驴</span>
+        </button>
+        <button class="pet-card-btn" data-pet="treant_sapling" title="萌动小树人 · 自然之助">
+          <span class="pet-btn-icon">🌱</span>
+          <span class="pet-btn-name">自然小树人</span>
+        </button>
+        <button class="pet-card-btn" data-pet="mischievous_greevil" title="淘气小贪魔 · 贪魔节使者">
+          <span class="pet-btn-icon">🐲</span>
+          <span class="pet-btn-name">淘气贪魔</span>
+        </button>
+        <button class="pet-card-btn" data-pet="baby_roshan" title="不朽萌王 · 肉山宝宝">
+          <span class="pet-btn-icon">🌋</span>
+          <span class="pet-btn-name">肉山宝宝</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Subtitle & In-Game Translation Floating Card -->
+    <section id="dialogue-hud" class="dialogue-bubble hidden">
+      <div class="bubble-header" id="bubble-header">
+        <div class="bubble-intent-badge" id="hud-intent">STRATEGY</div>
+        <div class="bubble-actions">
+          <button id="btn-copy-meaning" class="tiny-btn" title="复制中文战术">📋 复制</button>
+          <button id="btn-close-bubble" class="tiny-btn btn-dim" title="关闭">✕</button>
+        </div>
+      </div>
+
+      <div class="bubble-body">
+        <div class="bubble-meaning" id="hud-meaning"></div>
+        <div class="bubble-original" id="hud-original"></div>
+      </div>
+
+      <!-- Quick Reply Suggestions -->
+      <div class="bubble-suggestions" id="suggestion-container">
+        <div class="chips-list" id="suggestion-chips">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Real-time Conversation Transcript Panel -->
+    <section id="transcript-panel" class="transcript-panel hidden">
+      <div class="transcript-header">
+        <span class="transcript-title">💬 实时对话转写</span>
+        <div class="transcript-actions">
+          <button id="btn-copy-transcript" class="tiny-btn" title="复制对话记录">📋</button>
+          <button id="btn-clear-transcript" class="tiny-btn btn-dim" title="清空记录">🧹</button>
+          <button id="btn-close-transcript" class="tiny-btn btn-dim" title="收起 (语音对话时会自动再次弹出)">✕</button>
+        </div>
+      </div>
+      <div class="transcript-list" id="transcript-list">
+        <div class="transcript-empty" id="transcript-empty">还没有对话，按 🎙️ 开始语音吧</div>
+      </div>
+      <button id="transcript-jump-pill" class="transcript-jump-pill" type="button" title="滚动到最新消息">↓ 回到最新</button>
+    </section>
+
+    <!-- Interactive Hero Avatar & Pet Canvas -->
+    <main class="pet-wrapper" id="pet-wrapper">
+      <div class="visualizer-ring" id="visualizer-ring"></div>
+      
+      <div id="pet-container" class="pet-avatar-container" title="按住拖拽桌宠 / 双击互动 / 右键快捷菜单">
+        <div id="pet-motion-wrap" class="pet-motion-wrap">
+          <img id="pet-avatar" class="pet-sprite" src="assets/heroes/invoker/idle.svg" alt="DOTA2 Hero Pet" draggable="false">
+        </div>
+        
+        <!-- Status Indicator Pill -->
+        <div id="pet-status-pill" class="status-pill status-idle">
+          <span class="pulse-dot"></span>
+          <span id="status-text">待命</span>
+        </div>
+      </div>
+    </main>
+
+    <!-- Pet Right-Click Context Menu (Ultra-Clean) -->
+    <div id="pet-context-menu" class="pet-context-menu hidden">
+      <div class="ctx-header">
+        <span class="ctx-hero-name" id="ctx-hero-name">祈求者 · 卡尔</span>
+        <span class="ctx-badge" id="ctx-attr-badge">智力</span>
+      </div>
+      <button class="ctx-item" id="ctx-btn-voice"><span class="ctx-icon">🎙️</span> 语音对话 <span class="ctx-shortcut">Alt+Q</span></button>
+      <button class="ctx-item" id="ctx-btn-translate"><span class="ctx-icon">⚡</span> 战术翻译 <span class="ctx-shortcut">Alt+T</span></button>
+      <button class="ctx-item" id="ctx-btn-phrases"><span class="ctx-icon">💬</span> 快捷短语 <span class="ctx-shortcut">F6</span></button>
+      <button class="ctx-item" id="ctx-btn-pin"><span class="ctx-icon">📌</span> 固定位置 <span class="ctx-shortcut">Alt+L</span></button>
+      <button class="ctx-item" id="ctx-btn-scale"><span class="ctx-icon">📐</span> 伴侣缩放 <b id="ctx-scale-label">100%</b> <span class="ctx-shortcut">Alt+C</span></button>
+      <button class="ctx-item" id="ctx-btn-provider"><span class="ctx-icon">🔄</span> 语音引擎 <b id="ctx-provider-label">未连接</b> <span class="ctx-shortcut">Alt+V</span></button>
+      <button class="ctx-item" id="ctx-btn-ai-settings"><span class="ctx-icon">⚙️</span> AI 设置 / 自己的 API Key</button>
+      <button class="ctx-item" id="ctx-btn-welcome"><span class="ctx-icon">🏡</span> 新手引导 / 使用帮助</button>
+      <button class="ctx-item" id="ctx-btn-wardrobe"><span class="ctx-icon">🎨</span> 自定义形象 / 背景</button>
+      <button class="ctx-item" id="ctx-btn-heroes"><span class="ctx-icon">🎭</span> 英雄展厅</button>
+      <button class="ctx-item" id="ctx-btn-gsi"><span class="ctx-icon">🎮</span> DOTA2 联动 <b id="ctx-gsi-label">待机中</b></button>
+      <button class="ctx-item" id="ctx-btn-hide"><span class="ctx-icon">👁️</span> 隐藏桌宠 <span class="ctx-shortcut">Alt+Shift+M</span></button>
+      <button class="ctx-item ctx-danger" id="ctx-btn-quit"><span class="ctx-icon">👋</span> 退出伴侣</button>
+    </div>
+
+    <!-- Bottom Quick Action Dock (two rows: main buttons + centered tool pill) -->
+    <footer class="hud-bottom-dock no-drag interactive">
+      <div class="dock-row-main">
+        <button id="btn-pet-toggle" class="dock-btn btn-pet-mode" title="切换萌宠矩阵/英雄伴侣模式 (Alt+P)">
+          <span class="dock-icon">🐺</span>
+          <span class="btn-label" id="pet-mode-badge">极光萌宠</span>
+        </button>
+
+        <button id="btn-ptt-mic" class="dock-btn btn-mic" title="实时语音对话 (Alt+Q)">
+          <span class="mic-icon">🎙️</span>
+          <span class="btn-label" id="ptt-label">语音</span>
+        </button>
+
+        <button id="btn-translate-clip" class="dock-btn btn-trans" title="F8 翻译游戏聊天框并回填 / Alt+T 翻译剪贴板">
+          <span class="dock-icon">⚡</span>
+          <span class="btn-label">翻译</span>
+        </button>
+      </div>
+
+      <div class="dock-row-tools">
+        <button id="btn-ai-settings" class="dock-mini-btn" title="AI 设置：填写、测试和删除自己的 API Key" aria-label="AI 设置">⚙️</button>
+        <div class="pet-quick-tools" id="pet-quick-tools">
+          <button id="btn-tool-special" class="dock-mini-btn btn-special-skill" title="释放专属萌宠绝招 (Alt+E)">✨</button>
+          <button id="btn-tool-tango" class="dock-mini-btn" title="投喂吃树 (+115 HP)">🌿</button>
+          <button id="btn-tool-salve" class="dock-mini-btn" title="喝大药 (+400 HP)">🧪</button>
+          <button id="btn-tool-rapier" class="dock-mini-btn" title="叼圣剑 (+350 攻击)">⚔️</button>
+          <button id="btn-tool-snowball" class="dock-mini-btn" title="扔出互动道具">🎁</button>
+          <button id="btn-tool-matrix" class="dock-mini-btn" title="切换跟班萌宠">🐾</button>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Hero Selection & Wardrobe Overlay Modal -->
+    <div id="hero-modal" class="hero-picker-modal no-drag interactive hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-nav-tabs">
+            <button id="tab-pet-matrix" class="nav-tab">🐾 萌宠 (<span id="total-pets-count">5</span>)</button>
+            <button id="tab-hero-list" class="nav-tab active">🦸 英雄 (<span id="total-heroes-count">127</span>)</button>
+            <button id="tab-hero-detail" class="nav-tab">🔍 战术</button>
+            <button id="tab-wardrobe" class="nav-tab">🎨 自定义</button>
+          </div>
+          <button id="btn-close-modal" class="modal-close-icon-btn" title="收起展厅 (ESC)">✕</button>
+        </div>
+
+        <!-- View 1: Heroes Browser -->
+        <div id="view-heroes-list" class="modal-view-panel">
+          <!-- Search & Filter Controls -->
+          <div class="search-filter-box">
+            <div class="search-input-wrapper">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="hero-search-input" placeholder="搜索英雄 (卡尔 / SF / 白牛 / 蓝猫)..." autocomplete="off" />
+              <button id="btn-clear-search" class="clear-btn hidden">✕</button>
+            </div>
+            
+            <div class="filter-row">
+              <div class="attribute-filter-tabs" id="attr-filter-tabs">
+                <button class="attr-pill active" data-attr="all">全部</button>
+                <button class="attr-pill attr-str" data-attr="str">🔴 力量</button>
+                <button class="attr-pill attr-agi" data-attr="agi">🟢 敏捷</button>
+                <button class="attr-pill attr-int" data-attr="int">🔵 智力</button>
+                <button class="attr-pill attr-uni" data-attr="uni">🟡 全能</button>
+              </div>
+
+              <div class="secondary-filter-tabs">
+                <select id="select-complexity-filter" class="filter-dropdown" title="难度筛选">
+                  <option value="all">⭐ 全部难度</option>
+                  <option value="1">★ 入门</option>
+                  <option value="2">★★ 进阶</option>
+                  <option value="3">★★★ 大师</option>
+                </select>
+
+                <select id="select-attack-filter" class="filter-dropdown" title="射程类型">
+                  <option value="all">⚔️ 全部射程</option>
+                  <option value="Melee">⚔️ 近战</option>
+                  <option value="Ranged">🏹 远程</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="heroes-grid" id="heroes-grid">
+            <!-- Dynamically rendered 127 hero tiles -->
+          </div>
+
+          <!-- Bottom Selected Hero Dock (Preview & Equip Action) -->
+          <div class="hero-selection-dock" id="hero-selection-dock">
+            <div class="dock-hero-info">
+              <img id="dock-hero-thumb" class="dock-hero-thumb" src="" alt="Hero" />
+              <div class="dock-hero-meta">
+                <div class="dock-hero-name" id="dock-hero-name">祈求者 · 卡尔</div>
+                <div class="dock-hero-desc" id="dock-hero-desc">智力 · 远程</div>
+              </div>
+            </div>
+            <div class="dock-hero-actions">
+              <button id="dock-btn-detail" class="dock-action-sec-btn" title="查看战术全景">🔍 战术</button>
+              <button id="dock-btn-equip" class="dock-action-pri-btn" title="确认出战并返回桌面 (或双击卡片)">✨ 出战</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- View 2: Hero Deep Tactical Showcase -->
+        <div id="view-hero-detail" class="modal-view-panel hidden">
+          <div class="detail-hero-banner" id="detail-hero-banner">
+            <div class="detail-banner-backdrop" id="detail-banner-backdrop"></div>
+            <img id="detail-hero-avatar" class="detail-hero-img" src="" alt="Hero Avatar" />
+            <div class="detail-hero-info">
+              <div class="detail-title-row">
+                <h3 id="detail-hero-name">祈求者 · 卡尔</h3>
+                <span class="detail-attr-badge" id="detail-hero-attr">智力</span>
+                <span class="detail-complexity-badge" id="detail-hero-complexity">★★★ 绝活大师</span>
+              </div>
+              <p class="detail-hero-en" id="detail-hero-en">Invoker · Ranged Nuker</p>
+              <div class="detail-stats-bar" id="detail-stats-bar">
+                <span class="stat-item" title="初始力量 / 力量成长">🔴 力量: <b id="stat-str">19+2.4</b></span>
+                <span class="stat-item" title="初始敏捷 / 敏捷成长">🟢 敏捷: <b id="stat-agi">14+1.9</b></span>
+                <span class="stat-item" title="初始智力 / 智力成长">🔵 智力: <b id="stat-int">19+4.0</b></span>
+                <span class="stat-item" title="初始移速">⚡ 移速: <b id="stat-ms">285</b></span>
+                <span class="stat-item" title="基础护甲">🛡️ 护甲: <b id="stat-armor">2.3</b></span>
+                <span class="stat-item" title="攻击射程">🏹 射程: <b id="stat-range">600</b></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero Hype Tactical Essence -->
+          <div class="detail-section-title" id="detail-hype-title">💡 战术精粹与英雄定位</div>
+          <div class="detail-hype-box" id="detail-hype-box">
+            只要给卡尔足够的施法空间，他的十个法术将席卷整个战场！
+          </div>
+
+          <!-- Abilities Showcase -->
+          <div class="detail-section-title" id="detail-abilities-title">🔮 招牌技能与质变升级</div>
+          <div class="detail-abilities-list" id="detail-abilities-list">
+            <!-- Dynamically populated skills -->
+          </div>
+
+          <!-- Voice & Persona Catchphrases Preview -->
+          <div class="detail-section-title" id="detail-catchphrases-title">🎙️ 英雄人设台词与口头禅试听</div>
+          <div class="detail-catchphrases-list" id="detail-catchphrases-list">
+            <!-- Dynamically populated catchphrases with audio play button -->
+          </div>
+
+          <!-- Bottom Action Buttons -->
+          <div class="detail-actions-bar">
+            <button id="btn-equip-hero" class="primary-hero-action-btn">✨ 装配为此英雄伴侣出战</button>
+            <button id="btn-voice-hero" class="secondary-hero-action-btn">🎙️ 发起实时语音对讲</button>
+            <button id="btn-back-to-gallery" class="back-hero-action-btn">🔙 返回英雄展厅</button>
+          </div>
+        </div>
+
+        <!-- View 3: Shared customization editor -->
+        <div id="view-wardrobe" class="modal-view-panel hidden">
+          <div class="wardrobe-hero-info">
+            <div class="current-hero-preview">
+              <img id="wardrobe-avatar-preview" src="" alt="当前伙伴形象" />
+              <div class="wardrobe-hero-meta">
+                <h4 id="wardrobe-hero-name">当前伙伴</h4>
+                <p>当前形象：<span id="wardrobe-skin-name" class="highlight">内置形象</span></p>
+              </div>
+            </div>
+          </div>
+          <div class="customization-intro">
+            <h3>搭配你的伙伴</h3>
+            <p>为英雄和宠物选择形象、色彩和背景。导入一次，所有伙伴都能使用。</p>
+            <button id="btn-open-customization" class="primary-action-btn">打开自定义面板 ↗</button>
+            <p class="customization-hint">实时预览 · 共享图库 · 可复用预设</p>
+          </div>
+        </div>
+        <!-- View 4: Pet Matrix Showcase & Selector -->
+        <div id="view-pet-matrix" class="modal-view-panel hidden">
+          <div class="pet-matrix-hero-banner">
+            <div class="pet-matrix-banner-title">🐾 DOTA 2 经典信使与萌宠矩阵</div>
+            <div class="pet-matrix-banner-subtitle">骨骼微物理插值 · 互动投喂 · 专属技能 · 陪伴漫游</div>
+          </div>
+          <div class="pet-matrix-grid-view" id="pet-matrix-grid-view">
+            <!-- Dynamically populated 5 pet cards -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Quick Phrases Manager: moved to a dedicated resizable window
+         (src/renderer/phrases.html, toggled via F6 / tray / context menu) -->
+
+    <!-- Toast Notification -->
+    <div id="hud-toast" class="toast hidden">已复制到剪贴板</div>
+
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

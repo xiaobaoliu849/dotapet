@@ -1,0 +1,115 @@
+{
+  "name": "aurora_wolf",
+  "displayName": "极地小狼崽 · 极光 (Aurora)",
+  "version": "1.0.0",
+  "author": "DOTA 2 VoiceSpirit",
+  "heroCompanion": "crystal_maiden",
+  "description": "水晶室女至宝【极寒新星】专属萌宠，最喜欢在冰原上刨雪、啃吃树和追咬冰霜雪球。",
+  "themeColor": "#38bdf8",
+  "secondaryColor": "#bae6fd",
+  "states": {
+    "idle": {
+      "name": "idle",
+      "label": "待机呼吸",
+      "svg": "idle.svg",
+      "duration": 400,
+      "loop": true,
+      "quote": "嗷呜~ 召唤师，今天去极寒领地巡逻吗？"
+    },
+    "walk": {
+      "name": "walk",
+      "label": "冰原漫步",
+      "svg": "walk.svg",
+      "duration": 200,
+      "loop": true,
+      "particle": "snow-paw"
+    },
+    "pet": {
+      "name": "pet",
+      "label": "摸头享受",
+      "svg": "pet.svg",
+      "duration": 300,
+      "loop": true,
+      "quote": "呜呜~ 好舒服（欢快摇尾巴）❤️"
+    },
+    "drag": {
+      "name": "drag",
+      "label": "悬空挣扎",
+      "svg": "drag.svg",
+      "duration": 150,
+      "loop": true,
+      "quote": "哇啊！四脚离地啦，快放我下来~"
+    },
+    "feed_tango": {
+      "name": "feed_tango",
+      "label": "啃吃树",
+      "svg": "feed_tango.svg",
+      "duration": 250,
+      "loop": false,
+      "quote": "咔嚓咔嚓... 脆脆的吃树真香！+115 生命值！"
+    },
+    "feed_salve": {
+      "name": "feed_salve",
+      "label": "喝大药",
+      "svg": "feed_salve.svg",
+      "duration": 250,
+      "loop": false,
+      "quote": "咕咚咕咚~ 大药灌下，活力满满！"
+    },
+    "feed_rapier": {
+      "name": "feed_rapier",
+      "label": "叼圣剑",
+      "svg": "feed_rapier.svg",
+      "duration": 350,
+      "loop": true,
+      "quote": "嗷呜！圣剑在口，天下我有！+350 攻击力！"
+    },
+    "fetch": {
+      "name": "fetch",
+      "label": "追咬雪球",
+      "svg": "fetch.svg",
+      "duration": 120,
+      "loop": true,
+      "quote": "看我的飞扑！雪球拿到手啦！"
+    },
+    "sleep": {
+      "name": "sleep",
+      "label": "蜷缩打呼",
+      "svg": "sleep.svg",
+      "duration": 800,
+      "loop": true,
+      "quote": "Zzz... 梦里有好多大骨头和吃树..."
+    },
+    "think": {
+      "name": "think",
+      "label": "凝神倾听",
+      "svg": "think.svg",
+      "duration": 300,
+      "loop": true,
+      "quote": "耳朵竖起来了！正在听召唤师说话呢..."
+    },
+    "speak": {
+      "name": "speak",
+      "label": "嗷呜长嚎",
+      "svg": "speak.svg",
+      "duration": 200,
+      "loop": true,
+      "quote": "嗷呜————！极寒新星降临！"
+    },
+    "special": {
+      "name": "special",
+      "label": "极寒新星",
+      "svg": "special.svg",
+      "duration": 400,
+      "loop": false,
+      "quote": "❄️ 嗷呜————！极寒风暴降临，冰霜新星绽放！"
+    }
+  },
+  "specialSkill": {
+    "id": "frost_nova",
+    "name": "极寒新星 (Frost Nova)",
+    "description": "小狼仰天长嚎召唤暴风雪风暴，环绕冰霜新星护盾！",
+    "icon": "❄️",
+    "duration": 3000
+  }
+}

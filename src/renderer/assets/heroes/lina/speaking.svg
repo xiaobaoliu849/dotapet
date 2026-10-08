@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%">
+  <defs>
+    <radialGradient id="linaHair" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#f87171"/>
+      <stop offset="50%" stop-color="#ea580c"/>
+      <stop offset="100%" stop-color="#991b1b"/>
+    </radialGradient>
+    <filter id="flameGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Glowing Sparks -->
+  <circle cx="38" cy="120" r="9" fill="#facc15" filter="url(#flameGlow)"/>
+  <circle cx="162" cy="110" r="11" fill="#f97316" filter="url(#flameGlow)"/>
+
+  <!-- Flowing Hair -->
+  <path d="M35 75 C 15 115, 25 155, 45 175 C 35 135, 45 95, 55 75 Z" fill="url(#linaHair)"/>
+  <path d="M165 75 C 185 115, 175 155, 155 175 C 165 135, 155 95, 145 75 Z" fill="url(#linaHair)"/>
+
+  <!-- Fiery Corset Dress -->
+  <path d="M55 180 L 70 125 L 130 125 L 145 180 Z" fill="#b91c1c"/>
+  <polygon points="100,120 85,150 115,150" fill="#f59e0b"/>
+
+  <!-- Head -->
+  <ellipse cx="100" cy="90" rx="34" ry="38" fill="#ffedd5"/>
+
+  <!-- Eyes Speaking/Passionate -->
+  <ellipse cx="86" cy="88" rx="7" ry="5.5" fill="#ffffff"/>
+  <circle cx="87" cy="88" r="3.5" fill="#ea580c"/>
+  <circle cx="89" cy="86" r="1.5" fill="#ffffff"/>
+  <ellipse cx="114" cy="88" rx="7" ry="5.5" fill="#ffffff"/>
+  <circle cx="113" cy="88" r="3.5" fill="#ea580c"/>
+  <circle cx="115" cy="86" r="1.5" fill="#ffffff"/>
+
+  <!-- Eyelashes & Brows (Excited) -->
+  <path d="M76 80 Q 86 76 94 82" stroke="#7c2d12" stroke-width="3" fill="none"/>
+  <path d="M106 82 Q 114 76 124 80" stroke="#7c2d12" stroke-width="3" fill="none"/>
+
+  <!-- Open Mouth Speaking -->
+  <ellipse cx="100" cy="112" rx="7" ry="6" fill="#7f1d1d"/>
+  <path d="M96 114 Q 100 117 104 114" stroke="#fca5a5" stroke-width="1.5" fill="none"/>
+
+  <!-- Hair Front -->
+  <path d="M60 75 C 60 40, 140 40, 140 75 C 130 65, 115 80, 100 68 C 85 80, 70 65, 60 75 Z" fill="url(#linaHair)"/>
+</svg>

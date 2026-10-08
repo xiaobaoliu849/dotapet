@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' file: data: https://cdn.cloudflare.steamstatic.com; style-src 'self' 'unsafe-inline'; script-src 'self';">
+  <title>刀塔Pet · DOTA2 桌面宠物 · 自定义</title>
+  <link rel="stylesheet" href="customize.css">
+</head>
+<body>
+  <header>
+    <div><span class="eyebrow">刀塔Pet · DOTA2 桌面宠物</span><h1>让伙伴更像你的伙伴</h1><p>形象、色彩和背景，随心搭配。图片导入一次，就能反复使用。</p></div>
+    <span id="active-name" class="active-badge">正在加载伙伴…</span>
+  </header>
+  <main id="editor" aria-busy="true">
+    <aside>
+      <label for="character">编辑角色</label>
+      <select id="character" disabled></select>
+      <button id="activate" class="quiet">切换为此伙伴</button>
+      <div id="preview-stage" class="preview-stage">
+        <div id="preview-background" class="background-layer" hidden></div>
+        <span class="preview-tag">外观预览</span>
+        <div id="preview-image-wrap"><img id="preview-image" alt="伙伴外观预览"></div>
+        <span id="preview-status" class="preview-status">待命</span>
+      </div>
+      <div class="preview-states" aria-label="预览状态">
+        <button data-state="idle" aria-pressed="true">待命</button><button data-state="speaking" aria-pressed="false">说话</button><button data-state="action" aria-pressed="false">互动</button>
+      </div>
+      <p id="appearance-note" class="help"></p>
+      <p id="background-note" class="help"></p>
+      <button id="restore" class="quiet">恢复此角色的默认外观</button>
+    </aside>
+    <div class="settings">
+      <section>
+        <h2>01 <span>伙伴形象</span></h2>
+        <label for="appearance-source">图片或内置形象</label><select id="appearance-source"></select>
+        <div class="two-columns">
+          <div><label for="appearance-style">色彩风格</label><select id="appearance-style"></select></div>
+          <div><label for="appearance-fit">图片显示</label><select id="appearance-fit"><option value="contain">完整显示</option><option value="cover">裁剪填满</option></select></div>
+        </div>
+        <label for="appearance-scale">大小 <output id="scale-value">100%</output></label><input id="appearance-scale" type="range" min="50" max="160" value="100">
+        <div class="two-columns">
+          <div><label for="appearance-x">水平位置</label><input id="appearance-x" type="range" min="0" max="100" value="50"></div>
+          <div><label for="appearance-y">垂直位置</label><input id="appearance-y" type="range" min="0" max="100" value="50"></div>
+        </div>
+        <div class="two-columns accent-controls">
+          <div><label for="theme">界面主题色</label><select id="theme"><option value="default">角色默认色</option></select></div>
+          <div><label for="accent">自选主题色</label><input id="accent" type="color" value="#f59e0b"></div>
+        </div>
+        <p class="help">主题色改变界面点缀。没有独立立绘的饰品只作为主题色提供。</p>
+      </section>
+      <section>
+        <h2>02 <span>背景</span></h2>
+        <div class="two-columns">
+          <div><label for="background-mode">背景类型</label><select id="background-mode"><option value="transparent">透明</option><option value="color">纯色</option><option value="image">图片</option></select></div>
+          <div><label for="background-scope">显示位置</label><select id="background-scope"><option value="panel">只在自定义面板</option><option value="scene">桌面伙伴场景</option></select></div>
+        </div>
+        <div id="background-image-controls"><label for="background-asset">背景图片</label><select id="background-asset"></select></div>
+        <div id="background-color-controls"><label for="background-color">背景颜色</label><input id="background-color" type="color" value="#243341"></div>
+        <div id="background-options">
+          <label for="background-fit">图片显示</label><select id="background-fit"><option value="cover">填满背景</option><option value="contain">完整显示</option></select>
+          <div class="two-columns">
+            <div><label for="background-opacity">不透明度 <output id="opacity-value">65%</output></label><input id="background-opacity" type="range" min="0" max="100" value="65"></div>
+            <div><label for="background-dim">压暗 <output id="dim-value">25%</output></label><input id="background-dim" type="range" min="0" max="85" value="25"></div>
+          </div>
+        </div>
+      </section>
+      <section id="library-section">
+        <div class="section-heading"><h2>03 <span>我的图片</span></h2><label class="favorite-filter"><input id="favorites-only" type="checkbox">仅收藏</label></div>
+        <div id="dropzone" class="dropzone">
+          <span>拖入图片，或选择文件</span>
+          <div class="import-actions"><button id="import-appearance">导入为伙伴形象</button><button id="import-background">导入为背景</button></div>
+          <label class="drop-role" for="import-role">拖入图片用于 <select id="import-role"><option value="appearance">伙伴形象</option><option value="background">背景</option></select></label>
+          <small>PNG · JPEG · GIF · WebP · SVG / 最大 12 MB</small>
+          <input id="image-file" type="file" accept="image/png,image/jpeg,image/gif,image/webp,image/svg+xml" hidden>
+        </div>
+        <p class="help">图片、重命名和收藏自动保存；角色外观需要点击「应用」。删除图片会重置所有角色与预设中的引用。</p>
+        <div id="asset-library" class="asset-library"></div>
+      </section>
+      <section>
+        <div class="section-heading"><h2>04 <span>可复用预设</span></h2><button id="import-preset" class="quiet">导入预设</button></div>
+        <div class="preset-save"><input id="preset-name" maxlength="80" placeholder="预设名称，例如：月光小伙伴" aria-label="预设名称"><button id="save-preset">保存当前搭配</button></div>
+        <p class="help">预设可用于其他英雄和宠物。导出的文件包含图片，不包含语音密钥。</p>
+        <div id="preset-list"></div>
+      </section>
+    </div>
+  </main>
+  <footer><div><span id="draft-status">加载中…</span><p id="feedback" role="status" aria-live="polite"></p></div><button id="apply" class="primary" disabled>应用到此角色</button></footer>
+  <dialog id="delete-dialog"><h2>删除这张图片？</h2><p>使用它的角色形象将恢复默认，背景将恢复透明；预设中的引用也会重置。</p><div class="dialog-actions"><button id="cancel-delete">保留图片</button><button id="confirm-delete" class="danger">删除图片</button></div></dialog>
+  <script type="module" src="customize.js"></script>
+</body>
+</html>

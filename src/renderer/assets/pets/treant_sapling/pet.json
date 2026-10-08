@@ -1,0 +1,115 @@
+{
+  "name": "treant_sapling",
+  "displayName": "萌动小树人 · 自然之助 (Treant)",
+  "version": "1.0.0",
+  "author": "DOTA 2 VoiceSpirit",
+  "heroCompanion": "treant_protector",
+  "description": "来自茂密古老森林的灵动小树人，树精卫士的小跟班，擅长在脚下催生繁花绿意与治愈光环。",
+  "themeColor": "#10b981",
+  "secondaryColor": "#d1fae5",
+  "specialSkill": {
+    "id": "overgrowth",
+    "name": "生根繁花 (Overgrowth)",
+    "description": "扎根大地并引爆自然生机，绽放满屏绚烂花瓣与森林生命光环！",
+    "icon": "🌸",
+    "duration": 3000
+  },
+  "states": {
+    "idle": {
+      "name": "idle",
+      "label": "嫩芽摆动",
+      "svg": "idle.svg",
+      "duration": 400,
+      "loop": true,
+      "quote": "沙沙~ 我们在林间漫步，大自然在向我们问好。"
+    },
+    "walk": {
+      "name": "walk",
+      "label": "根须漫步",
+      "svg": "walk.svg",
+      "duration": 200,
+      "loop": true,
+      "particle": "leaf-trail"
+    },
+    "pet": {
+      "name": "pet",
+      "label": "抚摸嫩芽",
+      "svg": "pet.svg",
+      "duration": 300,
+      "loop": true,
+      "quote": "小嫩叶被摸得好痒呀~ 咕噜咕噜冒出两朵小粉花🌸"
+    },
+    "drag": {
+      "name": "drag",
+      "label": "根须悬空",
+      "svg": "drag.svg",
+      "duration": 150,
+      "loop": true,
+      "quote": "呀！离开大地母亲啦！小树根想念泥土~"
+    },
+    "feed_tango": {
+      "name": "feed_tango",
+      "label": "融合吃树",
+      "svg": "feed_tango.svg",
+      "duration": 250,
+      "loop": false,
+      "quote": "同伴的力量在涌动！吸收吃树精华，叶片更翠绿了！+115 HP！"
+    },
+    "feed_salve": {
+      "name": "feed_salve",
+      "label": "甘霖滋润",
+      "svg": "feed_salve.svg",
+      "duration": 250,
+      "loop": false,
+      "quote": "哗啦啦~ 甘甜大药如森林甘霖！小树人枝繁叶茂！"
+    },
+    "feed_rapier": {
+      "name": "feed_rapier",
+      "label": "古木圣剑",
+      "svg": "feed_rapier.svg",
+      "duration": 350,
+      "loop": true,
+      "quote": "世界之树的圣光与圣剑融合！树枝攻击力破表！+350！"
+    },
+    "fetch": {
+      "name": "fetch",
+      "label": "追寻落叶",
+      "svg": "fetch.svg",
+      "duration": 120,
+      "loop": true,
+      "quote": "看我用柔软的小枝条接住飞来的叶子！"
+    },
+    "sleep": {
+      "name": "sleep",
+      "label": "扎根静眠",
+      "svg": "sleep.svg",
+      "duration": 800,
+      "loop": true,
+      "quote": "Zzz... 树根深深扎进沃土，梦里有阳光与清泉..."
+    },
+    "think": {
+      "name": "think",
+      "label": "感应自然",
+      "svg": "think.svg",
+      "duration": 300,
+      "loop": true,
+      "quote": "头顶的小嫩芽轻轻颤动，在感知周围森林的气息..."
+    },
+    "speak": {
+      "name": "speak",
+      "label": "林语轻吟",
+      "svg": "speak.svg",
+      "duration": 200,
+      "loop": true,
+      "quote": "沙沙沙————！森林与我们同在，万物复苏！"
+    },
+    "special": {
+      "name": "special",
+      "label": "生根繁花",
+      "svg": "special.svg",
+      "duration": 400,
+      "loop": false,
+      "quote": "🌸 扎根萌芽！生命之花盛放！全员获得活体护甲！"
+    }
+  }
+}
