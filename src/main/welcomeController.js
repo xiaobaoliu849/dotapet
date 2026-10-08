@@ -32,7 +32,7 @@ export function createWelcomeController({ electron, rendererDirectory, icon, ope
     if (window && !window.isDestroyed()) { window.show(); window.focus(); return window; }
     window = new BrowserWindow({
       width: 760, height: 730, minWidth: 620, minHeight: 650, icon,
-      title: '刀塔Pet · 欢迎', autoHideMenuBar: true, show: false,
+      title: '刀塔宠物 · 欢迎', autoHideMenuBar: true, show: false,
       backgroundColor: '#faf6ef',
       webPreferences: { preload: path.join(rendererDirectory, '../preload/welcome.js'), contextIsolation: true, nodeIntegration: false, sandbox: true, backgroundThrottling: false },
     });

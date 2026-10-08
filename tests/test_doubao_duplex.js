@@ -349,7 +349,7 @@ async function runAsyncTests() {
     const engine = new CloudVoiceEngine({ provider: 'doubao' });
     assert.strictEqual(engine.currentHero, null);
     const freePrompt = engine.getHeroSystemPrompt('bilingual');
-    assert.ok(freePrompt.includes('VoiceSpirit'), 'free prompt introduces the companion');
+    assert.ok(freePrompt.includes('刀塔宠物'), 'free prompt introduces the companion by its current name');
     assert.ok(freePrompt.includes('漫聊'), 'free prompt allows aimless chatting');
     assert.ok(freePrompt.includes('角色扮演'), 'free prompt routes hero role-play');
     assert.ok(!freePrompt.includes('你现在是《DOTA 2》中的英雄'), 'no locked-hero framing');

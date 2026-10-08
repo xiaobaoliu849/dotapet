@@ -72,7 +72,7 @@ if (app?.commandLine) {
 // Single Instance Lock: Prevent multiple Electron instances from locking cache & shortcuts
 const gotTheLock = app?.requestSingleInstanceLock ? app.requestSingleInstanceLock() : true;
 if (!gotTheLock) {
-  console.log('[App] Another instance of VoiceSpirit Companion is already running. Focusing existing window.');
+  console.log('[App] Another instance of DotaPet is already running. Focusing existing window.');
   app?.quit?.();
   process.exit(0);
 }
@@ -124,7 +124,7 @@ function openAISettings(purpose = '', { firstRun = false } = {}) {
   aiSettingsWindow = new BrowserWindow({
     icon: appIcon,
     width: 940, height: 820, minWidth: 620, minHeight: 640,
-    title: '刀塔Pet · 翻译与语音设置', titleBarStyle: 'hidden',
+    title: '刀塔宠物 · 翻译与语音设置', titleBarStyle: 'hidden',
     titleBarOverlay: { color: '#f7f8f4', symbolColor: '#52604f', height: 48 },
     autoHideMenuBar: true, show: false, backgroundColor: '#f7f8f4',
     webPreferences: { preload: path.join(__dirname, '../preload/ai-settings.js'), contextIsolation: true, nodeIntegration: false, sandbox: true, backgroundThrottling: false },
@@ -145,6 +145,7 @@ function openAISettings(purpose = '', { firstRun = false } = {}) {
 }
 
 async function runCompanionSmokeTest() {
+  if (mainWindow.getTitle() !== '刀塔宠物 · DotaPet') throw new Error('Desktop still shows legacy branding');
   const firstSetup = welcomeController.showOnFirstRun();
   if (!firstSetup || firstSetup !== aiSettingsWindow) throw new Error('First launch did not open configuration directly');
   const firstSetupClosed = new Promise(resolve => firstSetup.once('closed', resolve));
@@ -790,7 +791,7 @@ function createWindow() {
     hasShadow: false,
     show: false,
     skipTaskbar: false,
-    title: 'DOTA 2 VoiceSpirit Companion',
+    title: '刀塔宠物 · DotaPet',
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
       contextIsolation: true,
@@ -1040,7 +1041,7 @@ function setupTray() {
   try {
     const icon = createTrayIcon();
     tray = new Tray(icon);
-    tray.setToolTip('DOTA 2 VoiceSpirit Companion (桌宠 & 游戏翻译)');
+    tray.setToolTip('刀塔宠物 · DotaPet (桌宠 & 游戏翻译)');
 
     // Left click toggle window visibility & focus
     tray.on('click', () => {

@@ -18,7 +18,7 @@ win:
   signExecutable: false
 nsis:
   artifactName: DotaPet-Setup-${version}.${ext}
-  shortcutName: 刀塔Pet
+  shortcutName: 刀塔宠物
   installerIcon: src/renderer/assets/app-icon.ico
   uninstallerIcon: src/renderer/assets/app-icon.ico
   oneClick: false

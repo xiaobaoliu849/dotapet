@@ -70,7 +70,7 @@ export function createCustomizationController({ electron, rendererDirectory, get
     if (window && !window.isDestroyed()) { window.show(); window.focus(); return window; }
     window = new BrowserWindow({
       icon: path.join(rendererDirectory, 'assets/app-icon.png'),
-      width: 1000, height: 800, minWidth: 680, minHeight: 650, title: '刀塔Pet · DOTA2 桌面宠物 · 自定义',
+      width: 1000, height: 800, minWidth: 680, minHeight: 650, title: '刀塔宠物 · DOTA2 桌面宠物 · 自定义',
       backgroundColor: '#faf6ef', autoHideMenuBar: true, show: false,
       webPreferences: { preload: path.join(rendererDirectory, '../preload/customize.js'), contextIsolation: true, nodeIntegration: false, sandbox: true },
     });

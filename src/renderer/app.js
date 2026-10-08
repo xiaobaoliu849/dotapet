@@ -3133,7 +3133,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     restoredPetMode = state.isPetMode;
   }
 
-  console.log('[App] DOTA 2 VoiceSpirit Companion Initialized with GSI & 127+ heroes & wardrobe support.');
+  console.log('[App] 刀塔宠物 · DotaPet Initialized with GSI & 127+ heroes & wardrobe support.');
 
   // Set clean initial idle state
   setAppState('idle', '待命');

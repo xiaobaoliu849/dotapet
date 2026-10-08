@@ -94,7 +94,7 @@ export class GSIServer extends EventEmitter {
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>DOTA 2 VoiceSpirit — GSI 监听器</title>
+<title>DotaPet — GSI 监听器</title>
 <style>
   body { background:#0f172a; color:#e2e8f0; font-family:'Segoe UI',sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; }
   .card { max-width:560px; padding:40px; background:#1e293b; border:1px solid rgba(56,189,248,.3); border-radius:14px; }
@@ -106,7 +106,7 @@ export class GSIServer extends EventEmitter {
 </head>
 <body>
   <div class="card">
-    <h1>⚡ DOTA 2 VoiceSpirit — GSI 本地监听器</h1>
+    <h1>⚡ DotaPet — GSI 本地监听器</h1>
     <p class="state">${stateText}</p>
     <p class="hint">这不是网页应用，而是 DOTA 2 游戏状态集成 (GSI) 的本地数据接口。<br>
     DOTA 2 客户端会把对局事件实时 POST 到 <code>http://127.0.0.1:${this.port}/</code>，由桌面宠物端消费。<br>

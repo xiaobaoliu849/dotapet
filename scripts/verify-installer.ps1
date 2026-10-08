@@ -13,11 +13,13 @@ function Find-CompanionInstallation {
 }
 if ((Find-CompanionInstallation).Count -gt 0) { throw 'A companion is already installed. Run this check in a clean Windows account or Sandbox to preserve the existing installation.' }
 $taskShortcutPaths = @(
-  (Join-Path ([Environment]::GetFolderPath('Desktop')) '刀塔Pet.lnk'),
-  (Join-Path ([Environment]::GetFolderPath('StartMenu')) 'Programs\刀塔Pet.lnk')
+  (Join-Path ([Environment]::GetFolderPath('Desktop')) '刀塔宠物.lnk'),
+  (Join-Path ([Environment]::GetFolderPath('StartMenu')) 'Programs\刀塔宠物.lnk')
 )
 $taskProtectedShortcuts = $taskShortcutPaths + @(
   (Join-Path ([Environment]::GetFolderPath('Desktop')) 'Dota2 VoiceSpirit Companion.lnk'),
+  (Join-Path ([Environment]::GetFolderPath('Desktop')) '刀塔Pet.lnk'),
+  (Join-Path ([Environment]::GetFolderPath('StartMenu')) 'Programs\刀塔Pet.lnk'),
   (Join-Path ([Environment]::GetFolderPath('StartMenu')) 'Programs\Dota2 VoiceSpirit Companion.lnk')
 )
 foreach ($taskShortcut in $taskProtectedShortcuts) { if (Test-Path -LiteralPath $taskShortcut) { throw "An existing shortcut must be preserved: $taskShortcut" } }
