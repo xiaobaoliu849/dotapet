@@ -12,7 +12,7 @@
 
 从 [Releases](https://github.com/xiaobaoliu849/dotapet/releases) 下载 `DotaPet-Setup-0.1.2.exe` 并运行。普通用户不需要安装 Node.js。
 
-首次启动直接打开配置页：选择服务商、粘贴密钥、点击开始。也可点击「稍后设置」跳过。程序启动后可拖动宠物，右键切换形象、调整设置；任务栏托盘图标可以找回隐藏的桌宠。不配置 AI 也可使用桌面互动。
+首次启动直接打开配置页：选择服务商、粘贴密钥、点击开始。也可点击「稍后设置」跳过。平时桌面上只显示宠物，鼠标移上去才出现工具栏；右键打开常用菜单，「设置与帮助」里有密钥、快捷键和麦克风检查；任务栏托盘图标可以找回隐藏的桌宠。不配置 AI 也可使用桌面互动。
 
 ## 已有功能
 
@@ -61,7 +61,7 @@ node scripts/smoke-desktop.mjs release/win-unpacked/DotaPet.exe
 ```text
 src/main/       窗口、托盘、快捷键、GSI、设置与游戏输入
 src/preload/    各窗口限定的 IPC 接口
-src/renderer/   桌宠、设置、引导与形象编辑界面
+src/renderer/   桌宠、设置与帮助、形象编辑界面
 src/services/   语音服务、翻译、角色与外观逻辑
 tests/          自动回归测试
 scripts/        图标、打包启动与安装升级验收
