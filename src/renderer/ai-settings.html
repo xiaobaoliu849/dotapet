@@ -4,58 +4,73 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none';">
-  <title>刀塔宠物 · 翻译与语音设置</title>
+  <title>刀塔宠物 · 设置</title>
   <link rel="stylesheet" href="ai-settings.css">
   <script src="microphone-check.js" defer></script>
   <script src="ai-settings.js" defer></script>
 </head>
 <body>
-  <div class="app-chrome"><img class="brand-icon" src="assets/app-icon.svg" alt=""><span>刀塔宠物</span><span class="chrome-caption">DOTA2 桌面小伙伴 <span id="settings-version"></span></span></div>
+  <div class="app-chrome"><img class="brand-icon" src="assets/app-icon.svg" alt=""><span>刀塔宠物</span><span class="chrome-caption">设置 <span id="settings-version"></span></span></div>
   <main>
     <header class="welcome">
       <div class="welcome-copy">
-        <p class="eyebrow">DOTA2 · 你的桌面信使</p>
         <h1 id="welcome-title">让小伙伴听见你</h1>
-        <p class="welcome-description" id="welcome-description">选一家服务商，粘贴密钥，就可以开始了。</p>
+        <p class="welcome-description" id="welcome-description">选一家服务商，粘贴一次密钥，语音和翻译都能用。</p>
       </div>
-      <div class="pet-greeting" aria-hidden="true"><div class="pet-halo"></div><img id="welcome-pet" class="welcome-pet" src="assets/pets/mischievous_greevil/idle.svg" alt=""><span class="pet-note">准备好，陪你出发</span></div>
+      <div class="pet-greeting" aria-hidden="true"><div class="pet-halo"></div><img id="welcome-pet" class="welcome-pet" src="assets/pets/mischievous_greevil/idle.svg" alt=""></div>
     </header>
-    <div class="settings-tools"><nav class="usage-tabs" aria-label="选择功能"><button id="usage-voice" aria-pressed="true">语音聊天</button><button id="usage-translate" aria-pressed="false">文字 / 截图翻译</button></nav><button id="open-phrases">快捷短语 · F6 ↗</button></div>
-    <select id="usage" hidden aria-label="使用功能"><option value="voice">语音聊天</option><option value="translate">文字 / 截图翻译</option></select>
-    <p id="shared-credentials" class="hint shared-credentials">按功能选择服务商；千问的 API 密钥在两个功能间共用，只需保存一次。</p>
-    <section class="card setup-card" aria-labelledby="provider-title">
-      <div class="section-heading"><h2 id="provider-title">选择服务商</h2><span class="section-caption" id="provider-caption">用你已有的账户就好</span></div>
-      <div id="provider-options" class="provider-options" role="group" aria-label="AI 服务商"></div>
-      <select id="provider" hidden disabled aria-label="AI 服务商"></select>
+
+    <section id="voice-card" class="card" aria-labelledby="voice-title">
+      <div class="section-heading"><h2 id="voice-title"><span class="step" aria-hidden="true">1</span>语音聊天</h2><span class="section-caption">按 Alt+Q 和它说话</span></div>
+      <div id="provider-options" class="provider-options" role="group" aria-label="语音服务商"></div>
+      <select id="provider" hidden disabled aria-label="语音服务商"></select>
       <p id="provider-help" class="hint provider-help"></p>
       <div class="credential-row"><div id="secret-fields" class="secret-fields"></div>
-        <div id="voice-fields" class="voice-choice"><label for="voice">声音 <span class="label-note">已选好，可直接使用</span></label><select id="voice"></select><input id="voice-custom" type="text" maxlength="160" autocomplete="off" hidden></div>
+        <div id="voice-fields" class="voice-choice"><label for="voice">声音</label><select id="voice"></select><input id="voice-custom" type="text" maxlength="160" autocomplete="off" hidden></div>
       </div>
-      <div class="start-row"><button id="finish" class="primary" hidden>完成，回到桌宠 →</button><button id="connect" class="primary">保存并开始聊天 →</button><button id="test" class="primary" hidden>保存并启用翻译 →</button><button id="cancel" hidden>取消测试</button></div>
-      <div class="setup-result"><p id="connection-status" class="connection-status" role="status">连接后按 Alt+Q 说话，麦克风由你开启。</p><div id="feedback" class="feedback" role="status" aria-live="polite">正在读取设置…</div></div>
+      <div class="start-row">
+        <button id="connect" class="primary">保存并开始聊天 →</button><button id="finish" class="primary" hidden>完成，回到桌宠 →</button><button id="cancel" hidden>取消测试</button>
+        <p id="connection-status" class="connection-status" role="status">麦克风只在你按下 Alt+Q 时打开。</p>
+      </div>
+      <div id="feedback" class="feedback" role="status" aria-live="polite">正在读取设置…</div>
     </section>
-    <p class="connection-note hint">连接后按 Alt+Q 开始说话，再按一次关闭麦克风。</p>
+
+    <section id="translate-card" class="card translate-card" aria-labelledby="translate-title">
+      <div class="section-heading"><h2 id="translate-title"><span class="step" aria-hidden="true">2</span>文字 / 截图翻译</h2><div id="translator-options" class="segmented" role="group" aria-label="翻译服务商"></div></div>
+      <div class="translate-row">
+        <p id="translate-state" class="translate-state"></p>
+        <button id="translate-change" class="text-button" hidden>更换密钥</button>
+        <button id="test" class="secondary">测试翻译</button>
+      </div>
+      <div id="translate-key" class="translate-key"></div>
+      <div id="translate-feedback" class="feedback" role="status" aria-live="polite"></div>
+      <p class="hint">复制文字后按 <kbd>Alt</kbd>+<kbd>T</kbd>；或 <kbd>Win</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> 截取聊天框后按 <kbd>Alt</kbd>+<kbd>T</kbd>。</p>
+    </section>
+
     <details id="advanced" class="advanced">
-      <summary><span>更多设置</span><span class="summary-hint">通常不需要修改</span><span class="summary-chevron" aria-hidden="true">⌄</span></summary>
+      <summary><span>更多设置</span><span class="summary-hint">模型、音色、地区、麦克风检查</span><span class="summary-chevron" aria-hidden="true"></span></summary>
       <div class="advanced-content">
-        <div id="google-mode-fields" hidden><label for="google-mode">Gemini 功能</label><select id="google-mode"><option value="google">语音聊天</option><option value="google-translate">实时语音翻译</option></select><p class="hint">两种功能的密钥分别保存，切换后请填写对应密钥。</p></div>
+        <div id="google-mode-fields" hidden><label for="google-mode">Gemini 模式</label><select id="google-mode"><option value="google">语音聊天</option><option value="google-translate">实时语音翻译（说中文，它说外语）</option></select></div>
         <div id="workspace-fields" class="field-grid" hidden>
-          <div><label for="region">密钥所属地区</label><select id="region"><option value="beijing">中国 · 北京</option><option value="singapore">新加坡</option></select></div>
+          <div><label for="region">千问密钥所属地区</label><select id="region"><option value="beijing">中国 · 北京</option><option value="singapore">新加坡</option></select></div>
           <div><label for="workspace">百炼工作空间 ID（可选）</label><input id="workspace" type="text" autocomplete="off" maxlength="100" placeholder="默认工作空间可留空"></div>
         </div>
-        <div class="field-grid"><div id="model-fields"><label id="model-label" for="model">语音模型</label><input id="model" type="text" maxlength="160" autocomplete="off" spellcheck="false"></div><div id="all-voice-fields"><label for="all-voices">全部音色</label><select id="all-voices"></select></div></div>
+        <div class="field-grid"><div id="model-fields"><label for="model">语音模型</label><input id="model" type="text" maxlength="160" autocomplete="off" spellcheck="false"></div><div id="all-voice-fields"><label for="all-voices">全部音色</label><select id="all-voices"></select></div></div>
         <div id="custom-voice-fields" hidden><label for="custom-voice-id">自定义音色 ID</label><input id="custom-voice-id" type="text" maxlength="160" autocomplete="off"></div>
+        <div id="translate-model-fields" hidden><label for="translate-model">DeepSeek 翻译模型</label><input id="translate-model" type="text" maxlength="160" autocomplete="off" spellcheck="false"></div>
         <div id="optional-secret-fields"></div>
-        <div id="translator-fields"><p class="hint" id="translator-summary"></p><button id="translator-config">配置文字 / 截图翻译 →</button></div>
-        <div class="advanced-actions"><button id="save">仅保存设置</button><button id="voice-test">单独测试语音</button><button id="disconnect">断开语音</button><button id="import">导入配置</button><button id="delete" class="danger">删除当前密钥</button></div>
-        <p class="hint">密钥留空可保留已有配置。云端连接与测试可能产生服务商用量。</p>
+        <div class="advanced-actions"><button id="save">仅保存</button><button id="voice-test">测试语音（不开麦）</button><button id="disconnect">断开语音</button><button id="import">从文件导入密钥</button></div>
+        <div id="microphone" class="mic-check">
+          <h3>麦克风检查</h3>
+          <p class="hint">说一句话，在本机检查音量；不保存、不上传，10 秒后自动结束。</p>
+          <div class="mic-meter" role="meter" aria-label="麦克风音量" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="mic-level"></span></div>
+          <p id="mic-status" role="status" aria-live="polite">还没有检查。</p>
+          <button id="mic-start">检查麦克风</button><button id="mic-stop" hidden>停止检查</button><button id="mic-privacy" hidden>打开 Windows 麦克风设置</button>
+        </div>
+        <p class="hint">云端服务按服务商规则计费；连接与测试可能产生少量用量。</p>
       </div>
     </details>
-    <details id="microphone" class="advanced">
-      <summary><span>麦克风检查</span><span class="summary-hint">听不到声音时再试</span><span class="summary-chevron" aria-hidden="true">⌄</span></summary>
-      <div class="advanced-content mic-check"><p class="hint">说一句话，在本机检查音量；不保存、不上传，10 秒后自动结束。</p><div class="mic-meter" role="meter" aria-label="麦克风音量" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="mic-level"></span></div><p id="mic-status" role="status" aria-live="polite">还没有检查。</p><button id="mic-start">检查麦克风</button><button id="mic-stop" hidden>停止检查</button><button id="mic-privacy" hidden>打开 Windows 麦克风设置</button></div>
-    </details>
-    <footer><span>密钥加密保存在本机</span><button id="skip" class="text-button">先让它陪着我，稍后设置 →</button></footer>
   </main>
+  <footer><span class="lock-note">🔒 密钥加密保存在本机，只发给你选的服务商</span><button id="open-phrases" class="text-button">快捷短语 F6 ↗</button><button id="skip" class="text-button">稍后设置 →</button></footer>
 </body>
 </html>
