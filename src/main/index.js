@@ -123,7 +123,8 @@ function openAISettings(purpose = '', { firstRun = false } = {}) {
   settingsFirstRun ||= firstRun;
   if (aiSettingsWindow && !aiSettingsWindow.isDestroyed()) {
     if (settingsPurpose) aiSettingsWindow.webContents.send('settings:purpose', settingsPurpose);
-    aiSettingsWindow.show(); aiSettingsWindow.focus(); return aiSettingsWindow;
+    if (!smokeTest) { aiSettingsWindow.show(); aiSettingsWindow.focus(); }
+    return aiSettingsWindow;
   }
   aiSettingsWindow = new BrowserWindow({
     icon: appIcon,
@@ -154,12 +155,15 @@ async function runCompanionSmokeTest() {
   if (!firstSetup || firstSetup !== aiSettingsWindow) throw new Error('First launch did not open configuration directly');
   const firstSetupClosed = new Promise(resolve => firstSetup.once('closed', resolve));
   await new Promise(resolve => firstSetup.webContents.once('did-finish-load', resolve));
+  firstSetup.setSize(620, 640);
+  await new Promise(resolve => setTimeout(resolve, 150));
   await firstSetup.webContents.executeJavaScript(`(async () => {
     for (let i=0; i<100 && document.getElementById('provider').disabled; i++) await new Promise(resolve=>setTimeout(resolve,40));
     if(document.querySelectorAll('.provider-option').length !== 4) throw new Error('First launch did not show all four services');
     if(document.getElementById('usage').value !== 'voice') throw new Error('First launch hid voice services');
     if(document.getElementById('advanced').open) throw new Error('First launch opened advanced controls');
-    if(document.getElementById('skip').getBoundingClientRect().bottom > innerHeight) throw new Error('First setup requires scrolling to skip');
+    const skip=document.getElementById('skip').getBoundingClientRect(), primary=document.getElementById('connect').getBoundingClientRect();
+    if(skip.bottom > innerHeight || primary.bottom > document.querySelector('footer').getBoundingClientRect().top) throw new Error('First setup action outside viewport: '+JSON.stringify({ width:innerWidth,height:innerHeight,skip:skip.bottom,primary:primary.bottom }));
     document.getElementById('skip').click();
   })()`);
   await firstSetupClosed;
@@ -1452,7 +1456,7 @@ function setupIPC() {
   ipcMain.handle('ai:finish-setup', settingsHandler(() => {
     // Return before closing so the calling renderer receives its result.
     const window = aiSettingsWindow;
-    setImmediate(() => { mainWindow?.show(); window?.close(); });
+    setImmediate(() => { if (!smokeTest) mainWindow?.show(); window?.close(); });
     return {};
   }));
   ipcMain.handle('ai:open-key-page', settingsHandler(async provider => {
@@ -1806,7 +1810,13 @@ if (app?.whenReady) {  app.whenReady().then(() => {
         } catch (error) { console.error('[Upgrade]', error.message); app.exit(1); }
         return;
       }
-      runCompanionSmokeTest().catch(error => { console.error('[Smoke]', error.message); app.exit(1); }); return;
+      runCompanionSmokeTest().catch(async error => {
+        console.error('[Smoke]', error.message);
+        try {
+          if (aiSettingsWindow && !aiSettingsWindow.isDestroyed()) fs.writeFileSync(path.join(app.getPath('userData'), 'smoke-failure.png'), (await aiSettingsWindow.webContents.capturePage()).toPNG());
+        } catch { /* Preserve the original failure even if capture is unavailable. */ }
+        app.exit(1);
+      }); return;
     }
     welcomeController.showOnFirstRun();
     // Load the CJS updater only in a real session; isolated smoke tests never dial out.

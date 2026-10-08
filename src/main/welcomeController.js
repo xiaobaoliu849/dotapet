@@ -56,7 +56,7 @@ export function createWelcomeController({ electron, rendererDirectory, icon, ope
       else if (action === 'finish') {
         dismiss();
         const pet = getMainWindow();
-        pet?.show();
+        if (!smokeTest) pet?.show();
         window.close();
       } else return { ok: false, error: '未知操作。' };
       return { ok: true };

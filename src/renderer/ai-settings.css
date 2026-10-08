@@ -6,7 +6,7 @@ button, select { cursor: pointer; }
 .app-chrome { position: sticky; top: 0; z-index: 3; height: 48px; display: flex; align-items: center; gap: 10px; padding: 0 150px 0 24px; background: #f7f8f4; font-size: 14px; font-weight: 600; -webkit-app-region: drag; user-select: none; }
 .brand-icon { width: 28px; height: 28px; }
 .chrome-caption { color: var(--muted); font-weight: 400; font-size: 12px; }
-main { max-width: 940px; margin: auto; padding: 4px 38px 20px; }
+main { max-width: 940px; margin: auto; padding: 4px 38px 80px; }
 .welcome { display: flex; justify-content: space-between; align-items: center; min-height: 120px; gap: 16px; }
 .eyebrow { margin: 0 0 9px; color: var(--peach); font-size: 13px; font-weight: 600; letter-spacing: 1px; }
 h1 { font-size: 32px; line-height: 1.35; margin: 0; font-weight: 650; letter-spacing: -.6px; }
@@ -92,14 +92,15 @@ details[open] .summary-chevron { transform: rotate(180deg); }
 #mic-status { font-size: 14px; line-height: 1.8; color: #5d6758; }
 .mic-check { padding-top: 10px; }
 .mic-check button { margin: 4px 6px 0 0; }
-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding-top: 12px; color: #87917e; font-size: 12px; }
+footer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 4; max-width: 940px; margin: auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 10px 38px; background: #f7f8f4; border-top: 1px solid var(--line); color: #87917e; font-size: 12px; }
 .text-button { border: 0; background: transparent; color: #6f7a64; font-size: 13px; padding: 8px 0 8px 10px; }
 [hidden] { display: none !important; }
 ::-webkit-scrollbar { width: 7px; }
 ::-webkit-scrollbar-track { background: #f7f8f4; }
 ::-webkit-scrollbar-thumb { border: 2px solid #f7f8f4; border-radius: 9px; background: #cbd4c4; }
 @keyframes turn { to { transform: rotate(360deg); } }
-@media (max-width: 700px) { main { padding: 4px 24px 20px; } h1 { font-size: 29px; } .pet-greeting { width: 140px; } .provider-options { gap: 8px; } .provider-option { padding: 14px 10px 12px; } .provider-name { gap: 5px; font-size: 14px; } .provider-mark { width: 22px; height: 22px; } .provider-description { font-size: 11px; } .voice-choice { width: 180px; } .label-note { display: none; } .card { padding: 20px; } }
+@media (max-width: 700px) { main { padding: 4px 24px 80px; } footer { padding-inline: 24px; } h1 { font-size: 29px; } .pet-greeting { width: 140px; } .provider-options { gap: 8px; } .provider-option { padding: 14px 10px 12px; } .provider-name { gap: 5px; font-size: 14px; } .provider-mark { width: 22px; height: 22px; } .provider-description { font-size: 11px; } .voice-choice { width: 180px; } .label-note { display: none; } .card { padding: 20px; } }
 @media (max-width: 700px) { .secret-fields.two-keys { grid-template-columns: 1fr; } .secret-fields.two-keys .secret-field + .secret-field { margin-top: 12px; } }
-@media (max-width: 540px) { main { padding: 4px 18px 20px; } .pet-greeting { display: none; } .provider-options { grid-template-columns: repeat(2, minmax(0, 1fr)); } .credential-row { flex-direction: column; gap: 16px; } .secret-fields, .voice-choice { width: 100%; } .section-caption, .summary-hint { display: none; } .field-grid { grid-template-columns: 1fr; } .usage-tabs button { padding: 10px 18px; } }
+@media (max-width: 540px) { main { padding: 4px 18px 80px; } footer { padding-inline: 18px; } .pet-greeting { display: none; } .provider-options { grid-template-columns: repeat(2, minmax(0, 1fr)); } .credential-row { flex-direction: column; gap: 16px; } .secret-fields, .voice-choice { width: 100%; } .section-caption, .summary-hint { display: none; } .field-grid { grid-template-columns: 1fr; } .usage-tabs button { padding: 10px 18px; } }
+@media (max-height: 740px) { .welcome { min-height: 96px; } .eyebrow { margin-bottom: 5px; } .welcome-description { margin-top: 7px; } .pet-greeting { height: 100px; } .welcome-pet { width: 105px; height: 105px; } .card { padding-block: 18px; } .provider-option { min-height: 76px; padding-block: 12px; gap: 7px; } .setup-result { margin-top: 12px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
