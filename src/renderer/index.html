@@ -27,7 +27,7 @@
         <button id="btn-roam" class="icon-btn" title="桌宠桌面漫游 (Alt+M)">🐾</button>
         <button id="btn-pin" class="icon-btn btn-pin" title="固定位置 (Alt+L): 锁定后不可拖拽/漫游，始终置顶">📌</button>
         <button id="btn-scale" class="icon-btn btn-scale" title="伴侣缩放 (Alt+C): 标准 (100%) / 精简缩小 (75%) / 极简迷你 (55%)">📐</button>
-        <button id="btn-transcript" class="icon-btn" title="实时对话转写记录 (语音对话时自动弹出)">💬</button>
+        <button id="btn-transcript" class="icon-btn" title="实时对话转写记录 (语音对话时自动弹出)" aria-controls="transcript-panel" aria-expanded="false">💬</button>
         <button id="btn-snap" class="icon-btn" title="边缘吸附">📍</button>
         <button id="btn-minimize" class="icon-btn" title="隐藏 (Alt+Shift+M)">➖</button>
         <button id="btn-close" class="icon-btn btn-close" title="退出桌面伴侣">👋</button>
@@ -105,10 +105,10 @@
         <div class="transcript-actions">
           <button id="btn-copy-transcript" class="tiny-btn" title="复制对话记录">📋</button>
           <button id="btn-clear-transcript" class="tiny-btn btn-dim" title="清空记录">🧹</button>
-          <button id="btn-close-transcript" class="tiny-btn btn-dim" title="收起 (语音对话时会自动再次弹出)">✕</button>
+          <button id="btn-close-transcript" class="tiny-btn btn-dim" title="收起" aria-label="收起">✕</button>
         </div>
       </div>
-      <div class="transcript-list" id="transcript-list">
+      <div class="transcript-list" id="transcript-list" tabindex="0" translate="no">
         <div class="transcript-empty" id="transcript-empty">还没有对话，按 🎙️ 开始语音吧</div>
       </div>
       <button id="transcript-jump-pill" class="transcript-jump-pill" type="button" title="滚动到最新消息">↓ 回到最新</button>

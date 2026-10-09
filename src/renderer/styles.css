@@ -744,8 +744,8 @@ body.has-dialogue-active .pet-wrapper {
   transition: opacity 0.2s ease;
 }
 
-body:not(.hud-awake) .hud-top-bar,
-body:not(.hud-awake) .hud-bottom-dock {
+body:not(.hud-awake):not(.has-transcript-open) .hud-top-bar,
+body:not(.hud-awake):not(.has-transcript-open) .hud-bottom-dock {
   opacity: 0;
 }
 
@@ -3207,6 +3207,10 @@ body.is-turning .pet-avatar-container {
 }
 
 .transcript-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 11px;
   font-weight: 800;
   color: #e3b868;
@@ -3214,6 +3218,7 @@ body.is-turning .pet-avatar-container {
 }
 
 .transcript-actions {
+  flex-shrink: 0;
   display: flex;
   gap: 4px;
 }
@@ -3232,6 +3237,99 @@ body.is-turning .pet-avatar-container {
   flex-direction: column;
   gap: 5px;
   padding-right: 3px;
+  overscroll-behavior: contain;
+  overflow-anchor: none; /* history pruning compensates scrollTop explicitly */
+}
+
+/* Conversation mode shares the existing fixed window: the character moves
+   above a reserved reading area. Streaming never changes either area's size.
+   Offsets are measured before the root's compact/mini scale is applied. */
+body.has-transcript-open .pet-wrapper {
+  transform-origin: top center;
+  transform: translateY(var(--conversation-pet-offset, -70px)) scale(0.68);
+  opacity: 1;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+body.has-transcript-open .status-pill {
+  font-size: 16px; /* compensate for the smaller character; text stays legible */
+  white-space: nowrap;
+}
+
+body.has-transcript-open .pet-motion-wrap {
+  overflow: hidden; /* enlarged imported art stays inside the character area */
+}
+
+/* Transient notices use the free space beside the smaller character rather
+   than covering the last transcript lines or the microphone controls. */
+body.has-transcript-open .toast {
+  top: calc(var(--conversation-panel-top, 178px) - 116px);
+  bottom: auto;
+  left: 12px;
+  width: 92px;
+  max-height: 90px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  background: rgba(33, 27, 20, 0.97);
+  border: 1px solid rgba(227, 184, 104, 0.35);
+  color: #f4edde;
+  font-size: 11px;
+  line-height: 1.4;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+}
+
+body.has-transcript-open .transcript-panel {
+  top: var(--conversation-panel-top, 178px);
+  bottom: var(--conversation-panel-bottom, 94px);
+  min-height: 0;
+  animation: conversation-panel-in 0.25s ease both;
+}
+
+body.has-transcript-open .transcript-list {
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+}
+
+/* Translation temporarily uses the reading area, then closing it reveals
+   the retained conversation. Neither card covers the character. */
+body.has-transcript-open.has-dialogue-active .transcript-panel {
+  visibility: hidden;
+}
+
+body.has-transcript-open .dialogue-bubble {
+  top: var(--conversation-panel-top, 178px);
+  bottom: var(--conversation-panel-bottom, 94px);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  z-index: 46;
+}
+
+body.has-transcript-open .dialogue-bubble .bubble-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+body.has-transcript-open .dialogue-bubble .bubble-header,
+body.has-transcript-open .dialogue-bubble .bubble-suggestions {
+  flex-shrink: 0;
+}
+
+@keyframes conversation-panel-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pet-wrapper, body.has-transcript-open .pet-wrapper { transition: none; }
+  body.has-transcript-open .transcript-panel { animation: none; }
 }
 
 .transcript-list::-webkit-scrollbar {

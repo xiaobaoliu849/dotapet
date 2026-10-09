@@ -976,6 +976,9 @@ function getPetIcon(petName) {
 
 function displayPetBubbleQuote(quote, pet = null) {
   if (!quote) return;
+  // Pet animation states also emit canned quotes. They must not replace a
+  // live reply or cover the reading area during a voice conversation.
+  if (document.body.classList.contains('has-transcript-open') || state.isMicActive) return;
   const currentPet = pet || petStateMachine.getCurrentPet();
   const icon = getPetIcon(currentPet?.name);
   const displayName = currentPet?.displayName || 'DOTA 2 萌宠';
@@ -1479,7 +1482,6 @@ function setAppState(newStatus, label = null) {
     } else if (newStatus === 'idle') {
       petStateMachine.setState('idle');
     }
-    return;
   }
 
   elements.petStatusPill.className = `status-pill status-${newStatus}`;
@@ -1494,6 +1496,7 @@ function setAppState(newStatus, label = null) {
   elements.statusText.textContent = label || labels[newStatus] || '待命';
   elements.visualizerRing.className = `visualizer-ring ${newStatus}`;
 
+  if (state.isPetMode) return;
   if (newStatus === 'speaking') {
     setPetSprite('speaking');
   } else {
@@ -1567,6 +1570,8 @@ function cleanMarkdownForDisplay(text) {
 }
 
 function hideDialogueHUD() {
+  clearTimeout(window._petQuoteTimer);
+  window._petQuoteTimer = null;
   if (bubbleDismissTimer) {
     clearTimeout(bubbleDismissTimer);
     bubbleDismissTimer = null;
@@ -1589,9 +1594,71 @@ const TRANSCRIPT_MSG_GAP_PX = 5; // keep in sync with .transcript-list column ga
 let transcriptUserEl = null;  // interim (still-recognizing) user message element
 let transcriptAgentEl = null; // streaming hero reply element
 let transcriptStickToBottom = true;
+let transcriptDismissed = false;
+let transcriptHistoryAnchor = null;
 
-function showTranscriptPanel() {
+// Measure in the root's unscaled CSS coordinates. The outer window and its
+// desktop anchor stay fixed, including compact mode and an expanded GSI bar.
+function updateConversationLayout() {
+  if (!document.body.classList.contains('has-transcript-open')) return;
+  const root = document.getElementById('companion-root');
+  const pet = document.getElementById('pet-wrapper');
+  const toolbar = document.getElementById('hud-top-bar');
+  const gameBar = document.getElementById('gsi-hud-bar');
+  const dock = document.querySelector('.hud-bottom-dock');
+  if (!root || !pet || !toolbar || !dock) return;
+  const headerBottom = Math.max(toolbar.offsetTop + toolbar.offsetHeight,
+    gameBar?.offsetHeight ? gameBar.offsetTop + gameBar.offsetHeight : 0);
+  const petTop = headerBottom + 8;
+  root.style.setProperty('--conversation-pet-offset', `${petTop - pet.offsetTop}px`);
+  root.style.setProperty('--conversation-panel-top', `${petTop + pet.offsetHeight * 0.68 + 8}px`);
+  root.style.setProperty('--conversation-panel-bottom', `${root.clientHeight - dock.offsetTop + 8}px`);
+}
+
+function showTranscriptPanel({ force = false } = {}) {
+  if (transcriptDismissed && !force) return;
+  if (force) transcriptDismissed = false;
+  const wasHidden = elements.transcriptPanel?.classList.contains('hidden');
+  if (!wasHidden && !force) return;
+  if (wasHidden || force) hideDialogueHUD();
   elements.transcriptPanel?.classList.remove('hidden');
+  document.body.classList.add('has-transcript-open');
+  elements.btnTranscript?.setAttribute('aria-expanded', 'true');
+  updateConversationLayout();
+  if (wasHidden) requestAnimationFrame(() => {
+    if (elements.transcriptPanel?.classList.contains('hidden')) return;
+    if (transcriptStickToBottom) scrollTranscriptToBottom();
+    else if (transcriptHistoryAnchor) {
+      const { element, offset } = transcriptHistoryAnchor;
+      elements.transcriptList.scrollTop = element.isConnected ? element.offsetTop - offset : 0;
+    }
+    updateTranscriptJumpPill();
+  });
+}
+
+function hideTranscriptPanel() {
+  const list = elements.transcriptList;
+  if (list && !transcriptStickToBottom) {
+    const top = list.getBoundingClientRect().top;
+    const anchor = [...list.querySelectorAll('.transcript-msg')].find(msg => msg.getBoundingClientRect().bottom > top);
+    transcriptHistoryAnchor = anchor ? { element: anchor, offset: anchor.offsetTop - list.scrollTop } : null;
+  }
+  if (elements.transcriptPanel?.contains(document.activeElement)) {
+    elements.btnTranscript?.focus({ preventScroll: true });
+  }
+  transcriptDismissed = true;
+  elements.transcriptPanel?.classList.add('hidden');
+  document.body.classList.remove('has-transcript-open');
+  elements.btnTranscript?.setAttribute('aria-expanded', 'false');
+}
+
+function setupConversationLayout() {
+  const observer = new ResizeObserver(updateConversationLayout);
+  for (const element of [document.getElementById('companion-root'),
+    document.getElementById('hud-top-bar'), document.getElementById('gsi-hud-bar'),
+    document.querySelector('.hud-bottom-dock')]) {
+    if (element) observer.observe(element);
+  }
 }
 
 function isTranscriptAtBottom() {
@@ -1673,6 +1740,8 @@ function resetTranscriptStreamRefs() {
  */
 function displayTranslationHUD(data) {
   if (!data) return;
+  clearTimeout(window._petQuoteTimer);
+  window._petQuoteTimer = null;
 
   if (bubbleDismissTimer) {
     clearTimeout(bubbleDismissTimer);
@@ -1824,6 +1893,7 @@ async function startMicrophone() {
     muteGain.connect(state.audioContext.destination);
 
     state.isMicActive = true;
+    showTranscriptPanel({ force: true });
     elements.btnPttMic.classList.add('active');
     elements.pttLabel.textContent = '停止语音';
     setAppState('listening', '正在聆听...');
@@ -1851,8 +1921,8 @@ function stopMicrophone() {
     state.audioContext = null;
   }
   state.isMicActive = false;
-  // Speech possibly pending when the mic is switched off: the Gemini
-  // flash-live generation only commits turns on audioStreamEnd, so force it.
+  // Flush cached speech when the mic stops; keep the transcript open so the
+  // final reply and history remain readable after capture has ended.
   window.electronAPI?.commitVoiceUtterance?.();
   elements.btnPttMic.classList.remove('active');
   elements.pttLabel.textContent = '语音';
@@ -2444,11 +2514,16 @@ function setupEventListeners() {
   // Real-time Transcript Panel Controls
   elements.btnTranscript?.addEventListener('click', () => {
     if (!elements.transcriptPanel) return;
-    elements.transcriptPanel.classList.toggle('hidden');
+    if (elements.transcriptPanel.classList.contains('hidden') || document.body.classList.contains('has-dialogue-active')) {
+      hideDialogueHUD();
+      showTranscriptPanel({ force: true });
+    } else {
+      hideTranscriptPanel();
+    }
   });
 
   elements.btnCloseTranscript?.addEventListener('click', () => {
-    elements.transcriptPanel?.classList.add('hidden');
+    hideTranscriptPanel();
   });
 
   elements.btnClearTranscript?.addEventListener('click', () => {
@@ -2459,6 +2534,7 @@ function setupEventListeners() {
       elements.transcriptEmpty.classList.remove('hidden');
     }
     transcriptStickToBottom = true;
+    transcriptHistoryAnchor = null;
     updateTranscriptJumpPill();
     resetTranscriptStreamRefs();
     showToast('🧹 对话记录已清空');
@@ -2467,6 +2543,7 @@ function setupEventListeners() {
   // History browsing: disengage stick-to-bottom as soon as the user scrolls
   // away from the latest lines, re-engage when they come back near the bottom.
   elements.transcriptList?.addEventListener('scroll', () => {
+    if (elements.transcriptPanel?.classList.contains('hidden')) return;
     transcriptStickToBottom = isTranscriptAtBottom();
     updateTranscriptJumpPill();
   }, { passive: true });
@@ -2784,7 +2861,9 @@ function setupEventListeners() {
       }
       // Mirror the engine's real session liveness — the mic gate trusts this
       // instead of guessing from UI state.
+      const wasConnected = state.voiceConnected;
       state.voiceConnected = statusData?.status === 'connected';
+      if (state.voiceConnected && !wasConnected) showTranscriptPanel({ force: true });
       if (!state.voiceConnected && (state.isMicActive || state.isMicStarting)) stopMicrophone();
       if (statusData?.status === 'error') {
         setAppState('idle', '连接失败 · 打开 AI 设置');
@@ -2904,7 +2983,7 @@ function setupEventListeners() {
     });
 
     window.electronAPI.onVoiceComplete((data) => {
-      setAppState('idle');
+      setAppState(state.isMicActive ? 'listening' : 'idle');
       const textToSpeak = state.activeSpeechText || data?.text || '';
       // The engine declares whether THIS completed reply actually delivered
       // audio (hadAudio). The renderer-local flag is only a fallback for
@@ -3114,6 +3193,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   setupHudAutoHide();
   setupWindowDragging();
   setupEventListeners();
+  setupConversationLayout();
   await loadHeroConfig();
   await petMatrixReady.catch((e) => console.warn('[App] Pet matrix init failed:', e));
   window.electronAPI?.onCustomizationChanged?.(() => loadCustomization().catch(error => showToast(error.message)));

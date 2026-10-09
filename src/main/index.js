@@ -375,6 +375,8 @@ async function runCompanionSmokeTest() {
     fs.writeFileSync(output.replace(/\.png$/, '-translation.png'), (await capture()).toPNG());
     await page.executeJavaScript("if(!document.getElementById('translate-secret')) throw new Error('DeepSeek translation did not ask for its key'); document.querySelector('#translator-options [data-provider=qwen]').click(); window.scrollTo(0,0)");
   }
+  const { runConversationSmoke } = await import('./conversationSmoke.js');
+  const conversation = await runConversationSmoke({ mainWindow, outputDirectory: app.getPath('userData') });
   const customizationResult = await runCustomizationSmoke({ controller: customizationController, controlCenter, mainWindow, dialog, nativeImage, outputDirectory: app.getPath('userData') });
   const { runHeroSearchSmoke } = await import('./heroSearchSmoke.js');
   const heroSearch = await runHeroSearchSmoke({ mainWindow, outputDirectory: app.getPath('userData') });
@@ -388,7 +390,7 @@ async function runCompanionSmokeTest() {
   const settingsClosed = new Promise(resolve => controlCenter.window.once('closed', resolve));
   mainWindow.close();
   await Promise.race([settingsClosed, new Promise((_, reject) => setTimeout(() => reject(new Error('Settings center outlived the pet window')), 3000))]);
-  console.log('[Smoke] PASS', JSON.stringify({ ...result, onboarding, customization: customizationResult, heroSearch, phrases, updates, settingsClosesWithPet: true }));
+  console.log('[Smoke] PASS', JSON.stringify({ ...result, onboarding, conversation, customization: customizationResult, heroSearch, phrases, updates, settingsClosesWithPet: true }));
   app.exit(0);
 }
 
