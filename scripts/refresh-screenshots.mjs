@@ -9,6 +9,7 @@ import electron from 'electron';
 // cloud connection, actual update download, or changes to a user's companion.
 const root = fileURLToPath(new URL('../', import.meta.url));
 const target = path.join(root, 'docs/images');
+const settingsOnly = process.argv.includes('--settings-only');
 const staging = fs.mkdtempSync(path.join(os.tmpdir(), 'dotapet-docs-'));
 
 async function capture(language) {
@@ -43,6 +44,7 @@ const chinese = await capture('zh');
 const english = await capture('en');
 const images = [
   [chinese, 'language-services.png', 'welcome.png'],
+  [chinese, 'language-chat-preferences.png', 'chat-preferences.png'],
   [full, 'ai-settings-translation.png', 'translation-settings.png'],
   [chinese, 'language-appearance.png', 'appearance.png'],
   [chinese, 'language-phrases.png', 'phrases.png'],
@@ -52,11 +54,12 @@ const images = [
   [full, 'ai-settings-pet-rest.png', 'pet-rest.png'],
   [full, 'ai-settings-pet-hover.png', 'pet-toolbar.png'],
   [english, 'language-services.png', 'settings-en.png'],
+  [english, 'language-chat-preferences.png', 'chat-preferences-en.png'],
   [english, 'language-appearance.png', 'appearance-en.png'],
   [english, 'language-phrases.png', 'phrases-en.png'],
   [english, 'language-help.png', 'help-en.png'],
   [english, 'language-f6.png', 'quick-phrases-en.png'],
-];
+].filter(([, , destination]) => !settingsOnly || ['welcome.png', 'settings-en.png', 'chat-preferences.png', 'chat-preferences-en.png', 'translation-settings.png'].includes(destination));
 // Validate the whole capture before replacing any documentation images.
 for (const [directory, source] of images) {
   const file = path.join(directory, source);

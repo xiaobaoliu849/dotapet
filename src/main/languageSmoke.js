@@ -48,6 +48,14 @@ export async function runLanguageSmoke({ controlCenter, openPanel, nativeImage, 
       problems.push(`appearance: the character column overflows (content/room: width ${width}, height ${height})`);
     }
     fs.writeFileSync(path.join(outputDirectory, `language-${page}.png`), (await captureHub(controlCenter, nativeImage)).toPNG());
+    if (documentation && page === 'services') {
+      await contents.executeJavaScript(`(() => {
+        document.getElementById('advanced').open = true;
+        document.querySelector('.conversation-address').scrollIntoView({ block: 'start' });
+      })()`);
+      fs.writeFileSync(path.join(outputDirectory, 'language-chat-preferences.png'), (await captureHub(controlCenter, nativeImage)).toPNG());
+      await contents.executeJavaScript(`document.getElementById('advanced').open = false; window.scrollTo(0, 0);`);
+    }
   }
   await check('sidebar', controlCenter.window.webContents);
   const panel = openPanel();

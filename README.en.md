@@ -81,6 +81,13 @@ The About screenshot uses Chinese UI and simulated **0.3.0** update data. It doe
 
 In voice settings, enter **What should your companion call you?** (for example, Captain, Buddy or Daddy). Under **More settings**, add chat preferences for tone, reply style or what to call friends. These preferences apply across voice providers after saving and reconnecting. Each new chat connection you start gets an opening greeting; microphone toggles and connection tests do not repeat it. Live translation is unaffected.
 
+<details>
+<summary><strong>See the name and chat preference settings</strong></summary>
+
+![Current preferred name and chat instruction settings](docs/images/chat-preferences-en.png)
+
+</details>
+
 ### Keep these shortcuts handy
 
 | Action | Shortcut |

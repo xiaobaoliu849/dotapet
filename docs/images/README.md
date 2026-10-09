@@ -8,11 +8,14 @@ Run this from the repository root on Windows after installing dependencies:
 npm run docs:screenshots
 ```
 
+To refresh only voice settings, chat preferences and translation settings, run `npm run docs:screenshots -- --settings-only`.
+
 The command exercises the existing desktop smoke fixtures, then captures clean Chinese and English settings pages and F6 panels. Each run uses a separate temporary data directory and simulated audio devices. It does not read personal keys, connect to a voice provider, download a real update or install software. All expected images are checked before documentation images are replaced.
 
 | Image | View |
 |---|---|
 | `welcome.png` / `settings-en.png` | Voice and translation settings |
+| `chat-preferences.png` / `chat-preferences-en.png` | Preferred form of address and expanded custom chat instructions |
 | `appearance.png` / `appearance-en.png` | Appearance and background editor |
 | `phrases.png` / `phrases-en.png` | Embedded bilingual phrase editor |
 | `help.png` / `help-en.png` | Shortcuts and help |
