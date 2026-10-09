@@ -5,7 +5,7 @@ import { isTrustedSettingsSender } from './aiSettingsIpc.js';
 
 /** Height of the shell's top bar; the native window buttons sit inside it. */
 export const HUB_TOP = 40;
-/** The shell's sidebar CSS transition runs this long; the page view slides with it. */
+/** A fold runs this long. The shell drives it frame by frame; this is only the fallback's clock. */
 export const SIDEBAR_SLIDE_MS = 200;
 /** Pages drawn by the shell itself; every other page is an isolated view. */
 export const NATIVE_PAGES = ['help'];
@@ -50,7 +50,7 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
   function publishState() {
     if (alive() && !window.webContents.isDestroyed()) window.webContents.send('hub:state', state());
   }
-  function stopSlide() { clearInterval(slide); slide = null; }
+  function stopSlide() { clearTimeout(slide?.fallback); slide = null; }
   function layout(changed = false) {
     if (!alive()) return;
     stopSlide();
@@ -60,31 +60,32 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
     if (changed || geometry.sidebar !== previous.sidebar || geometry.narrow !== previous.narrow) publishState();
   }
   /**
-   * Fold or unfold: the page view eases to its new edge in step with the sidebar's CSS transition.
-   * It takes its final width on the first frame, so the page re-lays itself out once, as the motion
-   * starts, and then only moves: never mid-fold, and never as a jolt after the motion has stopped.
-   * Folding, the part past the window edge is clipped; unfolding, the shell's matching canvas shows
-   * beside it until it arrives.
+   * Fold or unfold. Main's timers tick unevenly (about every 16 or 31ms on Windows), so the shell
+   * drives the slide from its own display-synced frames and sends each frame's page edge here.
+   * The page takes its final width at once: it re-lays itself out as the motion starts, then only
+   * moves. Folding, the part past the window edge is clipped; unfolding, the shell's matching canvas
+   * shows beside it until it arrives. Returns the slide for the shell, or null for an instant change.
    */
   function slideLayout() {
-    if (!alive()) return;
+    if (!alive()) return null;
     stopSlide();
     const from = geometry.content;
     geometry = hubLayout(...window.getContentSize(), collapsed);
     const to = geometry.content;
+    const moving = animate() && from.x !== to.x;
+    for (const view of views.values()) view.setBounds(moving ? { ...to, x: from.x } : to);
     publishState();
-    if (!animate() || from.x === to.x) { for (const view of views.values()) view.setBounds(to); return; }
-    const start = Date.now();
-    const step = () => {
-      if (!alive()) return stopSlide();
-      const t = Math.min(1, (Date.now() - start) / SIDEBAR_SLIDE_MS);
-      const eased = 1 - (1 - t) ** 3;
-      const bounds = t === 1 ? to : { ...to, x: Math.round(from.x + (to.x - from.x) * eased) };
-      for (const view of views.values()) view.setBounds(bounds);
-      if (t === 1) stopSlide();
-    };
-    step();
-    slide = setInterval(step, 16);
+    if (!moving) return null;
+    // A shell that stops drawing frames (hidden, crashed) must not strand the page mid-slide.
+    slide = { from: from.x, to: to.x, fallback: setTimeout(() => layout(), SIDEBAR_SLIDE_MS + 400) };
+    return { from: from.x, to: to.x, duration: SIDEBAR_SLIDE_MS };
+  }
+  /** One frame of the shell's slide; the last frame lands exactly on the final layout. */
+  function slideTo(x) {
+    if (!slide || !alive()) return;
+    if (x === slide.to) return layout();
+    const clamped = Math.min(Math.max(x, Math.min(slide.from, slide.to)), Math.max(slide.from, slide.to));
+    for (const view of views.values()) view.setBounds({ ...geometry.content, x: clamped });
   }
   function detach(id, view) {
     if (views.get(id) !== view) return false;
@@ -232,11 +233,13 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
     if (!trustedShell(event) || typeof value !== 'boolean') return { ok: false };
     if (value !== collapsed) {
       collapsed = value;
-      slideLayout();
+      const slide = slideLayout();
       onSidebarCollapsedChange(collapsed);
+      return { ok: true, state: state(), slide };
     }
-    return { ok: true, state: state() };
+    return { ok: true, state: state(), slide: null };
   });
+  ipcMain.on('hub:slide', (event, x) => { if (trustedShell(event) && Number.isInteger(x)) slideTo(x); });
 
   return {
     open, register, unregister,

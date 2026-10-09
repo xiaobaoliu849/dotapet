@@ -34,11 +34,9 @@ body[data-compact='true'] .sidebar-toggle .chevron { transform: rotate(180deg); 
 .nav-item[data-page='update'] { margin-top: auto; }
 /*
  * Folding only narrows the sidebar: icons keep their place and the text fades,
- * so nothing jumps. Main slides the page view over the same 200ms.
+ * so nothing jumps. The script moves the width frame by frame, with the page view.
  */
 body[data-compact='true'] .nav-text { opacity: 0; visibility: hidden; }
-body.animating .sidebar { transition: width .2s cubic-bezier(.33, 1, .68, 1); }
-body.animating .native-page { transition: left .2s cubic-bezier(.33, 1, .68, 1), padding .2s cubic-bezier(.33, 1, .68, 1); }
 /* Folding: the text goes first. Unfolding: it waits until there is room, so it never shows clipped. */
 body.animating .nav-text { transition: opacity .1s, visibility .1s; }
 body.animating:not([data-compact='true']) .nav-text { transition-delay: .1s; }

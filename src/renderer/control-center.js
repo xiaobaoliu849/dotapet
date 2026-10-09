@@ -2,7 +2,7 @@ const hub = window.controlCenter;
 const items = [...document.querySelectorAll('.nav-item')];
 const nativePages = { help: document.getElementById('page-help') };
 const toggle = document.getElementById('sidebar-toggle');
-let collapsed = new URLSearchParams(location.search).get('sidebar') === 'collapsed', narrow = false;
+let collapsed = new URLSearchParams(location.search).get('sidebar') === 'collapsed', narrow = false, sliding = false;
 if (collapsed) { document.body.dataset.compact = 'true'; document.documentElement.style.setProperty('--sidebar', '64px'); }
 
 function render(state) {
@@ -13,7 +13,8 @@ function render(state) {
   toggle.title = label; toggle.setAttribute('aria-label', label);
   toggle.setAttribute('aria-expanded', String(!state.compact));
   toggle.setAttribute('aria-disabled', String(narrow));
-  document.documentElement.style.setProperty('--sidebar', `${state.sidebar}px`);
+  // A running fold owns the width until its last frame.
+  if (!sliding) document.documentElement.style.setProperty('--sidebar', `${state.sidebar}px`);
   document.documentElement.style.setProperty('--top', `${state.top}px`);
   document.getElementById('hub-version').textContent = state.version ? `· v${state.version}` : '';
   for (const item of items) {
@@ -30,16 +31,41 @@ for (const item of items) {
     if (response?.ok) render(response.state);
   });
 }
-// Only a fold animates; resizing follows the window edge at once, like the page view.
-let animationEnd = null;
+const ease = t => 1 - (1 - Math.min(1, Math.max(0, t))) ** 3;
+/**
+ * A fold runs on this document's display-synced frames: each frame sets the sidebar width here and
+ * sends main the page view's edge. The two cannot land on exactly the same frame, so the sidebar's
+ * edge stays tucked under the view: folding it trails the view by a few frames, unfolding it leads
+ * by one, and no gap opens between them. Resizing follows the window edge at once, like the page view.
+ */
+function runSlide({ from, to, duration }) {
+  const offset = to < from ? -48 : 16;
+  let start = null, sent = from;
+  const frame = now => {
+    start ??= now;
+    const elapsed = now - start;
+    const x = elapsed >= duration ? to : Math.round(from + (to - from) * ease(elapsed / duration));
+    if (x !== sent) hub.slide(sent = x);
+    document.documentElement.style.setProperty('--sidebar', `${from + (to - from) * ease((elapsed + offset) / duration)}px`);
+    if (elapsed < duration - Math.min(0, offset)) return requestAnimationFrame(frame);
+    sliding = false;
+    // The labels' fade may still be finishing.
+    setTimeout(() => document.body.classList.remove('animating'), 80);
+    hub.state().then(response => { if (response?.ok) render(response.state); });
+  };
+  requestAnimationFrame(frame);
+}
 // Not disabled when narrow, so the tooltip still explains why it does nothing.
+// A click during a fold is ignored: the fold is short, and restarting it would jump.
 toggle.addEventListener('click', async () => {
-  if (narrow) return;
-  clearTimeout(animationEnd);
+  if (narrow || sliding) return;
+  // Set before asking: main announces the new state before it answers, and the labels fade with it.
+  sliding = true;
   document.body.classList.add('animating');
-  animationEnd = setTimeout(() => document.body.classList.remove('animating'), 260);
-  const response = await hub.setSidebarCollapsed(!collapsed);
+  const response = await hub.setSidebarCollapsed(!collapsed).catch(() => null);
+  if (!response?.slide) { sliding = false; setTimeout(() => document.body.classList.remove('animating'), 260); }
   if (response?.ok) render(response.state);
+  if (response?.slide) runSlide(response.slide);
 });
 // Arrow keys move between pages, as in other Windows sidebars.
 document.getElementById('sidebar').addEventListener('keydown', event => {
