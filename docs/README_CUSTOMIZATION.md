@@ -1,6 +1,6 @@
 # Companion customization
 
-Start the desktop companion with `npm start`. Right-click the companion (or the tray icon) and choose **设置中心**, then **形象与背景** in the sidebar. The page title stays at the top while the editor scrolls. The button at the left of the title bar folds the sidebar to icons with a short slide; the choice is remembered, and narrow windows always use icons. The pet's own **自定义** tab also has a button that opens this page.
+Start the desktop companion with `npm start`. Right-click the companion (or the tray icon) and choose **设置中心**, then **形象与背景** in the sidebar. The page title stays at the top while the editor scrolls. The button to the right of the logo in the title bar folds the sidebar to icons with a short slide; the choice is remembered, and narrow windows always use icons. The pet's own **自定义** tab also has a button that opens this page.
 
 ## Choose and apply an appearance
 
