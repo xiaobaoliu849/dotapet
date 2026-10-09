@@ -36,6 +36,20 @@ h2 span { font-size: 17px; color: var(--ink); }
 input[type=range] { width: 100%; min-height: 24px; cursor: pointer; }
 input[type=color] { width: 100%; height: 44px; border: 1px solid var(--control-border); border-radius: var(--control-radius); padding: 3px; background: var(--control); }
 output { float: right; font-weight: 400; color: var(--muted); }
+.chip-group { border: 0; padding: 0; margin: 0 0 14px; min-width: 0; }
+.chip-group legend { padding: 0; margin: 4px 0 9px; font-weight: 600; font-size: var(--control-size); }
+.chip-group legend small { margin-left: 8px; font-weight: 400; font-size: var(--caption-size); color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+/* A radio under a pill: the whole pill is the hit target, focus shows on the pill. */
+.chip { position: relative; display: inline-flex; align-items: center; gap: 8px; min-height: 40px; margin: 0; padding: 6px 14px 6px 8px; border: 1px solid var(--control-border); border-radius: 999px; background: var(--control); font-weight: 400; cursor: pointer; }
+.chip:hover { background: var(--control-hover); }
+.chip input[type=radio] { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; }
+.chip:has(input[type=radio]:checked) { border-color: var(--green); background: var(--green-soft); color: var(--green); font-weight: 600; }
+.chip:has(input[type=radio]:focus-visible) { outline: 2px solid var(--green); outline-offset: 2px; }
+.swatch { flex: none; width: 24px; height: 24px; border-radius: 50%; border: 1px solid #0000002e; background: linear-gradient(135deg, #f7a8b8, #ffd166 35%, #7cc6f2 70%, #8fd19e); }
+.chip input[type=color] { position: relative; z-index: 1; flex: none; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 50%; background: none; cursor: pointer; }
+.chip input[type=color]::-webkit-color-swatch-wrapper { padding: 0; }
+.chip input[type=color]::-webkit-color-swatch { border: 1px solid #0000002e; border-radius: 50%; }
 .section-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 10px; }
 .section-heading h2 { margin: 0; }
 .favorite-filter { font-size: var(--caption-size); font-weight: 400; margin: 0; white-space: nowrap; }

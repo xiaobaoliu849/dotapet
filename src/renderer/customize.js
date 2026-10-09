@@ -86,16 +86,34 @@ function renderSources() {
   const bg = $('background-asset'); bg.replaceChildren(); option(bg, '', '请选择图片');
   for (const asset of data.assets) option(bg, asset.id, asset.name);
   bg.value = draft.background.assetId || '';
-  const theme = $('theme'); theme.replaceChildren(); option(theme, 'default', '角色默认色'); option(theme, 'custom', '自选主题色');
-  for (const look of character()?.options || []) if (look.kind === 'theme' && look.themeColor) option(theme, look.id, `${look.name} · 仅主题色`);
-  theme.value = draft.accent ? 'custom' : 'default';
+  renderAccents();
+}
+/** A radio styled as a chip; the swatch shows what picking it looks like. */
+function chip(name, value, text, swatch) {
+  const label = document.createElement('label'); label.className = 'chip';
+  const radio = document.createElement('input'); radio.type = 'radio'; radio.name = name; radio.value = value;
+  const dot = document.createElement('span'); dot.className = 'swatch'; Object.assign(dot.style, swatch);
+  label.append(radio, dot, text);
+  return label;
+}
+const defaultAccent = () => character()?.themeColor || '#f59e0b';
+const accentLooks = () => (character()?.options || []).filter(look => look.kind === 'theme' && /^#[0-9a-f]{6}$/i.test(look.themeColor || ''));
+/** Character default, the character's color-only looks, then a free pick. */
+function renderAccents() {
+  const looks = accentLooks();
+  $('accent-choices').replaceChildren(chip('accent', 'default', '角色默认', { background: defaultAccent() }),
+    ...looks.map(look => chip('accent', look.id, look.name, { background: look.themeColor })), $('accent-custom'));
+  const accent = draft.accent?.toLowerCase();
+  const choice = !accent ? 'default' : looks.find(look => look.themeColor.toLowerCase() === accent)?.id || 'custom';
+  for (const radio of $('accent-choices').querySelectorAll('input[type=radio]')) radio.checked = radio.value === choice;
 }
 function fillControls() {
   renderSources();
   const a = draft.appearance, b = draft.background;
-  $('appearance-style').value = a.style; $('appearance-fit').value = a.fit;
+  for (const radio of $('appearance-style').querySelectorAll('input')) radio.checked = radio.value === a.style;
+  $('appearance-fit').value = a.fit;
   $('appearance-scale').value = a.scale * 100; $('appearance-x').value = a.x; $('appearance-y').value = a.y;
-  $('accent').value = draft.accent || character()?.themeColor || '#f59e0b';
+  $('accent').value = draft.accent || defaultAccent();
   for (const field of ['mode', 'scope', 'color', 'fit']) $(`background-${field}`).value = b[field];
   $('background-opacity').value = b.opacity * 100; $('background-dim').value = b.dim * 100;
   renderPreview(); draftStatus();
@@ -109,9 +127,9 @@ function renderPreview() {
   applyBackground($('preview-background'), draft, data.assets);
   $('preview-status').textContent = { idle: '待命', speaking: '说话', action: '互动' }[previewState];
   const asset = data.assets.find(a => a.id === draft.appearance.assetId);
-  $('appearance-note').textContent = asset ? asset.animated ? '动图形象：使用图片本身的动画；不同状态共用此文件。' : '静态形象：待命、说话和互动共用这张图片。' : '内置形象：预览不同状态。色彩风格只调整颜色。';
+  $('appearance-note').textContent = asset ? asset.animated ? '动图形象：使用图片本身的动画；不同状态共用此文件。' : '静态形象：待命、说话和互动共用这张图片。' : '内置形象：可以预览不同状态。';
   $('background-note').textContent = draft.background.scope === 'panel' ? '背景只显示在自定义面板；桌面伙伴保持透明。' : '应用后，背景会出现在桌面伙伴的场景中。';
-  $('preview-status').style.border = `2px solid ${draft.accent || character().themeColor || '#f59e0b'}`;
+  $('preview-status').style.border = `2px solid ${draft.accent || defaultAccent()}`;
   $('scale-value').textContent = `${Math.round(draft.appearance.scale * 100)}%`;
   $('opacity-value').textContent = `${Math.round(draft.background.opacity * 100)}%`;
   $('dim-value').textContent = `${Math.round(draft.background.dim * 100)}%`;
@@ -175,14 +193,25 @@ async function importFile(file) {
   $('image-file').value = '';
 }
 
-for (const [id, style] of Object.entries(APPEARANCE_STYLES)) option($('appearance-style'), id, style.name);
+// Each swatch is the same rainbow seen through that style's filter.
+for (const [id, style] of Object.entries(APPEARANCE_STYLES)) $('appearance-style').append(chip('appearance-style', id, style.name, { filter: style.filter }));
+$('appearance-style').addEventListener('change', event => edit(() => { draft.appearance.style = event.target.value; }));
 $('character').addEventListener('change', () => { drafts.set(key, structuredClone(draft)); key = $('character').value; draft = normalizeProfile(drafts.get(key) || data.profiles[key]); fillControls(); message(''); });
 $('appearance-source').addEventListener('change', () => edit(() => { const value = $('appearance-source').value; draft.appearance.assetId = value.startsWith('asset_') ? value : null; draft.appearance.builtinId = value.startsWith('builtin:') ? value.slice(8) : null; }));
-for (const [control, field, numeric] of [['appearance-style','style'],['appearance-fit','fit'],['appearance-scale','scale',100],['appearance-x','x',1],['appearance-y','y',1]]) {
+for (const [control, field, numeric] of [['appearance-fit','fit'],['appearance-scale','scale',100],['appearance-x','x',1],['appearance-y','y',1]]) {
   $(control).addEventListener('input', () => edit(() => { draft.appearance[field] = numeric ? Number($(control).value) / numeric : $(control).value; }));
 }
-$('theme').addEventListener('change', () => edit(() => { const choice = $('theme').value; draft.accent = choice === 'default' ? null : choice === 'custom' ? $('accent').value : character().options.find(look => look.id === choice)?.themeColor; $('accent').value = draft.accent || character().themeColor || '#f59e0b'; }));
-$('accent').addEventListener('input', () => edit(() => { draft.accent = $('accent').value; $('theme').value = 'custom'; }));
+$('accent-choices').addEventListener('change', event => {
+  if (event.target.type !== 'radio') return;
+  const choice = event.target.value;
+  edit(() => { draft.accent = choice === 'default' ? null : choice === 'custom' ? $('accent').value : accentLooks().find(look => look.id === choice)?.themeColor || null; });
+  // The 自选 swatch always shows the current color, so choosing it changes nothing until a new pick.
+  $('accent').value = draft.accent || defaultAccent();
+});
+// Opening the picker is choosing 自选, even if the color shown is kept.
+const chooseCustomAccent = () => { $('accent-custom').querySelector('input[type=radio]').checked = true; edit(() => { draft.accent = $('accent').value; }); };
+$('accent').addEventListener('click', chooseCustomAccent);
+$('accent').addEventListener('input', chooseCustomAccent);
 // The editor scrolls under the fixed header, whose height changes as the window narrows.
 new ResizeObserver(([entry]) => document.documentElement.style.setProperty('--header-height', `${Math.ceil(entry.borderBoxSize[0].blockSize)}px`)).observe(document.querySelector('header'));
 addEventListener('scroll', () => { document.body.dataset.scrolled = String(scrollY > 0); }, { passive: true });

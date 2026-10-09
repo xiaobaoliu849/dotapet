@@ -34,9 +34,8 @@
     <div class="settings">
       <section>
         <h2>01 <span>伙伴形象</span></h2>
-        <label for="appearance-source">图片或内置形象</label><select id="appearance-source"></select>
         <div class="two-columns">
-          <div><label for="appearance-style">色彩风格</label><select id="appearance-style"></select></div>
+          <div><label for="appearance-source">图片或内置形象</label><select id="appearance-source"></select></div>
           <div><label for="appearance-fit">图片显示</label><select id="appearance-fit"><option value="contain">完整显示</option><option value="cover">裁剪填满</option></select></div>
         </div>
         <label for="appearance-scale">大小 <output id="scale-value">100%</output></label><input id="appearance-scale" type="range" min="50" max="160" value="100">
@@ -44,14 +43,17 @@
           <div><label for="appearance-x">水平位置</label><input id="appearance-x" type="range" min="0" max="100" value="50"></div>
           <div><label for="appearance-y">垂直位置</label><input id="appearance-y" type="range" min="0" max="100" value="50"></div>
         </div>
-        <div class="two-columns accent-controls">
-          <div><label for="theme">界面主题色</label><select id="theme"><option value="default">角色默认色</option></select></div>
-          <div><label for="accent">自选主题色</label><input id="accent" type="color" value="#f59e0b"></div>
-        </div>
-        <p class="help">主题色改变界面点缀。没有独立立绘的饰品只作为主题色提供。</p>
       </section>
       <section>
-        <h2>02 <span>背景</span></h2>
+        <h2>02 <span>颜色</span></h2>
+        <fieldset class="chip-group"><legend>伙伴色调 <small>改变伙伴图片本身的颜色</small></legend><div id="appearance-style" class="chips"></div></fieldset>
+        <fieldset class="chip-group"><legend>点缀色 <small>状态标签和语音光圈的边框</small></legend>
+          <div id="accent-choices" class="chips"><label id="accent-custom" class="chip"><input type="radio" name="accent" value="custom"><input id="accent" type="color" value="#f59e0b" aria-label="选择自选点缀色">自选</label></div>
+        </fieldset>
+        <p class="help">背景颜色在下方「背景」里设置。没有独立立绘的饰品只提供点缀色。</p>
+      </section>
+      <section>
+        <h2>03 <span>背景</span></h2>
         <div class="two-columns">
           <div><label for="background-mode">背景类型</label><select id="background-mode"><option value="transparent">透明</option><option value="color">纯色</option><option value="image">图片</option></select></div>
           <div><label for="background-scope">显示位置</label><select id="background-scope"><option value="panel">只在自定义面板</option><option value="scene">桌面伙伴场景</option></select></div>
@@ -67,7 +69,7 @@
         </div>
       </section>
       <section id="library-section">
-        <div class="section-heading"><h2>03 <span>我的图片</span></h2><label class="favorite-filter"><input id="favorites-only" type="checkbox">仅收藏</label></div>
+        <div class="section-heading"><h2>04 <span>我的图片</span></h2><label class="favorite-filter"><input id="favorites-only" type="checkbox">仅收藏</label></div>
         <div id="dropzone" class="dropzone">
           <span>拖入图片，或选择文件</span>
           <div class="import-actions"><button id="import-appearance">导入为伙伴形象</button><button id="import-background">导入为背景</button></div>
@@ -79,7 +81,7 @@
         <div id="asset-library" class="asset-library"></div>
       </section>
       <section>
-        <div class="section-heading"><h2>04 <span>可复用预设</span></h2><button id="import-preset" class="quiet">导入预设</button></div>
+        <div class="section-heading"><h2>05 <span>可复用预设</span></h2><button id="import-preset" class="quiet">导入预设</button></div>
         <div class="preset-save"><input id="preset-name" maxlength="80" placeholder="预设名称，例如：月光小伙伴" aria-label="预设名称"><button id="save-preset">保存当前搭配</button></div>
         <p class="help">预设可用于其他英雄和宠物。导出的文件包含图片，不包含语音密钥。</p>
         <div id="preset-list"></div>

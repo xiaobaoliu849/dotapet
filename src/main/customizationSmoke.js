@@ -42,7 +42,11 @@ export async function runCustomizationSmoke({ controller, controlCenter, mainWin
     get('character').value='pet:aurora_wolf'; get('character').dispatchEvent(new Event('change'));
     await waitFor(()=>Array.from(get('appearance-source').options).some(o=>o.value===assetId));
     get('appearance-source').value=assetId; get('appearance-source').dispatchEvent(new Event('change'));
-    get('appearance-style').value='warm'; get('appearance-style').dispatchEvent(new Event('input'));
+    document.querySelector('#appearance-style input[value=warm]').click();
+    if (!document.querySelector('#accent-choices input[value=default]').checked) throw new Error('Accent does not start on the character default');
+    get('accent').value='#3366ff'; get('accent').dispatchEvent(new Event('input'));
+    if (!document.querySelector('#accent-choices input[value=custom]').checked) throw new Error('Picking a color does not select the custom accent');
+    document.querySelector('#accent-choices input[value=default]').click();
     get('appearance-scale').value='120'; get('appearance-scale').dispatchEvent(new Event('input'));
     get('appearance-x').value='35'; get('appearance-x').dispatchEvent(new Event('input'));
     get('background-mode').value='color'; get('background-mode').dispatchEvent(new Event('input'));
