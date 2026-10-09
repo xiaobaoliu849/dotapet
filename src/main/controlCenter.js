@@ -50,6 +50,10 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
   function publishState() {
     if (alive() && !window.webContents.isDestroyed()) window.webContents.send('hub:state', state());
   }
+  /** The pages are placed beside a folded sidebar at once; the shell must not paint a wide one first. */
+  function loadShell() {
+    window.loadFile(path.join(rendererDirectory, 'control-center.html'), collapsed ? { query: { sidebar: 'collapsed' } } : undefined);
+  }
   function stopSlide() { clearTimeout(slide?.fallback); slide = null; }
   function layout(changed = false) {
     if (!alive()) return;
@@ -194,8 +198,7 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
     });
     // A newer window may already be open; then it owns the closing duties.
     created.on('closed', () => { if (!window) onClosed(); });
-    // The pages are placed beside a folded sidebar at once; the shell must not paint a wide one first.
-    created.loadFile(path.join(rendererDirectory, 'control-center.html'), collapsed ? { query: { sidebar: 'collapsed' } } : undefined);
+    loadShell();
   }
 
   /** Open on a page, or on the page last shown when none is named. */
@@ -244,7 +247,8 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
     if (!trustedShell(event) || !onLanguageChange(choice)) return { ok: false };
     setImmediate(() => {
       if (!alive()) return;
-      window.webContents.reload();
+      // Loaded afresh rather than reloaded: the fold may have changed since the window opened.
+      loadShell();
       for (const view of views.values()) if (!view.webContents.isDestroyed()) view.webContents.reload();
     });
     return { ok: true };

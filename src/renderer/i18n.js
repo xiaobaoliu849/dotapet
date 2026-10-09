@@ -15,19 +15,26 @@
   const ATTRIBUTES = ['placeholder', 'title', 'aria-label', 'alt', 'label'];
   const escape = text => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   // '已导入 {0} 个密钥' becomes /^已导入 (.+?) 个密钥$/, its parts filled back into the translation.
+  // A part in quotes ("{0}", “{0}”, 「{0}」) is the user's own text, such as a copied phrase, and is kept as is.
   const templates = Object.keys(strings).filter(key => /\{\d\}/.test(key)).map(key => {
     const order = [...key.matchAll(/\{(\d)\}/g)].map(match => Number(match[1]));
-    return { order, pattern: new RegExp(`^${key.split(/\{\d\}/).map(escape).join('([\\s\\S]*?)')}$`), translation: strings[key] };
-  });
+    const verbatim = new Set([...key.matchAll(/["“「]\{(\d)\}["”」]/g)].map(match => Number(match[1])));
+    const literal = key.replace(/\{\d\}/g, '').length;
+    return { order, verbatim, literal, pattern: new RegExp(`^${key.split(/\{\d\}/).map(escape).join('([\\s\\S]*?)')}$`), translation: strings[key] };
+  // The most specific template wins, whatever the dictionary's order: '已换上{0}，外观已应用。' before '已换上{0}。'.
+  }).sort((a, b) => b.literal - a.literal);
   function lookup(text) {
     if (Object.hasOwn(strings, text)) return strings[text];
-    for (const { order, pattern, translation } of templates) {
+    for (const { order, verbatim, pattern, translation } of templates) {
       const match = pattern.exec(text);
       if (!match) continue;
       const values = [];
       order.forEach((index, position) => { values[index] = match[position + 1]; });
-      // The parts may be translatable themselves, such as a provider name or an error from main.
-      return translation.replace(/\{(\d)\}/g, (_, index) => { const part = values[index] ?? ''; return lookup(part) ?? part; });
+      // Other parts may be translatable themselves, such as a provider name or an error from main.
+      return translation.replace(/\{(\d)\}/g, (_, index) => {
+        const part = values[index] ?? '';
+        return verbatim.has(Number(index)) ? part : lookup(part) ?? part;
+      });
     }
     return null;
   }

@@ -451,5 +451,10 @@
  "月光蓝": "Moonlight blue",
  "暖金色": "Warm gold",
  "黑白": "Black & white",
- "。": "."
+ "。": ".",
+ "动图": "Animated",
+ "主动导入已有配置（文件只在本机读取）": "Import existing settings (the file is read only on this computer)",
+ "JSON 配置": "JSON settings",
+ "配置文件过大，请选择小于 1 MB 的 JSON 文件。": "The settings file is too large. Choose a JSON file under 1 MB.",
+ "导入文件不是有效的 JSON 配置。": "The file isn't a valid JSON settings file."
 }

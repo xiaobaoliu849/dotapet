@@ -2,7 +2,7 @@
 
 The settings center (all its pages) and the F6 Quick Phrases panel are available in Chinese, English, Russian and Ukrainian. The Russian and Ukrainian texts are machine-drafted and reviewed for layout; a native speaker should check them before a release. The pet's own toolbar, menus and tray are still Chinese.
 
-**Choosing a language:** 设置中心 → 快捷键与帮助 → 🌐 界面语言. The default, 跟随系统 / Match Windows, uses the first Windows display language DotaPet has, and English when it has none. Switching reloads the settings center.
+**Choosing a language:** the 🌐 menu at the right of the settings center's title bar, on every page. The default, 跟随系统 / Match Windows, uses the first Windows display language DotaPet has, and English when it has none. Switching reloads the settings center.
 
 ## How it works
 

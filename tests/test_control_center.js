@@ -118,7 +118,7 @@ test('the shell changes the language, and the window reloads in it', async () =>
   hub.register('services', services());
   hub.open();
   const reloads = [];
-  windows[0].webContents.reload = () => reloads.push('shell');
+  windows[0].loadFile = (file, options) => reloads.push(`shell${options?.query?.sidebar ? ' folded' : ''}`);
   view('services').webContents.reload = () => reloads.push('services');
   const setLanguage = handlers.get('hub:set-language');
   const page = { sender: view('services').webContents, senderFrame: view('services').webContents.mainFrame };
@@ -128,6 +128,12 @@ test('the shell changes the language, and the window reloads in it', async () =>
   assert.deepEqual(chosen, ['bogus', 'en']);
   await tick();
   assert.deepEqual(reloads, ['shell', 'services']);
+  // Folded since the window opened: the shell comes back folded, not as it first opened.
+  await handlers.get('hub:set-sidebar-collapsed')(shell(), true);
+  reloads.length = 0;
+  await setLanguage(shell(), 'ru');
+  await tick();
+  assert.deepEqual(reloads, ['shell folded', 'services']);
 });
 
 test('a remembered collapsed sidebar is used from the first layout', () => {

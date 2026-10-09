@@ -37,7 +37,8 @@ const __dirname = path.dirname(__filename);
 let languageChoice = 'system';
 function currentLanguage() {
   if (smokeTest) return resolveLanguage(process.argv.find(value => value.startsWith('--lang='))?.slice(7) || 'zh');
-  return resolveLanguage(languageChoice, app.getPreferredSystemLanguages?.() || [app.getLocale?.()]);
+  const system = app.getPreferredSystemLanguages?.() || [];
+  return resolveLanguage(languageChoice, system.length ? system : [app.getLocale?.()]);
 }
 /** For text main shows itself, such as a file dialog's title. */
 const t = (text, ...values) => translate(loadStrings(currentLanguage()), text, ...values);
@@ -1491,7 +1492,7 @@ function setupIPC() {
   }));
   ipcMain.handle('ai:import-config', settingsHandler(async () => {
     const selected = await dialog.showOpenDialog(controlCenter.window || mainWindow, {
-      title: '主动导入已有配置（文件只在本机读取）', properties: ['openFile'], filters: [{ name: 'JSON 配置', extensions: ['json'] }],
+      title: t('主动导入已有配置（文件只在本机读取）'), properties: ['openFile'], filters: [{ name: t('JSON 配置'), extensions: ['json'] }],
     });
     if (selected.canceled) return { cancelled: true };
     const file = selected.filePaths[0];
@@ -1821,7 +1822,7 @@ if (app?.whenReady) {  app.whenReady().then(() => {
         if (!LANGUAGE_CHOICES.includes(choice)) return false;
         languageChoice = choice;
         saveSettings({ language: choice });
-        if (phrasesWindow && !phrasesWindow.isDestroyed()) phrasesWindow.webContents.reload();
+        // The F6 panel keeps any unsaved rows; it opens in the new language next time.
         return true;
       } });
     controlCenter.register('services', { file: 'ai-settings.html', preload: '../preload/ai-settings.js', background: '#f6f7f2', backgroundThrottling: false,
@@ -1867,7 +1868,7 @@ if (app?.whenReady) {  app.whenReady().then(() => {
     // Load the CJS updater only in a real session; isolated smoke tests never dial out.
     import('electron-updater').then(({ default: electronUpdater }) => {
       updateService = new UpdateService({ updater: electronUpdater.autoUpdater, currentVersion: app.getVersion(), enabled: app.isPackaged && process.platform === 'win32' });
-      updateController = createUpdateController({ electron, service: updateService, rendererDirectory: path.join(__dirname, '../renderer'), hub: controlCenter, icon: appIcon, onState: updateTrayMenu });
+      updateController = createUpdateController({ electron, service: updateService, rendererDirectory: path.join(__dirname, '../renderer'), hub: controlCenter, icon: appIcon, onState: updateTrayMenu, t });
       updateService.start();
       updateTrayMenu();
     }).catch(error => console.warn('[Updates] Could not initialize updater:', error.message));

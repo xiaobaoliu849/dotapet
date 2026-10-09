@@ -17,7 +17,12 @@ body { overflow: hidden; background: var(--canvas); }
 body[data-compact='true'] .sidebar-toggle .chevron { transform: rotate(180deg); }
 .sidebar-toggle[aria-disabled='true'] { opacity: .5; cursor: default; }
 .sidebar-toggle[aria-disabled='true']:hover { background: transparent; color: var(--muted); }
-.chrome-caption { color: var(--muted); font-weight: 400; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chrome-caption { min-width: 0; color: var(--muted); font-weight: 400; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Language sits in the title bar, on every page, just left of the window buttons: findable in any language. */
+.chrome-language { flex: none; display: flex; align-items: center; gap: 2px; margin-left: auto; padding-left: 6px; border-radius: 8px; color: var(--muted); font-size: 14px; -webkit-app-region: no-drag; }
+.chrome-language:hover, .chrome-language:focus-within { background: #e3e9dd; color: var(--ink); }
+.chrome-language select { min-height: 0; height: 30px; padding: 0 6px; border: 0; background: transparent; color: inherit; font-size: 12px; font-weight: 400; cursor: pointer; }
+.chrome-language select:focus-visible { outline: 2px solid var(--green); outline-offset: 1px; border-radius: 6px; }
 
 /* Sidebar */
 .sidebar { position: fixed; top: var(--top); bottom: 0; left: 0; width: var(--sidebar); display: flex; flex-direction: column; gap: 4px; padding: 10px; background: var(--rail); border-right: 1px solid var(--line); overflow: hidden auto; }
@@ -50,7 +55,6 @@ h2 { margin: 0 0 6px; font-size: 17px; font-weight: 650; }
 .card { border: 1px solid var(--line); border-radius: var(--card-radius); padding: 18px 20px; background: var(--surface); box-shadow: 0 1px 2px #2f3a3208; }
 .card + .card { margin-top: 14px; }
 .hint { font-size: 13px; line-height: 1.7; color: var(--muted); margin: 8px 0 0; }
-.language-select { min-width: 220px; min-height: 40px; margin-top: 6px; padding: 7px 10px; border: 1px solid var(--control-border); border-radius: var(--control-radius); background: var(--control); color: var(--ink); }
 /* Two columns only when each description fits on one line. */
 .shortcut-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 10px 24px; margin: 12px 0 4px; }
 .shortcut-list div { display: flex; align-items: center; gap: 12px; }

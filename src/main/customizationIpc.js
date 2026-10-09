@@ -49,7 +49,7 @@ export function createCustomizationController({ electron, rendererDirectory, hub
       sprites: sprites(hero.sprites || { idle: hero.photoUrl }),
       // Generated catalog placeholders have neither bespoke artwork nor a specific identity.
       options: Object.values(hero.skins || {}).filter(skin => skin.id !== 'classic' && !/_(immortal_masterpiece|collectors_cache|ti_championship_set)$/.test(skin.id)).map(skin => ({
-        id: skin.id, name: named(skin.nameZh, skin.name) || skin.id, kind: classifySkin(hero, skin),
+        id: skin.id, name: named(skin.nameZh, skin.nameEn || skin.name) || skin.id, kind: classifySkin(hero, skin),
         themeColor: skin.themeColor || hero.themeColor, sprites: sprites(skin.sprites),
       })),
     }));
