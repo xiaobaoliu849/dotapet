@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { isTrustedSettingsSender } from './aiSettingsIpc.js';
-import { RELEASES_URL } from './updateService.js';
+import { RELEASES_URL, REPOSITORY_URL } from './updateService.js';
 
 /** The updater is the settings center's 关于与更新 page; `hub` hosts it. */
 export function createUpdateController({ electron, service, rendererDirectory, hub, icon, onState = () => {}, smokeTest = false, t = (text, ...values) => text.replace(/\{(\d)\}/g, (_, index) => values[index]) }) {
@@ -37,8 +37,8 @@ export function createUpdateController({ electron, service, rendererDirectory, h
     if (action === 'check') void service.check();
     else if (action === 'install') void service.updateAndRestart();
     else if (action === 'postpone') service.postpone();
-    else if (action === 'releases') {
-      try { await shell.openExternal(RELEASES_URL); } catch { return { ok: false }; }
+    else if (action === 'releases' || action === 'github') {
+      try { await shell.openExternal(action === 'github' ? REPOSITORY_URL : RELEASES_URL); } catch { return { ok: false }; }
     } else return { ok: false };
     return { ok: true, state: service.snapshot() };
   });

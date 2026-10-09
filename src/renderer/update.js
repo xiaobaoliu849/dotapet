@@ -37,5 +37,8 @@ async function action(name) {
 $('primary').addEventListener('click', () => action(['available', 'ready'].includes(state.phase) ? 'install' : state.phase === 'disabled' ? 'releases' : 'check'));
 $('postpone').addEventListener('click', () => action('postpone'));
 $('releases').addEventListener('click', () => action('releases'));
+$('github').addEventListener('click', () => action('github'));
+// The QR is the last thing on the page; bring it into view when opened.
+$('sponsor').addEventListener('toggle', event => { if (event.target.open) event.target.scrollIntoView({ block: 'end', behavior: 'smooth' }); });
 window.petUpdates.onState(render);
 action('state');
