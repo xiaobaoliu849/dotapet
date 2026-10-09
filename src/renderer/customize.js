@@ -130,6 +130,7 @@ function renderPreview() {
   const asset = data.assets.find(a => a.id === draft.appearance.assetId);
   $('appearance-note').textContent = asset ? asset.animated ? '动图形象：使用图片本身的动画；不同状态共用此文件。' : '静态形象：待命、说话和互动共用这张图片。' : '内置形象：可以预览不同状态。';
   $('background-note').textContent = draft.background.scope === 'panel' ? '背景只显示在自定义面板；桌面伙伴保持透明。' : '应用后，背景会出现在桌面伙伴的场景中。';
+  fitColumn();
   $('preview-status').style.border = `2px solid ${draft.accent || defaultAccent()}`;
   $('scale-value').textContent = `${Math.round(draft.appearance.scale * 100)}%`;
   $('opacity-value').textContent = `${Math.round(draft.background.opacity * 100)}%`;
@@ -213,6 +214,19 @@ $('accent-choices').addEventListener('change', event => {
 const chooseCustomAccent = () => { $('accent-custom').querySelector('input[type=radio]').checked = true; edit(() => { draft.accent = $('accent').value; }); };
 $('accent').addEventListener('click', chooseCustomAccent);
 $('accent').addEventListener('input', chooseCustomAccent);
+/**
+ * The character column never scrolls inside itself. The preview shrinks first (CSS); if the column
+ * still cannot fit, in a short window or a longer language, its two notes step aside until there is room.
+ */
+function fitColumn() {
+  const column = document.querySelector('aside');
+  column.dataset.tight = 'false';
+  if (column.scrollHeight > column.clientHeight) column.dataset.tight = 'true';
+}
+// Refit when the window changes, and when the column's own content does: a note's text is
+// translated, or a longer one written, after renderPreview has already fitted it.
+const columnWatch = new ResizeObserver(() => fitColumn());
+for (const element of [$('editor'), ...document.querySelectorAll('aside > *')]) columnWatch.observe(element);
 // Only the settings column scrolls (the whole editor in one-column windows); the page never does.
 const settingsColumn = document.querySelector('.settings'), editorArea = $('editor');
 // Matches customize.css's one-column breakpoint.

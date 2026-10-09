@@ -32,6 +32,8 @@ export async function runLanguageSmoke({ controlCenter, openPanel, nativeImage, 
     for (const text of found) problems.push(`${label}: ${text}`);
   };
   controlCenter.open('services');
+  // The window a 1024×768 screen allows (as on CI), so a local run fails exactly where CI does.
+  controlCenter.window.setSize(1024, 728);
   await pageLoaded(controlCenter.window.webContents);
   // The shell's own script must be running before its sidebar can be clicked.
   await controlCenter.window.webContents.executeJavaScript(`new Promise(resolve => document.readyState === 'complete' ? resolve() : addEventListener('load', resolve))`);
@@ -41,7 +43,8 @@ export async function runLanguageSmoke({ controlCenter, openPanel, nativeImage, 
     if (contents) { await pageLoaded(contents); await check(page, contents); }
     // Longer words must not break the layout: the character column never scrolls inside itself.
     if (page === 'appearance' && await contents.executeJavaScript(`(() => { const column = document.querySelector('aside'); return column.scrollHeight > column.clientHeight || column.scrollWidth > column.clientWidth; })()`)) {
-      problems.push('appearance: the character column overflows');
+      const [width, height] = await contents.executeJavaScript(`(() => { const column = document.querySelector('aside'); return [column.scrollWidth + '/' + column.clientWidth, column.scrollHeight + '/' + column.clientHeight]; })()`);
+      problems.push(`appearance: the character column overflows (content/room: width ${width}, height ${height})`);
     }
     fs.writeFileSync(path.join(outputDirectory, `language-${page}.png`), (await captureHub(controlCenter, nativeImage)).toPNG());
   }
@@ -50,5 +53,5 @@ export async function runLanguageSmoke({ controlCenter, openPanel, nativeImage, 
   await pageLoaded(panel.webContents);
   await check('F6 panel', panel.webContents);
   fs.writeFileSync(path.join(outputDirectory, 'language-f6.png'), (await panel.webContents.capturePage()).toPNG());
-  if (problems.length) throw new Error(`Untranslated text in ${language}:\n  ${problems.join('\n  ')}`);
+  if (problems.length) throw new Error(`Language check failed in ${language}:\n  ${problems.join('\n  ')}`);
 }
