@@ -723,6 +723,30 @@ function saveGsiSettings(newSettings) {
   }
 }
 
+function loadSettingsValue(key) {
+  try {
+    const sPath = getSettingsPath();
+    return fs.existsSync(sPath) ? JSON.parse(fs.readFileSync(sPath, 'utf8'))?.[key] : undefined;
+  } catch (e) {
+    console.error(`[Settings] Failed to load ${key}:`, e);
+    return undefined;
+  }
+}
+
+// An unreadable file is left alone: rewriting it would drop every other setting.
+function saveSettingsValue(key, value) {
+  try {
+    const sPath = getSettingsPath();
+    const data = fs.existsSync(sPath) ? JSON.parse(fs.readFileSync(sPath, 'utf8')) : {};
+    if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('settings file is not an object');
+    data[key] = value;
+    data.updatedAt = new Date().toISOString();
+    fs.writeFileSync(sPath, JSON.stringify(data, null, 2), 'utf8');
+  } catch (e) {
+    console.error(`[Settings] Failed to save ${key}:`, e);
+  }
+}
+
 function saveTranslateTargetLanguage(langCode) {
   try {
     const sPath = getSettingsPath();
@@ -1828,7 +1852,9 @@ if (app?.whenReady) {  app.whenReady().then(() => {
     loadTranslateTargetLanguage();
     // Created before anything that can ask for settings (pet window, tray, IPC).
     controlCenter = createControlCenter({ electron, rendererDirectory: path.join(__dirname, '../renderer'), icon: appIcon, smokeTest,
-      onClosed: onSettingsCenterClosed, onFocusChange: onSettingsFocusChange });
+      onClosed: onSettingsCenterClosed, onFocusChange: onSettingsFocusChange,
+      sidebarCollapsed: loadSettingsValue('settingsSidebarCollapsed') === true,
+      onSidebarCollapsedChange: collapsed => saveSettingsValue('settingsSidebarCollapsed', collapsed) });
     controlCenter.register('services', { file: 'ai-settings.html', preload: '../preload/ai-settings.js', background: '#f6f7f2', backgroundThrottling: false,
       onHide: contents => contents.send('settings:hidden') });
     // The same editor as the F6 panel, drawn in the settings center's light style.

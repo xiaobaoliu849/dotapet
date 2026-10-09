@@ -1,5 +1,5 @@
 :root {
-  /* Main sends the real widths; these match its defaults until it does. */
+  /* Main sends the real widths; these match an unfolded wide window until it does. */
   --top: 40px; --sidebar: 196px; }
 * { box-sizing: border-box; }
 html, body { height: 100%; }
@@ -23,10 +23,18 @@ button { font: inherit; cursor: pointer; }
 .nav-label { font-size: 14px; font-weight: 600; white-space: nowrap; }
 .nav-hint { font-size: 12px; color: var(--faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .nav-item[aria-current='page'] .nav-hint { color: var(--muted); }
+/* Folding is a preference, not a page: smaller and quieter than the entries below it. */
+.sidebar-toggle { display: flex; align-items: center; gap: 11px; width: 100%; min-height: 36px; margin-bottom: 4px; padding: 6px 11px; border: 0; border-radius: 10px; background: transparent; color: var(--muted); text-align: left; }
+.sidebar-toggle:hover { background: #e3e9dd; color: var(--ink); }
+.sidebar-toggle svg { flex: 0 0 22px; width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.sidebar-toggle .nav-label { font-size: 13px; font-weight: 400; }
+body[data-compact='true'] .sidebar-toggle .chevron { transform: rotate(180deg); transform-origin: 12px 10px; }
+.sidebar-toggle[aria-disabled='true'] { opacity: .5; cursor: default; }
+.sidebar-toggle[aria-disabled='true']:hover { background: transparent; color: var(--muted); }
 /* Updates are occasional: keep them out of the way at the bottom. */
 .nav-item[data-page='update'] { margin-top: auto; }
 body[data-compact='true'] .sidebar { padding: 10px 8px; align-items: center; }
-body[data-compact='true'] .nav-item { justify-content: center; width: 46px; height: 44px; padding: 0; }
+body[data-compact='true'] .nav-item, body[data-compact='true'] .sidebar-toggle { justify-content: center; width: 46px; height: 44px; padding: 0; }
 body[data-compact='true'] .nav-text { display: none; }
 body[data-compact='true'] .nav-item[aria-current='page'] { box-shadow: 0 1px 3px #2f3a3214; }
 

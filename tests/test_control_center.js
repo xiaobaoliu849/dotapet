@@ -25,7 +25,7 @@ class View {
   setVisible(visible) { this.visible = visible; }
 }
 
-function fixture() {
+function fixture(options = {}) {
   const windows = [], handlers = new Map(), calls = { closed: 0, focus: [] };
   class Window extends EventEmitter {
     constructor(options) {
@@ -50,7 +50,7 @@ function fixture() {
     ipcMain: { handle: (name, handler) => handlers.set(name, handler) },
   };
   const hub = createControlCenter({ electron, rendererDirectory, smokeTest: true,
-    onClosed: () => calls.closed++, onFocusChange: focused => calls.focus.push(focused) });
+    onClosed: () => calls.closed++, onFocusChange: focused => calls.focus.push(focused), ...options });
   const shell = () => ({ sender: windows.at(-1).webContents, senderFrame: windows.at(-1).webContents.mainFrame });
   const view = id => windows.at(-1).children.find(child => child.webContents === hub.contents(id));
   return { hub, windows, handlers, calls, shell, view };
@@ -59,9 +59,39 @@ const services = (log = []) => ({ file: 'ai-settings.html', preload: '../preload
   onShow: contents => log.push(['show', contents.file]), onHide: contents => log.push(['hide', contents.file]) });
 
 test('layout gives the page everything beside the sidebar and compacts narrow windows', () => {
-  assert.deepEqual(hubLayout(1060, 820), { compact: false, sidebar: 196, content: { x: 196, y: HUB_TOP, width: 864, height: 820 - HUB_TOP } });
+  assert.deepEqual(hubLayout(1060, 820), { compact: false, narrow: false, sidebar: 196, content: { x: 196, y: HUB_TOP, width: 864, height: 820 - HUB_TOP } });
   assert.equal(hubLayout(760, 640).compact, false);
-  assert.deepEqual(hubLayout(759, 640), { compact: true, sidebar: 64, content: { x: 64, y: HUB_TOP, width: 695, height: 640 - HUB_TOP } });
+  assert.deepEqual(hubLayout(759, 640), { compact: true, narrow: true, sidebar: 64, content: { x: 64, y: HUB_TOP, width: 695, height: 640 - HUB_TOP } });
+  assert.deepEqual(hubLayout(1060, 820, true), { compact: true, narrow: false, sidebar: 64, content: { x: 64, y: HUB_TOP, width: 996, height: 820 - HUB_TOP } });
+});
+
+test('the shell folds the sidebar on request, re-lays out pages and reports the choice', async () => {
+  const saved = [];
+  const { hub, windows, handlers, shell, view } = fixture({ onSidebarCollapsedChange: value => saved.push(value) });
+  hub.register('services', services());
+  hub.open();
+  const fold = handlers.get('hub:set-sidebar-collapsed');
+  const page = { sender: hub.contents('services'), senderFrame: hub.contents('services').mainFrame };
+  assert.equal((await fold(page, true)).ok, false, 'a page cannot fold the sidebar');
+  assert.equal((await fold(shell(), 'yes')).ok, false, 'only booleans');
+  const { state } = await fold(shell(), true);
+  assert.deepEqual([state.collapsed, state.compact, state.sidebar], [true, true, 64]);
+  assert.deepEqual(view('services').bounds, hubLayout(1060, 820, true).content);
+  assert.equal(windows[0].webContents.sent.at(-1)[1].collapsed, true, 'the shell hears about it');
+  await fold(shell(), true);
+  assert.deepEqual(saved, [true], 'an unchanged choice is not saved again');
+  windows[0].setSize(700, 700);
+  assert.equal((await fold(shell(), false)).state.compact, true, 'a narrow window stays icon-only');
+  windows[0].setSize(1060, 820);
+  assert.equal(view('services').bounds.x, 196, 'widening restores the expanded choice');
+  assert.deepEqual(saved, [true, false]);
+});
+
+test('a remembered collapsed sidebar is used from the first layout', () => {
+  const { hub, view } = fixture({ sidebarCollapsed: true });
+  hub.register('services', services());
+  hub.open();
+  assert.deepEqual(view('services').bounds, hubLayout(1060, 820, true).content);
 });
 
 test('one window hosts isolated pages; switching hides the old page and keeps it alive', () => {

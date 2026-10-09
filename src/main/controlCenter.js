@@ -9,11 +9,15 @@ export const HUB_TOP = 40;
 export const NATIVE_PAGES = ['help'];
 export const PAGE_ORDER = ['services', 'appearance', 'phrases', 'help', 'update'];
 
-/** Main owns the geometry so the sidebar and the page view never disagree. */
-export function hubLayout(width, height) {
-  const compact = width < 760;
+/**
+ * Main owns the geometry so the sidebar and the page view never disagree.
+ * A narrow window always gets the icon-only sidebar; a wide one only when collapsed.
+ */
+export function hubLayout(width, height, collapsed = false) {
+  const narrow = width < 760;
+  const compact = narrow || collapsed;
   const sidebar = compact ? 64 : 196;
-  return { compact, sidebar,
+  return { compact, narrow, sidebar,
     content: { x: sidebar, y: HUB_TOP, width: Math.max(0, width - sidebar), height: Math.max(0, height - HUB_TOP) } };
 }
 
@@ -22,28 +26,31 @@ export function hubLayout(width, height) {
  * document, preload and IPC trust, so a page cannot reach another page's API
  * and its unsaved input survives switching pages.
  */
-export function createControlCenter({ electron, rendererDirectory, icon, smokeTest = false, onClosed = () => {}, onFocusChange = () => {} }) {
+export function createControlCenter({ electron, rendererDirectory, icon, smokeTest = false, onClosed = () => {}, onFocusChange = () => {},
+  sidebarCollapsed = false, onSidebarCollapsedChange = () => {} }) {
   const { BrowserWindow, WebContentsView, ipcMain, screen, app } = electron;
   const shellURL = pathToFileURL(path.join(rendererDirectory, 'control-center.html')).href;
   const pages = new Map();
   const views = new Map();
   let window = null;
   let active = 'services';
-  let geometry = hubLayout(1060, 820);
+  let collapsed = Boolean(sidebarCollapsed);
+  let geometry = hubLayout(1060, 820, collapsed);
 
   const alive = () => Boolean(window && !window.isDestroyed());
   const available = () => PAGE_ORDER.filter(id => NATIVE_PAGES.includes(id) || pages.has(id));
-  const state = () => ({ pages: available(), active, compact: geometry.compact, sidebar: geometry.sidebar, top: HUB_TOP,
+  const state = () => ({ pages: available(), active, compact: geometry.compact, narrow: geometry.narrow, collapsed,
+    sidebar: geometry.sidebar, top: HUB_TOP,
     version: app?.getVersion?.() || '' });
   function publishState() {
     if (alive() && !window.webContents.isDestroyed()) window.webContents.send('hub:state', state());
   }
-  function layout() {
+  function layout(changed = false) {
     if (!alive()) return;
     const previous = geometry;
-    geometry = hubLayout(...window.getContentSize());
+    geometry = hubLayout(...window.getContentSize(), collapsed);
     for (const view of views.values()) view.setBounds(geometry.content);
-    if (geometry.sidebar !== previous.sidebar) publishState();
+    if (changed || geometry.sidebar !== previous.sidebar || geometry.narrow !== previous.narrow) publishState();
   }
   function detach(id, view) {
     if (views.get(id) !== view) return false;
@@ -151,7 +158,8 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
     });
     // A newer window may already be open; then it owns the closing duties.
     created.on('closed', () => { if (!window) onClosed(); });
-    created.loadFile(path.join(rendererDirectory, 'control-center.html'));
+    // The pages are placed beside a folded sidebar at once; the shell must not paint a wide one first.
+    created.loadFile(path.join(rendererDirectory, 'control-center.html'), collapsed ? { query: { sidebar: 'collapsed' } } : undefined);
   }
 
   /** Open on a page, or on the page last shown when none is named. */
@@ -182,6 +190,16 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
   ipcMain.handle('hub:navigate', (event, id) => {
     if (!trustedShell(event) || !available().includes(id)) return { ok: false };
     show(id);
+    return { ok: true, state: state() };
+  });
+  // Only the choice is remembered; a narrow window stays icon-only either way.
+  ipcMain.handle('hub:set-sidebar-collapsed', (event, value) => {
+    if (!trustedShell(event) || typeof value !== 'boolean') return { ok: false };
+    if (value !== collapsed) {
+      collapsed = value;
+      layout(true);
+      onSidebarCollapsedChange(collapsed);
+    }
     return { ok: true, state: state() };
   });
 
