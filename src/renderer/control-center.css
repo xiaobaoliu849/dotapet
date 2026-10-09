@@ -39,7 +39,10 @@ body[data-compact='true'] .sidebar-toggle .chevron { transform: rotate(180deg); 
 body[data-compact='true'] .nav-text { opacity: 0; visibility: hidden; }
 body.animating .sidebar { transition: width .2s cubic-bezier(.33, 1, .68, 1); }
 body.animating .native-page { transition: left .2s cubic-bezier(.33, 1, .68, 1), padding .2s cubic-bezier(.33, 1, .68, 1); }
-body.animating .nav-text { transition: opacity .12s, visibility .12s; }
+/* Folding: the text goes first. Unfolding: it waits until there is room, so it never shows clipped. */
+body.animating .nav-text { transition: opacity .1s, visibility .1s; }
+body.animating:not([data-compact='true']) .nav-text { transition-delay: .1s; }
+body.animating .nav-hint { text-overflow: clip; }
 
 /* Pages drawn by the shell; other pages are separate views placed beside the sidebar. */
 .native-page { position: fixed; top: var(--top); right: 0; bottom: 0; left: var(--sidebar); overflow-y: auto; padding: 26px max(28px, calc((100vw - var(--sidebar) - 760px) / 2)) 40px; }

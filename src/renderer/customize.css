@@ -1,17 +1,21 @@
-html { scroll-padding: calc(var(--header-height, 100px) + 12px) 0 92px; }
-body { color: var(--ink); background: var(--canvas); }
-/* Stays put like the footer; the padding lines its text up with the 1200px editor. */
-header { position: sticky; top: 0; z-index: 4; display: flex; justify-content: space-between; gap: 20px; align-items: center; padding: 22px max(32px, calc((100% - 1200px) / 2 + 32px)) 16px; margin-bottom: 8px; background: var(--footer); border-bottom: 1px solid transparent; backdrop-filter: blur(12px); transition: border-color .15s; }
+/*
+ * The page itself never scrolls: header, character column and footer are fixed
+ * parts of the layout and only the settings column scrolls, so nothing else can move.
+ * The gutter lines everything up with the 1200px editor.
+ */
+:root { --gutter: max(32px, calc((100vw - 1200px) / 2 + 32px)); }
+html, body { height: 100%; }
+body { display: flex; flex-direction: column; overflow: hidden; color: var(--ink); background: var(--canvas); }
+header { flex: none; display: flex; justify-content: space-between; gap: 20px; align-items: center; padding: 22px var(--gutter) 16px; margin-bottom: 8px; background: var(--canvas); border-bottom: 1px solid transparent; transition: border-color .15s; }
 body[data-scrolled='true'] header { border-bottom-color: var(--line); }
 h1 { font-size: var(--title-size); line-height: 1.3; margin: 0 0 6px; font-weight: 700; letter-spacing: -.4px; }
 header p { margin: 0; color: var(--muted); }
 .active-badge { flex-shrink: 0; max-width: 160px; padding: 7px 12px; border-radius: 20px; background: var(--green-soft); color: var(--green); font-size: var(--caption-size); overflow-wrap: anywhere; }
-main { max-width: 1200px; margin: auto; padding: 0 32px 124px; display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 24px; }
-/*
- * Pinned exactly where it starts (header + its 8px margin), so scrolling never nudges it.
- * The preview gives up height to fit above the footer; the column scrolls only if even that fails.
- */
-aside { position: sticky; top: calc(var(--header-height, 100px) + 8px); align-self: start; display: flex; flex-direction: column; max-height: calc(100vh - var(--header-height, 100px) - 92px); overflow-y: auto; scrollbar-width: thin; }
+main { flex: 1; min-height: 0; padding: 0 0 0 var(--gutter); grid-template-rows: minmax(0, 1fr); display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 24px; }
+/* The preview gives up height to fit; the column scrolls on its own only if even that fails. */
+aside { align-self: start; display: flex; flex-direction: column; max-height: 100%; padding-bottom: 16px; overflow-y: auto; scrollbar-width: thin; }
+/* Its own scroll area reaching the window edge, so its scrollbar sits there too. */
+.settings { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 var(--gutter) 16px 0; scroll-padding-block: 12px; }
 aside > * { flex-shrink: 0; }
 label { display: block; font-weight: 600; font-size: var(--control-size); margin: 12px 0 7px; }
 select, input[type=text], input:not([type]) { width: 100%; min-height: 44px; border: 1px solid var(--control-border); padding: 10px 13px; background: var(--control); color: var(--ink); border-radius: var(--control-radius); min-width: 0; }
@@ -83,7 +87,7 @@ output { float: right; font-weight: 400; color: var(--muted); }
 .preset-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; border-top: 1px solid var(--line); padding: 10px 0; }
 .preset-row span { flex: 1; overflow-wrap: anywhere; min-width: 80px; }
 .preset-row button { min-height: 36px; font-size: var(--caption-size); padding: 6px 10px; }
-footer { position: fixed; z-index: 4; bottom: 0; left: 0; right: 0; min-height: 76px; display: flex; justify-content: space-between; gap: 20px; align-items: center; padding: 13px 32px; background: var(--footer); border-top: 1px solid var(--line); backdrop-filter: blur(12px); }
+footer { flex: none; min-height: 76px; display: flex; justify-content: space-between; gap: 20px; align-items: center; padding: 13px var(--gutter); background: var(--canvas); border-top: 1px solid var(--line); }
 footer > div { min-width: 0; }
 #draft-status { font-weight: 600; font-size: var(--caption-size); color: var(--muted); }
 #feedback { font-size: var(--caption-size); color: var(--green); margin: 3px 0 0; overflow-wrap: anywhere; }
@@ -100,8 +104,10 @@ dialog::backdrop { background: #2f3a3260; }
   header { padding: 16px 22px 12px; gap: 12px; align-items: flex-start; }
   /* The header stays on screen; a narrow window cannot spare it the tagline. */
   header p { display: none; }
-  main { padding: 0 22px 124px; grid-template-columns: minmax(0,1fr); gap: 20px; }
-  aside { position: static; max-height: none; overflow: visible; }
+  /* One column: the character and the settings scroll together. */
+  main { padding: 0 22px 20px; grid-template-columns: minmax(0,1fr); grid-template-rows: none; align-content: start; gap: 20px; overflow-y: auto; overscroll-behavior: contain; scroll-padding-block: 12px; }
+  aside { max-height: none; padding-bottom: 0; overflow: visible; }
+  .settings { overflow: visible; padding: 0; }
   .preview-stage { height: 220px; }
   section { padding: 18px; }
   footer { padding: 12px 22px; }
@@ -109,7 +115,7 @@ dialog::backdrop { background: #2f3a3260; }
 }
 @media (max-width: 540px) {
   header { flex-wrap: wrap; padding-inline: 16px; }
-  main { padding-inline: 16px; padding-bottom: 164px; }
+  main { padding-inline: 16px; }
   .two-columns { grid-template-columns: minmax(0,1fr); gap: 0; }
   footer { flex-wrap: wrap; gap: 8px; padding-inline: 16px; }
   footer > div { flex-basis: 100%; }

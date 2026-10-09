@@ -59,19 +59,27 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
     for (const view of views.values()) view.setBounds(geometry.content);
     if (changed || geometry.sidebar !== previous.sidebar || geometry.narrow !== previous.narrow) publishState();
   }
-  /** Fold or unfold: the page view eases to its new edge in step with the sidebar's CSS transition. */
+  /**
+   * Fold or unfold: the page view eases to its new edge in step with the sidebar's CSS transition.
+   * It slides at the wider of its two widths (the part past the window edge is clipped), so the
+   * page only moves and never re-lays itself out mid-fold; an unfold settles its width once, at the end.
+   */
   function slideLayout() {
+    if (!alive()) return;
+    stopSlide();
     const from = geometry.content;
-    layout(true);
+    geometry = hubLayout(...window.getContentSize(), collapsed);
     const to = geometry.content;
-    if (!animate() || from.x === to.x) return;
+    publishState();
+    if (!animate() || from.x === to.x) { for (const view of views.values()) view.setBounds(to); return; }
+    const width = Math.max(from.width, to.width);
     const start = Date.now();
     const step = () => {
       if (!alive()) return stopSlide();
       const t = Math.min(1, (Date.now() - start) / SIDEBAR_SLIDE_MS);
       const eased = 1 - (1 - t) ** 3;
-      const x = Math.round(from.x + (to.x - from.x) * eased);
-      for (const view of views.values()) view.setBounds({ ...to, x, width: to.width + to.x - x });
+      const bounds = t === 1 ? to : { ...to, x: Math.round(from.x + (to.x - from.x) * eased), width };
+      for (const view of views.values()) view.setBounds(bounds);
       if (t === 1) stopSlide();
     };
     step();

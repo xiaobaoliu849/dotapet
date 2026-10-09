@@ -212,9 +212,18 @@ $('accent-choices').addEventListener('change', event => {
 const chooseCustomAccent = () => { $('accent-custom').querySelector('input[type=radio]').checked = true; edit(() => { draft.accent = $('accent').value; }); };
 $('accent').addEventListener('click', chooseCustomAccent);
 $('accent').addEventListener('input', chooseCustomAccent);
-// The editor scrolls under the fixed header, whose height changes as the window narrows.
-new ResizeObserver(([entry]) => document.documentElement.style.setProperty('--header-height', `${Math.ceil(entry.borderBoxSize[0].blockSize)}px`)).observe(document.querySelector('header'));
-addEventListener('scroll', () => { document.body.dataset.scrolled = String(scrollY > 0); }, { passive: true });
+// Only the settings column scrolls (the whole editor in one-column windows); the page never does.
+const settingsColumn = document.querySelector('.settings'), editorArea = $('editor');
+const scroller = () => getComputedStyle(settingsColumn).overflowY === 'visible' ? editorArea : settingsColumn;
+document.addEventListener('scroll', () => { document.body.dataset.scrolled = String(scroller().scrollTop > 0); }, { capture: true, passive: true });
+// The wheel over the still parts (character column, header, footer) scrolls the settings, never them.
+document.addEventListener('wheel', event => {
+  const target = scroller(), column = document.querySelector('aside');
+  if (event.ctrlKey || target.contains(event.target) || document.querySelector('dialog[open]')) return;
+  if (column.contains(event.target) && column.scrollHeight > column.clientHeight) return;
+  const step = event.deltaMode === 1 ? 40 : event.deltaMode === 2 ? target.clientHeight : 1;
+  target.scrollBy({ top: event.deltaY * step, behavior: 'smooth' });
+}, { passive: true });
 for (const field of ['mode','scope','fit','color','asset','opacity','dim']) {
   $(`background-${field}`).addEventListener('input', () => edit(() => { const value = $(`background-${field}`).value; draft.background[field === 'asset' ? 'assetId' : field] = ['opacity','dim'].includes(field) ? Number(value) / 100 : value || null; }));
 }
