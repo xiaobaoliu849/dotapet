@@ -9,6 +9,8 @@ test('the saved choice wins; otherwise the first system language we have, else E
   assert.equal(resolveLanguage('system', ['zh-CN', 'en-US']), 'zh');
   assert.equal(resolveLanguage('system', ['zh-Hant-TW']), 'zh');
   assert.equal(resolveLanguage('system', ['de-DE', 'en-GB']), 'en');
+  assert.equal(resolveLanguage('system', ['ru-RU']), 'ru');
+  assert.equal(resolveLanguage('system', ['uk-UA', 'ru-RU']), 'uk');
   assert.equal(resolveLanguage('system', ['de-DE']), 'en', 'no match falls back to English');
   assert.equal(resolveLanguage('klingon', []), 'en', 'an unknown saved choice is ignored');
   assert.deepEqual(LANGUAGE_CHOICES, ['system', ...LANGUAGES.map(language => language.id)]);

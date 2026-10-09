@@ -39,6 +39,10 @@ export async function runLanguageSmoke({ controlCenter, openPanel, nativeImage, 
     await navigateHub(controlCenter, page);
     const contents = controlCenter.contents(page);
     if (contents) { await pageLoaded(contents); await check(page, contents); }
+    // Longer words must not break the layout: the character column never scrolls inside itself.
+    if (page === 'appearance' && await contents.executeJavaScript(`(() => { const column = document.querySelector('aside'); return column.scrollHeight > column.clientHeight || column.scrollWidth > column.clientWidth; })()`)) {
+      problems.push('appearance: the character column overflows');
+    }
     fs.writeFileSync(path.join(outputDirectory, `language-${page}.png`), (await captureHub(controlCenter, nativeImage)).toPNG());
   }
   await check('sidebar', controlCenter.window.webContents);

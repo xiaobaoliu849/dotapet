@@ -33,7 +33,8 @@ button:disabled { cursor: default; opacity: .55; }
 #preview-image { width: 100%; height: 100%; object-fit: contain; }
 #preview-image.default-portrait { width: 126px; height: 126px; border-radius: 50%; border: 2.5px solid #ffffff40; background: #332b21; box-shadow: 0 8px 24px #00000065; }
 .preview-status { position: absolute; bottom: 15px; font-size: var(--caption-size); padding: 4px 12px; color: #f6ebd8; background: #332b21; border-radius: 18px; }
-.preview-states { display: flex; justify-content: center; gap: 6px; margin: 12px 0; }
+/* Wraps when a language's state names are longer than 待命 / 说话 / 互动. */
+.preview-states { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 12px 0; }
 .preview-states button { min-height: 36px; padding: 6px 14px; font-size: var(--caption-size); }
 .preview-states button[aria-pressed=true] { background: var(--green-soft); border-color: var(--green); color: var(--green); }
 .help { font-size: var(--caption-size); line-height: 1.7; color: var(--muted); margin: 10px 0; }

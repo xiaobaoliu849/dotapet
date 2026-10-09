@@ -12,6 +12,8 @@ const directory = path.dirname(fileURLToPath(import.meta.url));
 export const LANGUAGES = [
   { id: 'zh', name: '中文' },
   { id: 'en', name: 'English' },
+  { id: 'ru', name: 'Русский' },
+  { id: 'uk', name: 'Українська' },
 ];
 export const LANGUAGE_CHOICES = ['system', ...LANGUAGES.map(language => language.id)];
 const cache = new Map();
