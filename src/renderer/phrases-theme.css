@@ -59,6 +59,11 @@ html[data-settings-theme='green'] .toast.hidden { transform: translate(-50%, 6px
   html[data-settings-theme='green'] .phrases-modal-body { padding-inline: 22px; }
   html[data-settings-theme='green'] .phrases-modal-footer { padding-inline: 22px; }
 }
+/* Other languages' row buttons are longer than 译 / 复制英文 / 复制中文. */
+@media (min-width: 701px) {
+  html[data-settings-theme='green']:not([lang='zh-CN']) .phrases-table-header,
+  html[data-settings-theme='green']:not([lang='zh-CN']) .phrase-row-item { grid-template-columns: 28px minmax(0, 1fr) minmax(0, 1fr) 296px; }
+}
 @media (max-width: 700px) {
   html[data-settings-theme='green'] .phrase-row-item { grid-template-columns: 24px minmax(0, 1fr) minmax(0, 1fr); }
 }

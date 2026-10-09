@@ -4,7 +4,7 @@ import { isTrustedSettingsSender } from './aiSettingsIpc.js';
 import { RELEASES_URL } from './updateService.js';
 
 /** The updater is the settings center's 关于与更新 page; `hub` hosts it. */
-export function createUpdateController({ electron, service, rendererDirectory, hub, icon, onState = () => {}, smokeTest = false }) {
+export function createUpdateController({ electron, service, rendererDirectory, hub, icon, onState = () => {}, smokeTest = false, t = (text, ...values) => text.replace(/\{(\d)\}/g, (_, index) => values[index]) }) {
   const { ipcMain, shell, Notification } = electron;
   const url = pathToFileURL(path.join(rendererDirectory, 'update.html')).href;
   const page = () => hub.contents('update');
@@ -24,7 +24,7 @@ export function createUpdateController({ electron, service, rendererDirectory, h
     if (!smokeTest && state.phase === 'available' && state.version !== notifiedVersion && Notification?.isSupported()) {
       notifiedVersion = state.version;
       try {
-        notification = new Notification({ title: '刀塔宠物 有新版本', body: `v${state.version} 已发布，点击查看并一键更新。`, icon });
+        notification = new Notification({ title: t('刀塔宠物 有新版本'), body: t('v{0} 已发布，点击查看并一键更新。', state.version), icon });
         notification.on('click', open);
         notification.show();
       } catch { /* The tray entry remains available when Windows suppresses notifications. */ }

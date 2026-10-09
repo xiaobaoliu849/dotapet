@@ -6,7 +6,8 @@ import { classifySkin, validCharacterKey } from '../services/appearance.js';
 import { isTrustedSettingsSender } from './aiSettingsIpc.js';
 
 /** The editor is the settings center's 形象与背景 page; `hub` hosts it. */
-export function createCustomizationController({ electron, rendererDirectory, hub, getMainWindow, getHeroesConfig, getCompanionHero, getActiveKey }) {
+export function createCustomizationController({ electron, rendererDirectory, hub, getMainWindow, getHeroesConfig, getCompanionHero, getActiveKey,
+  getLanguage = () => 'zh', t = text => text }) {
   const { app, ipcMain, dialog, nativeImage } = electron;
   const editorURL = pathToFileURL(path.join(rendererDirectory, 'customize.html')).href;
   const desktopURL = pathToFileURL(path.join(rendererDirectory, 'index.html')).href;
@@ -40,12 +41,15 @@ export function createCustomizationController({ electron, rendererDirectory, hub
   const assetURL = src => !src || /^(https?:|data:|file:)/.test(src) ? src : pathToFileURL(path.join(rendererDirectory, src)).href;
   const sprites = value => Object.fromEntries(Object.entries(value || {}).map(([key, src]) => [key, assetURL(src)]));
   function characters() {
+    // Names are data, not page text: every language but Chinese gets the English one.
+    const english = getLanguage() !== 'zh';
+    const named = (zh, en) => (english ? en || zh : zh || en);
     const heroes = [getCompanionHero(), ...Object.values(getHeroesConfig()?.heroes || {})].filter(Boolean).map(hero => ({
-      key: `hero:${hero.id}`, name: hero.nameZh || hero.nameEn, themeColor: hero.themeColor,
+      key: `hero:${hero.id}`, name: named(hero.nameZh, hero.nameEn), themeColor: hero.themeColor,
       sprites: sprites(hero.sprites || { idle: hero.photoUrl }),
       // Generated catalog placeholders have neither bespoke artwork nor a specific identity.
       options: Object.values(hero.skins || {}).filter(skin => skin.id !== 'classic' && !/_(immortal_masterpiece|collectors_cache|ti_championship_set)$/.test(skin.id)).map(skin => ({
-        id: skin.id, name: skin.nameZh || skin.name || skin.id, kind: classifySkin(hero, skin),
+        id: skin.id, name: named(skin.nameZh, skin.nameEn || skin.name) || skin.id, kind: classifySkin(hero, skin),
         themeColor: skin.themeColor || hero.themeColor, sprites: sprites(skin.sprites),
       })),
     }));
@@ -56,7 +60,7 @@ export function createCustomizationController({ electron, rendererDirectory, hub
           const definition = manifest.states?.[state] || manifest.states?.idle;
           return assetURL(`assets/pets/${entry.name}/${definition.svg || definition.image || definition.frames?.[0]}`);
         };
-        return [{ key: `pet:${manifest.name}`, name: manifest.displayName, themeColor: manifest.themeColor,
+        return [{ key: `pet:${manifest.name}`, name: named(manifest.displayName, manifest.displayNameEn), themeColor: manifest.themeColor,
           sprites: { idle: src('idle'), speaking: src('speak'), action: src('special') }, options: [] }];
       } catch (error) { console.warn('[Customize] Pet catalog:', error.message); return []; }
     });
@@ -101,13 +105,13 @@ export function createCustomizationController({ electron, rendererDirectory, hub
   ipcMain.handle('customization:remove-preset', handler(changed(id => store.removePreset(id))));
   ipcMain.handle('customization:export-preset', handler(async id => {
     const bundle = store.exportPreset(id);
-    const selected = await withParent('showSaveDialog', { title: '导出外观预设', defaultPath: 'companion-preset.json', filters: [{ name: '伙伴外观预设', extensions: ['json'] }] });
+    const selected = await withParent('showSaveDialog', { title: t('导出外观预设'), defaultPath: 'companion-preset.json', filters: [{ name: t('伙伴外观预设'), extensions: ['json'] }] });
     if (selected.canceled || !selected.filePath) return { cancelled: true };
     fs.writeFileSync(selected.filePath, JSON.stringify(bundle, null, 2), 'utf8');
     return {};
   }));
   ipcMain.handle('customization:import-preset', handler(async () => {
-    const selected = await withParent('showOpenDialog', { title: '导入外观预设', properties: ['openFile'], filters: [{ name: '伙伴外观预设', extensions: ['json'] }] });
+    const selected = await withParent('showOpenDialog', { title: t('导入外观预设'), properties: ['openFile'], filters: [{ name: t('伙伴外观预设'), extensions: ['json'] }] });
     if (selected.canceled) return { cancelled: true };
     if (fs.statSync(selected.filePaths[0]).size > 40 * 1024 * 1024) throw new Error('预设文件不能超过 40 MB。');
     const preset = store.importPreset(JSON.parse(fs.readFileSync(selected.filePaths[0], 'utf8')));

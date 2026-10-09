@@ -6,7 +6,7 @@ let data = null, key = null, draft = normalizeProfile(), previewState = 'idle', 
 let refreshSequence = 0, deleteId = null;
 const drafts = new Map();
 const character = () => data?.characters.find(item => item.key === key);
-const option = (select, value, text) => { const item = document.createElement('option'); item.value = value; item.textContent = text; select.append(item); };
+const option = (select, value, text) => { const item = document.createElement('option'); item.value = value; item.textContent = text; select.append(item); return item; };
 const message = (text, error = false) => { $('feedback').textContent = text; $('feedback').dataset.error = String(error); };
 const isDirty = () => JSON.stringify(draft) !== JSON.stringify(normalizeProfile(data?.profiles[key]));
 const onDesktop = () => Boolean(data) && data.activeKey === key;
@@ -80,7 +80,8 @@ function renderSources() {
   const source = $('appearance-source'); source.replaceChildren();
   option(source, 'default', '内置默认形象');
   for (const look of character()?.options || []) if (look.kind === 'appearance') option(source, `builtin:${look.id}`, look.name);
-  for (const asset of data.assets) option(source, asset.id, `${asset.name} · ${asset.animated ? '动图' : '图片'}`);
+  // The file name is the user's; only its kind is translated.
+  for (const asset of data.assets) option(source, asset.id, `${asset.name} · ${t(asset.animated ? '动图' : '图片')}`).translate = false;
   source.value = draft.appearance.assetId || (draft.appearance.builtinId ? `builtin:${draft.appearance.builtinId}` : 'default');
   if (!source.value) source.value = 'default';
   const bg = $('background-asset'); bg.replaceChildren(); option(bg, '', '请选择图片');
@@ -168,7 +169,7 @@ function renderPresets() {
   if (!data.presets.length) { const p = document.createElement('p'); p.className = 'empty'; p.textContent = '保存喜欢的搭配，下次一键载入。'; $('preset-list').append(p); }
   for (const preset of data.presets) {
     const row = document.createElement('div'); row.className = 'preset-row';
-    const name = document.createElement('span'); name.textContent = preset.name;
+    const name = document.createElement('span'); name.textContent = preset.name; name.translate = false;
     row.append(name, button('预览', () => {
       draft = normalizeProfile(preset.profile);
       if (draft.appearance.builtinId && !character().options.some(look => look.id === draft.appearance.builtinId && look.kind === 'appearance')) draft.appearance.builtinId = null;
@@ -214,15 +215,22 @@ $('accent').addEventListener('click', chooseCustomAccent);
 $('accent').addEventListener('input', chooseCustomAccent);
 // Only the settings column scrolls (the whole editor in one-column windows); the page never does.
 const settingsColumn = document.querySelector('.settings'), editorArea = $('editor');
-const scroller = () => getComputedStyle(settingsColumn).overflowY === 'visible' ? editorArea : settingsColumn;
+// Matches customize.css's one-column breakpoint.
+const oneColumn = matchMedia('(max-width: 780px)');
+const scroller = () => oneColumn.matches ? editorArea : settingsColumn;
 document.addEventListener('scroll', () => { document.body.dataset.scrolled = String(scroller().scrollTop > 0); }, { capture: true, passive: true });
 // The wheel over the still parts (character column, header, footer) scrolls the settings, never them.
+// Quick flicks add up: each one extends the glide still running instead of restarting it.
+let glideTarget = null;
+for (const area of [settingsColumn, editorArea]) area.addEventListener('scrollend', () => { glideTarget = null; });
 document.addEventListener('wheel', event => {
   const target = scroller(), column = document.querySelector('aside');
   if (event.ctrlKey || target.contains(event.target) || document.querySelector('dialog[open]')) return;
   if (column.contains(event.target) && column.scrollHeight > column.clientHeight) return;
   const step = event.deltaMode === 1 ? 40 : event.deltaMode === 2 ? target.clientHeight : 1;
-  target.scrollBy({ top: event.deltaY * step, behavior: 'smooth' });
+  const limit = target.scrollHeight - target.clientHeight;
+  glideTarget = Math.min(limit, Math.max(0, (glideTarget ?? target.scrollTop) + event.deltaY * step));
+  target.scrollTo({ top: glideTarget, behavior: 'smooth' });
 }, { passive: true });
 for (const field of ['mode','scope','fit','color','asset','opacity','dim']) {
   $(`background-${field}`).addEventListener('input', () => edit(() => { const value = $(`background-${field}`).value; draft.background[field === 'asset' ? 'assetId' : field] = ['opacity','dim'].includes(field) ? Number(value) / 100 : value || null; }));
@@ -253,7 +261,7 @@ $('apply').addEventListener('click', async () => {
     });
     if (!switched) return;
   }
-  message(switching ? `已换上${name}${dirty ? '，外观已应用' : ''}。` : '外观已应用到桌面伙伴。');
+  message(!switching ? '外观已应用到桌面伙伴。' : dirty ? `已换上${name}，外观已应用。` : `已换上${name}。`);
 });
 for (const role of ['appearance','background']) $(`import-${role}`).addEventListener('click', () => { importRole = role; $('image-file').click(); });
 $('image-file').addEventListener('change', event => importFile(event.target.files[0]));

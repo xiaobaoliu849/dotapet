@@ -1,4 +1,6 @@
 const { contextBridge, ipcRenderer } = require('electron');
+// The chosen language and its dictionary, before the page draws anything.
+contextBridge.exposeInMainWorld('dotapetI18n', ipcRenderer.sendSync('i18n:get'));
 contextBridge.exposeInMainWorld('customizationAPI', {
   get: () => ipcRenderer.invoke('customization:get'),
   importImage: payload => ipcRenderer.invoke('customization:import-image', payload),

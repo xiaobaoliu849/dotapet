@@ -17,7 +17,12 @@ body { overflow: hidden; background: var(--canvas); }
 body[data-compact='true'] .sidebar-toggle .chevron { transform: rotate(180deg); }
 .sidebar-toggle[aria-disabled='true'] { opacity: .5; cursor: default; }
 .sidebar-toggle[aria-disabled='true']:hover { background: transparent; color: var(--muted); }
-.chrome-caption { color: var(--muted); font-weight: 400; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chrome-caption { min-width: 0; color: var(--muted); font-weight: 400; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Language sits in the title bar, on every page, just left of the window buttons: findable in any language. */
+.chrome-language { flex: none; display: flex; align-items: center; gap: 2px; margin-left: auto; padding-left: 6px; border-radius: 8px; color: var(--muted); font-size: 14px; -webkit-app-region: no-drag; }
+.chrome-language:hover, .chrome-language:focus-within { background: #e3e9dd; color: var(--ink); }
+.chrome-language select { min-height: 0; height: 30px; padding: 0 6px; border: 0; background: transparent; color: inherit; font-size: 12px; font-weight: 400; cursor: pointer; }
+.chrome-language select:focus-visible { outline: 2px solid var(--green); outline-offset: 1px; border-radius: 6px; }
 
 /* Sidebar */
 .sidebar { position: fixed; top: var(--top); bottom: 0; left: 0; width: var(--sidebar); display: flex; flex-direction: column; gap: 4px; padding: 10px; background: var(--rail); border-right: 1px solid var(--line); overflow: hidden auto; }

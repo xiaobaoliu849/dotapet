@@ -29,7 +29,7 @@ export function hubLayout(width, height, collapsed = false) {
  * and its unsaved input survives switching pages.
  */
 export function createControlCenter({ electron, rendererDirectory, icon, smokeTest = false, onClosed = () => {}, onFocusChange = () => {},
-  sidebarCollapsed = false, onSidebarCollapsedChange = () => {} }) {
+  sidebarCollapsed = false, onSidebarCollapsedChange = () => {}, onLanguageChange = () => false }) {
   const { BrowserWindow, WebContentsView, ipcMain, screen, app } = electron;
   const shellURL = pathToFileURL(path.join(rendererDirectory, 'control-center.html')).href;
   const pages = new Map();
@@ -49,6 +49,10 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
     version: app?.getVersion?.() || '' });
   function publishState() {
     if (alive() && !window.webContents.isDestroyed()) window.webContents.send('hub:state', state());
+  }
+  /** The pages are placed beside a folded sidebar at once; the shell must not paint a wide one first. */
+  function loadShell() {
+    window.loadFile(path.join(rendererDirectory, 'control-center.html'), collapsed ? { query: { sidebar: 'collapsed' } } : undefined);
   }
   function stopSlide() { clearTimeout(slide?.fallback); slide = null; }
   function layout(changed = false) {
@@ -194,8 +198,7 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
     });
     // A newer window may already be open; then it owns the closing duties.
     created.on('closed', () => { if (!window) onClosed(); });
-    // The pages are placed beside a folded sidebar at once; the shell must not paint a wide one first.
-    created.loadFile(path.join(rendererDirectory, 'control-center.html'), collapsed ? { query: { sidebar: 'collapsed' } } : undefined);
+    loadShell();
   }
 
   /** Open on a page, or on the page last shown when none is named. */
@@ -238,6 +241,17 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
       return { ok: true, state: state(), slide };
     }
     return { ok: true, state: state(), slide: null };
+  });
+  // A new language reloads the shell and every page; each reads it again from its preload.
+  ipcMain.handle('hub:set-language', (event, choice) => {
+    if (!trustedShell(event) || !onLanguageChange(choice)) return { ok: false };
+    setImmediate(() => {
+      if (!alive()) return;
+      // Loaded afresh rather than reloaded: the fold may have changed since the window opened.
+      loadShell();
+      for (const view of views.values()) if (!view.webContents.isDestroyed()) view.webContents.reload();
+    });
+    return { ok: true };
   });
   ipcMain.on('hub:slide', (event, x) => { if (trustedShell(event) && Number.isInteger(x)) slideTo(x); });
 

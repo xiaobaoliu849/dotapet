@@ -26,9 +26,22 @@ import { createControlCenter } from './controlCenter.js';
 import { presentSettingsWhenReady, settingsWindowBounds } from './settingsPresentation.js';
 import { UpdateService } from './updateService.js';
 import { createUpdateController } from './updateController.js';
+import { LANGUAGES, LANGUAGE_CHOICES, resolveLanguage, loadStrings, translate } from '../i18n/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+/**
+ * The language of the settings center and the F6 panel; the pet itself follows later.
+ * Smoke tests run in Chinese unless they ask for another, whatever the machine's language.
+ */
+let languageChoice = 'system';
+function currentLanguage() {
+  if (smokeTest) return resolveLanguage(process.argv.find(value => value.startsWith('--lang='))?.slice(7) || 'zh');
+  const system = app.getPreferredSystemLanguages?.() || [];
+  return resolveLanguage(languageChoice, system.length ? system : [app.getLocale?.()]);
+}
+/** For text main shows itself, such as a file dialog's title. */
+const t = (text, ...values) => translate(loadStrings(currentLanguage()), text, ...values);
 const aiSettingsURL = pathToFileURL(path.join(__dirname, '../renderer/ai-settings.html')).href;
 const appIcon = path.join(__dirname, '../renderer/assets/app-icon.png');
 
@@ -1479,7 +1492,7 @@ function setupIPC() {
   }));
   ipcMain.handle('ai:import-config', settingsHandler(async () => {
     const selected = await dialog.showOpenDialog(controlCenter.window || mainWindow, {
-      title: '主动导入已有配置（文件只在本机读取）', properties: ['openFile'], filters: [{ name: 'JSON 配置', extensions: ['json'] }],
+      title: t('主动导入已有配置（文件只在本机读取）'), properties: ['openFile'], filters: [{ name: t('JSON 配置'), extensions: ['json'] }],
     });
     if (selected.canceled) return { cancelled: true };
     const file = selected.filePaths[0];
@@ -1782,6 +1795,13 @@ function reportShortcutFailures(failures) {
 // App lifecycle
 if (app?.whenReady) {  app.whenReady().then(() => {
     app.setAppUserModelId?.('fun.dota2bot.companion');
+    const savedLanguage = loadSettings().language;
+    languageChoice = LANGUAGE_CHOICES.includes(savedLanguage) ? savedLanguage : 'system';
+    // Every page asks once, synchronously from its preload, before drawing anything.
+    ipcMain.on('i18n:get', event => {
+      const language = currentLanguage();
+      event.returnValue = { language, strings: loadStrings(language), choice: languageChoice, languages: LANGUAGES };
+    });
     const mediaDocuments = ['index.html', 'ai-settings.html'].map(file => pathToFileURL(path.join(__dirname, '../renderer', file)).href);
     session?.defaultSession?.setPermissionRequestHandler((contents, permission, callback, details) => {
       callback(permission === 'media' && mediaDocuments.includes(contents?.getURL()) && !details.mediaTypes?.includes('video'));
@@ -1797,7 +1817,14 @@ if (app?.whenReady) {  app.whenReady().then(() => {
     controlCenter = createControlCenter({ electron, rendererDirectory: path.join(__dirname, '../renderer'), icon: appIcon, smokeTest,
       onClosed: onSettingsCenterClosed, onFocusChange: onSettingsFocusChange,
       sidebarCollapsed: loadSettings().settingsSidebarCollapsed === true,
-      onSidebarCollapsedChange: collapsed => saveSettings({ settingsSidebarCollapsed: collapsed }) });
+      onSidebarCollapsedChange: collapsed => saveSettings({ settingsSidebarCollapsed: collapsed }),
+      onLanguageChange: choice => {
+        if (!LANGUAGE_CHOICES.includes(choice)) return false;
+        languageChoice = choice;
+        saveSettings({ language: choice });
+        // The F6 panel keeps any unsaved rows; it opens in the new language next time.
+        return true;
+      } });
     controlCenter.register('services', { file: 'ai-settings.html', preload: '../preload/ai-settings.js', background: '#f6f7f2', backgroundThrottling: false,
       onHide: contents => contents.send('settings:hidden') });
     // The same editor as the F6 panel, drawn in the settings center's light style.
@@ -1808,7 +1835,7 @@ if (app?.whenReady) {  app.whenReady().then(() => {
     customizationController = createCustomizationController({ electron, rendererDirectory: path.join(__dirname, '../renderer'),
       hub: controlCenter, getMainWindow: () => mainWindow, getHeroesConfig: () => heroesConfig,
       getCompanionHero: () => COMPANION_PSEUDO_HERO,
-      getActiveKey: () => activePetPersona?.id || `hero:${currentHeroId}` });
+      getActiveKey: () => activePetPersona?.id || `hero:${currentHeroId}`, getLanguage: currentLanguage, t });
     welcomeController = createWelcomeController({ electron, openSettings: openAISettings });
 
     if (smokeTest) {
@@ -1823,7 +1850,12 @@ if (app?.whenReady) {  app.whenReady().then(() => {
         } catch (error) { console.error('[Upgrade]', error.message); app.exit(1); }
         return;
       }
-      runCompanionSmokeTest().catch(async error => {
+      // A second smoke run in another language only checks that every settings page is translated.
+      const languageRun = currentLanguage() !== 'zh'
+        ? import('./languageSmoke.js').then(({ runLanguageSmoke }) => runLanguageSmoke({ controlCenter, openPanel: () => createPhrasesWindow(), nativeImage,
+          outputDirectory: app.getPath('userData'), language: currentLanguage() })).then(() => { console.log('[Smoke] PASS', JSON.stringify({ language: currentLanguage() })); app.exit(0); })
+        : null;
+      (languageRun || runCompanionSmokeTest()).catch(async error => {
         console.error('[Smoke]', error.message);
         try {
           const { captureHub } = await import('./controlCenterSmoke.js');
@@ -1836,7 +1868,7 @@ if (app?.whenReady) {  app.whenReady().then(() => {
     // Load the CJS updater only in a real session; isolated smoke tests never dial out.
     import('electron-updater').then(({ default: electronUpdater }) => {
       updateService = new UpdateService({ updater: electronUpdater.autoUpdater, currentVersion: app.getVersion(), enabled: app.isPackaged && process.platform === 'win32' });
-      updateController = createUpdateController({ electron, service: updateService, rendererDirectory: path.join(__dirname, '../renderer'), hub: controlCenter, icon: appIcon, onState: updateTrayMenu });
+      updateController = createUpdateController({ electron, service: updateService, rendererDirectory: path.join(__dirname, '../renderer'), hub: controlCenter, icon: appIcon, onState: updateTrayMenu, t });
       updateService.start();
       updateTrayMenu();
     }).catch(error => console.warn('[Updates] Could not initialize updater:', error.message));
