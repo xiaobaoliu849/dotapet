@@ -464,7 +464,7 @@
  "配置文件过大，请选择小于 1 MB 的 JSON 文件。": "The settings file is too large. Choose a JSON file under 1 MB.",
  "导入文件不是有效的 JSON 配置。": "The file isn't a valid JSON settings file.",
  "希望小伙伴怎么称呼你？": "What should your companion call you?",
- "例如：小宝、队长、Daddy（可选）": "For example: Alex, Captain, Daddy (optional)",
+ "例如：队长、朋友、Daddy（可选）": "For example: Captain, Buddy, Daddy (optional)",
  "所有语音聊天共用；连上后，小伙伴会先开口打招呼。": "Shared across voice chats. Your companion says hello once connected.",
  "聊天偏好 / 自定义提示词（可选）": "Chat preferences / custom instructions (optional)",
  "例如：语气温柔一点，回答简短；提到我的朋友小明时叫他明哥。": "For example: Be warm and concise; call my friend James “Jay”.",
