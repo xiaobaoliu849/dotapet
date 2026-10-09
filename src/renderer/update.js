@@ -39,6 +39,11 @@ $('postpone').addEventListener('click', () => action('postpone'));
 $('releases').addEventListener('click', () => action('releases'));
 $('github').addEventListener('click', () => action('github'));
 // The QR is the last thing on the page; bring it into view when opened.
-$('sponsor').addEventListener('toggle', event => { if (event.target.open) event.target.scrollIntoView({ block: 'end', behavior: 'smooth' }); });
+$('sponsor').addEventListener('click', () => {
+  const open = $('sponsor-qr').hidden;
+  $('sponsor-qr').hidden = !open;
+  $('sponsor').setAttribute('aria-expanded', String(open));
+  if (open) $('sponsor-qr').scrollIntoView({ block: 'end', behavior: 'smooth' });
+});
 window.petUpdates.onState(render);
 action('state');

@@ -1,32 +1,35 @@
-/* Shown beside the settings center sidebar; a narrow column keeps the one action obvious. */
-main { min-height: 100vh; max-width: 640px; margin: 0 auto; padding: 30px 38px 22px; display: flex; flex-direction: column; }
-header { display: flex; gap: 14px; align-items: center; margin-bottom: 30px; }
+/* Shown beside the settings center sidebar: an update card, then a quieter support card. */
+main { max-width: 600px; margin: 0 auto; padding: 32px 36px 28px; }
+header { display: flex; gap: 14px; align-items: center; margin-bottom: 22px; }
 header img { width: 56px; height: 56px; border-radius: 15px; }
 .eyebrow { font-size: 19px; font-weight: 650; }
 header p { margin: 0; font-size: var(--caption-size); color: var(--muted); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--card-radius); padding: 22px 24px; }
+.card + .card { margin-top: 16px; }
 #badge { font-size: var(--caption-size); display: inline-block; padding: 3px 11px; border-radius: 20px; background: var(--green-soft); color: var(--green); }
-h1 { font-size: var(--title-size); line-height: 1.3; font-weight: 700; margin: 12px 0; letter-spacing: -.4px; }
-#description { margin: 0 0 20px; color: var(--muted); }
+h1 { font-size: 24px; line-height: 1.3; font-weight: 700; margin: 10px 0 6px; letter-spacing: -.3px; }
+#description { margin: 0 0 18px; color: var(--muted); }
 progress { width: 100%; height: 11px; accent-color: var(--green); }
 #percent { color: var(--muted); font-size: var(--caption-size); margin: 4px 0 12px; }
-details { background: var(--surface); border: 1px solid var(--line); border-radius: var(--card-radius); padding: 14px 16px; margin-bottom: 20px; font-size: var(--control-size); }
+details { background: var(--canvas); border: 1px solid var(--line); border-radius: var(--control-radius); padding: 10px 14px; margin-bottom: 16px; font-size: var(--control-size); }
 summary { cursor: pointer; }
-pre { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 160px; overflow-y: auto; font: inherit; color: var(--muted); }
-footer { margin-top: auto; padding-top: 12px; text-align: center; }
-.keep { font-size: var(--caption-size); color: var(--muted); margin: 0 0 13px; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 140px; overflow-y: auto; font: inherit; color: var(--muted); }
 button { width: 100%; font-weight: 600; padding: 10px 18px; background: var(--green); border-color: var(--green); color: white; }
 button:hover { background: var(--green-dark); }
 button:disabled { cursor: default; opacity: .65; }
 button.link, #postpone { background: transparent; border-color: transparent; color: var(--green); font-weight: 400; padding: 8px; }
 button.link:hover, #postpone:hover { background: var(--control-hover); }
-#schedule { font-size: var(--caption-size); color: var(--muted); margin: 3px 0 0; }
-@media (max-width: 720px) { main { padding: 26px 22px 22px; } }
-/* Star and sponsor: quiet links under the update action, the QR only when asked for. */
-.support { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
-#github { display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
-#github svg { width: 17px; height: 17px; flex: none; }
-#sponsor { background: none; border: 0; padding: 0; margin: 0; }
-#sponsor summary { color: var(--green); padding: 8px; border-radius: 8px; }
-#sponsor summary:hover { background: var(--control-hover); }
-#sponsor img { display: block; width: 200px; height: 200px; margin: 8px auto 4px; border-radius: var(--card-radius); border: 1px solid var(--line); }
-#sponsor p { font-size: var(--caption-size); color: var(--muted); margin: 0; }
+.meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 12px; margin: 10px 0 0; font-size: var(--caption-size); color: var(--muted); }
+#releases { width: auto; padding: 4px 8px; font-size: var(--caption-size); }
+#schedule { font-size: var(--caption-size); color: var(--faint); margin: 2px 0 0; }
+.support h2 { font-size: 16px; margin: 0 0 4px; }
+.support > p { margin: 0 0 14px; color: var(--muted); font-size: var(--control-size); }
+.support-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+button.outline { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: var(--control); border-color: var(--control-border); color: var(--ink); font-weight: 500; }
+button.outline:hover { background: var(--control-hover); }
+button.outline[aria-expanded="true"] { border-color: var(--green); color: var(--green); }
+button.outline svg { width: 17px; height: 17px; flex: none; }
+#sponsor-qr { text-align: center; margin-top: 16px; }
+#sponsor-qr img { display: block; width: 200px; height: 200px; margin: 0 auto 6px; border-radius: 12px; border: 1px solid var(--line); }
+#sponsor-qr p { font-size: var(--caption-size); color: var(--muted); margin: 0; }
+@media (max-width: 720px) { main { padding: 24px 20px 22px; } .card { padding: 18px; } }

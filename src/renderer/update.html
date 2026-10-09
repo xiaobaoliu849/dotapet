@@ -13,24 +13,26 @@
 <body>
   <main>
     <header><img src="assets/app-icon.png" alt="刀塔宠物"><div><span class="eyebrow">DotaPet</span><p id="version">应用更新</p></div></header>
-    <section aria-live="polite" aria-atomic="true">
+    <section class="card status" aria-live="polite" aria-atomic="true">
       <span id="badge">保持新鲜</span>
       <h1 id="title">让陪伴更好一点</h1>
       <p id="description">自动检查新版本，一键更新并重新打开桌宠。</p>
-    </section>
-    <div id="download" hidden><progress id="progress" max="100" value="0" aria-label="更新下载进度"></progress><p id="percent"></p></div>
-    <details id="details" hidden><summary>这次更新了什么</summary><pre id="notes"></pre></details>
-    <footer>
-      <p class="keep">API Key、音色和自定义形象都会保留。</p>
+      <div id="download" hidden><progress id="progress" max="100" value="0" aria-label="更新下载进度"></progress><p id="percent"></p></div>
+      <details id="details" hidden><summary>这次更新了什么</summary><pre id="notes"></pre></details>
       <button id="primary" type="button">检查更新</button>
       <button id="postpone" type="button" hidden>下载完成后，稍后重启</button>
-      <button id="releases" type="button" class="link">查看发布页 ↗</button>
+      <p class="meta"><span class="keep">API Key、音色和自定义形象都会保留。</span> <button id="releases" type="button" class="link">查看发布页 ↗</button></p>
       <p id="schedule">启动后和每 4 小时自动检查；点击更新才下载。</p>
-      <div class="support">
-        <button id="github" type="button" class="link"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>在 GitHub 点个 Star ↗</span></button>
-        <details id="sponsor"><summary>请作者喝杯咖啡</summary><img src="assets/support-wechat.png" alt="微信赞赏码"><p>微信扫码赞赏，金额随意，谢谢支持！</p></details>
+    </section>
+    <section class="card support" aria-labelledby="support-title">
+      <h2 id="support-title">喜欢刀塔宠物？</h2>
+      <p>点个 Star 让更多玩家看到它，或请作者喝杯咖啡。</p>
+      <div class="support-actions">
+        <button id="github" type="button" class="outline"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>在 GitHub 点个 Star ↗</span></button>
+        <button id="sponsor" type="button" class="outline" aria-expanded="false" aria-controls="sponsor-qr"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9z"/><path d="M17 11h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3v3M12 3v3"/></svg><span>请作者喝杯咖啡</span></button>
       </div>
-    </footer>
+      <div id="sponsor-qr" hidden><img src="assets/support-wechat.png" alt="微信赞赏码"><p>微信扫码赞赏，金额随意，谢谢支持！</p></div>
+    </section>
   </main>
 </body>
 </html>
