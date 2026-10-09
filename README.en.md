@@ -79,6 +79,8 @@ The About screenshot uses Chinese UI and simulated **0.3.0** update data. It doe
 2. **Choose how to use it.** Current source opens settings on first launch. Choose a voice provider, enter your own key and start chatting, or skip setup to enjoy the desktop companion first.
 3. **Return to your desktop.** Hover over the companion for its toolbar. Right-click to open settings. Double-click the tray icon to find a hidden companion.
 
+In voice settings, enter **What should your companion call you?** (for example, Alex, Captain or Daddy). Under **More settings**, add chat preferences for tone, reply style or what to call friends. These preferences apply across voice providers after saving and reconnecting. Each new chat connection you start gets an opening greeting; microphone toggles and connection tests do not repeat it. Live translation is unaffected.
+
 ### Keep these shortcuts handy
 
 | Action | Shortcut |

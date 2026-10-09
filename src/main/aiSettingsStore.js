@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { normalizeConversationPreferences } from '../services/conversationPreferences.js';
 import {
   DEFAULT_DASHSCOPE_REALTIME_MODEL, DEFAULT_DASHSCOPE_REALTIME_VOICE,
   DEFAULT_DOUBAO_DUPLEX_DIALOG_MODEL, DEFAULT_DOUBAO_REALTIME_VOICE, DOUBAO_REALTIME_VOICES,
@@ -84,6 +85,7 @@ export class AISettingsStore {
       providerDefinition(parsed.selectedProvider);
       if (!['qwen', 'deepseek'].includes(parsed.translationProvider)) throw new Error('invalid translator');
       for (const [id, saved] of Object.entries(parsed.providers)) validateProfile(id, saved);
+      parsed.conversation = normalizeConversationPreferences(parsed.conversation);
       this.data = parsed;
       if (this.data.providers.deepseek?.model === 'deepseek-chat') this.data.providers.deepseek.model = 'deepseek-flash';
       // Upgrade the former default in existing vaults; retain custom models,
@@ -148,6 +150,7 @@ export class AISettingsStore {
     return {
       selectedProvider: this.data.selectedProvider,
       translationProvider: this.data.translationProvider,
+      conversation: normalizeConversationPreferences(this.data.conversation),
       encryptionAvailable: Boolean(this.safeStorage?.isEncryptionAvailable()) && this.safeStorage.getSelectedStorageBackend?.() !== 'basic_text',
       error: this.error,
       providers: AI_PROVIDERS.map(definition => {
@@ -181,6 +184,10 @@ export class AISettingsStore {
     if (payload.purpose !== undefined && !['voice', 'translate'].includes(payload.purpose)) throw new Error('请选择有效的使用功能。');
     if (payload.purpose === 'translate' && !['qwen', 'deepseek'].includes(definition.id)) throw new Error('文字翻译请选择千问或 DeepSeek。');
     const next = structuredClone(this.data);
+    // Translation saves never change voice-chat personalization.
+    if (payload.purpose !== 'translate' && payload.conversation !== undefined) {
+      next.conversation = normalizeConversationPreferences(payload.conversation);
+    }
     const saved = next.providers[definition.id] || { secrets: {} };
     saved.secrets ||= {};
     if (definition.id === 'qwen') {

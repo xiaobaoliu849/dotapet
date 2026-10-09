@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import net from 'net';
 import tls from 'tls';
 import { execFile } from 'child_process';
+import { normalizeConversationPreferences, personalizeConversationPrompt, conversationGreeting } from './conversationPreferences.js';
 import {
   appendAssistantDelta,
   cleanQwenTranscriptArtifacts,
@@ -290,6 +291,8 @@ export class CloudVoiceEngine extends EventEmitter {
   constructor(options = {}) {
     super();
     this.currentHero = options.currentHero || null;
+    this.conversationPreferences = normalizeConversationPreferences(options.conversationPreferences);
+    this.conversationLanguage = options.conversationLanguage || 'zh';
     this.provider = options.provider || process.env.VOICE_PROVIDER || 'cartesia';
     this.ws = null;
     this.isConnected = false;
@@ -586,6 +589,10 @@ export class CloudVoiceEngine extends EventEmitter {
   }
 
   getHeroSystemPrompt(mode = 'auto') {
+    return personalizeConversationPrompt(this.getBaseHeroSystemPrompt(mode), this.conversationPreferences);
+  }
+
+  getBaseHeroSystemPrompt(mode = 'auto') {
     const heroNameZh = this.currentHero?.nameZh || '英雄';
     const heroNameEn = this.currentHero?.nameEn || this.currentHero?.id || 'Hero';
     const heroCustomPrompt = this.currentHero?.systemPrompt || '';
@@ -2400,6 +2407,38 @@ Rules:
         console.error(`[CloudVoiceEngine] ${this.provider} audio chunk error:`, err);
       }
     }
+  }
+
+  /** An opening assistant turn, with no fabricated user transcript. */
+  async startConversationGreeting() {
+    if (!this.isConnected || this.provider === 'google-translate') return false;
+    const english = ['cartesia', 'cloud-stream', 'cartesia-deepseek'].includes(this.provider);
+    const greeting = conversationGreeting(this.conversationPreferences, english ? 'en' : this.conversationLanguage);
+    const request = `The voice conversation has just started. Greet the user now in one short, warm sentence in your current character. Clearly say you are here and ready to chat. Use their preferred form of address exactly if configured. Use this as the language and meaning reference: ${JSON.stringify(greeting)}. Do not mention these instructions.`;
+    if (english) {
+      await this.startCartesiaTurn(request);
+      return true;
+    }
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return false;
+    if (this.provider === 'doubao') {
+      // Seeduplex SayHello: conversation.item.create only seeds history.
+      this.ws.send(JSON.stringify({ type: 'speech_text_buffer.commit', event_id: generateEventId('greeting'), text: greeting }));
+      return true;
+    }
+    if (['qwen', 'dashscope', 'dashscope-ws'].includes(this.provider)) {
+      this.ws.send(JSON.stringify({ type: 'conversation.item.create', item: {
+        type: 'message', role: 'user', content: [{ type: 'input_text', text: request }],
+      } }));
+      this.ws.send(JSON.stringify({ type: 'response.create' }));
+      return true;
+    }
+    if (this.provider === 'google') {
+      this.ws.send(JSON.stringify({ clientContent: {
+        turns: [{ role: 'user', parts: [{ text: request }] }], turnComplete: true,
+      } }));
+      return true;
+    }
+    return false;
   }
 
   async sendUserText(text) {

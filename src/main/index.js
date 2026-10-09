@@ -246,12 +246,16 @@ async function runCompanionSmokeTest() {
     change('provider', 'qwen'); change('provider', 'google');
     if (get('voice').value !== 'Charon') throw new Error('Switching providers lost the draft voice');
     type('secret-apiKey', 'smoke-google-key');
+    type('preferred-address', 'Daddy');
+    type('custom-instructions', 'Call my friend James Jay.');
     change('google-mode', 'google-translate');
     if (get('secret-apiKey').value !== 'smoke-google-key') throw new Error('Gemini modes did not share the key draft');
     change('google-mode', 'google');
     get('save').click();
     await waitFor(() => !get('save').disabled);
     if (get('secret-apiKey').value || !get('secret-apiKey').placeholder.includes('已保存')) throw new Error('Key was not cleared or saved');
+    const savedPreferences = (await window.electronAPI.getAISettings()).settings.conversation;
+    if (savedPreferences.preferredAddress !== 'Daddy' || savedPreferences.customInstructions !== 'Call my friend James Jay.') throw new Error('Chat preferences were not persisted through settings IPC');
     change('google-mode', 'google-translate');
     if (!get('secret-apiKey').placeholder.includes('已保存')) throw new Error('Gemini translation did not share the saved key');
     change('google-mode', 'google');
@@ -582,6 +586,7 @@ function startVoiceProvider(providerId) {
     }
     applyAIConfiguration(aiSettingsStore);
     const options = engineOptions(aiSettingsStore, providerId);
+    options.conversationLanguage = currentLanguage();
     voiceClient.disconnect();
     Object.assign(voiceClient.cloudEngine, options);
   } catch (error) {
@@ -1436,6 +1441,10 @@ function setupVoiceService() {
   voiceConnection = createVoiceConnection({
     engine: voiceClient.cloudEngine,
     start: startVoiceProvider,
+    onReady: () => voiceClient.cloudEngine.startConversationGreeting().catch(() => {
+      // A greeting failure must not tear down an otherwise usable voice chat.
+      console.warn('[Voice] Opening greeting could not be sent.');
+    }),
     onFailure: result => {
       voiceClient.disconnect();
       voiceClient.cloudEngine.apiKey = null;

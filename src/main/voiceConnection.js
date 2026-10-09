@@ -1,7 +1,7 @@
 import { connectionError } from '../services/connectionCheck.js';
 
 /** One user-requested session, shared by settings and the microphone shortcut. */
-export function createVoiceConnection({ engine, start, onFailure, timeoutMs = 20000 }) {
+export function createVoiceConnection({ engine, start, onFailure, onReady = () => {}, timeoutMs = 20000 }) {
   let pending = null;
   let readyProvider = null;
   const finish = result => {
@@ -19,7 +19,12 @@ export function createVoiceConnection({ engine, start, onFailure, timeoutMs = 20
   const ready = () => {
     if (!engine.isConnected) return;
     readyProvider = engine.provider;
-    if (pending?.provider === readyProvider) finish({ ok: true });
+    if (pending?.provider === readyProvider) {
+      finish({ ok: true });
+      // Only a user-requested new connection greets. Reuse, config ACKs and
+      // automatic persona reconnects must not start another opening turn.
+      onReady();
+    }
   };
   // Qwen's session.created does not acknowledge the requested model/voice.
   const sessionReady = () => { if (engine.provider !== 'qwen') ready(); };

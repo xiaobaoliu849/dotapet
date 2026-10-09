@@ -462,5 +462,14 @@
  "主动导入已有配置（文件只在本机读取）": "Import existing settings (the file is read only on this computer)",
  "JSON 配置": "JSON settings",
  "配置文件过大，请选择小于 1 MB 的 JSON 文件。": "The settings file is too large. Choose a JSON file under 1 MB.",
- "导入文件不是有效的 JSON 配置。": "The file isn't a valid JSON settings file."
+ "导入文件不是有效的 JSON 配置。": "The file isn't a valid JSON settings file.",
+ "希望小伙伴怎么称呼你？": "What should your companion call you?",
+ "例如：小宝、队长、Daddy（可选）": "For example: Alex, Captain, Daddy (optional)",
+ "所有语音聊天共用；连上后，小伙伴会先开口打招呼。": "Shared across voice chats. Your companion says hello once connected.",
+ "聊天偏好 / 自定义提示词（可选）": "Chat preferences / custom instructions (optional)",
+ "例如：语气温柔一点，回答简短；提到我的朋友小明时叫他明哥。": "For example: Be warm and concise; call my friend James “Jay”.",
+ "保留当前角色，补充你喜欢的聊天方式或称呼。保存后重新连接生效，不影响翻译。": "Keep the current character and add your preferred chat style or names. Save and reconnect to apply. Translation is unaffected.",
+ "聊天偏好格式不正确。": "Invalid chat preferences.",
+ "称呼请使用不超过 80 个字符的单行文字。": "Use a single line of up to 80 characters for your preferred name.",
+ "聊天偏好请使用不超过 2000 个字符的文字。": "Use up to 2000 characters for chat preferences."
 }

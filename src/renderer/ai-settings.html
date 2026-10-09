@@ -34,6 +34,7 @@
         <p id="connection-status" class="connection-status" role="status">麦克风只在你按下 Alt+Q 时打开。</p>
       </div>
       <div id="feedback" class="feedback" role="status" aria-live="polite">正在读取设置…</div>
+      <div class="conversation-address"><label for="preferred-address">希望小伙伴怎么称呼你？</label><input id="preferred-address" type="text" maxlength="80" autocomplete="off" placeholder="例如：小宝、队长、Daddy（可选）" aria-describedby="address-hint"><p id="address-hint" class="hint">所有语音聊天共用；连上后，小伙伴会先开口打招呼。</p></div>
     </section>
 
     <section id="translate-card" class="card translate-card" aria-labelledby="translate-title">
@@ -51,6 +52,7 @@
     <details id="advanced" class="advanced">
       <summary><span>更多设置</span><span class="summary-hint">模型、音色、地区、麦克风检查</span><span class="summary-chevron" aria-hidden="true"></span></summary>
       <div class="advanced-content">
+        <div><label for="custom-instructions">聊天偏好 / 自定义提示词（可选）</label><textarea id="custom-instructions" rows="3" maxlength="2000" placeholder="例如：语气温柔一点，回答简短；提到我的朋友小明时叫他明哥。" aria-describedby="instructions-hint"></textarea><p id="instructions-hint" class="hint">保留当前角色，补充你喜欢的聊天方式或称呼。保存后重新连接生效，不影响翻译。</p></div>
         <div id="google-mode-fields" hidden><label for="google-mode">Gemini 模式</label><select id="google-mode"><option value="google">语音聊天</option><option value="google-translate">实时语音翻译（说中文，它说外语）</option></select></div>
         <div id="workspace-fields" class="field-grid" hidden>
           <div><label for="region">千问密钥所属地区</label><select id="region"><option value="beijing">中国 · 北京</option><option value="singapore">新加坡</option></select></div>

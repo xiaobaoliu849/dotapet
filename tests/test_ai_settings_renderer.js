@@ -33,7 +33,8 @@ async function renderer(overrides = {}) {
   }
   for (const id of ['feedback', 'translate-feedback', 'provider-help', 'secret-fields', 'optional-secret-fields', 'workspace-fields', 'voice-fields', 'connection-status', 'provider-options', 'translator-options', 'translate-state', 'translate-key', 'translate-model-fields', 'all-voice-fields', 'custom-voice-fields', 'google-mode-fields', 'voice-card', 'translate-card', 'welcome-pet']) nodes.set(id, new Element('div', id));
   for (const id of ['provider', 'voice', 'region', 'google-mode', 'all-voices']) nodes.set(id, new Element('select', id));
-  for (const id of ['model', 'workspace', 'voice-custom', 'custom-voice-id', 'translate-model']) nodes.set(id, new Element('input', id));
+  for (const id of ['model', 'workspace', 'voice-custom', 'custom-voice-id', 'translate-model', 'preferred-address']) nodes.set(id, new Element('input', id));
+  nodes.set('custom-instructions', new Element('textarea', 'custom-instructions'));
   for (const id of ['connect', 'disconnect', 'save', 'test', 'cancel', 'import', 'voice-test', 'finish', 'skip', 'translate-change']) nodes.set(id, new Element('button', id));
   const settings = { selectedProvider: 'qwen', translationProvider: 'qwen', encryptionAvailable: true,
     providers: AI_PROVIDERS.map(item => ({ ...item, fields: item.fields.map(field => ({ ...field, account: credentialAccount(item.id, field.id), configured: false })) })) };
@@ -52,7 +53,7 @@ async function renderer(overrides = {}) {
   const document = {
     getElementById: id => nodes.get(id),
     createElement: tag => new Element(tag),
-    querySelectorAll: () => [...nodes.values()].filter(node => ['button', 'input', 'select'].includes(node.tag)),
+    querySelectorAll: () => [...nodes.values()].filter(node => ['button', 'input', 'select', 'textarea'].includes(node.tag)),
   };
   vm.runInNewContext(source, { window: { electronAPI: api }, document, setTimeout, Option: class { constructor(text, value) { Object.assign(this, { text, value }); } } });
   await tick();
@@ -61,6 +62,36 @@ async function renderer(overrides = {}) {
 const card = (ui, id, group = 'provider-options') => ui.nodes.get(group).children.find(item => item.dataset.provider === id);
 const configure = (ui, id) => { for (const field of ui.settings.providers.find(item => item.id === id).fields) field.configured = true; };
 const type = (ui, id, value) => { ui.nodes.get(id).value = value; ui.nodes.get(id).listeners.input(); };
+
+test('address and instructions survive provider and translation changes and save only with voice', async () => {
+  const ui = await renderer();
+  type(ui, 'preferred-address', 'Daddy');
+  type(ui, 'custom-instructions', 'Call James Jay.\nKeep replies warm.');
+  card(ui, 'doubao').click();
+  assert.equal(ui.nodes.get('preferred-address').value, 'Daddy');
+  configure(ui, 'deepseek');
+  card(ui, 'deepseek', 'translator-options').click(); await tick();
+  assert.equal(ui.calls.saved.conversation, undefined);
+  assert.equal(ui.nodes.get('custom-instructions').value, 'Call James Jay.\nKeep replies warm.');
+  assert.equal(ui.nodes.get('preferred-address').value, 'Daddy');
+  await ui.nodes.get('save').click();
+  assert.equal(ui.calls.saved.conversation.preferredAddress, 'Daddy');
+  assert.equal(ui.calls.saved.conversation.customInstructions, 'Call James Jay.\nKeep replies warm.');
+});
+
+test('failed personalization saves keep the draft; pending saves disable both preference controls', async () => {
+  let resolve;
+  const ui = await renderer({ saveAISettings: () => new Promise(done => { resolve = done; }) });
+  type(ui, 'preferred-address', '队长');
+  type(ui, 'custom-instructions', '简短一点');
+  const pending = ui.nodes.get('save').click();
+  assert.equal(ui.nodes.get('preferred-address').disabled, true);
+  assert.equal(ui.nodes.get('custom-instructions').disabled, true);
+  resolve({ ok: false, error: 'Save failed' }); await pending;
+  card(ui, 'google').click();
+  assert.equal(ui.nodes.get('preferred-address').value, '队长');
+  assert.equal(ui.nodes.get('custom-instructions').value, '简短一点');
+});
 
 test('one page shows four voice providers and a translation card without cloud calls', async () => {
   const ui = await renderer();

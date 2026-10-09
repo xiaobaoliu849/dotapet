@@ -28,6 +28,36 @@ test('construction stays offline, duplicate starts join, ready sessions are reus
   assert.deepEqual(f.starts, ['google']);
 });
 
+test('a new requested session greets once after readiness, never on reuse or config updates', async t => {
+  let greetings = 0;
+  const f = fixture(t, { onReady: () => greetings++ });
+  const attempt = f.connection.ensure('qwen');
+  f.ready(); assert.equal(greetings, 0);
+  f.engine.emit('session_configured'); await attempt;
+  assert.equal(greetings, 1);
+  f.engine.emit('session_configured');
+  await f.connection.ensure('qwen');
+  assert.equal(greetings, 1);
+  f.engine.emit('status', { status: 'disconnected' });
+  // An internal reconnect (e.g. persona change) is not a user start.
+  f.ready(); f.engine.emit('session_configured');
+  assert.equal(greetings, 1);
+  f.engine.emit('status', { status: 'disconnected' });
+  const retry = f.connection.ensure('google'); f.ready(); await retry;
+  assert.equal(greetings, 2);
+});
+
+test('cancelled and failed connections never greet, even with late readiness', async t => {
+  let greetings = 0;
+  const f = fixture(t, { onReady: () => greetings++ });
+  const attempt = f.connection.ensure('google'); f.connection.cancel();
+  assert.equal((await attempt).cancelled, true); f.ready();
+  assert.equal(greetings, 0);
+  const next = f.connection.ensure('doubao');
+  f.engine.emit('status', { status: 'error', error: '401' }); await next;
+  f.ready(); assert.equal(greetings, 0);
+});
+
 test('unexpected disconnection permits retry without changing provider or saving keys', async t => {
   const f = fixture(t);
   const first = f.connection.ensure('google'); f.ready(); await first;

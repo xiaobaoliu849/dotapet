@@ -16,6 +16,7 @@ const keyDrafts = new Map();
 // Unsaved model / voice choices, per voice provider.
 const drafts = new Map();
 let renderedProvider = '';
+let conversationDraft = null;
 const voiceProviders = ['qwen', 'doubao', 'google', 'cartesia'];
 const providerNames = { qwen: '阿里千问', doubao: '豆包', google: 'Gemini', cartesia: 'Cartesia', deepseek: 'DeepSeek' };
 const providerDescriptions = { qwen: ['千', '语音 + 翻译 · 推荐'], doubao: ['豆', '自然的中文对话'], google: ['✦', '多语言 · 语音翻译'], cartesia: ['C', '英语口语对练'], deepseek: ['D', '文字 / 截图翻译'] };
@@ -72,7 +73,7 @@ function status(event) {
 function setBusy(value, testing = false) {
   if (value) window.stopMicrophoneCheck?.();
   busy = value;
-  for (const control of document.querySelectorAll('button, input, select')) control.disabled = value;
+  for (const control of document.querySelectorAll('button, input, select, textarea')) control.disabled = value;
   byId('cancel').hidden = !testing;
   byId('cancel').disabled = false;
   if (!value && settings) updateConnectAction();
@@ -166,7 +167,7 @@ function renderProfile() {
     byId('custom-voice-id').value = byId('voice-custom').value;
     byId('all-voices').value = byId('voice').value;
   }
-  if (draft?.dirty || item.fields.some(field => keyDrafts.get(field.account))) markDirty();
+  if (conversationDraft || draft?.dirty || item.fields.some(field => keyDrafts.get(field.account))) markDirty();
   updateConnectAction();
   renderTranslator();
 }
@@ -213,6 +214,10 @@ function updateTranslateAction() {
 
 function render(next, selected) {
   settings = next;
+  const conversation = conversationDraft || settings.conversation || {};
+  byId('preferred-address').value = conversation.preferredAddress || '';
+  byId('custom-instructions').value = conversation.customInstructions || '';
+  byId('custom-instructions').placeholder = window.t?.('例如：语气温柔一点，回答简短；提到我的朋友小明时叫他明哥。') || '例如：语气温柔一点，回答简短；提到我的朋友小明时叫他明哥。';
   if (!translatorPending) translator = settings.translationProvider;
   const selection = selected || settings.selectedProvider;
   const providers = voiceProviders.map(id => providerById(id)).filter(Boolean);
@@ -246,6 +251,7 @@ function render(next, selected) {
 function voicePayload() {
   const item = profile();
   return { provider: item.id, purpose: 'voice', model: byId('model').value,
+    conversation: { preferredAddress: byId('preferred-address').value, customInstructions: byId('custom-instructions').value },
     voice: item.voices.length ? byId('voice').value : byId('voice-custom').value,
     ...(item.id === 'qwen' ? { workspaceId: byId('workspace').value, region: byId('region').value } : {}),
     secrets: Object.fromEntries(item.fields.map(field => [field.id, keyDrafts.get(field.account) || ''])) };
@@ -267,6 +273,7 @@ async function saveVoice() {
   rememberDraft();
   const data = voicePayload();
   let next = await store(data);
+  conversationDraft = null;
   drafts.delete(data.provider);
   // A translator picked below is saved by the same click once its key exists.
   if (translatorPending) {
@@ -339,6 +346,10 @@ byId('all-voices').addEventListener('change', () => {
 });
 byId('custom-voice-id').addEventListener('input', () => { byId('voice-custom').value = byId('custom-voice-id').value; markDirty(); });
 for (const id of ['model', 'workspace']) byId(id).addEventListener('input', markDirty);
+for (const id of ['preferred-address', 'custom-instructions']) byId(id).addEventListener('input', () => {
+  conversationDraft = { preferredAddress: byId('preferred-address').value, customInstructions: byId('custom-instructions').value };
+  markDirty();
+});
 byId('region').addEventListener('change', markDirty);
 byId('translate-change').addEventListener('click', () => { changingTranslateKey = true; renderTranslator(); byId('translate-secret')?.focus?.(); });
 function requireCredentials(item = profile()) {

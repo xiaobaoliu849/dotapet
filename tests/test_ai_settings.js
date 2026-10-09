@@ -39,6 +39,40 @@ function vault(t, secure = encryption) {
   return new AISettingsStore({ filePath, safeStorage: secure });
 }
 
+test('conversation preferences persist globally, preserve credentials and can be cleared', t => {
+  const store = vault(t);
+  store.save({ provider: 'qwen', secrets: { apiKey: 'private-key' } });
+  const originalSecrets = structuredClone(store.data.providers.qwen.secrets);
+  const conversation = { preferredAddress: ' Daddy ', customInstructions: 'Be gentle.\nCall my friend James Jay.' };
+  const visible = store.save({ provider: 'qwen', conversation });
+  assert.equal(visible.conversation.preferredAddress, 'Daddy');
+  assert.deepEqual(store.data.providers.qwen.secrets, originalSecrets);
+  const reloaded = new AISettingsStore({ filePath: store.filePath, safeStorage: encryption });
+  assert.deepEqual(reloaded.publicSettings().conversation, visible.conversation);
+  for (const provider of ['qwen', 'doubao', 'google', 'cartesia']) {
+    assert.deepEqual(engineOptions(reloaded, provider).conversationPreferences, visible.conversation);
+  }
+  reloaded.save({ provider: 'deepseek', purpose: 'translate', conversation: { preferredAddress: 'ignored' } });
+  assert.deepEqual(reloaded.publicSettings().conversation, visible.conversation);
+  reloaded.save({ provider: 'doubao' });
+  assert.deepEqual(reloaded.publicSettings().conversation, visible.conversation);
+  reloaded.save({ provider: 'doubao', conversation: { preferredAddress: '', customInstructions: '' } });
+  assert.deepEqual(reloaded.publicSettings().conversation, { preferredAddress: '', customInstructions: '' });
+});
+
+test('old vaults migrate with empty preferences; invalid preferences cannot overwrite the vault', t => {
+  const store = vault(t);
+  store.save({ provider: 'qwen', secrets: { apiKey: 'preserved' } });
+  const before = fs.readFileSync(store.filePath, 'utf8');
+  const reloaded = new AISettingsStore({ filePath: store.filePath, safeStorage: encryption });
+  assert.deepEqual(reloaded.publicSettings().conversation, { preferredAddress: '', customInstructions: '' });
+  for (const conversation of [null, [], 'bad', { preferredAddress: 123 }, { preferredAddress: 'a\nb' }, { preferredAddress: 'a'.repeat(81) }, { customInstructions: 'a'.repeat(2001) }, { customInstructions: '\0' }]) {
+    assert.throws(() => store.save({ provider: 'qwen', conversation }));
+    assert.equal(fs.readFileSync(store.filePath, 'utf8'), before);
+    assert.equal(store.getPrivate('qwen').apiKey, 'preserved');
+  }
+});
+
 test('translation saves keep the selected voice provider and Qwen voice model', t => {
   const store = vault(t);
   store.save({ provider: 'qwen', model: 'custom-voice-model', voice: 'Raymond', secrets: { apiKey: 'shared-key' } });

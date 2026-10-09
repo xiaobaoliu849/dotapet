@@ -1,6 +1,7 @@
 import { configureCloudKeys, CloudVoiceEngine } from '../services/cloudVoiceEngine.js';
 import { checkVoiceConnection, connectionError } from '../services/connectionCheck.js';
 import { providerDefinition } from './aiSettingsStore.js';
+import { normalizeConversationPreferences } from '../services/conversationPreferences.js';
 
 function qwenTextBaseUrl(profile) {
   if (profile.workspaceId) return `https://${profile.workspaceId}.${profile.region === 'singapore' ? 'ap-southeast-1' : 'cn-beijing'}.maas.aliyuncs.com/compatible-mode/v1`;
@@ -38,6 +39,7 @@ export function applyAIConfiguration(store) {
 export function engineOptions(store, provider) {
   const profile = store.getPrivate(provider);
   return { provider, apiKey: profile.apiKey, model: profile.model, voice: profile.voice,
+    conversationPreferences: normalizeConversationPreferences(store.data.conversation),
     doubaoVoice: profile.voice, googleVoice: profile.voice,
     googleModel: provider === 'google' ? profile.model : undefined,
     googleTranslateModel: provider === 'google-translate' ? profile.model : undefined,

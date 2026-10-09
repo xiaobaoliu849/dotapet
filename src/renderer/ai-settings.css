@@ -38,6 +38,10 @@ h2 { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 17px; 
 .provider-ready::before { content: '● '; font-size: 8px; vertical-align: 2px; }
 
 /* Fields */
+.conversation-address { margin-top: 14px; }
+textarea { width: 100%; padding: 10px 13px; border: 1px solid var(--control-border); border-radius: var(--control-radius); background: var(--control); color: var(--ink); font: inherit; resize: vertical; min-height: 80px; }
+textarea:focus { border-color: var(--green); box-shadow: var(--focus-shadow); outline: none; }
+textarea:disabled { opacity: .55; }
 label { display: block; font-size: var(--control-size); font-weight: 600; color: var(--ink); margin: 0 0 7px; }
 input, select { width: 100%; min-height: 44px; padding: 10px 13px; border: 1px solid var(--control-border); border-radius: var(--control-radius); background: var(--control); color: var(--ink); font-size: var(--control-size); transition: border-color .15s, box-shadow .15s; }
 input::placeholder { color: var(--faint); }
