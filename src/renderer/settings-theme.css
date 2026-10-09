@@ -1,0 +1,72 @@
+/* Opt in per document; the standalone F6 panel keeps its game palette. */
+:root[data-settings-theme='green'] {
+  color-scheme: light;
+  font-family: 'Segoe UI Variable Text', 'Segoe UI', 'Microsoft YaHei UI', 'Microsoft YaHei', sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  --ink: #2f3a32;
+  --muted: #58665b;
+  --faint: #647266;
+  --line: #dce3d8;
+  --surface: #ffffff;
+  --canvas: #f6f7f2;
+  --rail: #eef1ea;
+  --green: #3f6a52;
+  --green-dark: #325844;
+  --green-soft: #ebf3e7;
+  --control: #fcfdfb;
+  --control-border: #c3cec0;
+  --control-hover: #edf2e7;
+  --footer: #f6f7f2f5;
+  --danger: #9e4937;
+  --card-radius: 18px;
+  --control-radius: 10px;
+  --caption-size: 13px;
+  --control-size: 14px;
+  --title-size: 28px;
+  --focus-shadow: 0 0 0 3px #3f6a5220;
+  color: var(--ink);
+  background: var(--canvas);
+}
+
+/* Low specificity lets each page keep its layout and compact utility controls. */
+:where(html[data-settings-theme='green']) :where(*) { box-sizing: border-box; font-family: inherit; }
+:where(html[data-settings-theme='green']) :where(body) { margin: 0; font-size: 15px; line-height: 1.5; }
+:where(html[data-settings-theme='green']) :where(button, input, select, textarea) { font: inherit; font-size: var(--control-size); }
+:where(html[data-settings-theme='green']) :where(button, select) { cursor: pointer; }
+:where(html[data-settings-theme='green']) :where(button) {
+  min-height: 44px;
+  padding: 9px 15px;
+  border: 1px solid var(--control-border);
+  border-radius: var(--control-radius);
+  background: var(--control);
+  color: var(--green);
+}
+:where(html[data-settings-theme='green']) :where(button:hover) { background: var(--control-hover); }
+:where(html[data-settings-theme='green']) :where(input, select, textarea) { accent-color: var(--green); }
+:where(html[data-settings-theme='green']) :where(button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible) {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+:where(html[data-settings-theme='green']) :where(kbd) {
+  display: inline-block;
+  min-width: 20px;
+  padding: 0 5px;
+  border: 1px solid var(--control-border);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  background: var(--surface);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 18px;
+  color: var(--muted);
+  text-align: center;
+}
+:where(html[data-settings-theme='green']) :where([hidden]) { display: none !important; }
+:where(html[data-settings-theme='green']) ::-webkit-scrollbar { width: 7px; }
+:where(html[data-settings-theme='green']) ::-webkit-scrollbar-track { background: var(--canvas); }
+:where(html[data-settings-theme='green']) ::-webkit-scrollbar-thumb { border: 2px solid var(--canvas); border-radius: 9px; background: var(--control-border); }
+@media (max-width: 720px) { :root[data-settings-theme='green'] { --title-size: 25px; } }
+@media (prefers-reduced-motion: reduce) {
+  :where(html[data-settings-theme='green']) *, :where(html[data-settings-theme='green']) *::before, :where(html[data-settings-theme='green']) *::after { animation: none !important; transition: none !important; }
+}

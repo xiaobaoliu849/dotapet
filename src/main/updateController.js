@@ -11,7 +11,7 @@ export function createUpdateController({ electron, service, rendererDirectory, h
   let notifiedVersion = '';
   let notification = null;
   hub.register('update', {
-    file: 'update.html', preload: '../preload/update.js', background: '#f7f8f4', backgroundThrottling: false,
+    file: 'update.html', preload: '../preload/update.js', background: '#f6f7f2', backgroundThrottling: false,
     // Visiting the page asks for a fresh answer; concurrent checks are coalesced.
     onShow() { if (['idle', 'current', 'error'].includes(service.state.phase)) void service.check(); },
     // Closing the settings center means "later": keep a download, never restart unasked.

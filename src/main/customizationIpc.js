@@ -36,7 +36,7 @@ export function createCustomizationController({ electron, rendererDirectory, hub
     },
   });
   const editor = () => hub?.contents('appearance') || null;
-  hub?.register('appearance', { file: 'customize.html', preload: '../preload/customize.js', background: '#faf6ef' });
+  hub?.register('appearance', { file: 'customize.html', preload: '../preload/customize.js', background: '#f6f7f2' });
   const assetURL = src => !src || /^(https?:|data:|file:)/.test(src) ? src : pathToFileURL(path.join(rendererDirectory, src)).href;
   const sprites = value => Object.fromEntries(Object.entries(value || {}).map(([key, src]) => [key, assetURL(src)]));
   function characters() {
