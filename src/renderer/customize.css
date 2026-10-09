@@ -1,10 +1,13 @@
+html { scroll-padding: calc(var(--header-height, 100px) + 12px) 0 92px; }
 body { color: var(--ink); background: var(--canvas); }
-header { display: flex; justify-content: space-between; gap: 20px; align-items: center; max-width: 1200px; margin: auto; padding: 26px 32px 20px; }
+/* Stays put like the footer; the padding lines its text up with the 1200px editor. */
+header { position: sticky; top: 0; z-index: 4; display: flex; justify-content: space-between; gap: 20px; align-items: center; padding: 22px max(32px, calc((100% - 1200px) / 2 + 32px)) 16px; margin-bottom: 8px; background: var(--footer); border-bottom: 1px solid transparent; backdrop-filter: blur(12px); transition: border-color .15s; }
+body[data-scrolled='true'] header { border-bottom-color: var(--line); }
 h1 { font-size: var(--title-size); line-height: 1.3; margin: 0 0 6px; font-weight: 700; letter-spacing: -.4px; }
 header p { margin: 0; color: var(--muted); }
 .active-badge { flex-shrink: 0; max-width: 160px; padding: 7px 12px; border-radius: 20px; background: var(--green-soft); color: var(--green); font-size: var(--caption-size); overflow-wrap: anywhere; }
 main { max-width: 1200px; margin: auto; padding: 0 32px 124px; display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 24px; }
-aside { position: sticky; top: 18px; align-self: start; max-height: calc(100vh - 110px); overflow-y: auto; scrollbar-width: thin; padding-bottom: 4px; }
+aside { position: sticky; top: calc(var(--header-height, 100px) + 12px); align-self: start; max-height: calc(100vh - var(--header-height, 100px) - 104px); overflow-y: auto; scrollbar-width: thin; padding-bottom: 4px; }
 label { display: block; font-weight: 600; font-size: var(--control-size); margin: 12px 0 7px; }
 select, input[type=text], input:not([type]) { width: 100%; min-height: 44px; border: 1px solid var(--control-border); padding: 10px 13px; background: var(--control); color: var(--ink); border-radius: var(--control-radius); min-width: 0; }
 input::placeholder { color: var(--faint); }
@@ -72,7 +75,9 @@ dialog::backdrop { background: #2f3a3260; }
 .dialog-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; margin-top: 20px; }
 .danger { color: var(--danger); }
 @media (max-width: 780px) {
-  header { padding: 20px 22px; gap: 12px; align-items: flex-start; }
+  header { padding: 16px 22px 12px; gap: 12px; align-items: flex-start; }
+  /* The header stays on screen; a narrow window cannot spare it the tagline. */
+  header p { display: none; }
   main { padding: 0 22px 124px; grid-template-columns: minmax(0,1fr); gap: 20px; }
   aside { position: static; max-height: none; overflow: visible; }
   .preview-stage { height: 220px; }

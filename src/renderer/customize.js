@@ -183,6 +183,9 @@ for (const [control, field, numeric] of [['appearance-style','style'],['appearan
 }
 $('theme').addEventListener('change', () => edit(() => { const choice = $('theme').value; draft.accent = choice === 'default' ? null : choice === 'custom' ? $('accent').value : character().options.find(look => look.id === choice)?.themeColor; $('accent').value = draft.accent || character().themeColor || '#f59e0b'; }));
 $('accent').addEventListener('input', () => edit(() => { draft.accent = $('accent').value; $('theme').value = 'custom'; }));
+// The editor scrolls under the fixed header, whose height changes as the window narrows.
+new ResizeObserver(([entry]) => document.documentElement.style.setProperty('--header-height', `${Math.ceil(entry.borderBoxSize[0].blockSize)}px`)).observe(document.querySelector('header'));
+addEventListener('scroll', () => { document.body.dataset.scrolled = String(scrollY > 0); }, { passive: true });
 for (const field of ['mode','scope','fit','color','asset','opacity','dim']) {
   $(`background-${field}`).addEventListener('input', () => edit(() => { const value = $(`background-${field}`).value; draft.background[field === 'asset' ? 'assetId' : field] = ['opacity','dim'].includes(field) ? Number(value) / 100 : value || null; }));
 }
