@@ -70,6 +70,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
 
   // Voice Events & Streaming
+  ensureVoiceConnected: requestId => ipcRenderer.invoke('voice:ensure-connected', requestId),
+  cancelVoiceConnect: requestId => ipcRenderer.send('voice:cancel-connect', requestId),
   sendAudioChunk: (chunk) => {
     ipcRenderer.send('voice:send-audio-chunk', chunk);
   },

@@ -18,6 +18,7 @@ import { checkGsiInstalled, installGsiConfig } from './gsi/gsiInstaller.js';
 import { AISettingsStore, providerDefinition } from './aiSettingsStore.js';
 import { applyAIConfiguration, engineOptions, testAIConnection } from './aiConfiguration.js';
 import { connectionError } from '../services/connectionCheck.js';
+import { createVoiceConnection } from './voiceConnection.js';
 import { isTrustedSettingsSender, aiKeyPage, settingsAffectVoice } from './aiSettingsIpc.js';
 import { createCustomizationController } from './customizationIpc.js';
 import { runCustomizationSmoke } from './customizationSmoke.js';
@@ -43,6 +44,7 @@ function currentLanguage() {
 /** For text main shows itself, such as a file dialog's title. */
 const t = (text, ...values) => translate(loadStrings(currentLanguage()), text, ...values);
 const aiSettingsURL = pathToFileURL(path.join(__dirname, '../renderer/ai-settings.html')).href;
+const petURL = pathToFileURL(path.join(__dirname, '../renderer/index.html')).href;
 const appIcon = path.join(__dirname, '../renderer/assets/app-icon.png');
 
 // Isolated smoke tests never touch a user's vault, running companion, or GSI port.
@@ -100,6 +102,8 @@ if (!gotTheLock) {
 let mainWindow = null;
 let tray = null;
 let voiceClient = null;
+let voiceConnection = null;
+let microphoneConnectionRequest = null;
 let ahkEngine = null;
 let gamePhraseShortcuts = null;
 let roamEngine = null;
@@ -128,8 +132,8 @@ let updateController = null;
 let updateService = null;
 let lastVoiceStatus = { status: 'disconnected', provider: '未连接' };
 
-function publishVoiceStatus(data) {
-  lastVoiceStatus = data?.status === 'error' ? { ...data, error: connectionError(data.error) } : data;
+function publishVoiceStatus(data, { sanitized = false } = {}) {
+  lastVoiceStatus = data?.status === 'error' && !sanitized ? { ...data, error: connectionError(data.error) } : data;
   if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('voice:status', lastVoiceStatus);
   settingsPage()?.send('voice:status', lastVoiceStatus);
 }
@@ -141,6 +145,8 @@ function cancelConnectionTest() {
 
 function stopVoiceForSettings() {
   cancelConnectionTest();
+  voiceConnection?.cancel();
+  retryVoiceProvider = null;
   voiceClient?.disconnect();
   if (voiceClient?.cloudEngine) voiceClient.cloudEngine.apiKey = null;
   currentVoiceProvider = null;
@@ -376,7 +382,11 @@ async function runCompanionSmokeTest() {
     await page.executeJavaScript("if(!document.getElementById('translate-secret')) throw new Error('DeepSeek translation did not ask for its key'); document.querySelector('#translator-options [data-provider=qwen]').click(); window.scrollTo(0,0)");
   }
   const { runConversationSmoke } = await import('./conversationSmoke.js');
-  const conversation = await runConversationSmoke({ mainWindow, outputDirectory: app.getPath('userData') });
+  setupVoiceService();
+  const { runVoiceReconnectSmoke } = await import('./voiceReconnectSmoke.js');
+  const { conversation, ...voiceReconnect } = await runVoiceReconnectSmoke({ mainWindow, store: aiSettingsStore, client: voiceClient,
+    connection: voiceConnection, disconnect: () => setVoiceProvider(null), getSettingsWindow: () => controlCenter.window,
+    runConversation: () => runConversationSmoke({ mainWindow, outputDirectory: app.getPath('userData') }) });
   const customizationResult = await runCustomizationSmoke({ controller: customizationController, controlCenter, mainWindow, dialog, nativeImage, outputDirectory: app.getPath('userData') });
   const { runHeroSearchSmoke } = await import('./heroSearchSmoke.js');
   const heroSearch = await runHeroSearchSmoke({ mainWindow, outputDirectory: app.getPath('userData') });
@@ -390,7 +400,7 @@ async function runCompanionSmokeTest() {
   const settingsClosed = new Promise(resolve => controlCenter.window.once('closed', resolve));
   mainWindow.close();
   await Promise.race([settingsClosed, new Promise((_, reject) => setTimeout(() => reject(new Error('Settings center outlived the pet window')), 3000))]);
-  console.log('[Smoke] PASS', JSON.stringify({ ...result, onboarding, conversation, customization: customizationResult, heroSearch, phrases, updates, settingsClosesWithPet: true }));
+  console.log('[Smoke] PASS', JSON.stringify({ ...result, onboarding, conversation, voiceReconnect, customization: customizationResult, heroSearch, phrases, updates, settingsClosesWithPet: true }));
   app.exit(0);
 }
 
@@ -559,43 +569,50 @@ export const VOICE_PROVIDERS = [
 // explicitly picks one (tray / pet menu / IPC / shortcut).
 // null = 未连接 — GSI 播报与翻译走本地路径，不受影响。
 let currentVoiceProvider = null;
+// Runtime failures clear the live provider, but retain the user's retry choice.
+let retryVoiceProvider = null;
 
-function setVoiceProvider(providerId) {
+function startVoiceProvider(providerId) {
   cancelConnectionTest();
-  if (providerId) {
-    try {
-      if (providerDefinition(providerId).textOnly) throw new Error('请选择实时语音服务商。');
-      const profile = aiSettingsStore.getPrivate(providerId);
-      if (providerDefinition(providerId).fields.some(field => !field.optional && !profile[field.id])) {
-        stopVoiceForSettings();
-        openAISettings('voice');
-        return;
-      }
-      applyAIConfiguration(aiSettingsStore);
-      const options = engineOptions(aiSettingsStore, providerId);
-      voiceClient?.disconnect();
-      Object.assign(voiceClient.cloudEngine, options);
-    } catch (error) {
-      stopVoiceForSettings();
-      publishVoiceStatus({ status: 'error', error: error.message });
-      openAISettings('voice');
-      return;
+  try {
+    if (providerDefinition(providerId).textOnly) throw new Error('请选择实时语音服务商。');
+    const profile = aiSettingsStore.getPrivate(providerId);
+    if (providerDefinition(providerId).fields.some(field => !field.optional && !profile[field.id])) {
+      throw new Error('缺少所选服务商的密钥，请打开 AI 设置。');
     }
+    applyAIConfiguration(aiSettingsStore);
+    const options = engineOptions(aiSettingsStore, providerId);
+    voiceClient.disconnect();
+    Object.assign(voiceClient.cloudEngine, options);
+  } catch (error) {
+    error.needsSettings = true;
+    throw error;
   }
-  currentVoiceProvider = providerId || null;
-  if (voiceClient) {
-    if (currentVoiceProvider) {
-      voiceClient.setProvider(currentVoiceProvider);
-    } else {
-      voiceClient.disconnect();
-      // A manual disconnect() nulls the socket before its close event fires,
-      // so the engine's stale-socket guard swallows the close without a
-      // status emit — tell the renderer the cloud voice is now off.
-      voiceClient.cloudEngine.apiKey = null;
-      publishVoiceStatus({ status: 'disconnected', provider: '未连接 (仅本地语音)' });
-    }
-  }
+  currentVoiceProvider = providerId;
+  retryVoiceProvider = providerId;
+  voiceClient.setProvider(providerId);
   updateTrayMenu();
+}
+
+function setVoiceProvider(providerId, { openSettings = true } = {}) {
+  cancelConnectionTest();
+  if (providerId && voiceConnection) {
+    const attempt = voiceConnection.ensure(providerId);
+    if (openSettings) attempt.then(result => { if (result.needsSettings) openAISettings('voice'); });
+    return attempt;
+  }
+  voiceConnection?.cancel();
+  currentVoiceProvider = null;
+  if (voiceClient) {
+    voiceClient.disconnect();
+    // A manual disconnect() nulls the socket before its close event fires,
+    // so the engine's stale-socket guard swallows the close without a
+    // status emit — tell the renderer the cloud voice is now off.
+    voiceClient.cloudEngine.apiKey = null;
+  }
+  publishVoiceStatus({ status: 'disconnected', provider: '未连接 (按 Alt+Q 连接语音)' });
+  updateTrayMenu();
+  return Promise.resolve({ ok: false, cancelled: true });
 }
 
 function cycleVoiceProvider() {
@@ -1367,12 +1384,7 @@ function selectHero(heroId) {
 }
 
 function setupServices() {
-  voiceClient = new VoiceSpiritClient({
-    currentHero: getCurrentHero(),
-    translateTargetLanguage,
-    autoReconnect: false,
-  });
-
+  setupVoiceService();
   ahkEngine = new AhkMigratedEngine(mainWindow, voiceClient);
 
   // Initialize DOTA 2 GSI Local Listener Server
@@ -1415,6 +1427,23 @@ function setupServices() {
   });
 
   gsiServer.start();
+}
+
+function setupVoiceService() {
+  voiceClient = new VoiceSpiritClient({
+    currentHero: getCurrentHero(), translateTargetLanguage, autoReconnect: false,
+  });
+  voiceConnection = createVoiceConnection({
+    engine: voiceClient.cloudEngine,
+    start: startVoiceProvider,
+    onFailure: result => {
+      voiceClient.disconnect();
+      voiceClient.cloudEngine.apiKey = null;
+      currentVoiceProvider = null;
+      updateTrayMenu();
+      publishVoiceStatus({ status: 'error', error: result.error, needsSettings: result.needsSettings }, { sanitized: true });
+    },
+  });
 
   // Relay cloud voice engine events to the renderer.
   const forwardVoiceEvents = [
@@ -1458,6 +1487,23 @@ function setupIPC() {
     catch (error) { return { ok: false, error: error.message }; }
   };
   ipcMain.on('ai:open-settings', (_event, purpose) => openAISettings(purpose));
+  ipcMain.handle('voice:ensure-connected', async (event, requestId) => {
+    if (!isTrustedSettingsSender(event, mainWindow, petURL)) return { ok: false, error: '此窗口无权启动语音。' };
+    if (!voiceConnection) return { ok: false, error: '语音服务尚未就绪，请稍后按 Alt+Q 重试。' };
+    const provider = currentVoiceProvider || retryVoiceProvider || aiSettingsStore.data.selectedProvider;
+    const request = { id: requestId, ownsConnection: !voiceConnection.pending && !voiceConnection.isReady(provider) };
+    microphoneConnectionRequest = request;
+    request.attempt = setVoiceProvider(provider, { openSettings: false });
+    try { return await request.attempt; }
+    finally { if (microphoneConnectionRequest === request) microphoneConnectionRequest = null; }
+  });
+  ipcMain.on('voice:cancel-connect', (event, requestId) => {
+    if (!isTrustedSettingsSender(event, mainWindow, petURL)) return;
+    if (microphoneConnectionRequest?.id === requestId && microphoneConnectionRequest.ownsConnection
+      && voiceConnection?.isPending(microphoneConnectionRequest.attempt)) {
+      setVoiceProvider(null);
+    }
+  });
   ipcMain.handle('ai:microphone-privacy', settingsHandler(async () => {
     await shell.openExternal('ms-settings:privacy-microphone');
     return {};
@@ -1958,6 +2004,7 @@ if (app?.whenReady) {  app.whenReady().then(() => {
   });
 
   app.on('will-quit', () => {
+    voiceConnection?.dispose();
     updateController?.dispose();
     cancelConnectionTest();
     gamePhraseShortcuts?.stop();

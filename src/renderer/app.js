@@ -12,10 +12,12 @@ const state = {
   appState: 'idle', // 'idle' | 'listening' | 'thinking' | 'speaking'
   isMicActive: false,
   isMicStarting: false,
+  isVoiceConnecting: false,
+  voiceConnectionRequest: null,
+  voiceDisconnectGeneration: 0,
   microphoneGeneration: 0,
   // Cloud voice session liveness, mirroring the engine's own status events.
-  // The mic is gated on it: with no provider selected the audio would go
-  // nowhere, so the toggle explains itself instead of eating silence.
+  // Alt+Q first ensures a saved provider is ready, then opens the microphone.
   voiceConnected: false,
   isDragging: false,
   isPetMode: false,
@@ -1827,17 +1829,34 @@ function displayTranslationHUD(data) {
  */
 async function startMicrophone() {
   if (state.isMicStarting || state.isMicActive) return;
-  // Cloud voice is opt-in: without a connected provider the captured audio
-  // would vanish into a disconnected engine, so explain instead of playing
-  // dumb. Local features (翻译/GSI 播报) do not need the mic.
-  if (!state.voiceConnected) {
-    showToast('先设置语音：填写密钥 → 测试 → 连接，再按 Alt+Q 讲话');
-    window.electronAPI?.openAISettings?.('voice');
-    return;
-  }
   const generation = ++state.microphoneGeneration;
   state.isMicStarting = true;
+  const requestId = `${Date.now()}-${generation}`;
+  const disconnectGeneration = state.voiceDisconnectGeneration;
+  state.voiceConnectionRequest = requestId;
   try {
+    // Alt+Q is explicit permission to connect using the saved credentials.
+    // The main process waits for provider setup, including Qwen's config ACK.
+    state.isVoiceConnecting = true;
+    elements.pttLabel.textContent = '取消连接';
+    showToast('正在连接语音，再按 Alt+Q 可取消…', 20000);
+    const result = await window.electronAPI.ensureVoiceConnected(requestId);
+    if (generation !== state.microphoneGeneration) return;
+    state.isVoiceConnecting = false;
+    state.voiceConnectionRequest = null;
+    if (!result.ok) {
+      if (result.cancelled) showToast('语音连接已取消，按 Alt+Q 重试。');
+      else {
+        showToast(result.error || '连接失败，请按 Alt+Q 重试。', 5000);
+        if (result.needsSettings) window.electronAPI?.openAISettings?.('voice');
+      }
+      return;
+    }
+    // A ready IPC reply can arrive after a subsequent socket-close event.
+    // Never turn that stale success into a microphone start.
+    if (disconnectGeneration !== state.voiceDisconnectGeneration) return;
+    state.voiceConnected = true;
+    elements.pttLabel.textContent = '取消开麦';
     showToast('正在打开麦克风…');
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: {
@@ -1902,16 +1921,25 @@ async function startMicrophone() {
     if (generation !== state.microphoneGeneration) return;
     state.mediaStream?.getTracks().forEach(track => track.stop()); state.mediaStream = null;
     state.audioContext?.close().catch(() => {}); state.audioContext = null;
-    console.error('Error accessing microphone:', err);
-    showToast('麦克风没有打开。请在语音设置里点击「麦克风检查」，查看设备和权限。');
+    console.error('Error starting voice:', err);
+    showToast(state.isVoiceConnecting ? '连接失败，请按 Alt+Q 重试。' : '麦克风没有打开。请在语音设置里点击「麦克风检查」，查看设备和权限。', 5000);
   } finally {
-    if (generation === state.microphoneGeneration) state.isMicStarting = false;
+    if (generation === state.microphoneGeneration) {
+      state.isMicStarting = false;
+      state.isVoiceConnecting = false;
+      state.voiceConnectionRequest = null;
+      if (!state.isMicActive) elements.pttLabel.textContent = '语音';
+    }
   }
 }
 
 function stopMicrophone() {
+  const wasConnecting = state.isVoiceConnecting;
+  if (state.voiceConnectionRequest) window.electronAPI?.cancelVoiceConnect?.(state.voiceConnectionRequest);
   state.microphoneGeneration++;
   state.isMicStarting = false;
+  state.isVoiceConnecting = false;
+  state.voiceConnectionRequest = null;
   if (state.mediaStream) {
     state.mediaStream.getTracks().forEach((t) => t.stop());
     state.mediaStream = null;
@@ -1927,7 +1955,7 @@ function stopMicrophone() {
   elements.btnPttMic.classList.remove('active');
   elements.pttLabel.textContent = '语音';
   setAppState('idle', '待命中');
-  showToast('🎙️ 语音对讲已结束');
+  showToast(wasConnecting ? '已取消语音连接' : '🎙️ 语音对讲已结束');
 }
 
 function toggleMicrophone() {
@@ -2862,12 +2890,13 @@ function setupEventListeners() {
       // Mirror the engine's real session liveness — the mic gate trusts this
       // instead of guessing from UI state.
       const wasConnected = state.voiceConnected;
+      if (['error', 'disconnected'].includes(statusData?.status)) state.voiceDisconnectGeneration++;
       state.voiceConnected = statusData?.status === 'connected';
       if (state.voiceConnected && !wasConnected) showTranscriptPanel({ force: true });
-      if (!state.voiceConnected && (state.isMicActive || state.isMicStarting)) stopMicrophone();
+      if (!state.voiceConnected && (state.isMicActive || (state.isMicStarting && !state.isVoiceConnecting))) stopMicrophone();
       if (statusData?.status === 'error') {
-        setAppState('idle', '连接失败 · 打开 AI 设置');
-        displayTranslationHUD({ original: '请先设置语音服务', meaningZh: statusData.error, intent: 'info', suggestions: [] });
+        setAppState('idle', statusData.needsSettings ? '请打开 AI 设置' : '语音已断开 · Alt+Q 重连');
+        showToast(statusData.error || '语音连接已断开，按 Alt+Q 重连。', 5000);
       }
     });
 
