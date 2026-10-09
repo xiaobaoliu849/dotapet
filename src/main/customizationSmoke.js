@@ -32,6 +32,9 @@ export async function runCustomizationSmoke({ controller, controlCenter, mainWin
   editor.on('console-message', (_event, level, text) => { if (level >= 3) errors.push(text); });
   await pageLoaded(editor);
   if (controller.open() !== controlCenter.window || controlCenter.contents('appearance') !== editor) throw new Error('Reopening created a second editor');
+  // A 1024×768 screen (as on CI) gives the window no more than this; the character column must still fit.
+  controlCenter.window.setSize(1024, 728);
+  await new Promise(resolve => setTimeout(resolve, 150));
   const assetId = await editor.executeJavaScript(`(async()=>{ ${waitScript}
     await waitFor(()=>!get('character').disabled);
     if (get('character').value !== 'hero:companion') throw new Error('Editor does not show active free-chat companion');
@@ -97,6 +100,12 @@ export async function runCustomizationSmoke({ controller, controlCenter, mainWin
       get('import-preset').click(); await waitFor(()=>document.querySelectorAll('.preset-row').length===2);
     })()`);
   } finally { dialog.showSaveDialog = originalSave; dialog.showOpenDialog = originalOpen; }
+  // Even the shortest window the settings center allows keeps the character column still.
+  controlCenter.window.setSize(1024, 640);
+  await new Promise(resolve => setTimeout(resolve, 150));
+  await editor.executeJavaScript(`(() => { const column = document.querySelector('aside'); if (column.scrollHeight > column.clientHeight) throw new Error('Character column scrolls inside itself in the shortest window'); })()`);
+  controlCenter.window.setSize(1024, 728);
+  await new Promise(resolve => setTimeout(resolve, 150));
   const capture = async filename => fs.writeFileSync(path.join(outputDirectory, filename), (await captureHub(controlCenter, nativeImage)).toPNG());
   await capture('customization.png');
   await editor.executeJavaScript("document.getElementById('library-section').scrollIntoView({block:'start'})");

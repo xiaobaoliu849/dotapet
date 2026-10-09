@@ -16,7 +16,17 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+      # Smoke runs keep their data (and a failure screenshot) in the temp folder uploaded below.
       - run: npm run smoke
+        env: { TEMP: '${{ runner.temp }}', TMP: '${{ runner.temp }}' }
+      - name: Every settings page translated (English, Russian, Ukrainian)
+        env: { TEMP: '${{ runner.temp }}', TMP: '${{ runner.temp }}' }
+        # bash stops at the first failing language; PowerShell would only report the last.
+        shell: bash
+        run: |
+          npm run smoke -- --lang=en
+          npm run smoke -- --lang=ru
+          npm run smoke -- --lang=uk
       - name: Save failed desktop screenshot
         if: failure()
         uses: actions/upload-artifact@v4
