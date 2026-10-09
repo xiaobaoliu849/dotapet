@@ -77,5 +77,20 @@ document.getElementById('sidebar').addEventListener('keydown', event => {
   visible[(index + (event.key === 'ArrowDown' ? 1 : visible.length - 1)) % visible.length].focus();
 });
 
+// Each language is listed in its own name (left untranslated) so anyone can find theirs.
+const languageSelect = document.getElementById('language');
+const { choice = 'system', languages = [] } = window.dotapetI18n || {};
+languageSelect.append(new Option('跟随系统', 'system'), ...languages.map(language => {
+  const option = new Option(language.name, language.id);
+  option.translate = false;
+  return option;
+}));
+languageSelect.value = choice;
+languageSelect.addEventListener('change', async () => {
+  languageSelect.disabled = true;
+  const response = await hub.setLanguage(languageSelect.value).catch(() => null);
+  if (!response?.ok) { languageSelect.value = choice; languageSelect.disabled = false; }
+});
+
 hub.onState(render);
 hub.state().then(response => { if (response?.ok) render(response.state); });

@@ -29,7 +29,7 @@ export function hubLayout(width, height, collapsed = false) {
  * and its unsaved input survives switching pages.
  */
 export function createControlCenter({ electron, rendererDirectory, icon, smokeTest = false, onClosed = () => {}, onFocusChange = () => {},
-  sidebarCollapsed = false, onSidebarCollapsedChange = () => {} }) {
+  sidebarCollapsed = false, onSidebarCollapsedChange = () => {}, onLanguageChange = () => false }) {
   const { BrowserWindow, WebContentsView, ipcMain, screen, app } = electron;
   const shellURL = pathToFileURL(path.join(rendererDirectory, 'control-center.html')).href;
   const pages = new Map();
@@ -238,6 +238,16 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
       return { ok: true, state: state(), slide };
     }
     return { ok: true, state: state(), slide: null };
+  });
+  // A new language reloads the shell and every page; each reads it again from its preload.
+  ipcMain.handle('hub:set-language', (event, choice) => {
+    if (!trustedShell(event) || !onLanguageChange(choice)) return { ok: false };
+    setImmediate(() => {
+      if (!alive()) return;
+      window.webContents.reload();
+      for (const view of views.values()) if (!view.webContents.isDestroyed()) view.webContents.reload();
+    });
+    return { ok: true };
   });
   ipcMain.on('hub:slide', (event, x) => { if (trustedShell(event) && Number.isInteger(x)) slideTo(x); });
 

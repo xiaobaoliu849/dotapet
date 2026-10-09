@@ -28,6 +28,7 @@ const dirtyBases = new Map();
 let conflictRows = [];
 // Inside the settings center there is no window of our own to close.
 const embedded = document.documentElement.dataset.embedded === 'true';
+const chinese = (window.dotapetI18n?.language || 'zh') === 'zh';
 // Rows edited here and not yet saved; a save in the other editor never replaces them.
 const dirtyRows = new Set();
 const rowRevisions = new Map();
@@ -38,7 +39,7 @@ function touchRow(index) {
 }
 function updateDraftStatus() {
   const status = document.getElementById('phrases-draft-status');
-  if (status) status.textContent = dirtyRows.size ? `${dirtyRows.size} 行有未保存改动${conflictRows.length ? '；存在保存冲突' : ''}` : '无未保存改动';
+  if (status) status.textContent = dirtyRows.size ? (conflictRows.length ? `${dirtyRows.size} 行有未保存改动；存在保存冲突` : `${dirtyRows.size} 行有未保存改动`) : '无未保存改动';
   btnSave.textContent = conflictRows.length ? '确认覆盖冲突并保存' : '💾 保存并生效';
 }
 function markDirty(index) {
@@ -198,7 +199,8 @@ function populatePresetDropdown() {
   SIMPLIFIED_PRESETS.forEach((preset, idx) => {
     const opt = document.createElement('option');
     opt.value = idx;
-    opt.textContent = `${preset.label} → "${preset.cn}"`;
+    // The templates are Chinese chat lines; other languages see the English line instead.
+    opt.textContent = chinese ? `${preset.label} → "${preset.cn}"` : preset.en;
     selectPresetTemplate.appendChild(opt);
   });
 }
@@ -217,7 +219,7 @@ function importSelectedPreset() {
       if (cnInput) cnInput.value = preset.cn;
       if (enInput) enInput.value = preset.en;
       markDirty(targetIndex);
-      showToast(`💡 已导入 ${preset.label} 到第 ${targetDigit} 行`);
+      showToast(`💡 已导入 ${chinese ? preset.label : `"${preset.en}"`} 到第 ${targetDigit} 行`);
     }
   }
 }

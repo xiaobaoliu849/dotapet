@@ -112,6 +112,24 @@ test('an animated fold follows the shell frame by frame and lands on the final l
   hub.close();
 });
 
+test('the shell changes the language, and the window reloads in it', async () => {
+  const chosen = [];
+  const { hub, handlers, shell, windows, view } = fixture({ onLanguageChange: choice => { chosen.push(choice); return choice !== 'bogus'; } });
+  hub.register('services', services());
+  hub.open();
+  const reloads = [];
+  windows[0].webContents.reload = () => reloads.push('shell');
+  view('services').webContents.reload = () => reloads.push('services');
+  const setLanguage = handlers.get('hub:set-language');
+  const page = { sender: view('services').webContents, senderFrame: view('services').webContents.mainFrame };
+  assert.equal((await setLanguage(page, 'en')).ok, false, 'a page cannot change the language');
+  assert.equal((await setLanguage(shell(), 'bogus')).ok, false, 'main rejects what it does not know');
+  assert.equal((await setLanguage(shell(), 'en')).ok, true);
+  assert.deepEqual(chosen, ['bogus', 'en']);
+  await tick();
+  assert.deepEqual(reloads, ['shell', 'services']);
+});
+
 test('a remembered collapsed sidebar is used from the first layout', () => {
   const { hub, view } = fixture({ sidebarCollapsed: true });
   hub.register('services', services());

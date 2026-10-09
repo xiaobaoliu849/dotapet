@@ -50,6 +50,7 @@ h2 { margin: 0 0 6px; font-size: 17px; font-weight: 650; }
 .card { border: 1px solid var(--line); border-radius: var(--card-radius); padding: 18px 20px; background: var(--surface); box-shadow: 0 1px 2px #2f3a3208; }
 .card + .card { margin-top: 14px; }
 .hint { font-size: 13px; line-height: 1.7; color: var(--muted); margin: 8px 0 0; }
+.language-select { min-width: 220px; min-height: 40px; margin-top: 6px; padding: 7px 10px; border: 1px solid var(--control-border); border-radius: var(--control-radius); background: var(--control); color: var(--ink); }
 /* Two columns only when each description fits on one line. */
 .shortcut-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 10px 24px; margin: 12px 0 4px; }
 .shortcut-list div { display: flex; align-items: center; gap: 12px; }

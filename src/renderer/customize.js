@@ -168,7 +168,7 @@ function renderPresets() {
   if (!data.presets.length) { const p = document.createElement('p'); p.className = 'empty'; p.textContent = '保存喜欢的搭配，下次一键载入。'; $('preset-list').append(p); }
   for (const preset of data.presets) {
     const row = document.createElement('div'); row.className = 'preset-row';
-    const name = document.createElement('span'); name.textContent = preset.name;
+    const name = document.createElement('span'); name.textContent = preset.name; name.translate = false;
     row.append(name, button('预览', () => {
       draft = normalizeProfile(preset.profile);
       if (draft.appearance.builtinId && !character().options.some(look => look.id === draft.appearance.builtinId && look.kind === 'appearance')) draft.appearance.builtinId = null;
@@ -253,7 +253,7 @@ $('apply').addEventListener('click', async () => {
     });
     if (!switched) return;
   }
-  message(switching ? `已换上${name}${dirty ? '，外观已应用' : ''}。` : '外观已应用到桌面伙伴。');
+  message(!switching ? '外观已应用到桌面伙伴。' : dirty ? `已换上${name}，外观已应用。` : `已换上${name}。`);
 });
 for (const role of ['appearance','background']) $(`import-${role}`).addEventListener('click', () => { importRole = role; $('image-file').click(); });
 $('image-file').addEventListener('change', event => importFile(event.target.files[0]));
