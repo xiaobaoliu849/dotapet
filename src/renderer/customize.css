@@ -102,8 +102,8 @@ dialog h2 { font-size: 18px; color: var(--ink); }
 dialog::backdrop { background: #2f3a3260; }
 .dialog-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; margin-top: 20px; }
 .danger { color: var(--danger); }
-/* The shortest windows drop the two notes under the preview, so the column still fits without scrolling. */
-@media (min-width: 781px) and (max-height: 640px) { aside > .help { display: none; } }
+/* When even the shrunk preview leaves too little room (short window, longer language), the two notes step aside. */
+aside[data-tight='true'] > .help { display: none; }
 @media (max-width: 780px) {
   header { padding: 16px 22px 12px; gap: 12px; align-items: flex-start; }
   /* The header stays on screen; a narrow window cannot spare it the tagline. */
