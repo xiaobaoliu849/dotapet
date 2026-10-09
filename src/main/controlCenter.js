@@ -5,6 +5,8 @@ import { isTrustedSettingsSender } from './aiSettingsIpc.js';
 
 /** Height of the shell's top bar; the native window buttons sit inside it. */
 export const HUB_TOP = 40;
+/** The shell's sidebar CSS transition runs this long; the page view slides with it. */
+export const SIDEBAR_SLIDE_MS = 200;
 /** Pages drawn by the shell itself; every other page is an isolated view. */
 export const NATIVE_PAGES = ['help'];
 export const PAGE_ORDER = ['services', 'appearance', 'phrases', 'help', 'update'];
@@ -36,6 +38,9 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
   let active = 'services';
   let collapsed = Boolean(sidebarCollapsed);
   let geometry = hubLayout(1060, 820, collapsed);
+  let slide = null;
+  // Smoke tests and reduced-motion users get the final layout at once.
+  const animate = () => !smokeTest && !electron.systemPreferences?.getAnimationSettings?.()?.prefersReducedMotion;
 
   const alive = () => Boolean(window && !window.isDestroyed());
   const available = () => PAGE_ORDER.filter(id => NATIVE_PAGES.includes(id) || pages.has(id));
@@ -45,12 +50,32 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
   function publishState() {
     if (alive() && !window.webContents.isDestroyed()) window.webContents.send('hub:state', state());
   }
+  function stopSlide() { clearInterval(slide); slide = null; }
   function layout(changed = false) {
     if (!alive()) return;
+    stopSlide();
     const previous = geometry;
     geometry = hubLayout(...window.getContentSize(), collapsed);
     for (const view of views.values()) view.setBounds(geometry.content);
     if (changed || geometry.sidebar !== previous.sidebar || geometry.narrow !== previous.narrow) publishState();
+  }
+  /** Fold or unfold: the page view eases to its new edge in step with the sidebar's CSS transition. */
+  function slideLayout() {
+    const from = geometry.content;
+    layout(true);
+    const to = geometry.content;
+    if (!animate() || from.x === to.x) return;
+    const start = Date.now();
+    const step = () => {
+      if (!alive()) return stopSlide();
+      const t = Math.min(1, (Date.now() - start) / SIDEBAR_SLIDE_MS);
+      const eased = 1 - (1 - t) ** 3;
+      const x = Math.round(from.x + (to.x - from.x) * eased);
+      for (const view of views.values()) view.setBounds({ ...to, x, width: to.width + to.x - x });
+      if (t === 1) stopSlide();
+    };
+    step();
+    slide = setInterval(step, 16);
   }
   function detach(id, view) {
     if (views.get(id) !== view) return false;
@@ -151,6 +176,7 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
     // so an open() in between builds a fresh window instead of reusing this one.
     created.on('close', () => {
       if (window !== created) return;
+      stopSlide();
       for (const page of pages.values()) page.onHubClose?.();
       for (const id of [...views.keys()]) closeView(id);
       window = null;
@@ -197,7 +223,7 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
     if (!trustedShell(event) || typeof value !== 'boolean') return { ok: false };
     if (value !== collapsed) {
       collapsed = value;
-      layout(true);
+      slideLayout();
       onSidebarCollapsedChange(collapsed);
     }
     return { ok: true, state: state() };

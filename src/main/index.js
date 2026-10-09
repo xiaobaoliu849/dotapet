@@ -178,6 +178,10 @@ async function runCompanionSmokeTest() {
   await firstSetup.webContents.executeJavaScript(`(async () => {
     for (let i=0; i<100 && document.body.dataset.compact !== 'true'; i++) await new Promise(resolve=>setTimeout(resolve,20));
     if (document.body.dataset.compact !== 'true') throw new Error('Narrow settings center kept the wide sidebar');
+    // Folded icons stay where the wide sidebar draws them, so folding never shifts them.
+    const icon = document.querySelector('.nav-item[data-page=services] .nav-icon').getBoundingClientRect();
+    if (Math.abs(icon.left + icon.width / 2 - 32) > 1) throw new Error('Folded sidebar icons are not centred where the wide sidebar draws them');
+    if (!document.querySelector('.app-chrome #sidebar-toggle')) throw new Error('Sidebar fold control is not in the title bar');
     const current = document.querySelector('.nav-item[aria-current=page]');
     if (current?.dataset.page !== 'services') throw new Error('Sidebar does not mark the setup page');
     if (document.querySelector('.nav-item[data-page=update]').hidden === false) throw new Error('Update entry shown without an updater');
