@@ -64,6 +64,12 @@ export async function runCustomizationSmoke({ controller, controlCenter, mainWin
     get('preset-name').value='暖金小兔'; get('save-preset').click();
     await waitFor(()=>document.querySelectorAll('.preset-row').length===1);
     if (document.documentElement.scrollWidth>document.documentElement.clientWidth) throw new Error('Editor overflows');
+    // The character column is pinned: no inner scroll, and page scrolling never moves it.
+    const column=document.querySelector('aside');
+    if (column.scrollHeight>column.clientHeight) throw new Error('Character column scrolls inside itself');
+    const pinned=column.getBoundingClientRect().top;
+    for (const y of [3, 40, 400]) { scrollTo(0,y); await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))); if (Math.abs(column.getBoundingClientRect().top-pinned)>0.5) throw new Error('Character column moves while scrolling'); }
+    scrollTo(0,0);
     return assetId;
   })()`);
   await mainWindow.webContents.executeJavaScript(`(async()=>{ ${waitScript}
