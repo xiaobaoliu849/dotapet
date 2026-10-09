@@ -354,11 +354,14 @@ async function runCompanionSmokeTest() {
       await mainWindow.webContents.capturePage();
       fs.writeFileSync(output.replace(/\.png$/, `-${name}.png`), (await mainWindow.webContents.capturePage()).toPNG());
     };
+    // Hidden windows do not advance CSS fades; capture the real final hover state.
+    await mainWindow.webContents.executeJavaScript("document.querySelectorAll('.hud-top-bar, .hud-bottom-dock').forEach(element => element.style.transition = 'none')");
     await petShot("document.body.classList.remove('hud-awake')", 'pet-rest');
     await petShot("document.body.classList.add('hud-awake')", 'pet-hover');
     // A hidden smoke window does not advance the menu's fade-in animation.
     await petShot("const menu = document.getElementById('pet-context-menu'); menu.style.animation = 'none'; menu.classList.remove('hidden')", 'pet-menu');
     await mainWindow.webContents.executeJavaScript("document.getElementById('pet-context-menu').style.animation = ''; document.getElementById('pet-context-menu').classList.add('hidden'); document.body.classList.remove('hud-awake')");
+    await mainWindow.webContents.executeJavaScript("document.querySelectorAll('.hud-top-bar, .hud-bottom-dock').forEach(element => element.style.transition = '')");
     await page.executeJavaScript("document.getElementById('advanced').open = false; document.getElementById('provider').value = 'doubao'; document.getElementById('provider').dispatchEvent(new Event('change')); window.scrollTo(0,0)");
     fs.writeFileSync(output.replace(/\.png$/, '-doubao.png'), (await capture()).toPNG());
     controlCenter.window.setSize(620, 730);
@@ -1850,10 +1853,10 @@ if (app?.whenReady) {  app.whenReady().then(() => {
         } catch (error) { console.error('[Upgrade]', error.message); app.exit(1); }
         return;
       }
-      // A second smoke run in another language only checks that every settings page is translated.
-      const languageRun = currentLanguage() !== 'zh'
+      // An explicit language checks every page; the default run exercises the full app.
+      const languageRun = process.argv.some(value => value.startsWith('--lang='))
         ? import('./languageSmoke.js').then(({ runLanguageSmoke }) => runLanguageSmoke({ controlCenter, openPanel: () => createPhrasesWindow(), nativeImage,
-          outputDirectory: app.getPath('userData'), language: currentLanguage() })).then(() => { console.log('[Smoke] PASS', JSON.stringify({ language: currentLanguage() })); app.exit(0); })
+          outputDirectory: app.getPath('userData'), language: currentLanguage(), documentation: process.argv.includes('--companion-docs-screenshots') })).then(() => { console.log('[Smoke] PASS', JSON.stringify({ language: currentLanguage() })); app.exit(0); })
         : null;
       (languageRun || runCompanionSmokeTest()).catch(async error => {
         console.error('[Smoke]', error.message);

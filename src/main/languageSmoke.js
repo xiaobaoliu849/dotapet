@@ -24,16 +24,17 @@ const leftoverScript = `(async () => {
 })()`;
 
 /** Opens every settings page and the F6 panel in the smoke test's language and fails on any Chinese left. */
-export async function runLanguageSmoke({ controlCenter, openPanel, nativeImage, outputDirectory, language }) {
+export async function runLanguageSmoke({ controlCenter, openPanel, nativeImage, outputDirectory, language, documentation = false }) {
   const problems = [];
   const check = async (label, contents) => {
     const { lang, found } = await contents.executeJavaScript(leftoverScript);
-    if (lang !== language) problems.push(`${label}: page language is ${lang}`);
-    for (const text of found) problems.push(`${label}: ${text}`);
+    const expectedLanguage = language === 'zh' ? 'zh-CN' : language;
+    if (lang !== expectedLanguage) problems.push(`${label}: page language is ${lang}`);
+    if (language !== 'zh') for (const text of found) problems.push(`${label}: ${text}`);
   };
   controlCenter.open('services');
-  // The window a 1024×768 screen allows (as on CI), so a local run fails exactly where CI does.
-  controlCenter.window.setSize(1024, 728);
+  // Checks use CI's small desktop; documentation captures the normal settings size.
+  controlCenter.window.setSize(...(documentation ? [1060, 820] : [1024, 728]));
   await pageLoaded(controlCenter.window.webContents);
   // The shell's own script must be running before its sidebar can be clicked.
   await controlCenter.window.webContents.executeJavaScript(`new Promise(resolve => document.readyState === 'complete' ? resolve() : addEventListener('load', resolve))`);

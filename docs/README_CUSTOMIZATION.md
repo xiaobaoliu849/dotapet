@@ -2,6 +2,8 @@
 
 Start the desktop companion with `npm start`. Right-click the companion (or the tray icon) and choose **设置中心**, then **形象与背景** in the sidebar. The page title, the character column and the apply bar stay still; only the settings column on the right scrolls, and the wheel scrolls it from anywhere on the page. The button to the right of the logo in the title bar folds the sidebar to icons with a short slide; the choice is remembered, and narrow windows always use icons. The pet's own **自定义** tab also has a button that opens this page.
 
+![Current appearance and background editor](images/appearance-en.png)
+
 ## Choose and apply an appearance
 
 1. Choose a hero, pet, or the free-chat companion under **编辑角色**.

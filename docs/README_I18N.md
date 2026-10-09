@@ -4,6 +4,10 @@ The settings center (all its pages) and the F6 Quick Phrases panel are available
 
 **Choosing a language:** the 🌐 menu at the right of the settings center's title bar, on every page. The default, 跟随系统 / Match Windows, uses the first Windows display language DotaPet has, and English when it has none. Switching reloads the settings center.
 
+![Current English settings center](images/settings-en.png)
+
+The [English README](../README.en.md) includes the current appearance editor, phrase editor and help screenshots. Run `npm run docs:screenshots` to regenerate the Chinese and English documentation images; see the [capture guide](images/README.md).
+
 ## How it works
 
 Chinese is the source text, and every string is its own key. Pages keep writing Chinese; `src/renderer/i18n.js` translates text, tooltips and screen-reader labels as they reach the page, including messages that come from main. Main translates what it shows itself (such as file dialog titles) with `t()`.
