@@ -21,3 +21,12 @@ button.link, #postpone { background: transparent; border-color: transparent; col
 button.link:hover, #postpone:hover { background: var(--control-hover); }
 #schedule { font-size: var(--caption-size); color: var(--muted); margin: 3px 0 0; }
 @media (max-width: 720px) { main { padding: 26px 22px 22px; } }
+/* Star and sponsor: quiet links under the update action, the QR only when asked for. */
+.support { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+#github { display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
+#github svg { width: 17px; height: 17px; flex: none; }
+#sponsor { background: none; border: 0; padding: 0; margin: 0; }
+#sponsor summary { color: var(--green); padding: 8px; border-radius: 8px; }
+#sponsor summary:hover { background: var(--control-hover); }
+#sponsor img { display: block; width: 200px; height: 200px; margin: 8px auto 4px; border-radius: var(--card-radius); border: 1px solid var(--line); }
+#sponsor p { font-size: var(--caption-size); color: var(--muted); margin: 0; }

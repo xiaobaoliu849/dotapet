@@ -1,6 +1,7 @@
 import { EventEmitter } from 'node:events';
 
 export const RELEASES_URL = 'https://github.com/xiaobaoliu849/dotapet/releases';
+export const REPOSITORY_URL = 'https://github.com/xiaobaoliu849/dotapet';
 
 function publicInfo(info) {
   const notes = Array.isArray(info?.releaseNotes)
