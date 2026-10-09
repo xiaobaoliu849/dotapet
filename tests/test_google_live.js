@@ -112,8 +112,8 @@ class MockGoogleLiveServer {
 
 async function runAsyncTests() {
   // --- Static protocol-shape tests -----------------------------------
-  test('Google Live constants match VoiceSpirit defaults', () => {
-    assert.strictEqual(DEFAULT_GOOGLE_REALTIME_MODEL, 'gemini-3.1-flash-live-preview');
+  test('Google Live defaults use 3.8 chat and the separate 3.5 translator', () => {
+    assert.strictEqual(DEFAULT_GOOGLE_REALTIME_MODEL, 'gemini-3.8-live');
     assert.strictEqual(DEFAULT_GOOGLE_LIVE_TRANSLATE_MODEL, 'gemini-3.5-live-translate-preview');
     assert.strictEqual(DEFAULT_GOOGLE_REALTIME_VOICE, 'Puck');
     assert.ok(GOOGLE_REALTIME_VOICES.includes('Puck'));
@@ -128,7 +128,7 @@ async function runAsyncTests() {
     });
     engine.provider = 'google';
     const msg = JSON.parse(engine.buildGoogleSetupMessage());
-    assert.strictEqual(msg.setup.model, 'models/gemini-3.1-flash-live-preview');
+    assert.strictEqual(msg.setup.model, 'models/gemini-3.8-live');
     assert.deepStrictEqual(msg.setup.generationConfig.responseModalities, ['AUDIO']);
     assert.strictEqual(
       msg.setup.generationConfig.speechConfig.voiceConfig.prebuiltVoiceConfig.voiceName,
@@ -142,6 +142,55 @@ async function runAsyncTests() {
     );
     assert.ok(msg.setup.systemInstruction.parts[0].text.includes('帕吉'));
     assert.strictEqual(msg.setup.translationConfig, undefined);
+    // 3.8 rejects thinking level and removed affective-dialogue controls;
+    // proactive audio is permanently enabled and must not be disabled.
+    assert.strictEqual(msg.setup.generationConfig.thinkingConfig, undefined);
+    assert.strictEqual(msg.setup.generationConfig.enableAffectiveDialog, undefined);
+    assert.strictEqual(msg.setup.proactivity, undefined);
+  });
+
+  test('Chat: custom model resource and voice survive setup without a duplicate prefix', () => {
+    const engine = new CloudVoiceEngine({ provider: 'google', googleModel: 'models/custom-live', googleVoice: 'Kore' });
+    const { setup } = JSON.parse(engine.buildGoogleSetupMessage());
+    assert.strictEqual(setup.model, 'models/custom-live');
+    assert.strictEqual(setup.generationConfig.speechConfig.voiceConfig.prebuiltVoiceConfig.voiceName, 'Kore');
+  });
+
+  test('Chat: all audio parts and both transcripts in a completion frame are processed', () => {
+    const engine = new CloudVoiceEngine({ provider: 'google' });
+    const events = [];
+    for (const name of ['agent_audio_chunk', 'speech_final', 'agent_text_delta', 'agent_complete']) {
+      engine.on(name, data => events.push([name, data]));
+    }
+    const audio = { mimeType: 'audio/pcm;rate=24000', data: Buffer.from([1, 2]).toString('base64') };
+    engine.handleGoogleLiveEvent({ serverContent: {
+      modelTurn: { parts: [{ text: 'internal reasoning', thought: true }, { inlineData: audio }, { inlineData: audio }] },
+      inputTranscription: { text: '你好' },
+      outputTranscription: { text: '你好，朋友' },
+      turnComplete: true,
+    } });
+    assert.strictEqual(events.filter(([name]) => name === 'agent_audio_chunk').length, 2);
+    assert.deepStrictEqual(events.find(([name]) => name === 'speech_final'), ['speech_final', '你好']);
+    const completed = events.find(([name]) => name === 'agent_complete')[1];
+    assert.strictEqual(completed.text, '你好，朋友');
+    assert.strictEqual(completed.hadAudio, true);
+    assert.ok(!JSON.stringify(events).includes('internal reasoning'));
+  });
+
+  test('Chat: interrupted residue is suppressed and the next reply remains audible', () => {
+    const engine = new CloudVoiceEngine({ provider: 'google' });
+    const chunks = [];
+    engine.on('agent_audio_chunk', data => chunks.push(data));
+    const reply = { serverContent: { modelTurn: { parts: [{ inlineData: {
+      mimeType: 'audio/pcm;rate=24000', data: Buffer.from([1, 2]).toString('base64'),
+    } }] }, outputTranscription: { text: 'reply' } } };
+    engine.handleGoogleLiveEvent(reply);
+    engine.interrupt();
+    engine.handleGoogleLiveEvent(reply);
+    assert.strictEqual(chunks.length, 1);
+    engine.handleGoogleLiveEvent({ serverContent: { turnComplete: true } });
+    engine.handleGoogleLiveEvent(reply);
+    assert.strictEqual(chunks.length, 2);
   });
 
   test('Translate setup frame: translationConfig inside generationConfig, no persona', () => {
@@ -182,7 +231,7 @@ async function runAsyncTests() {
 
   test('Chat: setup frame carries hero persona and model', () => {
     assert.ok(chatMock.setup, 'mock never received setup');
-    assert.strictEqual(chatMock.setup.model, 'models/gemini-3.1-flash-live-preview');
+    assert.strictEqual(chatMock.setup.model, 'models/gemini-3.8-live');
     assert.ok(chatMock.setup.systemInstruction.parts[0].text.includes('帕吉'));
   });
 
@@ -263,8 +312,8 @@ async function runAsyncTests() {
   });
 
   test('Chat: client VAD commits the utterance with audioStreamEnd after trailing silence', () => {
-    // flash-live generation never commits server-side — the engine must send
-    // realtimeInput.audioStreamEnd once ~1.1s of silence follows real speech.
+    // Keep the end-of-speech flush with automatic VAD enabled, including
+    // its guard against sending empty turns from a quiet microphone.
     const engine = new CloudVoiceEngine({ provider: 'google', apiKey: 'k' });
     engine.provider = 'google';
     engine.isConnected = true;

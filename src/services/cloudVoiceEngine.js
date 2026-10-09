@@ -106,11 +106,11 @@ export const DEFAULT_CARTESIA_MODEL = 'sonic-preview';
 
 // Google Gemini Live Constants (ported from VoiceSpirit realtime_google_provider.py +
 // realtime_constants.py). Two providers share one BidiGenerateContent WebSocket:
-//   provider 'google'            → 实时对话  gemini-3.1-flash-live-preview (hero persona, VAD barge-in)
+//   provider 'google'            → 实时对话  gemini-3.8-live (hero persona, VAD barge-in)
 //   provider 'google-translate'  → 实时翻译  gemini-3.5-live-translate-preview (translationConfig only)
 export const GOOGLE_LIVE_WS_URL =
   'wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent';
-export const DEFAULT_GOOGLE_REALTIME_MODEL = 'gemini-3.1-flash-live-preview';
+export const DEFAULT_GOOGLE_REALTIME_MODEL = 'gemini-3.8-live';
 export const DEFAULT_GOOGLE_LIVE_TRANSLATE_MODEL = 'gemini-3.5-live-translate-preview';
 export const DEFAULT_GOOGLE_REALTIME_VOICE = 'Puck';
 export const GOOGLE_REALTIME_VOICES = [
@@ -124,14 +124,11 @@ export const GOOGLE_REALTIME_VOICES = [
 // Live Translate turns close on 2s of downstream silence, mirroring VoiceSpirit's
 // inactivity monitor (complete_live_translate_turn_if_needed force branch).
 export const GOOGLE_LIVE_TRANSLATE_IDLE_MS = 2000;
-// The gemini-3.x flash-live generation IGNORES server-side end-of-speech: a
-// turn is only committed when the client sends realtimeInput.audioStreamEnd
-// (verified live 2026-08 — without it the session never answers). Client-side
-// VAD is therefore THE turn mechanism of the 'google' chat provider: track
-// RMS of outgoing PCM, and after GOOGLE_CLIENT_VAD_SILENCE_MS of trailing
-// silence that followed actual speech, commit the utterance. The
-// live-translate provider is excluded — gemini-3.5-live-translate-preview
-// commits turns server-side via transcription finished-markers.
+// Keep the client-side end-of-speech flush alongside automatic server VAD.
+// The official Live API supports audioStreamEnd with automatic VAD enabled;
+// it flushes cached audio and subsequent audio reopens the stream. This also
+// retains the workaround needed by the former 3.1 preview. Live Translate
+// is continuous and is excluded from this chat-only flush.
 export const GOOGLE_CLIENT_VAD_SILENCE_MS = 1100;
 export const GOOGLE_CLIENT_VAD_RMS_THRESHOLD = 250;
 
@@ -1801,10 +1798,10 @@ Rules:
   // Provider 4: Google Gemini Live — 实时对话 (chat) & 实时翻译 (live translate)
   // Ported from VoiceSpirit backend/services/realtime_google_provider.py.
   // One BidiGenerateContent WebSocket carries both modes:
-  //   'google'           → gemini-3.1-flash-live-preview, hero persona + server VAD
+  //   'google'           → gemini-3.8-live, hero persona + server VAD
   //   'google-translate' → gemini-3.5-live-translate-preview, translationConfig only
-  // Wire notes: input/output transcription configs (and translationConfig /
-  // realtimeInputConfig) are TOP-LEVEL setup fields; responseModalities and
+  // Wire notes: input/output transcription configs and realtimeInputConfig
+  // are TOP-LEVEL setup fields; translationConfig, responseModalities and
   // speechConfig live inside generationConfig. Both transcription streams are
   // cumulative-with-overlap → merged through streamingNovelty (same shape as
   // DashScope LiveTranslate).
@@ -1960,12 +1957,12 @@ Rules:
   buildGoogleSetupMessage() {
     const isTranslate = this.provider === 'google-translate';
     // Newest-generation models only (no legacy fallbacks by design):
-    //   chat      → gemini-3.1-flash-live-preview
+    //   chat      → gemini-3.8-live
     //   translate → gemini-3.5-live-translate-preview
     const model = isTranslate ? (this.googleTranslateModel || DEFAULT_GOOGLE_LIVE_TRANSLATE_MODEL) : (this.googleModel || DEFAULT_GOOGLE_REALTIME_MODEL);
     this.googleActiveModel = model;
 
-    const setup = { model: `models/${model}` };
+    const setup = { model: model.startsWith('models/') ? model : `models/${model}` };
     if (isTranslate) {
       // Wire shape verified against the google-genai SDK converter
       // (_LiveConnectConfig_to_mldev): translationConfig rides INSIDE
@@ -2196,9 +2193,8 @@ Rules:
   }
 
   /**
-   * Client VAD — the turn mechanism of the flash-live chat generation: RMS-
-   * track outgoing PCM and, once trailing silence follows actual speech,
-   * commit the utterance with realtimeInput.audioStreamEnd (see
+   * Client VAD: track outgoing PCM and, once trailing silence follows actual
+   * speech, flush cached audio with realtimeInput.audioStreamEnd (see
    * GOOGLE_CLIENT_VAD_* constants).
    */
   trackGoogleClientVad(buffer) {
@@ -2396,7 +2392,7 @@ Rules:
             audio: { mimeType: 'audio/pcm;rate=16000', data: base64Audio },
           },
         }));
-        // The flash-live chat generation commits turns client-side.
+        // Flush end-of-speech audio while keeping automatic VAD/barge-in.
         if (this.provider === 'google') {
           this.trackGoogleClientVad(Buffer.from(base64Audio, 'base64'));
         }

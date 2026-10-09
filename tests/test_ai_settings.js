@@ -206,6 +206,37 @@ test('explicit import encrypts supported keys and excludes auth tokens and arbit
   for (const value of ['import-google', 'import-cartesia', 'import-deepseek', 'never-import-admin', 'untrusted.example']) assert.ok(!file.includes(value));
 });
 
+test('saved Gemini 3.1 default upgrades through settings and engine options without losing credentials', t => {
+  const store = vault(t);
+  store.save({ provider: 'google', model: 'gemini-3.1-flash-live-preview', voice: 'Kore', secrets: { apiKey: 'migration-key' } });
+  store.save({ provider: 'google-translate', model: 'gemini-3.5-live-translate-preview' });
+  const before = JSON.parse(fs.readFileSync(store.filePath, 'utf8')).providers;
+  const reloaded = new AISettingsStore({ filePath: store.filePath, safeStorage: encryption });
+  assert.equal(reloaded.getPrivate('google').model, 'gemini-3.8-live');
+  assert.equal(reloaded.publicSettings().providers.find(p => p.id === 'google').model, 'gemini-3.8-live');
+  assert.equal(engineOptions(reloaded, 'google').googleModel, 'gemini-3.8-live');
+  assert.equal(reloaded.getPrivate('google').voice, 'Kore');
+  assert.equal(reloaded.getPrivate('google').apiKey, 'migration-key');
+  assert.deepEqual(reloaded.data.providers.google.secrets, before.google.secrets);
+  assert.deepEqual(reloaded.data.providers['google-translate'], before['google-translate']);
+  reloaded.save({ provider: 'google', voice: 'Puck' });
+  const persisted = new AISettingsStore({ filePath: store.filePath, safeStorage: encryption });
+  assert.equal(persisted.getPrivate('google').model, 'gemini-3.8-live');
+});
+
+test('Gemini migration preserves custom models and accepts the prefixed former default', t => {
+  const store = vault(t);
+  for (const [saved, expected] of [
+    ['models/gemini-3.1-flash-live-preview', 'gemini-3.8-live'],
+    ['custom-live-model', 'custom-live-model'],
+    ['gemini-3.8-live', 'gemini-3.8-live'],
+  ]) {
+    store.save({ provider: 'google', model: saved });
+    const reloaded = new AISettingsStore({ filePath: store.filePath, safeStorage: encryption });
+    assert.equal(engineOptions(reloaded, 'google').googleModel, expected);
+  }
+});
+
 test('legacy DeepSeek model migrates without changing its encrypted key', t => {
   const store = vault(t);
   store.save({ provider: 'deepseek', model: 'deepseek-chat', secrets: { apiKey: 'migration-key' } });

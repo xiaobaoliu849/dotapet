@@ -86,6 +86,11 @@ export class AISettingsStore {
       for (const [id, saved] of Object.entries(parsed.providers)) validateProfile(id, saved);
       this.data = parsed;
       if (this.data.providers.deepseek?.model === 'deepseek-chat') this.data.providers.deepseek.model = 'deepseek-flash';
+      // Upgrade the former default in existing vaults; retain custom models,
+      // voices and encrypted credentials, including the separate translator.
+      if (['gemini-3.1-flash-live-preview', 'models/gemini-3.1-flash-live-preview'].includes(this.data.providers.google?.model)) {
+        this.data.providers.google.model = DEFAULT_GOOGLE_REALTIME_MODEL;
+      }
       this.shareSavedKeys(this.data);
     } catch {
       // Do not overwrite an unreadable vault with a new empty configuration.
