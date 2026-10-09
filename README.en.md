@@ -23,9 +23,18 @@ Keep a hero or courier on your desktop, chat with it, and make it your own. In D
 
 **Current source and build: 0.2.0. Published GitHub installer: 0.1.2.** The screenshots below show the current source UI. The project is an early Windows preview; the latest features require 0.2.0.
 
-![Current settings center: voice and translation](docs/images/settings-en.png)
+**Latest voice settings: your preferred name, custom chat instructions, and an opening greeting once connected.** The screenshot below shows the new name and instruction fields directly.
+
+![Current preferred name and chat instruction settings](docs/images/chat-preferences-en.png)
 
 <p align="center"><sub>One settings center for providers, appearances, phrases and help. Choose 中文 / English / Русский / Українська from the title bar.</sub></p>
+
+<details>
+<summary><strong>View the full voice and translation settings</strong></summary>
+
+![Current settings center: voice and translation](docs/images/settings-en.png)
+
+</details>
 
 ## Meet your companion
 
@@ -80,13 +89,6 @@ The About screenshot uses Chinese UI and simulated **0.3.0** update data. It doe
 3. **Return to your desktop.** Hover over the companion for its toolbar. Right-click to open settings. Double-click the tray icon to find a hidden companion.
 
 In voice settings, enter **What should your companion call you?** (for example, Captain, Buddy or Daddy). Under **More settings**, add chat preferences for tone, reply style or what to call friends. These preferences apply across voice providers after saving and reconnecting. Each new chat connection you start gets an opening greeting; microphone toggles and connection tests do not repeat it. Live translation is unaffected.
-
-<details>
-<summary><strong>See the name and chat preference settings</strong></summary>
-
-![Current preferred name and chat instruction settings](docs/images/chat-preferences-en.png)
-
-</details>
 
 ### Keep these shortcuts handy
 
