@@ -1,13 +1,14 @@
 # Companion customization
 
-Start the desktop companion with `npm start`. Right-click the companion (or the tray icon) and choose **设置中心**, then **形象与背景** in the sidebar. The pet's own **自定义** tab also has a button that opens this page.
+Start the desktop companion with `npm start`. Right-click the companion (or the tray icon) and choose **设置中心**, then **形象与背景** in the sidebar. The page title stays at the top while the editor scrolls. **收起侧栏** at the top of the sidebar folds it to icons; the choice is remembered, and narrow windows always use icons. The pet's own **自定义** tab also has a button that opens this page.
 
 ## Choose and apply an appearance
 
 1. Choose a hero, pet, or the free-chat companion under **编辑角色**.
-2. Choose its built-in image or a picture from your library. Adjust color style, fit, size and position while watching the preview.
-3. Choose a transparent, solid-color or image background. **只在自定义面板** keeps the desktop transparent; **桌面伙伴场景** adds the background behind the floating companion.
-4. Click the button at the bottom right. For the companion on the desktop it reads **应用到桌面伙伴**; for another companion it reads **应用并换上此伙伴** (or **换上此伙伴** when nothing was edited) and also puts it on the desktop. It shows **已应用** when there is nothing to apply.
+2. Choose its built-in image or a picture from your library. Adjust fit, size and position while watching the preview.
+3. Under **颜色**, **伙伴色调** recolors the companion image itself; **点缀色** sets the border of its status label and voice ring (角色默认, a color-only look, or **自选** for any color).
+4. Choose a transparent, solid-color or image background. **只在自定义面板** keeps the desktop transparent; **桌面伙伴场景** adds the background behind the floating companion.
+5. Click the button at the bottom right. For the companion on the desktop it reads **应用到桌面伙伴**; for another companion it reads **应用并换上此伙伴** (or **换上此伙伴** when nothing was edited) and also puts it on the desktop. It shows **已应用** when there is nothing to apply.
 
 Preview edits remain local to the editor until applied. Switching between characters retains their unapplied drafts while the editor stays open. **恢复此角色的默认外观** previews the default; click Apply to finish restoring it. Cosmetic edits do not change the voice persona or provider.
 
@@ -25,7 +26,7 @@ Deleting an image asks for confirmation and resets its references across saved c
 
 On startup, legacy `voicespirit_custom_skins_*` uploads are copied from localStorage into the shared library and active selections are restored. Migration deduplicates images, retries failed imports and retains the original settings. Successfully migrated entries are tracked so restarting does not re-equip a deleted legacy image.
 
-Catalog entries without distinct artwork are offered as **仅主题色**, rather than equipped skins. Generic generated cosmetic placeholders are excluded from the editor. The cosmetics generator now emits the default for heroes without curated cosmetic entries. Existing catalog IDs remain readable for migration.
+Catalog entries without distinct artwork are offered as **点缀色** choices, rather than equipped skins. Generic generated cosmetic placeholders are excluded from the editor. The cosmetics generator now emits the default for heroes without curated cosmetic entries. Existing catalog IDs remain readable for migration.
 
 ## Storage and verification
 
