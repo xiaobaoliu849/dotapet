@@ -1,7 +1,5 @@
 :root { --gold: #b7975a; }
-* { box-sizing: border-box; }
-body { margin: 0; font-size: 15px; line-height: 1.5; background: radial-gradient(ellipse 60% 40% at 92% 0%, #efe7d466, transparent 70%), var(--canvas); }
-button, select { cursor: pointer; }
+body { background: radial-gradient(ellipse 60% 40% at 92% 0%, #efe7d466, transparent 70%), var(--canvas); }
 
 /* The settings center draws the window chrome and sidebar around this page. */
 main { max-width: 820px; margin: auto; padding: 22px 32px 88px; }
@@ -113,7 +111,6 @@ details[open] .summary-chevron { transform: translateY(2px) rotate(-135deg); }
 /* Footer */
 footer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 4; display: flex; align-items: center; gap: 8px 18px; flex-wrap: wrap; padding: 8px max(32px, calc((100% - 820px) / 2 + 32px)); background: var(--footer); backdrop-filter: blur(6px); border-top: 1px solid var(--line); color: var(--muted); font-size: var(--caption-size); }
 .lock-note { margin-right: auto; }
-[hidden] { display: none !important; }
 @keyframes turn { to { transform: rotate(360deg); } }
 @media (max-width: 720px) { main { padding: 18px 22px 92px; } footer { padding-inline: 22px; } .provider-options { gap: 8px; } .provider-option { padding: 12px 10px 10px; } .provider-name { gap: 6px; font-size: 14px; } .provider-mark { width: 22px; height: 22px; } .voice-choice { width: 180px; } .card { padding: 18px; } .secret-fields.two-keys { grid-template-columns: 1fr; } }
 @media (max-width: 620px) { .provider-options { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

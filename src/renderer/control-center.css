@@ -1,11 +1,8 @@
 :root {
   /* Main sends the real widths; these match an unfolded wide window until it does. */
   --top: 40px; --sidebar: 196px; }
-* { box-sizing: border-box; }
 html, body { height: 100%; }
-body { margin: 0; overflow: hidden; font-size: 15px; line-height: 1.5; background: var(--canvas); }
-button { font: inherit; cursor: pointer; }
-[hidden] { display: none !important; }
+body { overflow: hidden; background: var(--canvas); }
 
 /* Window chrome: the native minimize / maximize / close buttons draw over the right end. */
 .app-chrome { position: fixed; inset: 0 0 auto 0; height: var(--top); display: flex; align-items: center; gap: 10px; padding: 0 150px 0 18px; background: var(--rail); font-size: 13px; font-weight: 600; -webkit-app-region: drag; user-select: none; }

@@ -20,5 +20,4 @@ button:disabled { cursor: default; opacity: .65; }
 button.link, #postpone { background: transparent; border-color: transparent; color: var(--green); font-weight: 400; padding: 8px; }
 button.link:hover, #postpone:hover { background: var(--control-hover); }
 #schedule { font-size: var(--caption-size); color: var(--muted); margin: 3px 0 0; }
-[hidden] { display: none !important; }
 @media (max-width: 720px) { main { padding: 26px 22px 22px; } }
