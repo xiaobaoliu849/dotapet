@@ -45,7 +45,7 @@ function fixture(options = {}) {
     close() { this.emit('close'); this.destroyed = true; this.emit('closed'); }
   }
   const electron = {
-    BrowserWindow: Window, WebContentsView: View, app: { getVersion: () => '9.9.9' },
+    BrowserWindow: Window, WebContentsView: View,
     screen: { getPrimaryDisplay: () => ({ workArea: { x: 0, y: 0, width: 1920, height: 1080 } }) },
     ipcMain: { handle: (name, handler) => handlers.set(name, handler), on: (name, handler) => handlers.set(name, handler) },
   };
@@ -183,7 +183,6 @@ test('sidebar IPC accepts only the shell document and only pages that exist', as
   assert.equal((await navigate({ ...shell(), senderFrame: { url: shell().senderFrame.url } }, 'services')).ok, false, 'subframe');
   const { state } = await handlers.get('hub:state')(shell());
   assert.deepEqual(state.pages, ['services', 'help'], 'unregistered pages stay out of the sidebar');
-  assert.equal(state.version, '9.9.9');
 });
 
 test('late pages appear in the sidebar and removed pages fall back to the setup page', async () => {

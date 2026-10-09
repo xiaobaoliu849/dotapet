@@ -30,7 +30,7 @@ export function hubLayout(width, height, collapsed = false) {
  */
 export function createControlCenter({ electron, rendererDirectory, icon, smokeTest = false, onClosed = () => {}, onFocusChange = () => {},
   sidebarCollapsed = false, onSidebarCollapsedChange = () => {}, onLanguageChange = () => false }) {
-  const { BrowserWindow, WebContentsView, ipcMain, screen, app } = electron;
+  const { BrowserWindow, WebContentsView, ipcMain, screen } = electron;
   const shellURL = pathToFileURL(path.join(rendererDirectory, 'control-center.html')).href;
   const pages = new Map();
   const views = new Map();
@@ -45,8 +45,7 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
   const alive = () => Boolean(window && !window.isDestroyed());
   const available = () => PAGE_ORDER.filter(id => NATIVE_PAGES.includes(id) || pages.has(id));
   const state = () => ({ pages: available(), active, compact: geometry.compact, narrow: geometry.narrow, collapsed,
-    sidebar: geometry.sidebar, top: HUB_TOP,
-    version: app?.getVersion?.() || '' });
+    sidebar: geometry.sidebar, top: HUB_TOP });
   function publishState() {
     if (alive() && !window.webContents.isDestroyed()) window.webContents.send('hub:state', state());
   }

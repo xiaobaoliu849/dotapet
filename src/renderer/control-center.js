@@ -16,7 +16,6 @@ function render(state) {
   // A running fold owns the width until its last frame.
   if (!sliding) document.documentElement.style.setProperty('--sidebar', `${state.sidebar}px`);
   document.documentElement.style.setProperty('--top', `${state.top}px`);
-  document.getElementById('hub-version').textContent = state.version ? `· v${state.version}` : '';
   for (const item of items) {
     item.hidden = !state.pages.includes(item.dataset.page);
     if (item.dataset.page === state.active) item.setAttribute('aria-current', 'page');
