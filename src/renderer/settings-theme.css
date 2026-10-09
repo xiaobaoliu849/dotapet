@@ -1,4 +1,4 @@
-/* Opt in per document; the standalone F6 panel keeps its game palette. */
+/* Opt in per document with data-settings-theme='green'. */
 :root[data-settings-theme='green'] {
   color-scheme: light;
   font-family: 'Segoe UI Variable Text', 'Segoe UI', 'Microsoft YaHei UI', 'Microsoft YaHei', sans-serif;
