@@ -28,8 +28,6 @@ const dirtyBases = new Map();
 let conflictRows = [];
 // Inside the settings center there is no window of our own to close.
 const embedded = document.documentElement.dataset.embedded === 'true';
-// The sidebar already says where you are; the page needs no "panel" in its name.
-if (embedded) document.querySelector('.phrases-title-text').textContent = '快捷短语';
 // Rows edited here and not yet saved; a save in the other editor never replaces them.
 const dirtyRows = new Set();
 const rowRevisions = new Map();

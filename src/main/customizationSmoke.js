@@ -64,12 +64,14 @@ export async function runCustomizationSmoke({ controller, controlCenter, mainWin
     get('preset-name').value='暖金小兔'; get('save-preset').click();
     await waitFor(()=>document.querySelectorAll('.preset-row').length===1);
     if (document.documentElement.scrollWidth>document.documentElement.clientWidth) throw new Error('Editor overflows');
-    // The character column is pinned: no inner scroll, and page scrolling never moves it.
-    const column=document.querySelector('aside');
+    // Only the settings column scrolls: the page never does, so the character column cannot move.
+    const column=document.querySelector('aside'), settings=document.querySelector('.settings');
     if (column.scrollHeight>column.clientHeight) throw new Error('Character column scrolls inside itself');
+    if (document.documentElement.scrollHeight>document.documentElement.clientHeight) throw new Error('Customization page scrolls as a whole');
+    if (settings.scrollHeight<=settings.clientHeight) throw new Error('Settings column does not scroll on its own');
     const pinned=column.getBoundingClientRect().top;
-    for (const y of [3, 40, 400]) { scrollTo(0,y); await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))); if (Math.abs(column.getBoundingClientRect().top-pinned)>0.5) throw new Error('Character column moves while scrolling'); }
-    scrollTo(0,0);
+    for (const y of [3, 40, 400, settings.scrollHeight]) { settings.scrollTo(0,y); await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))); if (Math.abs(column.getBoundingClientRect().top-pinned)>0.5) throw new Error('Character column moves while scrolling'); }
+    settings.scrollTo(0,0);
     return assetId;
   })()`);
   await mainWindow.webContents.executeJavaScript(`(async()=>{ ${waitScript}
@@ -101,7 +103,7 @@ export async function runCustomizationSmoke({ controller, controlCenter, mainWin
   await capture('customization-library.png');
   controlCenter.window.setSize(680, 750);
   await new Promise(resolve => setTimeout(resolve, 150));
-  await editor.executeJavaScript(`if(document.documentElement.scrollWidth>document.documentElement.clientWidth) throw new Error('Narrow customization editor overflows'); window.scrollTo(0,0);`);
+  await editor.executeJavaScript(`if(document.documentElement.scrollWidth>document.documentElement.clientWidth) throw new Error('Narrow customization editor overflows'); document.getElementById('editor').scrollTo(0,0);`);
   await capture('customization-narrow.png');
   // Real File input and drop import path, including animated GIF and errors.
   const gif = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';

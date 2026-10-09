@@ -71,7 +71,9 @@ export async function runPhrasesSmoke({ controlCenter, openPanel, getCopiedText,
   await pageLoaded(panel.webContents);
   await run(panel.webContents, rowsReady);
   if (await run(panel.webContents, `${english(0)}.value`) !== 'Smoke test phrase') throw new Error('F6 panel shows a different list');
-  if (await run(panel.webContents, `document.documentElement.dataset.embedded === 'true'`)) throw new Error('F6 panel lost its own style');
+  if (await run(panel.webContents, `document.documentElement.dataset.embedded === 'true'`)) throw new Error('F6 panel thinks it is the settings page');
+  if (await run(panel.webContents, `getComputedStyle(document.querySelector('.phrases-picker-modal')).backgroundColor`) !== 'rgb(246, 247, 242)') throw new Error('F6 panel is not in the settings palette');
+  if (await run(panel.webContents, `getComputedStyle(document.getElementById('btn-cancel-phrases')).display === 'none'`)) throw new Error('F6 panel lost its close button');
   // A save in the settings page refreshes an untouched panel...
   await run(page, typeEnglish(1, 'Synced from settings'));
   await run(page, save);

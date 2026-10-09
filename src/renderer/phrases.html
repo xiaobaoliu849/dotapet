@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-settings-theme="green">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'" />
-  <title>DOTA 2 快捷短语面板</title>
+  <title>刀塔宠物 · 快捷短语</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="settings-theme.css" />
-  <link rel="stylesheet" href="phrases-embedded.css" />
+  <link rel="stylesheet" href="phrases-theme.css" />
   <script src="phrases-mode.js"></script>
   <style>
     /* The editor scrolls its rows while keeping actions available. */
@@ -17,11 +17,6 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background: #1c1611;
-    }
-
-    .phrases-picker-modal {
-      padding: 10px 12px;
     }
 
     .phrases-modal-card {
@@ -34,9 +29,7 @@
     .phrases-table-header, .phrase-row-item { grid-template-columns: 28px minmax(0, 1fr) minmax(0, 1fr) 176px; }
     .phrase-input, .preset-dropdown { min-width: 0; }
     .phrase-row-actions { justify-content: flex-end; }
-    .phrases-usage-hint { margin: 0; color: #e6dcc4; font-size: 12px; line-height: 1.6; }
-    #phrases-draft-status { color: #e6dcc4; font-size: 12px; }
-    button:focus-visible, select:focus-visible { outline: 2px solid #e3b868; outline-offset: 2px; }
+    .phrases-usage-hint { margin: 0; line-height: 1.6; }
     @media (max-width: 700px) {
       .phrases-table-header { display: none; }
       .phrase-row-item { grid-template-columns: 24px minmax(0, 1fr) minmax(0, 1fr); }
@@ -51,7 +44,7 @@
       <div class="phrases-modal-header">
         <div class="phrases-modal-title">
           <span class="phrases-title-icon">⚡</span>
-          <span class="phrases-title-text">DOTA 2 快捷短语面板</span>
+          <span class="phrases-title-text">快捷短语</span>
           <span class="phrases-title-badge">局内热键: Ctrl+1~0 (中文) / Alt+1~0 (英文)</span>
         </div>
       </div>

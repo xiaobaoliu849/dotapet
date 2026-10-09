@@ -47,7 +47,7 @@ function fixture(options = {}) {
   const electron = {
     BrowserWindow: Window, WebContentsView: View, app: { getVersion: () => '9.9.9' },
     screen: { getPrimaryDisplay: () => ({ workArea: { x: 0, y: 0, width: 1920, height: 1080 } }) },
-    ipcMain: { handle: (name, handler) => handlers.set(name, handler) },
+    ipcMain: { handle: (name, handler) => handlers.set(name, handler), on: (name, handler) => handlers.set(name, handler) },
   };
   const hub = createControlCenter({ electron, rendererDirectory, smokeTest: true,
     onClosed: () => calls.closed++, onFocusChange: focused => calls.focus.push(focused), ...options });
@@ -85,6 +85,31 @@ test('the shell folds the sidebar on request, re-lays out pages and reports the 
   windows[0].setSize(1060, 820);
   assert.equal(view('services').bounds.x, 196, 'widening restores the expanded choice');
   assert.deepEqual(saved, [true, false]);
+});
+
+test('an animated fold follows the shell frame by frame and lands on the final layout', async () => {
+  const { hub, handlers, shell, view } = fixture({ smokeTest: false });
+  hub.register('services', services());
+  hub.open();
+  const fold = handlers.get('hub:set-sidebar-collapsed'), slide = handlers.get('hub:slide');
+  const response = await fold(shell(), true);
+  assert.deepEqual(response.slide, { from: 196, to: 64, duration: 200 });
+  const final = hubLayout(1060, 820, true).content;
+  assert.deepEqual(view('services').bounds, { ...final, x: 196 }, 'final width at once, still at the old edge');
+  slide({ sender: view('services').webContents, senderFrame: view('services').webContents.mainFrame }, 120);
+  assert.equal(view('services').bounds.x, 196, 'a page cannot move itself');
+  slide(shell(), 120);
+  assert.deepEqual(view('services').bounds, { ...final, x: 120 }, 'only the edge moves; the width stays');
+  slide(shell(), 0);
+  assert.equal(view('services').bounds.x, 64, 'frames stay between the two edges');
+  slide(shell(), 64);
+  assert.deepEqual(view('services').bounds, final);
+  slide(shell(), 150);
+  assert.deepEqual(view('services').bounds, final, 'frames after the last are ignored');
+  assert.equal((await fold(shell(), false)).slide.to, 196);
+  await new Promise(resolve => setTimeout(resolve, 650));
+  assert.deepEqual(view('services').bounds, hubLayout(1060, 820).content, 'a shell that stops drawing frames does not strand the page');
+  hub.close();
 });
 
 test('a remembered collapsed sidebar is used from the first layout', () => {

@@ -5,6 +5,7 @@ contextBridge.exposeInMainWorld('controlCenter', {
   state: () => ipcRenderer.invoke('hub:state'),
   navigate: page => ipcRenderer.invoke('hub:navigate', page),
   setSidebarCollapsed: collapsed => ipcRenderer.invoke('hub:set-sidebar-collapsed', collapsed),
+  slide: x => ipcRenderer.send('hub:slide', x),
   onState: callback => {
     const listener = (_event, value) => callback(value);
     ipcRenderer.on('hub:state', listener);

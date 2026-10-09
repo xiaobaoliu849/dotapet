@@ -971,9 +971,9 @@ function createPhrasesWindow() {
   phrasesWindow = new BrowserWindow({
     icon: appIcon,
     ...settingsWindowBounds(screen.getPrimaryDisplay().workArea, { width: 880, height: 780, minWidth: 620, minHeight: 520 }),
-    title: 'DOTA 2 快捷短语面板',
+    title: '刀塔宠物 · 快捷短语',
     autoHideMenuBar: true,
-    backgroundColor: '#1c1611',
+    backgroundColor: '#f6f7f2',
     show: false,
     alwaysOnTop: true,
     webPreferences: {
