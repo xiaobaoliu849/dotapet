@@ -450,22 +450,7 @@ export const SCALE_TIERS = [
 
 function persistWindowState() {
   clearTimeout(saveWindowStateTimer);
-  saveWindowStateTimer = setTimeout(() => {
-    try {
-      const sPath = getSettingsPath();
-      let data = {};
-      if (fs.existsSync(sPath)) {
-        try {
-          data = JSON.parse(fs.readFileSync(sPath, 'utf8'));
-        } catch (e) {}
-      }
-      data.windowState = windowState;
-      data.updatedAt = new Date().toISOString();
-      fs.writeFileSync(sPath, JSON.stringify(data, null, 2), 'utf8');
-    } catch (e) {
-      console.error('[Settings] Failed to save window state:', e);
-    }
-  }, 350);
+  saveWindowStateTimer = setTimeout(() => saveSettings({ windowState }), 350);
 }
 
 function setWindowPinned(pinned) {
@@ -662,106 +647,67 @@ function sendPhraseToGame(digit, type = 'cn') {
   return { success: false, error: 'Phrase not found' };
 }
 
-function loadSavedHeroId() {
+/** The settings file as an object; {} when it is missing or unreadable. */
+function loadSettings() {
   try {
     const sPath = getSettingsPath();
-    if (fs.existsSync(sPath)) {
-      const data = JSON.parse(fs.readFileSync(sPath, 'utf8'));
-      if (data && data.gsiSettings) {
-        gsiSettings = { ...gsiSettings, ...data.gsiSettings };
-      }
-      if (data && data.windowState && typeof data.windowState === 'object') {
-        windowState = {
-          x: Number.isFinite(data.windowState.x) ? data.windowState.x : null,
-          y: Number.isFinite(data.windowState.y) ? data.windowState.y : null,
-          pinned: Boolean(data.windowState.pinned),
-          scaleMode: data.windowState.scaleMode || 'normal',
-        };
-      }
-      if (data && data.selectedHeroId) {
-        return data.selectedHeroId;
-      }
-    }
+    if (!fs.existsSync(sPath)) return {};
+    const data = JSON.parse(fs.readFileSync(sPath, 'utf8'));
+    return data && typeof data === 'object' && !Array.isArray(data) ? data : {};
   } catch (e) {
     console.error('[Settings] Failed to load saved settings:', e);
+    return {};
   }
-  return null;
+}
+
+/**
+ * Merge changes into the settings file. An unreadable file is moved aside for
+ * recovery first, so one save can never silently erase every other setting.
+ */
+function saveSettings(changes) {
+  try {
+    const sPath = getSettingsPath();
+    let data = {};
+    if (fs.existsSync(sPath)) {
+      try {
+        data = JSON.parse(fs.readFileSync(sPath, 'utf8'));
+        if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('not an object');
+      } catch (e) {
+        const aside = sPath.replace(/\.json$/, '.unreadable.json');
+        fs.renameSync(sPath, aside);
+        console.error(`[Settings] Unreadable settings moved to ${aside}:`, e);
+        data = {};
+      }
+    }
+    Object.assign(data, changes, { updatedAt: new Date().toISOString() });
+    fs.writeFileSync(sPath, JSON.stringify(data, null, 2), 'utf8');
+  } catch (e) {
+    console.error(`[Settings] Failed to save ${Object.keys(changes).join(', ')}:`, e);
+  }
+}
+
+function loadSavedHeroId() {
+  const data = loadSettings();
+  if (data.gsiSettings) {
+    gsiSettings = { ...gsiSettings, ...data.gsiSettings };
+  }
+  if (data.windowState && typeof data.windowState === 'object') {
+    windowState = {
+      x: Number.isFinite(data.windowState.x) ? data.windowState.x : null,
+      y: Number.isFinite(data.windowState.y) ? data.windowState.y : null,
+      pinned: Boolean(data.windowState.pinned),
+      scaleMode: data.windowState.scaleMode || 'normal',
+    };
+  }
+  return data.selectedHeroId || null;
 }
 
 function saveHeroId(heroId) {
-  try {
-    const sPath = getSettingsPath();
-    let data = {};
-    if (fs.existsSync(sPath)) {
-      try {
-        data = JSON.parse(fs.readFileSync(sPath, 'utf8'));
-      } catch (e) {}
-    }
-    data.selectedHeroId = heroId;
-    data.gsiSettings = gsiSettings;
-    data.updatedAt = new Date().toISOString();
-    fs.writeFileSync(sPath, JSON.stringify(data, null, 2), 'utf8');
-  } catch (e) {
-    console.error('[Settings] Failed to save heroId:', e);
-  }
+  saveSettings({ selectedHeroId: heroId, gsiSettings });
 }
 
 function saveGsiSettings(newSettings) {
-  try {
-    const sPath = getSettingsPath();
-    let data = {};
-    if (fs.existsSync(sPath)) {
-      try {
-        data = JSON.parse(fs.readFileSync(sPath, 'utf8'));
-      } catch (e) {}
-    }
-    data.gsiSettings = newSettings;
-    data.updatedAt = new Date().toISOString();
-    fs.writeFileSync(sPath, JSON.stringify(data, null, 2), 'utf8');
-  } catch (e) {
-    console.error('[Settings] Failed to save gsiSettings:', e);
-  }
-}
-
-function loadSettingsValue(key) {
-  try {
-    const sPath = getSettingsPath();
-    return fs.existsSync(sPath) ? JSON.parse(fs.readFileSync(sPath, 'utf8'))?.[key] : undefined;
-  } catch (e) {
-    console.error(`[Settings] Failed to load ${key}:`, e);
-    return undefined;
-  }
-}
-
-// An unreadable file is left alone: rewriting it would drop every other setting.
-function saveSettingsValue(key, value) {
-  try {
-    const sPath = getSettingsPath();
-    const data = fs.existsSync(sPath) ? JSON.parse(fs.readFileSync(sPath, 'utf8')) : {};
-    if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('settings file is not an object');
-    data[key] = value;
-    data.updatedAt = new Date().toISOString();
-    fs.writeFileSync(sPath, JSON.stringify(data, null, 2), 'utf8');
-  } catch (e) {
-    console.error(`[Settings] Failed to save ${key}:`, e);
-  }
-}
-
-function saveTranslateTargetLanguage(langCode) {
-  try {
-    const sPath = getSettingsPath();
-    let data = {};
-    if (fs.existsSync(sPath)) {
-      try {
-        data = JSON.parse(fs.readFileSync(sPath, 'utf8'));
-      } catch (e) {}
-    }
-    data.translateTargetLanguage = langCode;
-    data.updatedAt = new Date().toISOString();
-    fs.writeFileSync(sPath, JSON.stringify(data, null, 2), 'utf8');
-  } catch (e) {
-    console.error('[Settings] Failed to save translateTargetLanguage:', e);
-  }
+  saveSettings({ gsiSettings: newSettings });
 }
 
 // Loaded independently of the hero config: loadSavedHeroId() only runs when
@@ -769,23 +715,16 @@ function saveTranslateTargetLanguage(langCode) {
 // translation language. Whitelist-validated so a hand-edited settings file
 // can never push an arbitrary code into the Google setup frame.
 function loadTranslateTargetLanguage() {
-  try {
-    const sPath = getSettingsPath();
-    if (!fs.existsSync(sPath)) return;
-    const data = JSON.parse(fs.readFileSync(sPath, 'utf8'));
-    const saved = data && data.translateTargetLanguage;
-    if (TRANSLATE_TARGET_LANGUAGES.some((l) => l.code === saved)) {
-      translateTargetLanguage = saved;
-    }
-  } catch (e) {
-    console.error('[Settings] Failed to load translateTargetLanguage:', e);
+  const saved = loadSettings().translateTargetLanguage;
+  if (TRANSLATE_TARGET_LANGUAGES.some((l) => l.code === saved)) {
+    translateTargetLanguage = saved;
   }
 }
 
 function setTranslateTargetLanguage(langCode) {
   const lang = TRANSLATE_TARGET_LANGUAGES.some((l) => l.code === langCode) ? langCode : 'en';
   translateTargetLanguage = lang;
-  saveTranslateTargetLanguage(lang);
+  saveSettings({ translateTargetLanguage: lang });
   // A live google-translate session reconnects inside the engine so the new
   // target takes effect immediately; other providers just remember it.
   voiceClient?.setTranslateTargetLanguage(lang);
@@ -1853,8 +1792,8 @@ if (app?.whenReady) {  app.whenReady().then(() => {
     // Created before anything that can ask for settings (pet window, tray, IPC).
     controlCenter = createControlCenter({ electron, rendererDirectory: path.join(__dirname, '../renderer'), icon: appIcon, smokeTest,
       onClosed: onSettingsCenterClosed, onFocusChange: onSettingsFocusChange,
-      sidebarCollapsed: loadSettingsValue('settingsSidebarCollapsed') === true,
-      onSidebarCollapsedChange: collapsed => saveSettingsValue('settingsSidebarCollapsed', collapsed) });
+      sidebarCollapsed: loadSettings().settingsSidebarCollapsed === true,
+      onSidebarCollapsedChange: collapsed => saveSettings({ settingsSidebarCollapsed: collapsed }) });
     controlCenter.register('services', { file: 'ai-settings.html', preload: '../preload/ai-settings.js', background: '#f6f7f2', backgroundThrottling: false,
       onHide: contents => contents.send('settings:hidden') });
     // The same editor as the F6 panel, drawn in the settings center's light style.
