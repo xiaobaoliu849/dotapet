@@ -1933,6 +1933,33 @@ async function startMicrophone() {
   }
 }
 
+/**
+ * Per-press billing: once the mic closes, the paid realtime session it dialed
+ * is torn down — but only after any in-flight reply has finished speaking, and
+ * only if the user has not pressed Alt+Q again in the meantime.
+ */
+async function releaseVoiceSessionWhenQuiet(generation) {
+  const bridge = window.electronAPI?.releaseVoiceConnection;
+  if (typeof bridge !== 'function') { showToast('🎙️ 语音对讲已结束'); return; }
+  const started = Date.now();
+  const player = typeof audioPlayer !== 'undefined' ? audioPlayer : null;
+  const replyPending = () => state.appState === 'thinking' || state.appState === 'speaking'
+    || Boolean(player?.isPlaying?.());
+  // A just-committed utterance usually starts its reply within a few seconds.
+  while (generation === state.microphoneGeneration && !replyPending() && Date.now() - started < 5000) {
+    await new Promise(resolve => setTimeout(resolve, 300));
+  }
+  while (generation === state.microphoneGeneration && replyPending() && Date.now() - started < 90000) {
+    await new Promise(resolve => setTimeout(resolve, 300));
+  }
+  // A fresh Alt+Q press owns the mic now; its own stop will release instead.
+  if (generation !== state.microphoneGeneration || state.isMicActive || state.isVoiceConnecting) return;
+  let released = false;
+  try { released = Boolean((await bridge())?.released); } catch { /* toast stays generic */ }
+  if (generation !== state.microphoneGeneration) return;
+  showToast(released ? '🎙️ 语音已断开，本次计费结束' : '🎙️ 语音对讲已结束');
+}
+
 function stopMicrophone() {
   const wasConnecting = state.isVoiceConnecting;
   if (state.voiceConnectionRequest) window.electronAPI?.cancelVoiceConnect?.(state.voiceConnectionRequest);
@@ -1955,7 +1982,8 @@ function stopMicrophone() {
   elements.btnPttMic.classList.remove('active');
   elements.pttLabel.textContent = '语音';
   setAppState('idle', '待命中');
-  showToast(wasConnecting ? '已取消语音连接' : '🎙️ 语音对讲已结束');
+  if (wasConnecting) showToast('已取消语音连接');
+  else releaseVoiceSessionWhenQuiet(state.microphoneGeneration);
 }
 
 function toggleMicrophone() {

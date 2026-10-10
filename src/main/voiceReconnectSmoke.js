@@ -15,6 +15,11 @@ export async function runVoiceReconnectSmoke({ mainWindow, store, client, connec
     for (let i = 0; i < 100; i++) { if (await predicate()) return; await sleep(); }
     throw new Error('Voice reconnect smoke timed out');
   };
+  // Releasing the mic waits out a reply grace window before dialing down.
+  const waitForRelease = async predicate => {
+    for (let i = 0; i < 500; i++) { if (await predicate()) return; await sleep(); }
+    throw new Error('Voice session release timed out');
+  };
   const page = mainWindow.webContents;
   const run = source => page.executeJavaScript(`(async () => { ${source} })()`);
   const micActive = () => run("return document.getElementById('btn-ptt-mic').classList.contains('active')");
@@ -66,26 +71,31 @@ export async function runVoiceReconnectSmoke({ mainWindow, store, client, connec
     assert.equal(attempts.length, 1);
     assert.deepEqual(attempts[0], { key: 'reconnect-smoke-key', provider: 'google', model: 'gemini-3.8-live' });
     assert.ok(!getSettingsWindow(), 'Saved credentials unexpectedly opened settings');
-    assert.equal(greetings.length, 1, 'New chat did not greet exactly once');
-    assert.match(greetings[0].clientContent.turns[0].parts[0].text, /Daddy/);
+    assert.equal(greetings.length, 0, 'Connecting sent a paid opening greeting');
     assert.match(engine.getHeroSystemPrompt(), /Call my friend James Jay/);
-    await waitFor(() => run("return document.getElementById('transcript-list').textContent.includes('Daddy, I am here')"));
-    assert.equal(await run("return document.getElementById('transcript-list').textContent.includes('The voice conversation has just started')"), false);
-    // A renderer without a connected snapshot can reuse the main's live session.
+    // A quick Alt+Q re-press inside the reply grace window reuses the session.
     toggle(); await waitFor(async () => !await micActive());
     page.send('voice:status', { status: 'disconnected' });
     toggle(); await waitFor(micActive);
-    assert.equal(attempts.length, 1, 'A stale renderer snapshot redialed a ready session');
-    assert.equal(greetings.length, 1, 'Reusing a ready session repeated its greeting');
+    assert.equal(attempts.length, 1, 'A quick re-press redialed a ready session');
+    assert.equal(greetings.length, 0, 'Reusing a session sent a greeting');
+    // Once the mic stays closed past the grace window, the paid session ends.
+    toggle(); await waitFor(async () => !await micActive());
+    await waitForRelease(() => !engine.isConnected);
+    assert.equal(attempts.length, 1, 'Releasing the mic redialed');
+    // The next press dials fresh with exactly the same saved credentials.
+    toggle(); await waitFor(micActive);
+    assert.equal(attempts.length, 2);
+    assert.equal(greetings.length, 0, 'Redialing sent a greeting');
+    assert.ok(!getSettingsWindow());
+    assert.equal(fs.readFileSync(store.filePath, 'utf8'), saved, 'Reconnect required rewriting credentials');
     // An unexpected close uses exactly the same saved credentials on Alt+Q.
     engine.emit('status', { status: 'error', error: '连接已断开，请手动重试。' });
     await waitFor(async () => !await micActive());
     const notice = await run("return document.getElementById('hud-toast').textContent");
     assert.match(notice, /Alt\+Q/);
     toggle(); await waitFor(micActive);
-    assert.equal(attempts.length, 2);
-    assert.equal(greetings.length, 2, 'Retry did not get a fresh opening greeting');
-    assert.ok(!getSettingsWindow());
+    assert.equal(attempts.length, 3);
     assert.equal(fs.readFileSync(store.filePath, 'utf8'), saved, 'Reconnect required rewriting credentials');
     toggle(); await waitFor(async () => !await micActive());
     // A second press while connecting cancels both the pending dial and mic.
@@ -96,20 +106,20 @@ export async function runVoiceReconnectSmoke({ mainWindow, store, client, connec
     toggle(); await waitFor(() => !connection.pending);
     assert.equal(engine.isConnecting, false);
     assert.equal(await micActive(), false);
-    assert.equal(greetings.length, 2, 'Cancelled connection greeted');
+    assert.equal(greetings.length, 0, 'Cancelled connection sent a greeting');
     // Auth errors keep the saved key, expose no secret and never open settings.
     mode = 'auth'; toggle();
-    await waitFor(() => attempts.length === 4 && !connection.pending);
+    await waitFor(() => attempts.length === 5 && !connection.pending);
     await sleep();
     assert.equal(await micActive(), false);
     const authNotice = await run("return document.getElementById('hud-toast').textContent");
     assert.match(authNotice, /密钥无效/);
     assert.ok(!authNotice.includes('reconnect-smoke-key'));
     assert.ok(!getSettingsWindow());
-    assert.equal(greetings.length, 2, 'Failed authentication greeted');
+    assert.equal(greetings.length, 0, 'Failed authentication sent a greeting');
     mode = 'ready'; toggle(); await waitFor(micActive);
     toggle(); await waitFor(async () => !await micActive());
-    // The geometry fixture starts with empty history; greetings were verified above.
+    // The geometry fixture starts with empty history; nothing was spoken above.
     await run("document.getElementById('btn-clear-transcript').click()");
     const conversation = await runConversation();
     // Missing credentials really do require the settings page, without a dial.
@@ -119,7 +129,7 @@ export async function runVoiceReconnectSmoke({ mainWindow, store, client, connec
     assert.equal(attempts.length, dials);
     assert.equal(await micActive(), false);
     assert.equal(await run('return window.__voiceSmokeStreams.every(stream => stream.getTracks().every(track => track.readyState === "ended"))'), true);
-    return { savedKeyStart: true, openingGreeting: true, personalization: true, readySessionReuse: true, disconnectedRetry: true, cancelPending: true, authFailure: true, missingKeySettings: true, noSecretLeak: true, conversation };
+    return { savedKeyStart: true, noPaidGreeting: true, personalization: true, graceWindowReuse: true, micReleaseDisconnect: true, disconnectedRetry: true, cancelPending: true, authFailure: true, missingKeySettings: true, noSecretLeak: true, conversation };
   } finally {
     disconnect();
     engine.connect = originalConnect;

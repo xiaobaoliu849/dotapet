@@ -132,7 +132,8 @@ test('Cartesia DeepSeek key doubles as the DeepSeek translation key and saves in
   // The vault has both keys once the voice save returns.
   configure(ui, 'cartesia'); configure(ui, 'deepseek');
   await ui.nodes.get('connect').click();
-  assert.equal(ui.calls.connectedProvider, 'cartesia');
+  assert.equal(ui.calls.test, 1);
+  assert.equal(ui.calls.connect, 0, 'setup only tests; the paid session waits for Alt+Q');
   assert.deepEqual(ui.calls.saves.map(item => item.provider), ['cartesia', 'deepseek']);
   assert.equal(ui.calls.saves[0].secrets.llmApiKey, 'deepseek');
   assert.equal(ui.calls.saves[1].translationProvider, 'deepseek');
@@ -171,7 +172,8 @@ test('Gemini chat and live translation share one key draft', async () => {
   await ui.nodes.get('connect').click();
   assert.equal(ui.calls.saved.provider, 'google-translate');
   assert.equal(ui.calls.saved.secrets.apiKey, 'google-key');
-  assert.equal(ui.calls.connectedProvider, 'google-translate');
+  assert.equal(ui.calls.test, 1);
+  assert.equal(ui.calls.connect, 0);
 });
 
 test('a saved key is removed only after a confirming second click', async () => {
@@ -215,14 +217,13 @@ test('controls stay disabled after save while a connection test is still pending
   assert.equal(ui.nodes.get('cancel').hidden, true);
 });
 
-test('one primary click saves and connects without a separate test', async () => {
+test('one primary click saves and proves the setup with a self-closing test', async () => {
   const ui = await renderer();
   type(ui, 'secret-apiKey', 'synthetic');
   await ui.nodes.get('connect').click();
   assert.equal(ui.calls.save, 1);
-  assert.equal(ui.calls.connect, 1);
-  assert.equal(ui.calls.test, 0);
-  assert.equal(ui.calls.connectedProvider, 'qwen');
+  assert.equal(ui.calls.test, 1);
+  assert.equal(ui.calls.connect, 0, 'setup never opens the billed session');
   assert.equal(ui.nodes.get('finish').hidden, false);
   assert.equal(ui.nodes.get('secret-apiKey').value, '');
   await ui.nodes.get('finish').click();
@@ -297,9 +298,8 @@ test('late cancelled translation tests cannot report success', async () => {
 });
 
 test('connection status prevents duplicate starts, offers retry, and marks unsaved changes', async () => {
-  const ui = await renderer({ connectAI: async () => ({ ok: true, status: { status: 'connecting', providerId: 'qwen' } }) });
-  type(ui, 'secret-apiKey', 'synthetic');
-  await ui.nodes.get('connect').click();
+  const ui = await renderer();
+  ui.calls.statusListener({ status: 'connecting', providerId: 'qwen' });
   assert.equal(ui.nodes.get('connect').disabled, true);
   assert.match(ui.nodes.get('connect').textContent, /正在连接/);
   assert.equal(ui.nodes.get('finish').hidden, true);
@@ -325,7 +325,9 @@ test('choosing a provider focuses its key field and Enter starts configuration',
   assert.equal(ui.calls.save, 0, 'IME confirmation must not submit a key');
   input.listeners.keydown({ key: 'Enter', preventDefault() {} });
   await tick();
-  assert.equal(ui.calls.connectedProvider, 'doubao');
+  assert.equal(ui.calls.test, 1);
+  assert.equal(ui.calls.saved?.provider, 'doubao');
+  assert.equal(ui.calls.connect, 0);
 });
 
 test('a purpose request brings the asked card forward without saving or connecting', async () => {

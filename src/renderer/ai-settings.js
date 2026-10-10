@@ -17,6 +17,19 @@ const keyDrafts = new Map();
 const drafts = new Map();
 let renderedProvider = '';
 let conversationDraft = null;
+// A successful save+test proves setup works; the paid session itself only
+// ever opens while Alt+Q is held down, never from this window.
+let setupVerified = false;
+/** Free local confirmation — never the paid realtime voice. */
+function speakLocal(text) {
+  try {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'zh-CN';
+    window.speechSynthesis.speak(utterance);
+  } catch { /* a silent confirmation still leaves the text feedback */ }
+}
 const voiceProviders = ['qwen', 'doubao', 'google', 'cartesia'];
 const providerNames = { qwen: '阿里千问', doubao: '豆包', google: 'Gemini', cartesia: 'Cartesia', deepseek: 'DeepSeek' };
 const providerDescriptions = { qwen: ['千', '语音 + 翻译 · 推荐'], doubao: ['豆', '自然的中文对话'], google: ['✦', '多语言 · 语音翻译'], cartesia: ['C', '英语口语对练'], deepseek: ['D', '文字 / 截图翻译'] };
@@ -44,10 +57,10 @@ function updateConnectAction() {
   button.disabled = busy || state === 'connecting';
   button.className = state === 'connecting' ? 'primary is-connecting' : connected ? 'secondary' : 'primary';
   button.setAttribute('aria-busy', String(state === 'connecting'));
-  button.textContent = state === 'connecting' ? '正在连接…' : connected ? '重新连接' : state === 'error' ? '重试连接 →' : profile()?.id === 'google-translate' ? '保存并开始语音翻译 →' : '保存并开始聊天 →';
+  button.textContent = state === 'connecting' ? '正在连接…' : connected ? '重新测试' : state === 'error' ? '重试测试 →' : profile()?.id === 'google-translate' ? '保存并测试翻译 →' : '保存并测试连接 →';
 }
 function markDirty() {
-  dirty = true; byId('finish').hidden = true; updateConnectAction();
+  dirty = true; setupVerified = false; byId('finish').hidden = true; updateConnectAction();
   if (connectionState() === 'connected') feedback('设置有更改，保存后重新连接即可生效。');
 }
 function focusCredential() {
@@ -62,10 +75,10 @@ function status(event) {
   if (event) lastStatus = event;
   const selected = !event?.providerId || event.providerId === profile()?.id;
   const state = selected ? event?.status || 'disconnected' : 'disconnected';
-  const names = { disconnected: '麦克风只在你按下 Alt+Q 时打开。', connecting: '正在连接，请稍等…', connected: '已连接！按 Alt+Q 和小伙伴说话。', error: '连接失败，请检查密钥与网络后重试。' };
+  const names = { disconnected: '按 Alt+Q 开麦聊天，再按一次断开；只在聊天时计费。', connecting: '正在连接，请稍等…', connected: '已连接！按 Alt+Q 和小伙伴说话。', error: '连接失败，请检查密钥与网络后重试。' };
   byId('connection-status').dataset.state = state;
   byId('connection-status').textContent = state === 'error' && event.error ? `连接失败：${event.error}` : names[state] || names.disconnected;
-  byId('finish').hidden = state !== 'connected' || dirty;
+  byId('finish').hidden = !(setupVerified || state === 'connected') || dirty;
   updateConnectAction();
   // The status line already explains connection results.
   if ((state === 'connected' && !dirty) || state === 'error') feedback('');
@@ -129,6 +142,7 @@ function renderProfile() {
   const item = profile();
   if (!item) return;
   dirty = false;
+  setupVerified = false;
   byId('finish').hidden = true;
   for (const button of byId('provider-options').children) button.setAttribute('aria-pressed', String(button.dataset.provider === byId('provider').value));
   const container = byId('secret-fields');
@@ -356,7 +370,7 @@ function requireCredentials(item = profile()) {
   const missing = item.fields.find(field => !field.optional && !field.configured && !keyDrafts.get(field.account)?.trim());
   if (missing) throw new Error(`请先粘贴 ${keyName(missing)}。`);
 }
-byId('save').addEventListener('click', () => action(async () => { await saveVoice(); feedback('设置已加密保存。', 'success'); }));
+byId('save').addEventListener('click', () => action(async () => { await saveVoice(); feedback('设置已加密保存。按 Alt+Q 即可开始聊天。', 'success'); speakLocal('设置已保存。'); }));
 byId('voice-test').addEventListener('click', () => action(async () => {
   requireCredentials();
   const provider = await saveVoice(); feedback('正在测试语音连接，麦克风保持关闭…');
@@ -383,12 +397,21 @@ byId('test').addEventListener('click', () => action(async () => {
   } catch (error) { feedback(error.message || '操作失败，请重试。', 'error', 'translate-feedback'); }
 }, true));
 byId('connect').addEventListener('click', () => action(async () => {
+  // Save, then prove the credentials with a brief test session that always
+  // closes itself. The billed conversation session only opens on Alt+Q.
   requireCredentials();
-  const provider = await saveVoice(); const response = await api.connectAI(provider);
+  const provider = await saveVoice(); feedback('正在测试语音连接，麦克风保持关闭…');
+  if (testCancelled) { feedback('测试已取消，请重新测试。'); return; }
+  const response = await api.testAIConnection(provider);
   if (!response.ok) throw new Error(response.error);
-  status(response.status);
-  if (!['error', 'connected'].includes(response.status?.status)) feedback('密钥已保存，正在连接…');
-}));
+  if (testCancelled) { feedback('测试已取消，请重新测试。'); return; }
+  if (!response.result.ok) { feedback(response.result.message, 'error'); return; }
+  setupVerified = true;
+  byId('finish').hidden = false;
+  updateConnectAction();
+  feedback('设置好了！按 Alt+Q 开始聊天，再按一次结束并停止计费。', 'success');
+  speakLocal('设置好了，按 Alt+Q 和我说话吧。');
+}, true));
 for (const id of ['finish', 'skip']) byId(id).addEventListener('click', () => action(async () => {
   window.stopMicrophoneCheck?.(); const response = await api.finishAISetup();
   if (!response.ok) throw new Error(response.error);

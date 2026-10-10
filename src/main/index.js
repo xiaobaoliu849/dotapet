@@ -104,6 +104,9 @@ let tray = null;
 let voiceClient = null;
 let voiceConnection = null;
 let microphoneConnectionRequest = null;
+// True only while the live session was opened by an Alt+Q mic press, so
+// releasing the mic can end billing; settings/tray sessions stay untouched.
+let micOwnedVoiceSession = false;
 let ahkEngine = null;
 let gamePhraseShortcuts = null;
 let roamEngine = null;
@@ -601,6 +604,8 @@ function startVoiceProvider(providerId) {
 
 function setVoiceProvider(providerId, { openSettings = true } = {}) {
   cancelConnectionTest();
+  // Any explicit connect/disconnect ends mic ownership of the session.
+  micOwnedVoiceSession = false;
   if (providerId && voiceConnection) {
     const attempt = voiceConnection.ensure(providerId);
     if (openSettings) attempt.then(result => { if (result.needsSettings) openAISettings('voice'); });
@@ -1441,10 +1446,8 @@ function setupVoiceService() {
   voiceConnection = createVoiceConnection({
     engine: voiceClient.cloudEngine,
     start: startVoiceProvider,
-    onReady: () => voiceClient.cloudEngine.startConversationGreeting().catch(() => {
-      // A greeting failure must not tear down an otherwise usable voice chat.
-      console.warn('[Voice] Opening greeting could not be sent.');
-    }),
+    // No automatic paid greeting: the realtime session bills from the moment
+    // it connects, so the companion speaks only once the user actually talks.
     onFailure: result => {
       voiceClient.disconnect();
       voiceClient.cloudEngine.apiKey = null;
@@ -1502,9 +1505,24 @@ function setupIPC() {
     const provider = currentVoiceProvider || retryVoiceProvider || aiSettingsStore.data.selectedProvider;
     const request = { id: requestId, ownsConnection: !voiceConnection.pending && !voiceConnection.isReady(provider) };
     microphoneConnectionRequest = request;
+    // Reusing a session the mic itself dialed keeps the mic responsible for
+    // releasing it; reusing a settings/tray session leaves ownership alone.
+    const wasMicOwned = micOwnedVoiceSession;
     request.attempt = setVoiceProvider(provider, { openSettings: false });
-    try { return await request.attempt; }
+    try {
+      const result = await request.attempt;
+      if (result.ok && (request.ownsConnection || wasMicOwned)) micOwnedVoiceSession = true;
+      return result;
+    }
     finally { if (microphoneConnectionRequest === request) microphoneConnectionRequest = null; }
+  });
+  ipcMain.handle('voice:release-connection', event => {
+    if (!isTrustedSettingsSender(event, mainWindow, petURL)) return { ok: false, released: false };
+    if (!micOwnedVoiceSession) return { ok: true, released: false };
+    micOwnedVoiceSession = false;
+    // Closing the mic ends the session immediately so billing stops here.
+    setVoiceProvider(null);
+    return { ok: true, released: true };
   });
   ipcMain.on('voice:cancel-connect', (event, requestId) => {
     if (!isTrustedSettingsSender(event, mainWindow, petURL)) return;
