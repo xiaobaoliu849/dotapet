@@ -47,11 +47,15 @@ test('HTTP errors and malformed vision results produce no invented local transla
   const service = new TranslationService();
   service.fallbackLocalAnalyze = () => { throw new Error('unexpected fallback'); };
   let calls = 0;
-  for (const value of [null, {}, { original: '', translated: 'invented' }]) {
+  for (const value of [null, {}]) {
     globalThis.fetch = async () => { calls++; return value === null ? { ok: false, status: 403, text: async () => 'denied' } : completion(value); };
     await assert.rejects(service.analyzeImage(png), value === null ? /密钥无效或没有视觉模型权限/ : /截图翻译未完成/);
   }
-  assert.equal(calls, 3);
+  assert.equal(calls, 2);
+  globalThis.fetch = async () => completion({ original: '', translated: 'invented' });
+  const invented = await service.analyzeImage(png);
+  assert.equal(invented.empty, true);
+  assert.doesNotMatch(invented.meaningZh, /invented/);
   globalThis.fetch = async () => ({ ok: false, status: 404, text: async () => 'Model not exist.' });
   await assert.rejects(service.analyzeImage(png), /不支持该视觉模型/);
   globalThis.fetch = async () => completion({ original: '', translated: '', meaningZh: '已完成翻译' });

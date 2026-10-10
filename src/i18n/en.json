@@ -481,7 +481,17 @@
  "正在截取并翻译聊天…": "Capturing and translating chat…",
  "无法截取屏幕，请重试。": "Could not capture the screen. Please try again.",
  "✅ 聊天区域已保存。回到 DOTA 2 后按 Alt+T 即可直接翻译聊天。": "✅ Chat area saved. Back in DOTA 2, press Alt+T to translate chat directly.",
- "截到的是黑屏：当前显示模式不允许直接截图。请在 Dota 2 视频设置中改用「无边框窗口」；或者先按 Win+Shift+S 框选聊天，再按 Alt+T。": "The capture came back black: this display mode blocks direct capture. Switch Dota 2 to Borderless Window in video settings, or snip the chat with Win+Shift+S first and then press Alt+T.",
  "截图里没有看到聊天消息": "No chat messages in the screenshot",
- "聊天几秒后会淡出：请在消息还显示时按 Alt+T，或先按 Enter 打开聊天框让最近的消息重新显示。要把自己输入的中文翻成英文，请按 F8。聊天不在截取范围内时，按 Alt+Shift+T 重新框选。": "Chat fades after a few seconds: press Alt+T while messages are still showing, or press Enter first to open the chat box and bring recent messages back. To turn your own Chinese into English, press F8. If the chat is outside the captured area, press Alt+Shift+T to frame it again."
+ "聊天几秒后会淡出：请在消息还显示时按 Alt+T，或先按 Enter 打开聊天框让最近的消息重新显示。要把自己输入的中文翻成英文，请按 F8。聊天不在截取范围内时，按 Alt+Shift+T 重新框选。": "Chat fades after a few seconds: press Alt+T while messages are still showing, or press Enter first to open the chat box and bring recent messages back. To turn your own Chinese into English, press F8. If the chat is outside the captured area, press Alt+Shift+T to frame it again.",
+ "聊天截图": "Chat screenshot",
+ "正在识别并翻译截图中的聊天…": "Reading and translating the chat in the screenshot…",
+ "截图过大，请重新框选聊天区域。": "The screenshot is too large. Please frame just the chat area.",
+ "截图格式不正确或过大，请只框选聊天区域。": "The screenshot format is wrong or it is too large. Please frame just the chat area.",
+ "请在「翻译文字 / 截图」设置中填写所选服务商的密钥。": "Enter the selected provider's key in the \"Translate text / screenshots\" settings.",
+ "截图翻译失败：密钥无效或没有视觉模型权限，请在「翻译文字 / 截图」设置中检查密钥与地区。": "Screenshot translation failed: the key is invalid or lacks vision model access. Check the key and region in the \"Translate text / screenshots\" settings.",
+ "截图翻译失败：当前账号/工作空间不支持该视觉模型。": "Screenshot translation failed: this account or workspace does not offer the vision model.",
+ "截图翻译失败：请求过于频繁或额度不足，请稍后再试。": "Screenshot translation failed: too many requests or not enough quota. Please try again later.",
+ "截图翻译超时，请只框选聊天区域后重试。": "Screenshot translation timed out. Frame just the chat area and try again.",
+ "截图翻译未完成。请检查密钥、视觉模型权限和网络后重试；不会自动改用其他服务商。": "Screenshot translation did not finish. Check the key, vision model access and network, then try again; no other provider is used automatically.",
+ "截到的是黑屏：当前显示模式不允许直接截图。请在 Dota 2 视频设置中改用「无边框窗口」；或者按 Win+Shift+S 框选聊天，切出游戏后再按 Alt+T。": "The capture came back black: this display mode blocks direct capture. Switch Dota 2 to Borderless Window in video settings, or snip the chat with Win+Shift+S, switch out of the game, then press Alt+T."
 }

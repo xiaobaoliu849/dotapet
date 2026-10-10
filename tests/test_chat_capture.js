@@ -59,15 +59,25 @@ function engine({ foreground = 'dota2', clipboardImage = null, capture } = {}) {
   return { instance, notices, sent, clipboard };
 }
 
-test('Alt+T in Dota captures the chat area; a snip taken since the last press wins once', async () => {
-  const { instance, sent, clipboard } = engine({ clipboardImage: fakeImage({ id: 'old' }) });
+test('Alt+T in Dota captures the chat area and never uploads whatever image the clipboard holds', async () => {
+  const { instance, sent, clipboard } = engine({ clipboardImage: fakeImage({ id: 'private-photo' }) });
   await instance.handleClipboardTranslation();
-  assert.deepEqual(sent, ['chat'], 'a screenshot already on the clipboard at launch is stale');
-  clipboard.image = fakeImage({ id: 'snip' });
+  clipboard.image = fakeImage({ id: 'another' });
   await instance.handleClipboardTranslation();
-  await instance.handleClipboardTranslation();
-  assert.deepEqual(sent, ['chat', 'snip', 'chat']);
+  assert.deepEqual(sent, ['chat', 'chat']);
   assert.equal(instance.isBusy, false);
+});
+
+test('the HUD\'s own status and error text goes through main\'s translator; chat does not', async () => {
+  const { instance, notices } = engine({ capture: async () => { throw new BlackCaptureError(); } });
+  instance.t = text => `EN(${text})`;
+  await instance.handleClipboardTranslation();
+  assert.equal(notices[0].meaningZh, 'EN(正在截取并翻译聊天…)');
+  assert.match(notices.at(-1).meaningZh, /^❌ EN\(截到的是黑屏/);
+  const chat = engine();
+  chat.instance.t = text => `EN(${text})`;
+  await chat.instance.handleClipboardTranslation();
+  assert.equal(chat.notices.at(-1).meaningZh, '肉山', 'model output is shown as written');
 });
 
 test('outside Dota Alt+T still translates the clipboard; capture errors reach the HUD', async () => {
@@ -83,8 +93,8 @@ test('outside Dota Alt+T still translates the clipboard; capture errors reach th
 test('each captured chat image is handed over for checking, and a failure there does not stop translation', async () => {
   const kept = [];
   const { instance, sent } = engine();
-  instance.onChatCaptured = image => { kept.push(image.id); throw new Error('disk full'); };
+  instance.onChatCaptured = data => { kept.push(data.toString()); throw new Error('disk full'); };
   await instance.handleClipboardTranslation();
-  assert.deepEqual(kept, ['chat']);
+  assert.deepEqual(kept, ['chat'], 'the encoded upload is reused, not encoded again');
   assert.deepEqual(sent, ['chat']);
 });

@@ -15,7 +15,10 @@ function between(event) {
     width: Math.abs(event.clientX - start.x) / innerWidth, height: Math.abs(event.clientY - start.y) / innerHeight };
 }
 
-api.load().then(({ image, region }) => {
+api.load().then(data => {
+  // Not this picker's screenshot (a newer picker replaced it): close instead of staying black.
+  if (!data) return api.finish(null);
+  const { image, region } = data;
   document.getElementById('screen').src = image;
   if (region) place(region);
 });

@@ -295,14 +295,17 @@ export class TranslationService {
     const failure = {};
     const result = await this.callChatCompletions(apiUrl, key, deepseek ? 'deepseek-flash' : QWEN_VISION_MODEL, prompt,
       [{ type: 'text', text: 'Read and translate the chat in this screenshot.' }, { type: 'image_url', image_url: { url: dataUrl, ...(deepseek ? { detail: 'original' } : {}) } }],
-      { responseFormat: false, strictJson: true, maxTokens: 800, timeoutMs: VISION_TIMEOUT_MS, failure, failureLabel: deepseek ? 'DeepSeek Vision' : 'Qwen Vision',
+      { responseFormat: false, strictJson: true, maxTokens: 1200, timeoutMs: VISION_TIMEOUT_MS, failure, failureLabel: deepseek ? 'DeepSeek Vision' : 'Qwen Vision',
         extraBody: deepseek ? { thinking: { type: 'disabled' } } : { enable_thinking: false } });
-    if (!result || typeof result.original !== 'string' || typeof result.translated !== 'string' || (!result.original.trim() && result.translated.trim())) {
+    if (!result || typeof result.original !== 'string' || typeof result.translated !== 'string') {
       throw new Error(visionFailureMessage(result ? null : failure));
     }
-    if (!result.original.trim()) return { original: '截图里没有看到聊天消息', meaningZh: '聊天几秒后会淡出：请在消息还显示时按 Alt+T，或先按 Enter 打开聊天框让最近的消息重新显示。要把自己输入的中文翻成英文，请按 F8。聊天不在截取范围内时，按 Alt+Shift+T 重新框选。', intent: 'info', suggestions: [] };
+    // No message read means nothing to show, even if the model "translated" something.
+    if (!result.original.trim()) return { empty: true, original: '截图里没有看到聊天消息', meaningZh: '聊天几秒后会淡出：请在消息还显示时按 Alt+T，或先按 Enter 打开聊天框让最近的消息重新显示。要把自己输入的中文翻成英文，请按 F8。聊天不在截取范围内时，按 Alt+Shift+T 重新框选。', intent: 'info', suggestions: [] };
     // The translation is what the player reads; no word-by-word commentary.
-    return { original: result.original, translated: result.translated, meaningZh: result.translated.trim() || result.original, intent: 'info', suggestions: [] };
+    const meaningZh = result.translated.trim() || result.original;
+    // Chat already in the player's language would otherwise show twice.
+    return { original: meaningZh.trim() === result.original.trim() ? '' : result.original, translated: result.translated, meaningZh, intent: 'info', suggestions: [] };
   }
 
   /**

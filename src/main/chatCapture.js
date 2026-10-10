@@ -49,7 +49,7 @@ export function isMostlyBlack(bitmap, samples = 4000) {
 
 export class BlackCaptureError extends Error {
   constructor() {
-    super('截到的是黑屏：当前显示模式不允许直接截图。请在 Dota 2 视频设置中改用「无边框窗口」；或者先按 Win+Shift+S 框选聊天，再按 Alt+T。');
+    super('截到的是黑屏：当前显示模式不允许直接截图。请在 Dota 2 视频设置中改用「无边框窗口」；或者按 Win+Shift+S 框选聊天，切出游戏后再按 Alt+T。');
     this.name = 'BlackCaptureError';
   }
 }
@@ -61,7 +61,8 @@ export function createChatCapture({ desktopCapturer, screen, getRegion = () => n
     const thumbnailSize = { width: Math.round(display.size.width * display.scaleFactor),
       height: Math.round(display.size.height * display.scaleFactor) };
     const sources = await desktopCapturer.getSources({ types: ['screen'], thumbnailSize });
-    const source = sources.find(item => String(item.display_id) === String(display.id)) || sources[0];
+    // Never guess between monitors: a wrong one would upload another screen.
+    const source = sources.find(item => String(item.display_id) === String(display.id)) || (sources.length === 1 ? sources[0] : null);
     if (!source || source.thumbnail.isEmpty()) throw new Error('无法截取屏幕，请重试。');
     return { image: source.thumbnail, display };
   }

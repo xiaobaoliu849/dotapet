@@ -1399,12 +1399,12 @@ function selectHero(heroId) {
 function setupServices() {
   setupVoiceService();
   const chatCapture = desktopCapturer ? createChatCapture({ desktopCapturer, screen, getRegion: () => loadSettings().chatRegion }) : null;
-  ahkEngine = new AhkMigratedEngine(mainWindow, voiceClient, { getLanguage: currentLanguage, captureChat: chatCapture && (() => chatCapture.captureChat()),
-    // Only the latest, overwritten each time and never uploaded elsewhere: shows what Alt+T saw.
-    onChatCaptured: image => fs.writeFileSync(path.join(app.getPath('userData'), 'last-chat-capture.jpg'), image.toJPEG(90)) });
+  ahkEngine = new AhkMigratedEngine(mainWindow, voiceClient, { getLanguage: currentLanguage, t, captureChat: chatCapture && (() => chatCapture.captureChat()),
+    // Opt-in ("keepLastChatCapture": true in settings): the latest capture, overwritten each time, to check a bad crop.
+    onChatCaptured: jpeg => { if (loadSettings().keepLastChatCapture === true) fs.promises.writeFile(path.join(app.getPath('userData'), 'last-chat-capture.jpg'), jpeg).catch(() => {}); } });
   if (chatCapture) {
     chatRegionPicker = createChatRegionPicker({ electron, rendererDirectory: path.join(__dirname, '../renderer'), chatCapture,
-      saveRegion: chatRegion => saveSettings({ chatRegion }), notify: result => ahkEngine.notifyHUD(result) });
+      saveRegion: chatRegion => saveSettings({ chatRegion }), notify: result => ahkEngine.notifyHUD(result), t });
   }
 
   // Initialize DOTA 2 GSI Local Listener Server

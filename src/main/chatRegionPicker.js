@@ -6,14 +6,15 @@ import { BlackCaptureError, isMostlyBlack, normalizeRegion } from './chatCapture
 /**
  * Alt+Shift+T: freeze the screen, show it full size on the game's display and
  * let the player drag a box around the chat. Only the box, relative to the
- * display, is kept; the screenshot itself is never saved.
+ * display, is kept; the frozen screenshot itself is not saved.
  */
-export function createChatRegionPicker({ electron, rendererDirectory, chatCapture, saveRegion, notify = () => {} }) {
+export function createChatRegionPicker({ electron, rendererDirectory, chatCapture, saveRegion, notify = () => {}, t = text => text }) {
   const { BrowserWindow, ipcMain } = electron;
   const file = path.join(rendererDirectory, 'chat-region.html');
   const url = pathToFileURL(file).href;
   let window = null;
   let image = null;
+  let opening = false;
 
   const alive = () => Boolean(window && !window.isDestroyed());
   const trusted = event => isTrustedSettingsSender(event, window, url);
@@ -23,7 +24,7 @@ export function createChatRegionPicker({ electron, rendererDirectory, chatCaptur
     const region = value === null ? null : normalizeRegion(value);
     if (region) {
       saveRegion(region);
-      notify({ original: '', meaningZh: '✅ 聊天区域已保存。回到 DOTA 2 后按 Alt+T 即可直接翻译聊天。', intent: 'info', suggestions: [] });
+      notify({ original: '', meaningZh: t('✅ 聊天区域已保存。回到 DOTA 2 后按 Alt+T 即可直接翻译聊天。'), intent: 'info', suggestions: [] });
     }
     window.close();
     return { ok: true };
@@ -32,15 +33,21 @@ export function createChatRegionPicker({ electron, rendererDirectory, chatCaptur
   return {
     async open() {
       if (alive()) { window.focus(); return; }
+      // A second press while the screen is being captured must not build a second window.
+      if (opening) return;
+      opening = true;
       let display;
       try {
         const captured = await chatCapture.captureDisplay();
-        if (isMostlyBlack(captured.image.toBitmap())) throw new BlackCaptureError();
+        if (isMostlyBlack(captured.image.resize({ width: 480 }).toBitmap())) throw new BlackCaptureError();
         display = captured.display;
-        image = captured.image.toDataURL();
+        // JPEG: a 4K PNG data URL would be tens of megabytes over IPC.
+        image = `data:image/jpeg;base64,${captured.image.toJPEG(85).toString('base64')}`;
       } catch (err) {
-        notify({ original: '', meaningZh: `❌ ${err.message}`, intent: 'info', suggestions: [] });
+        notify({ original: '', meaningZh: `❌ ${t(err.message)}`, intent: 'info', suggestions: [] });
         return;
+      } finally {
+        opening = false;
       }
       window = new BrowserWindow({
         // Fullscreen on the game's display, so the frozen screenshot maps 1:1 onto it (taskbar included).

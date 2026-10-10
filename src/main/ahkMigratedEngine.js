@@ -1,5 +1,4 @@
 import electron from 'electron';
-import { createHash } from 'node:crypto';
 const { clipboard: electronClipboard } = electron;
 import { TranslationService } from '../services/translationService.js';
 import { gameInput as defaultGameInput } from './gameInput.js';
@@ -20,8 +19,8 @@ import { gameInput as defaultGameInput } from './gameInput.js';
  *      English.
  *
  * Alt+T — Screenshot / clipboard translation (no key injection). With Dota in
- *   front it captures the remembered chat area itself; a screenshot snipped
- *   since the last press still wins. Elsewhere it translates the clipboard.
+ *   front it captures the remembered chat area itself; elsewhere it translates
+ *   the clipboard. An old clipboard image is never uploaded from inside the game.
  */
 
 const MAX_TEXT_LENGTH = 500;
@@ -58,8 +57,8 @@ export class AhkMigratedEngine {
     this.onChatCaptured = options.onChatCaptured || (() => {});
     /** The interface language; screenshots are translated into it. */
     this.getLanguage = options.getLanguage || (() => 'zh');
-    // A screenshot already on the clipboard at launch is not a fresh one.
-    this.seenClipboardImage = this.clipboardImageId();
+    /** Main's translator for the HUD's own status text (the pet window has no dictionary). */
+    this.t = options.t || (text => text);
     this.isBusy = false;
     this.lastNotification = null;
   }
@@ -243,37 +242,19 @@ export class AhkMigratedEngine {
     catch { return false; }
   }
 
-  /** Identity of the clipboard image, or null; tells a new snip from one already translated. */
-  clipboardImageId() {
-    try {
-      const image = this.clipboard.readImage?.();
-      if (!image || image.isEmpty() || !image.toBitmap) return null;
-      return createHash('sha1').update(image.toBitmap()).digest('hex');
-    } catch { return null; }
-  }
-
-  /** Alt+T in Dota: a fresh snip if there is one, otherwise the remembered chat area. */
+  /** Alt+T in Dota: the remembered chat area, never whatever image the clipboard holds. */
   async translateChatCapture() {
     try {
-      const id = this.clipboardImageId();
-      const fresh = id && id !== this.seenClipboardImage;
-      this.seenClipboardImage = id;
-      if (fresh) {
-        await this.translateImage(this.clipboard.readImage());
-        return;
-      }
-      this.notifyHUD({ original: '聊天截图', meaningZh: '正在截取并翻译聊天…', intent: 'info', suggestions: [] });
-      const chat = await this.captureChat();
-      try { this.onChatCaptured(chat); } catch (err) { console.warn('[AHK-Engine] Could not keep the capture:', err.message); }
-      await this.translateImage(chat, { announced: true });
+      this.notifyHUD({ original: this.t('聊天截图'), meaningZh: this.t('正在截取并翻译聊天…'), intent: 'info', suggestions: [] });
+      await this.translateImage(await this.captureChat(), { announced: true, keep: true });
     } catch (err) {
       console.error('[AHK-Engine] Chat capture error:', err);
-      this.notifyHUD({ original: '', meaningZh: `❌ ${err.message}`, intent: 'info', suggestions: [] });
+      this.notifyHUD({ original: '', meaningZh: `❌ ${this.t(err.message)}`, intent: 'info', suggestions: [] });
     }
   }
 
-  async translateImage(image, { announced = false } = {}) {
-    if (!announced) this.notifyHUD({ original: '聊天截图', meaningZh: '正在识别并翻译截图中的聊天…', intent: 'info', suggestions: [] });
+  async translateImage(image, { announced = false, keep = false } = {}) {
+    if (!announced) this.notifyHUD({ original: this.t('聊天截图'), meaningZh: this.t('正在识别并翻译截图中的聊天…'), intent: 'info', suggestions: [] });
     const { width, height } = image.getSize();
     const scale = Math.min(1, 2048 / Math.max(width, height));
     const resized = scale < 1 ? image.resize({ width: Math.round(width * scale), height: Math.round(height * scale) }) : image;
@@ -281,17 +262,18 @@ export class AhkMigratedEngine {
     const jpeg = Boolean(resized.toJPEG);
     const data = jpeg ? resized.toJPEG(90) : resized.toPNG();
     if (data.length > 8 * 1024 * 1024) throw new Error('截图过大，请重新框选聊天区域。');
+    if (keep) try { this.onChatCaptured(data); } catch (err) { console.warn('[AHK-Engine] Could not keep the capture:', err.message); }
     const result = await this.translationService.analyzeImage(`data:image/${jpeg ? 'jpeg' : 'png'};base64,${data.toString('base64')}`,
       { language: this.getLanguage() });
     console.log(`[AHK-Engine] Screenshot read: ${JSON.stringify(result.original).slice(0, 200)} -> ${JSON.stringify(result.meaningZh).slice(0, 200)}`);
-    this.notifyHUD(result);
+    // The hint for an empty screenshot is the app's own text; chat stays as the model wrote it.
+    this.notifyHUD(result.empty ? { ...result, original: this.t(result.original), meaningZh: this.t(result.meaningZh) } : result);
   }
 
   async translateClipboardContent(heroId, { emptyHint } = {}) {
     try {
       const image = this.clipboard.readImage?.();
       if (image && !image.isEmpty()) {
-        this.seenClipboardImage = this.clipboardImageId();
         await this.translateImage(image);
         return;
       }
