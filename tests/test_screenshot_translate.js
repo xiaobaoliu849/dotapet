@@ -25,7 +25,7 @@ for (const provider of ['deepseek', 'qwen']) test(`${provider} screenshot uses i
   assert.equal(result.meaningZh, '[全体] Player: 现在打肉山');
   assert.deepEqual(result.suggestions, []);
   assert.equal(calls.length, 1);
-  assert.equal(calls[0].body.model, provider === 'deepseek' ? 'deepseek-flash' : 'qwen3-vl-flash');
+  assert.equal(calls[0].body.model, provider === 'deepseek' ? 'deepseek-flash' : 'qwen3.8-flash');
   assert.equal(calls[0].headers.Authorization, `Bearer synthetic-${provider}`);
   assert.match(calls[0].url, provider === 'deepseek' ? /api\.deepseek\.com/ : /dashscope\.aliyuncs\.com/);
   assert.equal(calls[0].body.messages[1].content[1].image_url.url, png);
@@ -49,9 +49,11 @@ test('HTTP errors and malformed vision results produce no invented local transla
   let calls = 0;
   for (const value of [null, {}, { original: '', translated: 'invented' }]) {
     globalThis.fetch = async () => { calls++; return value === null ? { ok: false, status: 403, text: async () => 'denied' } : completion(value); };
-    await assert.rejects(service.analyzeImage(png), /截图翻译未完成/);
+    await assert.rejects(service.analyzeImage(png), value === null ? /密钥无效或没有视觉模型权限/ : /截图翻译未完成/);
   }
   assert.equal(calls, 3);
+  globalThis.fetch = async () => ({ ok: false, status: 404, text: async () => 'Model not exist.' });
+  await assert.rejects(service.analyzeImage(png), /不支持该视觉模型/);
   globalThis.fetch = async () => completion({ original: '', translated: '', meaningZh: '已完成翻译' });
   const empty = await service.analyzeImage(png);
   assert.match(empty.meaningZh, /重新框选/);

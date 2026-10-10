@@ -23,7 +23,7 @@
 - 本程序原有文字翻译已走千问 / DeepSeek，并不依赖 Google 翻译。语音列表中的「Google 实时翻译」是 Gemini 的实时语音模式，不能与所有文字翻译混为一谈。
 - Google 官方支持地区列表没有中国大陆，因此大陆体验版不应把 Gemini 作为默认路径：[官方支持地区](https://ai.google.dev/gemini-api/docs/available-regions)。
 - DeepSeek 官方明确 `deepseek-flash` 支持图片与文本输入，使用兼容 Chat Completions 的 `image_url` 内容块；它确实可以读取聊天截图：[Vision 文档](https://api-docs.deepseek.com/guides/vision/)。
-- 千问视觉接口也支持图片输入，`qwen3-vl-flash` 支持关闭思考：[视觉理解文档](https://help.aliyun.com/zh/model-studio/vision)。地区、工作空间与 API Key 必须对应：[获取密钥](https://help.aliyun.com/zh/model-studio/get-api-key)。
+- 千问视觉接口也支持图片输入，`qwen3.8-flash` 原生支持图片输入并可关闭思考（部分工作空间已不提供 `qwen3-vl-flash`）：[视觉理解文档](https://help.aliyun.com/zh/model-studio/vision)。地区、工作空间与 API Key 必须对应：[获取密钥](https://help.aliyun.com/zh/model-studio/get-api-key)。
 
 0.1.2 采用这两家的视觉模型，短消息翻译关闭思考过程。网络、视觉编码与输出仍然需要时间；没有实测前不宣称「秒回」或固定延迟。
 
