@@ -23,7 +23,7 @@ Keep a hero or courier on your desktop, chat with it, and make it your own. In D
 
 **Current source and build: 0.2.0. Published GitHub installer: 0.1.2.** The screenshots below show the current source UI. The project is an early Windows preview; the latest features require 0.2.0.
 
-**Latest voice settings: your preferred name, custom chat instructions, and an opening greeting once connected.** The screenshot below shows the new name and instruction fields directly.
+**Latest voice settings: your preferred name and custom chat instructions. Billing only runs while you talk — Alt+Q connects, another press disconnects.** The screenshot below shows the new name and instruction fields directly.
 
 ![Current preferred name and chat instruction settings](docs/images/chat-preferences-en.png)
 
@@ -88,7 +88,7 @@ The About screenshot uses Chinese UI and simulated **0.3.0** update data. It doe
 2. **Choose how to use it.** Current source opens settings on first launch. Choose a voice provider, enter your own key and start chatting, or skip setup to enjoy the desktop companion first.
 3. **Return to your desktop.** Hover over the companion for its toolbar. Right-click to open settings. Double-click the tray icon to find a hidden companion.
 
-In voice settings, enter **What should your companion call you?** (for example, Captain, Buddy or Daddy). Under **More settings**, add chat preferences for tone, reply style or what to call friends. These preferences apply across voice providers after saving and reconnecting. Each new chat connection you start gets an opening greeting; microphone toggles and connection tests do not repeat it. Live translation is unaffected.
+In voice settings, enter **What should your companion call you?** (for example, Captain, Buddy or Daddy). Under **More settings**, add chat preferences for tone, reply style or what to call friends. These preferences apply across voice providers once saved. Saving and testing only verifies your key — it never opens a billed session. Pressing Alt+Q connects and starts billing; pressing it again disconnects as soon as the current reply finishes, so a paid session is never left idling.
 
 ### Keep these shortcuts handy
 
