@@ -31,7 +31,9 @@ export function hubLayout(width, height, collapsed = false) {
 export function createControlCenter({ electron, rendererDirectory, icon, smokeTest = false, onClosed = () => {}, onFocusChange = () => {},
   sidebarCollapsed = false, onSidebarCollapsedChange = () => {}, onLanguageChange = () => false }) {
   const { BrowserWindow, WebContentsView, ipcMain, screen } = electron;
-  const shellURL = pathToFileURL(path.join(rendererDirectory, 'control-center.html')).href;
+  const shellFile = path.join(rendererDirectory, 'control-center.html');
+  // The URL the shell was last loaded with, query included: IPC trust compares it exactly.
+  let shellURL = pathToFileURL(shellFile).href;
   const pages = new Map();
   const views = new Map();
   let window = null;
@@ -51,7 +53,10 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
   }
   /** The pages are placed beside a folded sidebar at once; the shell must not paint a wide one first. */
   function loadShell() {
-    window.loadFile(path.join(rendererDirectory, 'control-center.html'), collapsed ? { query: { sidebar: 'collapsed' } } : undefined);
+    const url = pathToFileURL(shellFile);
+    if (collapsed) url.search = 'sidebar=collapsed';
+    shellURL = url.href;
+    window.loadFile(shellFile, collapsed ? { query: { sidebar: 'collapsed' } } : undefined);
   }
   function stopSlide() { clearTimeout(slide?.fallback); slide = null; }
   function layout(changed = false) {

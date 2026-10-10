@@ -11,7 +11,12 @@ const tick = () => new Promise(resolve => setImmediate(resolve));
 
 class Contents extends EventEmitter {
   constructor() { super(); Object.assign(this, { mainFrame: {}, sent: [], destroyed: false, focused: 0 }); }
-  loadFile(file, options) { this.mainFrame.url = pathToFileURL(file).href; this.file = path.basename(file); this.query = options?.query?.embedded; }
+  loadFile(file, options) {
+    // Like Electron, the query is part of the loaded URL.
+    const url = pathToFileURL(file);
+    for (const [key, value] of Object.entries(options?.query || {})) url.searchParams.set(key, value);
+    this.mainFrame.url = url.href; this.file = path.basename(file); this.query = options?.query?.embedded;
+  }
   send(...message) { this.sent.push(message); }
   isDestroyed() { return this.destroyed; }
   close() { this.destroyed = true; this.emit('destroyed'); }
@@ -35,7 +40,7 @@ function fixture(options = {}) {
     }
     getContentSize() { return this.size; }
     setSize(width, height) { this.size = [width, height]; this.emit('resize'); }
-    loadFile(file) { this.webContents.loadFile(file); }
+    loadFile(file, options) { this.webContents.loadFile(file, options); }
     isDestroyed() { return this.destroyed; }
     isVisible() { return this.visible; }
     isMinimized() { return false; }
@@ -141,6 +146,20 @@ test('a remembered collapsed sidebar is used from the first layout', () => {
   hub.register('services', services());
   hub.open();
   assert.deepEqual(view('services').bounds, hubLayout(1060, 820, true).content);
+});
+
+test('a shell opened folded is still trusted: it can unfold, navigate and fold again', async () => {
+  const saved = [];
+  const { hub, handlers, shell, windows } = fixture({ sidebarCollapsed: true, onSidebarCollapsedChange: value => saved.push(value) });
+  hub.register('services', services());
+  hub.open();
+  assert.match(windows[0].webContents.mainFrame.url, /\?sidebar=collapsed$/);
+  assert.equal((await handlers.get('hub:state')(shell())).ok, true);
+  const fold = handlers.get('hub:set-sidebar-collapsed');
+  assert.equal((await fold(shell(), false)).state.collapsed, false);
+  assert.equal((await handlers.get('hub:navigate')(shell(), 'help')).ok, true);
+  assert.equal((await fold(shell(), true)).state.collapsed, true);
+  assert.deepEqual(saved, [false, true]);
 });
 
 test('one window hosts isolated pages; switching hides the old page and keeps it alive', () => {
