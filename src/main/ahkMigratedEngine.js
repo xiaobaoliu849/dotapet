@@ -281,8 +281,10 @@ export class AhkMigratedEngine {
     const jpeg = Boolean(resized.toJPEG);
     const data = jpeg ? resized.toJPEG(90) : resized.toPNG();
     if (data.length > 8 * 1024 * 1024) throw new Error('截图过大，请重新框选聊天区域。');
-    this.notifyHUD(await this.translationService.analyzeImage(`data:image/${jpeg ? 'jpeg' : 'png'};base64,${data.toString('base64')}`,
-      { language: this.getLanguage() }));
+    const result = await this.translationService.analyzeImage(`data:image/${jpeg ? 'jpeg' : 'png'};base64,${data.toString('base64')}`,
+      { language: this.getLanguage() });
+    console.log(`[AHK-Engine] Screenshot read: ${JSON.stringify(result.original).slice(0, 200)} -> ${JSON.stringify(result.meaningZh).slice(0, 200)}`);
+    this.notifyHUD(result);
   }
 
   async translateClipboardContent(heroId, { emptyHint } = {}) {

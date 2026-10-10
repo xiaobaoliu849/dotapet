@@ -4,8 +4,9 @@
  * Regions are stored relative to the display, so they survive resolution changes.
  */
 
-/** Dota stacks chat lines up from just above the chat box, centred low on the screen. Alt+Shift+T replaces this. */
-export const DEFAULT_CHAT_REGION = Object.freeze({ x: 0.28, y: 0.42, width: 0.44, height: 0.29 });
+/** Dota stacks chat lines up from just above the chat box, centred low on the screen; wide, since
+ * lines start further right on some screens and can be long. Alt+Shift+T replaces this. */
+export const DEFAULT_CHAT_REGION = Object.freeze({ x: 0.18, y: 0.4, width: 0.64, height: 0.31 });
 const MIN_REGION = 0.02;
 
 /** A saved region, or null when it is missing or out of range. */

@@ -16,7 +16,7 @@ test('regions are clamped, validated and mapped to screenshot pixels', () => {
   assert.equal(normalizeRegion({ x: 0, y: 0, width: 0.001, height: 0.5 }), null, 'too small');
   assert.equal(normalizeRegion({ x: 'a', y: 0, width: 1, height: 1 }), null);
   assert.deepEqual(normalizeRegion({ x: 0.8, y: -1, width: 0.5, height: 2 }), { x: 0.8, y: 0, width: 0.19999999999999996, height: 1 });
-  assert.deepEqual(regionPixels(DEFAULT_CHAT_REGION, { width: 2000, height: 1000 }), { x: 560, y: 420, width: 880, height: 290 });
+  assert.deepEqual(regionPixels(DEFAULT_CHAT_REGION, { width: 2000, height: 1000 }), { x: 360, y: 400, width: 1280, height: 310 });
 });
 
 test('a black frame is recognised; a real one is not', () => {
