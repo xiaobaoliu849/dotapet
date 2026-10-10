@@ -79,3 +79,12 @@ test('outside Dota Alt+T still translates the clipboard; capture errors reach th
   assert.match(black.notices.at(-1).meaningZh, /无边框窗口/);
   assert.equal(black.instance.isBusy, false);
 });
+
+test('each captured chat image is handed over for checking, and a failure there does not stop translation', async () => {
+  const kept = [];
+  const { instance, sent } = engine();
+  instance.onChatCaptured = image => { kept.push(image.id); throw new Error('disk full'); };
+  await instance.handleClipboardTranslation();
+  assert.deepEqual(kept, ['chat']);
+  assert.deepEqual(sent, ['chat']);
+});

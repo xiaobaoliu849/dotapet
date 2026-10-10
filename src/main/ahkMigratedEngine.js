@@ -54,6 +54,8 @@ export class AhkMigratedEngine {
     this.gameInput = options.gameInput || defaultGameInput;
     /** async () => NativeImage of the chat area; absent where the screen cannot be captured. */
     this.captureChat = options.captureChat || null;
+    /** Sees each captured chat image; main keeps the last one so a bad crop can be checked. */
+    this.onChatCaptured = options.onChatCaptured || (() => {});
     // A screenshot already on the clipboard at launch is not a fresh one.
     this.seenClipboardImage = this.clipboardImageId();
     this.isBusy = false;
@@ -259,7 +261,9 @@ export class AhkMigratedEngine {
         return;
       }
       this.notifyHUD({ original: '聊天截图', meaningZh: '正在截取并翻译聊天…', intent: 'info', suggestions: [] });
-      await this.translateImage(await this.captureChat(), { announced: true });
+      const chat = await this.captureChat();
+      try { this.onChatCaptured(chat); } catch (err) { console.warn('[AHK-Engine] Could not keep the capture:', err.message); }
+      await this.translateImage(chat, { announced: true });
     } catch (err) {
       console.error('[AHK-Engine] Chat capture error:', err);
       this.notifyHUD({ original: '', meaningZh: `❌ ${err.message}`, intent: 'info', suggestions: [] });

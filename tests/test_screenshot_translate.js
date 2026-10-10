@@ -56,7 +56,7 @@ test('HTTP errors and malformed vision results produce no invented local transla
   await assert.rejects(service.analyzeImage(png), /不支持该视觉模型/);
   globalThis.fetch = async () => completion({ original: '', translated: '', meaningZh: '已完成翻译' });
   const empty = await service.analyzeImage(png);
-  assert.match(empty.meaningZh, /重新框选/);
+  assert.match(empty.meaningZh, /淡出.*F8/);
   assert.deepEqual(empty.suggestions, []);
 });
 

@@ -285,7 +285,7 @@ export class TranslationService {
     if (!result || typeof result.original !== 'string' || typeof result.translated !== 'string' || (!result.original.trim() && result.translated.trim())) {
       throw new Error(visionFailureMessage(result ? null : failure));
     }
-    if (!result.original.trim()) return { original: '未识别到清晰聊天', meaningZh: '请重新框选清晰的聊天区域，尽量不要包含整个游戏画面。', intent: 'info', suggestions: [] };
+    if (!result.original.trim()) return { original: '截图里没有看到聊天消息', meaningZh: '聊天几秒后会淡出：请在消息还显示时按 Alt+T，或先按 Enter 打开聊天框让最近的消息重新显示。要把自己输入的中文翻成英文，请按 F8。聊天不在截取范围内时，按 Alt+Shift+T 重新框选。', intent: 'info', suggestions: [] };
     return { ...result, original: result.original || '未识别到清晰聊天', intent: 'info', suggestions: [] };
   }
 
