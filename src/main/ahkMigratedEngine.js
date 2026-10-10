@@ -56,6 +56,8 @@ export class AhkMigratedEngine {
     this.captureChat = options.captureChat || null;
     /** Sees each captured chat image; main keeps the last one so a bad crop can be checked. */
     this.onChatCaptured = options.onChatCaptured || (() => {});
+    /** The interface language; screenshots are translated into it. */
+    this.getLanguage = options.getLanguage || (() => 'zh');
     // A screenshot already on the clipboard at launch is not a fresh one.
     this.seenClipboardImage = this.clipboardImageId();
     this.isBusy = false;
@@ -279,7 +281,8 @@ export class AhkMigratedEngine {
     const jpeg = Boolean(resized.toJPEG);
     const data = jpeg ? resized.toJPEG(90) : resized.toPNG();
     if (data.length > 8 * 1024 * 1024) throw new Error('截图过大，请重新框选聊天区域。');
-    this.notifyHUD(await this.translationService.analyzeImage(`data:image/${jpeg ? 'jpeg' : 'png'};base64,${data.toString('base64')}`));
+    this.notifyHUD(await this.translationService.analyzeImage(`data:image/${jpeg ? 'jpeg' : 'png'};base64,${data.toString('base64')}`,
+      { language: this.getLanguage() }));
   }
 
   async translateClipboardContent(heroId, { emptyHint } = {}) {

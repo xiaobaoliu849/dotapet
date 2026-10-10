@@ -98,3 +98,19 @@ test('JPEG screenshots are accepted; other image types are not', async t => {
   assert.equal((await new TranslationService().analyzeImage('data:image/jpeg;base64,aGVsbG8=')).original, 'gg');
   await assert.rejects(new TranslationService().analyzeImage('data:image/gif;base64,aGVsbG8='), /截图格式/);
 });
+
+test('screenshots are translated into the interface language and skip the player\'s own draft', async t => {
+  setup(t, 'qwen');
+  const prompts = [];
+  globalThis.fetch = async (_url, options) => {
+    prompts.push(JSON.parse(options.body).messages[0].content);
+    return completion({ original: '[All] Bob: ez mid', translated: '[All] Bob: Мид — легко' });
+  };
+  const result = await new TranslationService().analyzeImage(png, { language: 'ru' });
+  assert.match(prompts[0], /language is Russian/);
+  assert.match(prompts[0], /To \(Allies\):/);
+  assert.match(prompts[0], /already in Russian, copy it unchanged/);
+  assert.equal(result.meaningZh, '[All] Bob: Мид — легко');
+  await new TranslationService().analyzeImage(png);
+  assert.match(prompts[1], /Simplified Chinese/, 'Chinese by default');
+});

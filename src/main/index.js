@@ -1399,7 +1399,7 @@ function selectHero(heroId) {
 function setupServices() {
   setupVoiceService();
   const chatCapture = desktopCapturer ? createChatCapture({ desktopCapturer, screen, getRegion: () => loadSettings().chatRegion }) : null;
-  ahkEngine = new AhkMigratedEngine(mainWindow, voiceClient, { captureChat: chatCapture && (() => chatCapture.captureChat()),
+  ahkEngine = new AhkMigratedEngine(mainWindow, voiceClient, { getLanguage: currentLanguage, captureChat: chatCapture && (() => chatCapture.captureChat()),
     // Only the latest, overwritten each time and never uploaded elsewhere: shows what Alt+T saw.
     onChatCaptured: image => fs.writeFileSync(path.join(app.getPath('userData'), 'last-chat-capture.jpg'), image.toJPEG(90)) });
   if (chatCapture) {
