@@ -1,5 +1,5 @@
 import electron from 'electron';
-const { app, BrowserWindow, ipcMain, clipboard, Tray, Menu, nativeImage, screen, powerMonitor, safeStorage, dialog, session, shell, globalShortcut } = electron;
+const { app, BrowserWindow, ipcMain, clipboard, Tray, Menu, nativeImage, screen, powerMonitor, safeStorage, dialog, session, shell, globalShortcut, desktopCapturer } = electron;
 import path from 'path';
 import fs from 'fs';
 import { exec } from 'child_process';
@@ -12,6 +12,8 @@ import { VoiceSpiritClient } from '../services/voiceSpiritClient.js';
 import { FREE_CHAT_HERO_ID } from '../services/cloudVoiceEngine.js';
 import { buildPetPseudoHero } from '../services/petPersona.js';
 import { AhkMigratedEngine } from './ahkMigratedEngine.js';
+import { createChatCapture } from './chatCapture.js';
+import { createChatRegionPicker } from './chatRegionPicker.js';
 import { DesktopRoamEngine } from './roamEngine.js';
 import { GSIServer } from './gsi/gsiServer.js';
 import { checkGsiInstalled, installGsiConfig } from './gsi/gsiInstaller.js';
@@ -108,6 +110,7 @@ let microphoneConnectionRequest = null;
 // releasing the mic can end billing; settings/tray sessions stay untouched.
 let micOwnedVoiceSession = false;
 let ahkEngine = null;
+let chatRegionPicker = null;
 let gamePhraseShortcuts = null;
 let roamEngine = null;
 let gsiServer = null;
@@ -1395,7 +1398,12 @@ function selectHero(heroId) {
 
 function setupServices() {
   setupVoiceService();
-  ahkEngine = new AhkMigratedEngine(mainWindow, voiceClient);
+  const chatCapture = desktopCapturer ? createChatCapture({ desktopCapturer, screen, getRegion: () => loadSettings().chatRegion }) : null;
+  ahkEngine = new AhkMigratedEngine(mainWindow, voiceClient, { captureChat: chatCapture && (() => chatCapture.captureChat()) });
+  if (chatCapture) {
+    chatRegionPicker = createChatRegionPicker({ electron, rendererDirectory: path.join(__dirname, '../renderer'), chatCapture,
+      saveRegion: chatRegion => saveSettings({ chatRegion }), notify: result => ahkEngine.notifyHUD(result) });
+  }
 
   // Initialize DOTA 2 GSI Local Listener Server
   gsiServer = new GSIServer({
@@ -1975,6 +1983,7 @@ if (app?.whenReady) {  app.whenReady().then(() => {
       onTriggerTranslate: () => {
         if (ahkEngine) ahkEngine.handleClipboardTranslation(currentHeroId);
       },
+      onSelectChatRegion: () => { void chatRegionPicker?.open(); },
       onGameChatTranslate: () => {
         if (ahkEngine) ahkEngine.handleGameChatTranslate(currentHeroId);
       },

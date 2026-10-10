@@ -267,7 +267,7 @@ export class TranslationService {
 
   /** Explicit screenshot translation. Uses only the user's selected domestic provider. */
   async analyzeImage(dataUrl) {
-    if (typeof dataUrl !== 'string' || !/^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(dataUrl) || dataUrl.length > 12 * 1024 * 1024) {
+    if (typeof dataUrl !== 'string' || !/^data:image\/(?:png|jpeg);base64,[A-Za-z0-9+/=]+$/.test(dataUrl) || dataUrl.length > 12 * 1024 * 1024) {
       throw new Error('截图格式不正确或过大，请只框选聊天区域。');
     }
     const deepseek = CLOUD_KEYS.translation_provider === 'deepseek';

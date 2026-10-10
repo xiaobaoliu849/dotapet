@@ -91,3 +91,10 @@ test('oversized screenshot fails before any cloud call and releases busy state',
   assert.deepEqual(notices.at(-1).suggestions, []);
   assert.equal(engine.isBusy, false);
 });
+
+test('JPEG screenshots are accepted; other image types are not', async t => {
+  setup(t);
+  globalThis.fetch = async () => completion({ original: 'gg', translated: '打得好' });
+  assert.equal((await new TranslationService().analyzeImage('data:image/jpeg;base64,aGVsbG8=')).original, 'gg');
+  await assert.rejects(new TranslationService().analyzeImage('data:image/gif;base64,aGVsbG8='), /截图格式/);
+});

@@ -473,5 +473,13 @@
  "所有语音聊天共用；聊天时小伙伴会记住这个称呼。": "Shared across voice chats; your companion remembers this name while chatting.",
  "设置已加密保存。按 Alt+Q 即可开始聊天。": "Settings saved encrypted. Press Alt+Q to start chatting.",
  "设置好了！按 Alt+Q 开始聊天，再按一次结束并停止计费。": "All set! Press Alt+Q to start chatting; press again to end and stop billing.",
- "🎙️ 语音已断开，本次计费结束": "🎙️ Voice disconnected; billing stopped"
+ "🎙️ 语音已断开，本次计费结束": "🎙️ Voice disconnected; billing stopped",
+ "DOTA 2 里直接截取并翻译聊天；其他时候翻译复制的文字或截图": "In DOTA 2, capture and translate the chat; elsewhere translate copied text or a screenshot",
+ "框选聊天区域（只需一次）": "Frame the chat area (once)",
+ "刀塔宠物 · 框选聊天区域": "DotaPet · Frame the chat area",
+ "拖动鼠标框住聊天区域，松开即保存 · Esc 取消": "Drag a box around the chat area; release to save · Esc to cancel",
+ "正在截取并翻译聊天…": "Capturing and translating chat…",
+ "无法截取屏幕，请重试。": "Could not capture the screen. Please try again.",
+ "✅ 聊天区域已保存。回到 DOTA 2 后按 Alt+T 即可直接翻译聊天。": "✅ Chat area saved. Back in DOTA 2, press Alt+T to translate chat directly.",
+ "截到的是黑屏：当前显示模式不允许直接截图。请在 Dota 2 视频设置中改用「无边框窗口」；或者先按 Win+Shift+S 框选聊天，再按 Alt+T。": "The capture came back black: this display mode blocks direct capture. Switch Dota 2 to Borderless Window in video settings, or snip the chat with Win+Shift+S first and then press Alt+T."
 }

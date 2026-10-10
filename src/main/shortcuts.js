@@ -54,9 +54,15 @@ export function registerShortcuts(mainWindow, handlers = {}) {
     }
   });
 
-  // Alt+T: Desktop clipboard translation (no key injection into the game).
-  registerKey('Alt+T', 'Translate Clipboard', () => {
+  // Alt+T: In Dota, capture and translate the chat area; elsewhere translate
+  // the clipboard. No key injection into the game either way.
+  registerKey('Alt+T', 'Translate Chat / Clipboard', () => {
     if (handlers.onTriggerTranslate) handlers.onTriggerTranslate();
+  });
+
+  // Alt+Shift+T: Frame the chat area once for Alt+T.
+  registerKey('Alt+Shift+T', 'Select Chat Area', () => {
+    if (handlers.onSelectChatRegion) handlers.onSelectChatRegion();
   });
 
   // F8: In-game chat translation — the legacy AHK headline feature. Captures

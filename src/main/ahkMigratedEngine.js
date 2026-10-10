@@ -1,4 +1,5 @@
 import electron from 'electron';
+import { createHash } from 'node:crypto';
 const { clipboard: electronClipboard } = electron;
 import { TranslationService } from '../services/translationService.js';
 import { gameInput as defaultGameInput } from './gameInput.js';
@@ -18,7 +19,9 @@ import { gameInput as defaultGameInput } from './gameInput.js';
  *      Chinese meaning over the box would clobber a message that was already
  *      English.
  *
- * Alt+T — Desktop clipboard translation (no key injection), unchanged.
+ * Alt+T — Screenshot / clipboard translation (no key injection). With Dota in
+ *   front it captures the remembered chat area itself; a screenshot snipped
+ *   since the last press still wins. Elsewhere it translates the clipboard.
  */
 
 const MAX_TEXT_LENGTH = 500;
@@ -49,6 +52,10 @@ export class AhkMigratedEngine {
     this.translationService = options.translationService || new TranslationService();
     this.clipboard = options.clipboard || electronClipboard;
     this.gameInput = options.gameInput || defaultGameInput;
+    /** async () => NativeImage of the chat area; absent where the screen cannot be captured. */
+    this.captureChat = options.captureChat || null;
+    // A screenshot already on the clipboard at launch is not a fresh one.
+    this.seenClipboardImage = this.clipboardImageId();
     this.isBusy = false;
     this.lastNotification = null;
   }
@@ -215,6 +222,10 @@ export class AhkMigratedEngine {
   async handleClipboardTranslation(heroId = 'invoker') {
     if (!this.acquireBusy()) return;
     try {
+      if (this.captureChat && await this.isDotaForeground()) {
+        await this.translateChatCapture();
+        return;
+      }
       await this.translateClipboardContent(heroId, {
         emptyHint: '先按 Win+Shift+S 框选队友聊天，再按 Alt+T 翻译截图；也可以复制文字后按 Alt+T。',
       });
@@ -223,17 +234,56 @@ export class AhkMigratedEngine {
     }
   }
 
+  async isDotaForeground() {
+    try { return /^dota2/i.test((await this.gameInput.foregroundProcessName({ timeoutMs: 2000 })) || ''); }
+    catch { return false; }
+  }
+
+  /** Identity of the clipboard image, or null; tells a new snip from one already translated. */
+  clipboardImageId() {
+    try {
+      const image = this.clipboard.readImage?.();
+      if (!image || image.isEmpty() || !image.toBitmap) return null;
+      return createHash('sha1').update(image.toBitmap()).digest('hex');
+    } catch { return null; }
+  }
+
+  /** Alt+T in Dota: a fresh snip if there is one, otherwise the remembered chat area. */
+  async translateChatCapture() {
+    try {
+      const id = this.clipboardImageId();
+      const fresh = id && id !== this.seenClipboardImage;
+      this.seenClipboardImage = id;
+      if (fresh) {
+        await this.translateImage(this.clipboard.readImage());
+        return;
+      }
+      this.notifyHUD({ original: '聊天截图', meaningZh: '正在截取并翻译聊天…', intent: 'info', suggestions: [] });
+      await this.translateImage(await this.captureChat(), { announced: true });
+    } catch (err) {
+      console.error('[AHK-Engine] Chat capture error:', err);
+      this.notifyHUD({ original: '', meaningZh: `❌ ${err.message}`, intent: 'info', suggestions: [] });
+    }
+  }
+
+  async translateImage(image, { announced = false } = {}) {
+    if (!announced) this.notifyHUD({ original: '聊天截图', meaningZh: '正在识别并翻译截图中的聊天…', intent: 'info', suggestions: [] });
+    const { width, height } = image.getSize();
+    const scale = Math.min(1, 2048 / Math.max(width, height));
+    const resized = scale < 1 ? image.resize({ width: Math.round(width * scale), height: Math.round(height * scale) }) : image;
+    // JPEG keeps chat text legible at a fraction of a PNG's upload size.
+    const jpeg = Boolean(resized.toJPEG);
+    const data = jpeg ? resized.toJPEG(90) : resized.toPNG();
+    if (data.length > 8 * 1024 * 1024) throw new Error('截图过大，请重新框选聊天区域。');
+    this.notifyHUD(await this.translationService.analyzeImage(`data:image/${jpeg ? 'jpeg' : 'png'};base64,${data.toString('base64')}`));
+  }
+
   async translateClipboardContent(heroId, { emptyHint } = {}) {
     try {
       const image = this.clipboard.readImage?.();
       if (image && !image.isEmpty()) {
-        this.notifyHUD({ original: '聊天截图', meaningZh: '正在识别并翻译截图中的聊天…', intent: 'info', suggestions: [] });
-        const { width, height } = image.getSize();
-        const scale = Math.min(1, 2048 / Math.max(width, height));
-        const resized = scale < 1 ? image.resize({ width: Math.round(width * scale), height: Math.round(height * scale) }) : image;
-        const png = resized.toPNG();
-        if (png.length > 8 * 1024 * 1024) throw new Error('截图过大，请重新框选聊天区域。');
-        this.notifyHUD(await this.translationService.analyzeImage(`data:image/png;base64,${png.toString('base64')}`));
+        this.seenClipboardImage = this.clipboardImageId();
+        await this.translateImage(image);
         return;
       }
       const rawText = this.clipboard.readText();
