@@ -7,6 +7,7 @@ function getGlobalShortcut() {
 const SHORTCUT_ACTIONS = [
   { id: 'toggleVoice', label: '语音对话开关', description: '开始 / 结束和它说话', defaultKey: 'Alt+Q' },
   { id: 'translate', label: '聊天 / 剪贴板翻译', description: 'DOTA 2 截取聊天；其他时候翻译剪贴板', defaultKey: 'Alt+T' },
+  { id: 'snipTranslate', label: '框选截图翻译', description: '框住屏幕上任意一块文字，松开即翻译', defaultKey: 'Alt+Shift+S' },
   { id: 'selectChatRegion', label: '框选聊天区域', description: '框选 DOTA 2 游戏内聊天区域', defaultKey: 'Alt+Shift+T' },
   { id: 'gameChatTranslate', label: '游戏内输入翻译', description: '把游戏里输入的中文翻成英文并发送', defaultKey: 'F8' },
   { id: 'togglePhrases', label: '快捷短语面板', description: '打开或隐藏快速短语浮窗', defaultKey: 'F6' },
@@ -200,6 +201,10 @@ function resolveActionHandler(actionId, mainWindow, handlers) {
     case 'translate':
       return () => {
         if (handlers.onTriggerTranslate) handlers.onTriggerTranslate();
+      };
+    case 'snipTranslate':
+      return () => {
+        if (handlers.onSnipTranslate) handlers.onSnipTranslate();
       };
     case 'selectChatRegion':
       return () => {

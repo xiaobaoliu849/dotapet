@@ -1216,7 +1216,7 @@ function setupServices() {
     onChatCaptured: jpeg => { if (loadSettings().keepLastChatCapture === true) fs.promises.writeFile(path.join(app.getPath('userData'), 'last-chat-capture.jpg'), jpeg).catch(() => {}); } });
   if (chatCapture) {
     chatRegionPicker = createChatRegionPicker({ electron, rendererDirectory: path.join(__dirname, '../renderer'), chatCapture,
-      saveRegion: chatRegion => saveSettings({ chatRegion }), notify: result => ahkEngine.notifyHUD(result), t });
+      saveRegion: chatRegion => saveSettings({ chatRegion }), onSnip: image => ahkEngine.translateSnip(image), notify: result => ahkEngine.notifyHUD(result), t });
   }
 
   // Initialize DOTA 2 GSI Local Listener Server
@@ -1846,6 +1846,7 @@ if (app?.whenReady) {  app.whenReady().then(() => {
         if (ahkEngine) ahkEngine.handleClipboardTranslation(currentHeroId);
       },
       onSelectChatRegion: () => { void chatRegionPicker?.open(); },
+      onSnipTranslate: () => { void chatRegionPicker?.open({ snip: true }); },
       onGameChatTranslate: () => {
         if (ahkEngine) ahkEngine.handleGameChatTranslate(currentHeroId);
       },

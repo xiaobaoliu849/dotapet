@@ -10,12 +10,13 @@ import {
   unregisterShortcuts,
 } from '../src/main/shortcuts.js';
 
-test('getShortcutActions returns all 12 configurable actions', () => {
+test('getShortcutActions returns all 13 configurable actions', () => {
   const actions = getShortcutActions();
-  assert.equal(actions.length, 12);
+  assert.equal(actions.length, 13);
   const ids = actions.map(a => a.id);
   assert.ok(ids.includes('toggleVoice'));
   assert.ok(ids.includes('translate'));
+  assert.ok(ids.includes('snipTranslate'));
   assert.ok(ids.includes('selectChatRegion'));
   assert.ok(ids.includes('gameChatTranslate'));
   assert.ok(ids.includes('togglePhrases'));
@@ -32,6 +33,7 @@ test('getDefaultShortcuts returns expected default keybindings', () => {
   const defaults = getDefaultShortcuts();
   assert.equal(defaults.toggleVoice, 'Alt+Q');
   assert.equal(defaults.translate, 'Alt+T');
+  assert.equal(defaults.snipTranslate, 'Alt+Shift+S');
   assert.equal(defaults.selectChatRegion, 'Alt+Shift+T');
   assert.equal(defaults.gameChatTranslate, 'F8');
   assert.equal(defaults.togglePhrases, 'F6');

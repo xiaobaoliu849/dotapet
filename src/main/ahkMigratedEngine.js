@@ -230,7 +230,7 @@ export class AhkMigratedEngine {
         return;
       }
       await this.translateClipboardContent(heroId, {
-        emptyHint: '先按 Win+Shift+S 框选队友聊天，再按 Alt+T 翻译截图；也可以复制文字后按 Alt+T。',
+        emptyHint: '按 Alt+Shift+S 框住屏幕上的文字即可直接翻译；也可以复制文字后按 Alt+T。',
       });
     } finally {
       this.isBusy = false;
@@ -250,6 +250,19 @@ export class AhkMigratedEngine {
     } catch (err) {
       console.error('[AHK-Engine] Chat capture error:', err);
       this.notifyHUD({ original: '', meaningZh: `❌ ${this.t(err.message)}`, intent: 'info', suggestions: [] });
+    }
+  }
+
+  /** Alt+Shift+S: the box just dragged on the frozen screen, in or out of the game. */
+  async translateSnip(image) {
+    if (!this.acquireBusy()) return;
+    try {
+      await this.translateImage(image);
+    } catch (err) {
+      console.error('[AHK-Engine] Snip translation error:', err);
+      this.notifyHUD({ original: '', meaningZh: `❌ ${this.t(err.message)}`, intent: 'info', suggestions: [] });
+    } finally {
+      this.isBusy = false;
     }
   }
 

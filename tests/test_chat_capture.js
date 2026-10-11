@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { pathToFileURL } from 'node:url';
 import { createChatCapture, normalizeRegion, regionPixels, isMostlyBlack, DEFAULT_CHAT_REGION, BlackCaptureError } from '../src/main/chatCapture.js';
 import { AhkMigratedEngine } from '../src/main/ahkMigratedEngine.js';
 
@@ -97,4 +98,39 @@ test('each captured chat image is handed over for checking, and a failure there 
   await instance.handleClipboardTranslation();
   assert.deepEqual(kept, ['chat'], 'the encoded upload is reused, not encoded again');
   assert.deepEqual(sent, ['chat']);
+});
+
+test('Alt+Shift+S snips the dragged box and translates it once the frozen screen closes, saving nothing', async () => {
+  const { createChatRegionPicker } = await import('../src/main/chatRegionPicker.js');
+  const handlers = {};
+  let win;
+  class BrowserWindow {
+    constructor() {
+      win = this; this.listeners = {}; this.destroyed = false;
+      this.webContents = { mainFrame: {}, on() {}, setWindowOpenHandler() {} };
+    }
+    setAlwaysOnTop() {} show() {} focus() {}
+    once(name, fn) { (this.listeners[name] ||= []).push(fn); }
+    on(name, fn) { (this.listeners[name] ||= []).push(fn); }
+    isDestroyed() { return this.destroyed; }
+    loadFile(file) { this.webContents.mainFrame.url = pathToFileURL(file).href; }
+    close() { this.destroyed = true; for (const fn of this.listeners.closed || []) fn(); }
+  }
+  const electron = { BrowserWindow, ipcMain: { handle: (channel, fn) => { handlers[channel] = fn; } } };
+  const screenshot = { ...fakeImage({ width: 2000, height: 1000 }), resize: () => ({ toBitmap: () => bitmap(64, 80) }), toJPEG: () => Buffer.from('jpg') };
+  screenshot.crop = rect => ({ rect });
+  const display = { bounds: { x: 0, y: 0, width: 1000, height: 500 } };
+  const saved = [], snips = [];
+  const picker = createChatRegionPicker({ electron, rendererDirectory: process.cwd(), saveRegion: region => saved.push(region), onSnip: image => snips.push(image),
+    chatCapture: { captureDisplay: async () => ({ image: screenshot, display }), region: () => DEFAULT_CHAT_REGION } });
+
+  await picker.open({ snip: true });
+  const event = { sender: win.webContents, senderFrame: win.webContents.mainFrame };
+  const loaded = await handlers['chat-region:load'](event);
+  assert.equal(loaded.mode, 'snip');
+  assert.equal(loaded.region, null, 'a snip starts from an empty box, not the saved chat area');
+
+  await handlers['chat-region:finish'](event, { x: 0.5, y: 0.5, width: 0.25, height: 0.2 });
+  assert.deepEqual(snips, [{ rect: { x: 1000, y: 500, width: 500, height: 200 } }]);
+  assert.deepEqual(saved, [], 'a snip is not the chat region');
 });

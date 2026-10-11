@@ -18,7 +18,8 @@ function between(event) {
 api.load().then(data => {
   // Not this picker's screenshot (a newer picker replaced it): close instead of staying black.
   if (!data) return api.finish(null);
-  const { image, region } = data;
+  const { image, mode, region } = data;
+  if (mode === 'snip') document.querySelector('.banner').textContent = '拖动鼠标框住要翻译的文字，松开即翻译 · Esc 取消';
   document.getElementById('screen').src = image;
   if (region) place(region);
 });

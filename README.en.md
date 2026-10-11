@@ -97,7 +97,7 @@ In voice settings, enter **What should your companion call you?** (for example, 
 | Action | Shortcut |
 |---|---|
 | Start / stop talking | `Alt+Q` |
-| Translate a chat screenshot | `Win+Shift+S` to capture it, then `Alt+T` |
+| Translate text on screen | Press `Alt+Shift+S`, drag a box around it, release |
 | Translate copied text | Copy it, then `Alt+T` |
 | Translate your Chinese game-chat input into English | `F8`; review the result before sending |
 | Open the floating phrase panel | `F6` |
