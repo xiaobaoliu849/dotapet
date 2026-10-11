@@ -43,18 +43,42 @@ function acceptData(value) {
       if (part === 'background') profile.background.mode = 'transparent';
     }
   }
-  if (!key) key = data.characters.some(c => c.key === data.activeKey) ? data.activeKey : data.characters[0]?.key;
+  if (!key || !character()) {
+    // First load, or the character being edited was deleted.
+    if (key) drafts.delete(key);
+    key = data.characters.some(c => c.key === data.activeKey) ? data.activeKey : data.characters[0]?.key;
+    draft = normalizeProfile(drafts.get(key) || data.profiles[key]);
+  }
   $('active-name').textContent = `桌面伙伴：${data.characters.find(c => c.key === data.activeKey)?.name || '自由对话'}`;
   const selected = key;
   $('character').replaceChildren();
-  for (const group of [['宠物', 'pet:'], ['英雄', 'hero:']]) {
-    const optgroup = document.createElement('optgroup'); optgroup.label = group[0];
-    for (const c of data.characters.filter(c => c.key.startsWith(group[1]))) option(optgroup, c.key, c.name);
+  // Custom characters sit before the long hero list so they are easy to reach.
+  for (const [label, member] of [['宠物', c => c.key.startsWith('pet:') && !c.custom], ['自定义', c => c.custom], ['英雄', c => c.key.startsWith('hero:')]]) {
+    const members = data.characters.filter(member);
+    if (!members.length) continue;
+    const optgroup = document.createElement('optgroup'); optgroup.label = label;
+    // A custom character's name is the user's own and is never translated.
+    for (const c of members) option(optgroup, c.key, c.name).translate = !c.custom;
     $('character').append(optgroup);
   }
   $('character').value = selected;
   $('character').disabled = false;
-  renderLibrary(); renderPresets(); renderSources(); renderPreview(); draftStatus();
+  renderLibrary(); renderPresets(); renderSources(); renderCustom(); renderPreview(); draftStatus();
+}
+/** The 自定义角色 card: name and the three pictures, saved as soon as they change. */
+function renderCustom() {
+  const custom = character()?.custom;
+  $('custom-section').hidden = !custom;
+  if (!custom) return;
+  const c = character();
+  if (document.activeElement !== $('custom-name')) $('custom-name').value = c.name;
+  for (const slot of ['idle', 'speaking', 'action']) {
+    const select = $(`sprite-${slot}`); select.replaceChildren();
+    if (slot !== 'idle') option(select, '', '与待命相同');
+    for (const asset of data.assets) option(select, asset.id, `${asset.name} · ${t(asset.animated ? '动图' : '图片')}`).translate = false;
+    select.value = c.spriteAssets[slot] || '';
+    document.querySelector(`.sprite-slot[data-slot="${slot}"] img`).src = c.sprites[slot] || '';
+  }
 }
 async function refresh() {
   const sequence = ++refreshSequence;
@@ -78,7 +102,7 @@ async function refresh() {
 }
 function renderSources() {
   const source = $('appearance-source'); source.replaceChildren();
-  option(source, 'default', '内置默认形象');
+  option(source, 'default', character()?.custom ? '角色自己的形象' : '内置默认形象');
   for (const look of character()?.options || []) if (look.kind === 'appearance') option(source, `builtin:${look.id}`, look.name);
   // The file name is the user's; only its kind is translated.
   for (const asset of data.assets) option(source, asset.id, `${asset.name} · ${t(asset.animated ? '动图' : '图片')}`).translate = false;
@@ -109,7 +133,7 @@ function renderAccents() {
   for (const radio of $('accent-choices').querySelectorAll('input[type=radio]')) radio.checked = radio.value === choice;
 }
 function fillControls() {
-  renderSources();
+  renderSources(); renderCustom();
   const a = draft.appearance, b = draft.background;
   for (const radio of $('appearance-style').querySelectorAll('input')) radio.checked = radio.value === a.style;
   $('appearance-fit').value = a.fit;
@@ -131,7 +155,7 @@ function renderPreview() {
   applyBackground($('preview-background'), draft, data.assets);
   $('preview-status').textContent = { idle: '待命', speaking: '说话', action: '互动' }[previewState];
   const asset = data.assets.find(a => a.id === draft.appearance.assetId);
-  $('appearance-note').textContent = asset ? asset.animated ? '动图形象：使用图片本身的动画；不同状态共用此文件。' : '静态形象：待命、说话和互动共用这张图片。' : '内置形象：可以预览不同状态。';
+  $('appearance-note').textContent = asset ? asset.animated ? '动图形象：使用图片本身的动画；不同状态共用此文件。' : '静态形象：待命、说话和互动共用这张图片。' : character().custom ? '角色自己的形象：可以预览不同状态。' : '内置形象：可以预览不同状态。';
   $('background-note').textContent = draft.background.scope === 'panel' ? '背景只显示在自定义面板；桌面伙伴保持透明。' : '应用后，背景会出现在桌面伙伴的场景中。';
   fitColumn();
   $('preview-status').style.border = `2px solid ${draft.accent || defaultAccent()}`;
@@ -185,18 +209,19 @@ function renderPresets() {
     $('preset-list').append(row);
   }
 }
+/** Reads a picture into the shared library, decoding it first so a corrupt file cannot become a look. */
+async function importImageFile(file) {
+  if (file.size > 12 * 1024 * 1024) throw new Error('图片不能超过 12 MB。');
+  const dataUrl = await new Promise((resolve, reject) => {
+    const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = () => reject(new Error('图片读取失败。')); reader.readAsDataURL(file);
+  });
+  await new Promise((resolve, reject) => { const image = new Image(); image.onload = () => image.naturalWidth <= 8192 && image.naturalHeight <= 8192 ? resolve() : reject(new Error('图片尺寸不能超过 8192 像素。')); image.onerror = () => reject(new Error('图片无法读取。')); image.src = dataUrl; });
+  return api.importImage({ dataUrl, name: file.name.replace(/\.[^.]+$/, '') });
+}
 async function importFile(file) {
   if (!file) return;
-  if (file.size > 12 * 1024 * 1024) { message('图片不能超过 12 MB。', true); return; }
   const role = importRole;
-  await call(async () => {
-    const dataUrl = await new Promise((resolve, reject) => {
-      const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = () => reject(new Error('图片读取失败。')); reader.readAsDataURL(file);
-    });
-    // Decode before importing so corrupt images cannot become an applied appearance.
-    await new Promise((resolve, reject) => { const image = new Image(); image.onload = () => image.naturalWidth <= 8192 && image.naturalHeight <= 8192 ? resolve() : reject(new Error('图片尺寸不能超过 8192 像素。')); image.onerror = () => reject(new Error('图片无法读取。')); image.src = dataUrl; });
-    return api.importImage({ dataUrl, name: file.name.replace(/\.[^.]+$/, '') });
-  }).then(result => { if (result?.asset) { selectAsset(result.asset.id, role); message('图片已加入共享图库，满意后点击右下角按钮应用。'); } });
+  await call(() => importImageFile(file)).then(result => { if (result?.asset) { selectAsset(result.asset.id, role); message('图片已加入共享图库，满意后点击右下角按钮应用。'); } });
   $('image-file').value = '';
 }
 
@@ -287,6 +312,55 @@ $('apply').addEventListener('click', async () => {
 });
 for (const role of ['appearance','background']) $(`import-${role}`).addEventListener('click', () => { importRole = role; $('image-file').click(); });
 $('image-file').addEventListener('change', event => importFile(event.target.files[0]));
+
+// Custom characters start from a name and one picture; after that they are edited like any companion.
+$('new-character').addEventListener('click', () => { $('create-form').reset(); $('create-error').textContent = ''; $('create-dialog').showModal(); $('create-name').focus(); });
+$('cancel-create').addEventListener('click', () => $('create-dialog').close());
+$('create-form').addEventListener('submit', async event => {
+  event.preventDefault();
+  const name = $('create-name').value.trim(), file = $('create-image').files[0];
+  if (!name || !file) { $('create-error').textContent = name ? '请为角色选择一张形象图片。' : '请给角色起个名字。'; return; }
+  $('confirm-create').disabled = true; $('create-error').textContent = '';
+  try {
+    const imported = await importImageFile(file);
+    if (!imported?.ok) throw new Error(imported?.error || '图片导入失败。');
+    const created = await api.createCharacter({ name, sprites: { idle: imported.asset.id } });
+    if (!created?.ok) throw new Error(created?.error || '角色创建失败。');
+    $('create-dialog').close();
+    drafts.set(key, structuredClone(draft));
+    key = `pet:${created.character.id}`; draft = normalizeProfile();
+    acceptData(created.state); fillControls();
+    $('custom-section').scrollIntoView({ block: 'start' });
+    message(`已创建「${created.character.name}」。可以补充说话和互动图片，在「角色性格」里描述它，再点击右下角换上它。`);
+  } catch (error) { $('create-error').textContent = error.message; }
+  finally { $('confirm-create').disabled = false; }
+});
+const customId = () => character()?.custom ? character().key.slice(4) : null;
+$('custom-name').addEventListener('change', async () => {
+  const id = customId(), previous = character()?.name;
+  if (!id) return;
+  if (!await call(() => api.updateCharacter({ id, changes: { name: $('custom-name').value } }), '角色名字已保存。')) $('custom-name').value = previous;
+});
+const saveSprite = (id, slot, assetId) => call(() => api.updateCharacter({ id, changes: { sprites: { [slot]: assetId } } }), '角色形象已保存。');
+for (const slot of ['idle', 'speaking', 'action']) {
+  $(`sprite-${slot}`).addEventListener('change', async () => { if (customId() && !await saveSprite(customId(), slot, $(`sprite-${slot}`).value || null)) renderCustom(); });
+}
+let uploadSlot = 'idle';
+for (const upload of document.querySelectorAll('[data-upload]')) upload.addEventListener('click', () => { uploadSlot = upload.dataset.upload; $('sprite-file').click(); });
+$('sprite-file').addEventListener('change', async () => {
+  const file = $('sprite-file').files[0], id = customId(), slot = uploadSlot;
+  $('sprite-file').value = '';
+  if (!file || !id) return;
+  const imported = await call(() => importImageFile(file));
+  if (imported?.asset) await saveSprite(id, slot, imported.asset.id);
+});
+$('delete-character').addEventListener('click', () => $('delete-character-dialog').showModal());
+$('cancel-delete-character').addEventListener('click', () => $('delete-character-dialog').close());
+$('confirm-delete-character').addEventListener('click', async () => {
+  $('delete-character-dialog').close();
+  const id = customId(), name = character()?.name;
+  if (id && await call(() => api.removeCharacter(id), `已删除「${name}」。`)) fillControls();
+});
 $('favorites-only').addEventListener('change', renderLibrary);
 $('dropzone').addEventListener('dragover', event => { event.preventDefault(); $('dropzone').classList.add('dragging'); });
 $('dropzone').addEventListener('dragleave', () => $('dropzone').classList.remove('dragging'));

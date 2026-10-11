@@ -101,6 +101,22 @@ footer > div { min-width: 0; }
 dialog { border: 1px solid var(--line); border-radius: var(--card-radius); padding: 24px; max-width: min(420px, calc(100vw - 32px)); background: var(--surface); color: var(--ink); }
 dialog h2 { font-size: 18px; color: var(--ink); }
 dialog::backdrop { background: #2f3a3260; }
+/* Shares the label's row, so the character column gains no height. */
+.character-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 12px 0 7px; }
+.character-heading label { margin: 0; }
+.new-character { min-height: 0; padding: 3px 8px; color: var(--green); font-weight: 600; white-space: nowrap; }
+.sprite-slots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+.sprite-slot { border: 1px solid var(--line); border-radius: 12px; padding: 10px; min-width: 0; }
+.sprite-slot img { display: block; width: 100%; height: 82px; object-fit: contain; background: var(--rail); border-radius: 7px; }
+.sprite-slot label { margin: 8px 0 6px; }
+.sprite-slot label small { font-weight: 400; color: var(--muted); }
+.sprite-slot select { min-height: 36px; padding: 6px 8px; font-size: var(--caption-size); }
+.sprite-slot button { width: 100%; min-height: 36px; margin-top: 6px; font-size: var(--caption-size); }
+dialog p { color: var(--muted); line-height: 1.6; }
+dialog label small { font-weight: 400; color: var(--muted); }
+dialog input[type=file] { width: 100%; font-size: var(--caption-size); }
+.dialog-error { color: var(--danger) !important; font-size: var(--caption-size); margin: 10px 0 0; }
+.dialog-error:empty { display: none; }
 .dialog-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; margin-top: 20px; }
 .danger { color: var(--danger); }
 /* When even the shrunk preview leaves too little room (short window, longer language), the two notes step aside. */
@@ -122,6 +138,7 @@ aside[data-tight='true'] > .help { display: none; }
   header { flex-wrap: wrap; padding-inline: 16px; }
   main { padding-inline: 16px; }
   .two-columns { grid-template-columns: minmax(0,1fr); gap: 0; }
+  .sprite-slots { grid-template-columns: minmax(0,1fr); }
   footer { flex-wrap: wrap; gap: 8px; padding-inline: 16px; }
   footer > div { flex-basis: 100%; }
   footer .primary { width: 100%; }

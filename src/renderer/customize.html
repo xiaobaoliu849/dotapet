@@ -16,7 +16,7 @@
   </header>
   <main id="editor" aria-busy="true">
     <aside>
-      <label for="character">编辑角色</label>
+      <div class="character-heading"><label for="character">编辑角色</label><button id="new-character" class="quiet new-character">＋ 新建角色</button></div>
       <select id="character" disabled></select>
       <p id="desk-status" class="desk-status" role="status"></p>
       <div id="preview-stage" class="preview-stage">
@@ -33,6 +33,18 @@
       <button id="restore" class="quiet">恢复此角色的默认外观</button>
     </aside>
     <div class="settings">
+      <section id="custom-section" hidden>
+        <div class="section-heading"><h2>00 <span>自定义角色</span></h2><button id="delete-character" class="quiet danger">删除这个角色</button></div>
+        <label for="custom-name">角色名字</label>
+        <input id="custom-name" maxlength="40" autocomplete="off">
+        <div class="sprite-slots">
+          <div class="sprite-slot" data-slot="idle"><img alt="待命形象"><label for="sprite-idle">待命 <small>必选</small></label><select id="sprite-idle"></select><button data-upload="idle">上传图片</button></div>
+          <div class="sprite-slot" data-slot="speaking"><img alt="说话形象"><label for="sprite-speaking">说话 <small>可选</small></label><select id="sprite-speaking"></select><button data-upload="speaking">上传图片</button></div>
+          <div class="sprite-slot" data-slot="action"><img alt="互动形象"><label for="sprite-action">互动 <small>可选</small></label><select id="sprite-action"></select><button data-upload="action">上传图片</button></div>
+        </div>
+        <input id="sprite-file" type="file" accept="image/png,image/jpeg,image/gif,image/webp,image/svg+xml" hidden>
+        <p class="help">名字和图片会自动保存。说话和互动没有选图片时使用待命形象；GIF 和 WebP 动图会保留动画。在下方「角色性格」里描述它是谁。</p>
+      </section>
       <section>
         <h2>01 <span>伙伴形象</span></h2>
         <div class="two-columns">
@@ -98,6 +110,19 @@
   </main>
   <footer><div><span id="draft-status">加载中…</span><p id="feedback" role="status" aria-live="polite"></p></div><button id="apply" class="primary" disabled>应用到桌面伙伴</button></footer>
   <dialog id="delete-dialog"><h2>删除这张图片？</h2><p>使用它的角色形象将恢复默认，背景将恢复透明；预设中的引用也会重置。</p><div class="dialog-actions"><button id="cancel-delete">保留图片</button><button id="confirm-delete" class="danger">删除图片</button></div></dialog>
+  <dialog id="create-dialog">
+    <form id="create-form" method="dialog" novalidate>
+      <h2>新建自定义角色</h2>
+      <p>任何你喜欢的角色都可以：你的猫、原创人物、喜欢的动漫角色……</p>
+      <label for="create-name">名字</label>
+      <input id="create-name" maxlength="40" autocomplete="off" required placeholder="例如：咪咪">
+      <label for="create-image">形象图片 <small>PNG · JPEG · GIF · WebP · SVG / 最大 12 MB</small></label>
+      <input id="create-image" type="file" accept="image/png,image/jpeg,image/gif,image/webp,image/svg+xml" required>
+      <p id="create-error" class="dialog-error" role="alert"></p>
+      <div class="dialog-actions"><button id="cancel-create" type="button">取消</button><button id="confirm-create" class="primary" type="submit">创建角色</button></div>
+    </form>
+  </dialog>
+  <dialog id="delete-character-dialog"><h2>删除这个自定义角色？</h2><p>它的形象设置和角色性格会一起删除；用过的图片仍保留在「我的图片」里。</p><div class="dialog-actions"><button id="cancel-delete-character">保留角色</button><button id="confirm-delete-character" class="danger">删除角色</button></div></dialog>
   <script type="module" src="customize.js"></script>
 </body>
 </html>

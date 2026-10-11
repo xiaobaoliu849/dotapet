@@ -956,7 +956,8 @@ const petStateMachine = new PetStateMachine({
 // for them (petMatrixReady) or the courier persona ships without its name/quotes.
 const petMatrixReady = petStateMachine.init().then(() => {
   const savedPet = localStorage.getItem('voicespirit_active_pet');
-  if (savedPet) {
+  // A custom character is restored once customization has loaded (syncCustomCharacters).
+  if (savedPet && !savedPet.startsWith('custom_')) {
     petStateMachine.switchPet(savedPet);
   }
 });
@@ -1162,24 +1163,26 @@ function renderPetMatrixModalView() {
   const pets = petStateMachine.getAvailablePets();
   const currentPetName = petStateMachine.currentPetName;
 
+  // Custom characters carry the user's own text and pictures.
+  const html = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
   elements.petMatrixGridView.innerHTML = pets.map(p => {
     const isActive = p.name === currentPetName && state.isPetMode;
     const icon = getPetIcon(p.name);
     const skill = p.specialSkill || { name: '专属绝招', icon: '✨' };
 
     return `
-      <div class="pet-matrix-item-card ${isActive ? 'is-active-pet' : ''}" data-pet-card="${p.name}">
+      <div class="pet-matrix-item-card ${isActive ? 'is-active-pet' : ''}" data-pet-card="${html(p.name)}">
         <div class="pet-item-head">
           <div class="pet-item-thumb">
-            <img src="${p.basePath}/idle.svg" alt="${p.displayName}" />
+            <img src="${html(p.thumb || `${p.basePath}/idle.svg`)}" alt="${html(p.displayName)}" />
           </div>
           <div class="pet-item-headline">
-            <span class="pet-item-name">${icon} ${p.displayName}</span>
-            <span class="pet-item-badge">v${p.version}</span>
+            <span class="pet-item-name" ${p.custom ? 'translate="no"' : ''}>${icon} ${html(p.displayName)}</span>
+            <span class="pet-item-badge">${p.custom ? '自定义' : `v${html(p.version)}`}</span>
           </div>
         </div>
-        <div class="pet-item-desc">${p.description}</div>
-        <div class="pet-item-skill">${skill.icon} 绝招: <b>${skill.name}</b> - ${skill.description || ''}</div>
+        <div class="pet-item-desc">${p.custom ? '你亲手创造的角色。在「形象与背景」里修改它的形象和性格。' : html(p.description)}</div>
+        ${p.custom ? '' : `<div class="pet-item-skill">${skill.icon} 绝招: <b>${html(skill.name)}</b> - ${html(skill.description || '')}</div>`}
         <div class="pet-item-actions">
           <button class="pet-btn-summon ${isActive ? 'active-summoned' : ''}" data-summon-pet="${p.name}">
             ${isActive ? '✅ 当前跟随' : '✨ 召唤出战'}
@@ -1467,7 +1470,51 @@ async function loadCustomization({ migrate = false } = {}) {
   const result = await window.electronAPI.getCustomization();
   if (!result?.ok) throw new Error(result?.error || '自定义配置读取失败');
   customizationData = result.state;
+  syncCustomCharacters();
   applyDesktopAppearance();
+}
+
+// Pet engine states, by which of a custom character's three pictures shows them.
+const CUSTOM_PET_STATES = Object.freeze({
+  idle: 'idle', walk: 'idle', sleep: 'idle', think: 'idle', speak: 'speaking',
+  pet: 'action', drag: 'action', fetch: 'action', special: 'action', feed_tango: 'action', feed_salve: 'action', feed_rapier: 'action',
+});
+
+/** A character made in the customizer, as a pet package the pet engine can put on the desktop. */
+function customPetPackage(character) {
+  return {
+    name: character.key.slice(4), displayName: character.name, custom: true, version: '1.0.0', author: '',
+    description: '', themeColor: character.themeColor, secondaryColor: character.themeColor, heroCompanion: null,
+    specialSkill: { id: 'custom_special', name: '开心互动', description: '', icon: '✨', duration: 3000 },
+    basePath: '', thumb: character.sprites.idle,
+    states: Object.fromEntries(Object.entries(CUSTOM_PET_STATES).map(([name, slot]) => [name, {
+      name, label: name, svg: null, image: character.sprites[slot], frames: [], duration: 300, loop: true, quote: '', particle: null,
+    }])),
+  };
+}
+
+let customPetsRestored = false;
+function syncCustomCharacters() {
+  const before = petStateMachine.getCurrentPet();
+  petStateMachine.loader.setCustomPets((customizationData?.characters || []).filter(c => c.custom).map(customPetPackage));
+  const saved = localStorage.getItem('voicespirit_active_pet');
+  if (!customPetsRestored) {
+    customPetsRestored = true;
+    // Startup restored the saved pet before custom characters were known.
+    if (saved && saved !== petStateMachine.currentPetName && petStateMachine.loader.getPet(saved)) petStateMachine.switchPet(saved);
+    return;
+  }
+  const current = petStateMachine.getCurrentPet();
+  if (!current) {
+    // Its character was deleted.
+    petStateMachine.switchPet('aurora_wolf');
+    localStorage.setItem('voicespirit_active_pet', 'aurora_wolf');
+    if (state.isPetMode) syncPetPersonaToMain();
+  } else if (current.custom && current.displayName !== before?.displayName) {
+    // Renamed. Only then: every persona sync publishes a change that reloads this.
+    updatePetMatrixUI(current);
+    if (state.isPetMode) syncPetPersonaToMain();
+  }
 }
 
 /**

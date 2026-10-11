@@ -99,6 +99,15 @@ export class CodexPetLoader {
   }
 
   /**
+   * Replace the user's custom characters (already-normalized packages with
+   * `custom: true`). Built-in pets are untouched and keep their order.
+   */
+  setCustomPets(packages) {
+    for (const [name, pet] of this.loadedPets) if (pet.custom) this.loadedPets.delete(name);
+    for (const pet of packages) this.loadedPets.set(pet.name, pet);
+  }
+
+  /**
    * Get pet definition
    * @param {string} petName
    */

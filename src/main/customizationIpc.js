@@ -5,6 +5,8 @@ import { CustomizationStore } from './customizationStore.js';
 import { classifySkin, validCharacterKey } from '../services/appearance.js';
 import { isTrustedSettingsSender } from './aiSettingsIpc.js';
 
+export const CUSTOM_THEME_COLOR = '#f59e0b';
+
 /** The editor is the settings center's 形象与背景 page; `hub` hosts it. */
 export function createCustomizationController({ electron, rendererDirectory, hub, getMainWindow, getHeroesConfig, getCompanionHero, getActiveKey,
   getLanguage = () => 'zh', t = text => text, onProfileSaved = () => {} }) {
@@ -64,7 +66,14 @@ export function createCustomizationController({ electron, rendererDirectory, hub
           sprites: { idle: src('idle'), speaking: src('speak'), action: src('special') }, options: [] }];
       } catch (error) { console.warn('[Customize] Pet catalog:', error.message); return []; }
     });
-    return [...pets, ...heroes];
+    // The user's own characters: their pictures come from the library, the names are theirs and never translated.
+    const urls = new Map(store.snapshot().assets.map(asset => [asset.id, asset.url]));
+    const custom = store.data.characters.map(character => ({
+      key: `pet:${character.id}`, name: character.name, custom: true, themeColor: CUSTOM_THEME_COLOR,
+      sprites: Object.fromEntries(['idle', 'speaking', 'action'].map(slot => [slot, urls.get(character.sprites[slot] || character.sprites.idle)])),
+      spriteAssets: { ...character.sprites }, options: [],
+    }));
+    return [...pets, ...custom, ...heroes];
   }
   function snapshot() { return { ...store.snapshot(), activeKey: getActiveKey(), characters: characters() }; }
   function publish() {
@@ -101,6 +110,9 @@ export function createCustomizationController({ electron, rendererDirectory, hub
     getMainWindow()?.webContents.send('customization:activate', payload);
     return {};
   }));
+  ipcMain.handle('customization:create-character', handler(changed(payload => ({ character: store.createCharacter(payload) }))));
+  ipcMain.handle('customization:update-character', handler(changed(payload => ({ character: store.updateCharacter(payload?.id, payload?.changes) }))));
+  ipcMain.handle('customization:remove-character', handler(changed(id => { store.removeCharacter(id); })));
   ipcMain.handle('customization:update-asset', handler(changed(payload => store.updateAsset(payload.id, payload.changes || {}))));
   ipcMain.handle('customization:remove-asset', handler(changed(id => store.removeAsset(id))));
   ipcMain.handle('customization:save-preset', handler(changed(payload => ({ preset: store.savePreset(payload.name, payload.profile) }))));

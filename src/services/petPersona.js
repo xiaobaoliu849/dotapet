@@ -9,6 +9,10 @@
  */
 
 export const PET_PERSONA_KIND = 'pet';
+// A character the user made in the customizer; it is on the desktop like a pet
+// but is not a DOTA courier, so the voice engine gives it its own template.
+export const CUSTOM_PERSONA_KIND = 'custom';
+const isCustomPetName = name => /^custom_[a-f0-9]{8}$/.test(name);
 
 // States whose quotes read best as spoken catchphrases; ordered by voice
 // suitability. Kept in one place so the extraction stays testable.
@@ -46,11 +50,13 @@ function extractNameEn(pet) {
  */
 export function buildPetPseudoHero(pet) {
   if (!pet || typeof pet.name !== 'string' || !pet.name.trim()) return null;
+  const custom = isCustomPetName(pet.name);
   return {
     id: `pet:${pet.name}`,
-    kind: PET_PERSONA_KIND,
+    kind: custom ? CUSTOM_PERSONA_KIND : PET_PERSONA_KIND,
     nameZh: pet.displayName || pet.name,
-    nameEn: extractNameEn(pet),
+    // The user's own name is the name in every language.
+    nameEn: custom ? pet.displayName || pet.name : extractNameEn(pet),
     attribute: 'pet',
     themeColor: pet.themeColor || '#f59e0b',
     systemPrompt: pet.description || '',

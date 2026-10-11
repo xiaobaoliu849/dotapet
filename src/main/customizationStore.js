@@ -1,10 +1,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { createHash, randomUUID } from 'node:crypto';
+import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { normalizeProfile, validCharacterKey } from '../services/appearance.js';
 
 export const MAX_IMAGE_BYTES = 12 * 1024 * 1024;
+export const MAX_CUSTOM_CHARACTERS = 50;
+const CHARACTER_NAME_LENGTH = 40;
+const SPRITE_SLOTS = ['idle', 'speaking', 'action'];
+/** A character the user made: its key is `pet:<id>`, so it lives on the desktop like a pet. */
+export const isCustomCharacterId = value => typeof value === 'string' && /^custom_[a-f0-9]{8}$/.test(value);
 const extensions = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/gif': 'gif', 'image/webp': 'webp', 'image/svg+xml': 'svg' };
 const label = (value, fallback) => typeof value === 'string' && value.trim() ? value.trim().slice(0, 80) : fallback;
 
@@ -51,13 +56,15 @@ export class CustomizationStore {
     this.assetsDirectory = path.join(directory, 'customization-assets');
     this.filePath = path.join(directory, 'customization.json');
     this.validateImage = validateImage;
-    this.data = { version: 1, assets: [], profiles: {}, presets: [], migrated: [] };
+    this.data = { version: 1, assets: [], profiles: {}, presets: [], migrated: [], characters: [] };
     fs.mkdirSync(this.assetsDirectory, { recursive: true });
     if (fs.existsSync(this.filePath)) {
       // Preserve unreadable/newer settings instead of silently overwriting them.
       const saved = JSON.parse(fs.readFileSync(this.filePath, 'utf8'));
       if (saved.version !== 1 || !Array.isArray(saved.assets) || !Array.isArray(saved.presets)) throw new Error('自定义配置版本不受支持。');
       this.data = { ...this.data, ...saved };
+      // Files written before custom characters existed have none.
+      if (!Array.isArray(this.data.characters)) this.data.characters = [];
     }
   }
 
@@ -70,6 +77,7 @@ export class CustomizationStore {
       version: 1,
       assets: this.data.assets.map(asset => ({ ...asset, url: pathToFileURL(this.assetPath(asset)).href })),
       profiles: structuredClone(this.data.profiles), presets: structuredClone(this.data.presets),
+      customCharacters: structuredClone(this.data.characters),
     };
   }
   persist() {
@@ -132,7 +140,13 @@ export class CustomizationStore {
   removeAsset(assetId) {
     const asset = this.data.assets.find(item => item.id === assetId);
     if (!asset) return;
+    // A custom character always has its own picture; give it another one first.
+    const owner = this.data.characters.find(character => character.sprites.idle === assetId);
+    if (owner) throw new Error(`这张图片是自定义角色「${owner.name}」的形象，请先给它换一张图片，或删除这个角色。`);
     this.transaction(() => {
+      for (const character of this.data.characters) {
+        for (const slot of ['speaking', 'action']) if (character.sprites[slot] === assetId) character.sprites[slot] = null;
+      }
       // Deletion resets all references, including reusable presets.
       for (const profile of [...Object.values(this.data.profiles), ...this.data.presets.map(p => p.profile)]) {
         if (profile.appearance.assetId === assetId) profile.appearance.assetId = null;
@@ -142,6 +156,49 @@ export class CustomizationStore {
     });
     // Metadata is committed before removing the file. Failed cleanup cannot lose settings.
     try { fs.unlinkSync(this.assetPath(asset)); } catch (error) { if (error.code !== 'ENOENT') console.warn('[Customize] Asset cleanup:', error.message); }
+  }
+  characterName(value) {
+    const name = typeof value === 'string' ? value.replace(/[\x00-\x1f\x7f\u2028\u2029]/g, '').trim().slice(0, CHARACTER_NAME_LENGTH) : '';
+    if (!name) throw new Error('请给角色起个名字。');
+    return name;
+  }
+  /** Picture per state: 待命 is required, 说话 and 互动 fall back to it when empty. */
+  characterSprites(value, current = {}) {
+    const sprites = {};
+    for (const slot of SPRITE_SLOTS) {
+      const assetId = value && Object.hasOwn(value, slot) ? value[slot] : current[slot] ?? null;
+      if (assetId != null && !this.data.assets.some(asset => asset.id === assetId)) throw new Error('所选图片已不存在，请重新选择。');
+      sprites[slot] = assetId ?? null;
+    }
+    if (!sprites.idle) throw new Error('请为角色选择一张形象图片。');
+    return sprites;
+  }
+  createCharacter({ name, sprites } = {}) {
+    if (this.data.characters.length >= MAX_CUSTOM_CHARACTERS) throw new Error(`最多可以创建 ${MAX_CUSTOM_CHARACTERS} 个自定义角色。`);
+    return this.transaction(() => {
+      let id;
+      do id = `custom_${randomBytes(4).toString('hex')}`; while (this.data.characters.some(character => character.id === id));
+      const character = { id, name: this.characterName(name), sprites: this.characterSprites(sprites), createdAt: new Date().toISOString() };
+      this.data.characters.push(character);
+      return structuredClone(character);
+    });
+  }
+  updateCharacter(id, changes = {}) {
+    return this.transaction(() => {
+      const character = this.data.characters.find(item => item.id === id);
+      if (!character) throw new Error('自定义角色不存在。');
+      if (changes.name !== undefined) character.name = this.characterName(changes.name);
+      if (changes.sprites !== undefined) character.sprites = this.characterSprites(changes.sprites, character.sprites);
+      return structuredClone(character);
+    });
+  }
+  /** Its look and persona go with it; its pictures stay in the library. */
+  removeCharacter(id) {
+    this.transaction(() => {
+      if (!this.data.characters.some(item => item.id === id)) throw new Error('自定义角色不存在。');
+      this.data.characters = this.data.characters.filter(item => item.id !== id);
+      delete this.data.profiles[`pet:${id}`];
+    });
   }
   // Presets are looks shared across characters; a persona belongs to one character and never travels with them.
   savePreset(name, profile) {

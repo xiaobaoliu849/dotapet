@@ -1658,13 +1658,14 @@ function setupIPC() {
   // saved hero — the courier keeps talking until pet mode is turned off.
   ipcMain.handle('pet:sync-persona', (event, payload = {}) => {
     const { isPetMode, pet } = payload;
-    const previousId = activePetPersona?.id || null;
+    const previous = activePetPersona;
     activePetPersona = isPetMode ? buildPetPseudoHero(pet) : null;
     customizationController?.publish();
     if (isPetMode && !activePetPersona) {
       console.warn('[Pet] Pet mode synced without a usable pet manifest; keeping hero persona');
     }
-    if (activePetPersona?.id !== previousId) {
+    // A custom character keeps its id when renamed; the new name must still reach the voice.
+    if (activePetPersona?.id !== previous?.id || activePetPersona?.nameZh !== previous?.nameZh) {
       console.log(`[Pet] Voice persona -> ${activePetPersona ? `${activePetPersona.nameZh} (${activePetPersona.id})` : `hero: ${currentHeroId}`}`);
       if (voiceClient) {
         voiceClient.setHero(activeVoicePersona());

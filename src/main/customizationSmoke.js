@@ -183,6 +183,62 @@ export async function runCustomizationSmoke({ controller, controlCenter, mainWin
   const restored = new CustomizationStore(controller.store.directory).snapshot();
   if (restored.assets.length !== 2 || restored.profiles['pet:aurora_wolf'].appearance.assetId !== assetId) throw new Error('Customization did not survive store reload');
   if (restored.profiles['pet:aurora_wolf'].persona !== '冷静的老猎手' || restored.presets.some(preset => preset.profile.persona)) throw new Error('Persona did not survive store reload, or travelled with a preset');
+  // A custom character: created from a name and a picture, given a talking picture and a persona, put on the desktop.
+  const customKey = await editor.executeJavaScript(`(async()=>{ ${waitScript}
+    await waitFor(idle);
+    get('new-character').click();
+    if (!get('create-dialog').open) throw new Error('Create dialog did not open');
+    get('create-form').requestSubmit();
+    await waitFor(()=>get('create-error').textContent.length>0);
+    get('create-name').value='咪咪';
+    const bytes=Uint8Array.from(atob(${JSON.stringify(fixture.split(',')[1])}),c=>c.charCodeAt(0));
+    const transfer=new DataTransfer(); transfer.items.add(new File([bytes],'mimi.svg',{type:'image/svg+xml'}));
+    get('create-image').files=transfer.files;
+    get('create-form').requestSubmit();
+    await waitFor(()=>!get('create-dialog').open && get('character').value.startsWith('pet:custom_'));
+    const key=get('character').value;
+    if (get('custom-section').hidden) throw new Error('Custom character card hidden');
+    if (![...get('character').querySelectorAll('optgroup')].some(group=>group.label==='自定义')) throw new Error('No 自定义 group');
+    if (get('custom-name').value!=='咪咪') throw new Error('Name not shown');
+    if (!get('preview-image').src.includes('customization-assets')) throw new Error('Custom picture not previewed');
+    const gif=[...get('sprite-speaking').options].find(o=>o.textContent.includes('tiny'));
+    get('sprite-speaking').value=gif.value; get('sprite-speaking').dispatchEvent(new Event('change'));
+    await waitFor(async()=>(await window.customizationAPI.get()).state.characters.find(c=>c.key===key)?.spriteAssets.speaking===gif.value);
+    await waitFor(idle);
+    get('custom-name').value='咪咪酱'; get('custom-name').dispatchEvent(new Event('change'));
+    await waitFor(async()=>(await window.customizationAPI.get()).state.characters.find(c=>c.key===key)?.name==='咪咪酱');
+    await waitFor(idle);
+    get('persona-prompt').value='一只高冷的橘猫'; get('persona-prompt').dispatchEvent(new Event('input'));
+    if (get('apply').textContent!=='应用并换上此伙伴') throw new Error('Custom character cannot be put on the desktop');
+    get('apply').click();
+    await waitFor(async()=>(await window.customizationAPI.get()).state.activeKey===key);
+    return key;
+  })()`);
+  const customAvatar = `(async()=>{ ${waitScript}
+    await waitFor(()=>get('pet-avatar').src.includes('customization-assets') && get('hero-name').textContent==='咪咪酱');
+  })()`;
+  await mainWindow.webContents.executeJavaScript(customAvatar);
+  controlCenter.window.setSize(1024, 728);
+  await new Promise(resolve => setTimeout(resolve, 150));
+  await editor.executeJavaScript("document.getElementById('custom-section').scrollIntoView({block:'start'})");
+  await capture('customization-custom.png');
+  if (controller.store.data.profiles[customKey]?.persona !== '一只高冷的橘猫') throw new Error('Custom character persona not saved');
+  // Restarting the desktop restores the custom character, which is only known after customization loads.
+  const customReloaded = new Promise(resolve => mainWindow.webContents.once('did-finish-load', resolve));
+  mainWindow.webContents.reload(); await customReloaded;
+  await mainWindow.webContents.executeJavaScript(customAvatar);
+  await editor.executeJavaScript(`(async()=>{ ${waitScript}
+    await waitFor(async()=>(await window.customizationAPI.get()).state.activeKey===${JSON.stringify(customKey)});
+    await waitFor(idle);
+    get('delete-character').click(); get('confirm-delete-character').click();
+    await waitFor(()=>idle() && !get('character').value.startsWith('pet:custom_') && get('custom-section').hidden);
+    if ([...get('character').querySelectorAll('optgroup')].some(group=>group.label==='自定义')) throw new Error('Empty 自定义 group shown');
+  })()`);
+  // Deleting the character on the desktop puts a built-in pet there instead.
+  await mainWindow.webContents.executeJavaScript(`(async()=>{ ${waitScript}
+    await waitFor(async()=>(await window.electronAPI.getCustomization()).state.activeKey==='pet:aurora_wolf');
+  })()`);
+  if (controller.store.data.characters.length || controller.store.data.profiles[customKey]) throw new Error('Deleted custom character left data behind');
   if (errors.length) throw new Error(`Renderer errors: ${errors.join('; ')}`);
   controlCenter.window.setSize(1060, 820);
   return { assets: restored.assets.length, presets: restored.presets.length, migratedHero: true, heroAndPet: true };

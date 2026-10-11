@@ -14,6 +14,14 @@ Start the desktop companion with `npm start`. Right-click the companion (or the 
 
 Preview edits remain local to the editor until applied. Switching between characters retains their unapplied drafts while the editor stays open. **恢复此角色的默认外观** previews the default; click Apply to finish restoring it. Cosmetic edits do not change the voice persona or provider.
 
+## Create your own character
+
+**＋ 新建角色** (next to **编辑角色**) makes a brand-new companion from a name and one picture: your cat, an original character, anyone. It appears in its own **自定义** group in the character list, and lives on the desktop like a pet: it walks, can be dragged and petted, and talks in voice chat.
+
+Its **自定义角色** card holds the name and three pictures: **待命** (required), **说话** and **互动** (optional; empty ones use the idle picture). Each slot takes a picture from **我的图片** or a new upload; animated GIF/WebP files keep their animation. Name and pictures save immediately. Everything else (size, colors, background, **角色性格**) works as for any character, and the bottom-right button puts it on the desktop.
+
+In voice chat a custom character speaks in first person as described in its **角色性格**, with its own template (never the courier or hero one). **删除这个角色** asks first, removes its look and persona, and keeps its pictures in the library; if it was on the desktop, a built-in pet takes its place. A picture that is a custom character's idle picture cannot be deleted until the character gets another one. Up to 50 custom characters.
+
 ## Give the companion a personality
 
 Under **角色性格**, describe who the selected character is: personality, attitude, backstory and tone of voice (for example tsundere, sharp-tongued but caring). It applies with the same button as the look and is saved per character. Voice chat uses it in place of the built-in hero or pet persona, with a rule that it outranks the default tone; leave it empty to keep the default. Editing the companion already on the desktop takes effect from its next voice reply.
@@ -39,6 +47,7 @@ Catalog entries without distinct artwork are offered as **点缀色** choices, r
 ## Storage and verification
 
 - Electron userData holds `customization.json` (schema version 1) and `customization-assets/` (content-addressed image files).
+- Custom characters are stored in `customization.json` under `characters` (`custom_<8 hex>` ids, a name and the asset ids of their three pictures). Their key is `pet:custom_<id>`: the desktop registers them as pet packages (`CodexPetLoader.setCustomPets`), so pet mode and the per-character profile apply unchanged.
 - Each profile is keyed by `hero:<id>` or `pet:<id>` and independently saves appearance, background, accent and persona (up to 2000 characters).
 - `src/services/personaOverride.js` attaches a character's persona to the voice persona in the main process; `CloudVoiceEngine` puts it in place of the built-in lore.
 - `src/services/appearance.js` provides the shared normalization, resolver and rendering rules.
