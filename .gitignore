@@ -23,6 +23,7 @@ customization-assets/
 *.log
 *.tmp
 *.bak
+scripts/seed-keys.mjs
 .DS_Store
 Thumbs.db
 .idea/
