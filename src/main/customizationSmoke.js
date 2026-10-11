@@ -63,7 +63,7 @@ export async function runCustomizationSmoke({ controller, controlCenter, mainWin
     await waitFor(async()=>Boolean((await window.customizationAPI.get()).state.profiles['pet:aurora_wolf']?.appearance.assetId));
     await waitFor(async()=>(await window.customizationAPI.get()).state.activeKey==='pet:aurora_wolf');
     await waitFor(()=>idle() && get('draft-status').textContent.includes('已应用'));
-    if (!get('apply').disabled || get('apply').textContent !== '已应用') throw new Error('Apply stays active with nothing to apply');
+    if (!get('apply').disabled || get('apply').textContent !== '应用') throw new Error('Apply stays active with nothing to apply');
     if ((await window.customizationAPI.get()).state.profiles['pet:aurora_wolf'].persona !== '傲娇毒舌的小狼\\n嘴硬心软') throw new Error('Persona was not saved with the profile');
     const favorite=document.querySelector('.asset-actions button[aria-pressed]'); favorite.click();
     await waitFor(async()=>(await window.customizationAPI.get()).state.assets[0].favorite);

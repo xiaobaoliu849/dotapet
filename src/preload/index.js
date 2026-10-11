@@ -19,6 +19,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.on('customization:activate', listener);
     return () => ipcRenderer.removeListener('customization:activate', listener);
   },
+  onCustomizationShowState: callback => {
+    const listener = (_event, spriteType) => callback(spriteType);
+    ipcRenderer.on('customization:show-state', listener);
+    return () => ipcRenderer.removeListener('customization:show-state', listener);
+  },
   openAISettings: purpose => ipcRenderer.send('ai:open-settings', purpose),
   // One-time tip after the first setup closes; teaches the pet in place.
   onOnboardingHint: (callback) => {

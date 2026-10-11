@@ -6,6 +6,7 @@ contextBridge.exposeInMainWorld('customizationAPI', {
   importImage: payload => ipcRenderer.invoke('customization:import-image', payload),
   saveProfile: payload => ipcRenderer.invoke('customization:save-profile', payload),
   activate: key => ipcRenderer.invoke('customization:activate', key),
+  showState: spriteType => ipcRenderer.invoke('customization:show-state', spriteType),
   createCharacter: payload => ipcRenderer.invoke('customization:create-character', payload),
   updateCharacter: payload => ipcRenderer.invoke('customization:update-character', payload),
   removeCharacter: id => ipcRenderer.invoke('customization:remove-character', id),

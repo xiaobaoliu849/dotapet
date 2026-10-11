@@ -2858,6 +2858,15 @@ window.addEventListener('DOMContentLoaded', async () => {
       if (hero) applyHeroSkin(hero);
     }
   });
+  // The customizer's 待命 / 说话 / 互动 buttons: act it out for a moment, unless a conversation owns the pet.
+  let shownStateTimer = null;
+  window.electronAPI?.onCustomizationShowState?.(spriteType => {
+    if (state.appState !== 'idle') return;
+    if (state.isPetMode) { petStateMachine.showState({ idle: 'idle', speaking: 'speak', action: 'special' }[spriteType]); return; }
+    clearTimeout(shownStateTimer);
+    setPetSprite(spriteType);
+    if (spriteType !== 'idle') shownStateTimer = setTimeout(() => { if (state.appState === 'idle') setPetSprite('idle'); }, 3000);
+  });
   await loadCustomization({ migrate: true }).catch(error => showToast(error.message));
 
   // Restore pet mode before announcing readiness: a summoner who went to bed

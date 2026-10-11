@@ -110,6 +110,11 @@ export function createCustomizationController({ electron, rendererDirectory, hub
     getMainWindow()?.webContents.send('customization:activate', payload);
     return {};
   }));
+  ipcMain.handle('customization:show-state', handler(payload => {
+    if (!['idle', 'speaking', 'action'].includes(payload)) throw new Error('未知状态。');
+    getMainWindow()?.webContents.send('customization:show-state', payload);
+    return {};
+  }));
   ipcMain.handle('customization:create-character', handler(changed(payload => ({ character: store.createCharacter(payload) }))));
   ipcMain.handle('customization:update-character', handler(changed(payload => ({ character: store.updateCharacter(payload?.id, payload?.changes) }))));
   ipcMain.handle('customization:remove-character', handler(changed(id => { store.removeCharacter(id); })));

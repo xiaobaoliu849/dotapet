@@ -14,7 +14,7 @@ const onDesktop = () => Boolean(data) && data.activeKey === key;
 function draftStatus() {
   const dirty = isDirty(), active = onDesktop();
   $('draft-status').textContent = dirty ? '有改动未应用 · 目前只在预览中' : active ? '已应用 · 桌面伙伴正在使用这套外观' : '已保存 · 还没有换到桌面上';
-  $('apply').textContent = active ? (dirty ? '应用到桌面伙伴' : '已应用') : dirty ? '应用并换上此伙伴' : '换上此伙伴';
+  $('apply').textContent = active ? (dirty ? '应用到桌面伙伴' : '应用') : dirty ? '应用并换上此伙伴' : '换上此伙伴';
   // Nothing to do for the companion already on the desktop with no edits.
   $('apply').disabled = busy || !data || (active && !dirty);
   $('desk-status').textContent = active ? '✓ 正在桌面上' : '不在桌面上，应用后会换上它';
@@ -155,7 +155,7 @@ function renderPreview() {
   applyBackground($('preview-background'), draft, data.assets);
   $('preview-status').textContent = { idle: '待命', speaking: '说话', action: '互动' }[previewState];
   const asset = data.assets.find(a => a.id === draft.appearance.assetId);
-  $('appearance-note').textContent = asset ? asset.animated ? '动图形象：使用图片本身的动画；不同状态共用此文件。' : '静态形象：待命、说话和互动共用这张图片。' : character().custom ? '角色自己的形象：可以预览不同状态。' : '内置形象：可以预览不同状态。';
+  $('appearance-note').textContent = asset ? asset.animated ? '动图形象：使用图片本身的动画；不同状态共用此文件。' : '静态形象：待命、说话和互动共用这张图片。' : character().custom ? '角色自己的形象：点下方按钮预览不同状态，它在桌面上时也会跟着做几秒。' : '内置形象：点下方按钮预览不同状态，它在桌面上时也会跟着做几秒。';
   $('background-note').textContent = draft.background.scope === 'panel' ? '背景只显示在自定义面板；桌面伙伴保持透明。' : '应用后，背景会出现在桌面伙伴的场景中。';
   fitColumn();
   $('preview-status').style.border = `2px solid ${draft.accent || defaultAccent()}`;
@@ -279,7 +279,7 @@ document.addEventListener('wheel', event => {
 for (const field of ['mode','scope','fit','color','asset','opacity','dim']) {
   $(`background-${field}`).addEventListener('input', () => edit(() => { const value = $(`background-${field}`).value; draft.background[field === 'asset' ? 'assetId' : field] = ['opacity','dim'].includes(field) ? Number(value) / 100 : value || null; }));
 }
-for (const b of document.querySelectorAll('[data-state]')) b.addEventListener('click', () => { previewState = b.dataset.state; for (const item of document.querySelectorAll('[data-state]')) item.setAttribute('aria-pressed', String(item === b)); renderPreview(); });
+for (const b of document.querySelectorAll('[data-state]')) b.addEventListener('click', () => { previewState = b.dataset.state; for (const item of document.querySelectorAll('[data-state]')) item.setAttribute('aria-pressed', String(item === b)); renderPreview(); if (onDesktop()) api.showState(previewState); });
 $('persona-prompt').addEventListener('input', () => { edit(() => { draft.persona = $('persona-prompt').value; }); personaCount(); });
 // Restores the look only; the persona is cleared by emptying its text.
 $('restore').addEventListener('click', () => { draft = { ...normalizeProfile(), persona: draft.persona }; drafts.set(key, structuredClone(draft)); fillControls(); message('已预览默认外观，点击右下角按钮完成恢复。'); });

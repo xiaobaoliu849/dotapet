@@ -10,7 +10,7 @@ Start the desktop companion with `npm start`. Right-click the companion (or the 
 2. Choose its built-in image or a picture from your library. Adjust fit, size and position while watching the preview.
 3. Under **颜色**, **伙伴色调** recolors the companion image itself; **点缀色** sets the border of its status label and voice ring (角色默认, a color-only look, or **自选** for any color).
 4. Choose a transparent, solid-color or image background. **只在自定义面板** keeps the desktop transparent; **桌面伙伴场景** adds the background behind the floating companion.
-5. Click the button at the bottom right. For the companion on the desktop it reads **应用到桌面伙伴**; for another companion it reads **应用并换上此伙伴** (or **换上此伙伴** when nothing was edited) and also puts it on the desktop. It shows **已应用** when there is nothing to apply.
+5. Click the button at the bottom right. For the companion on the desktop it reads **应用到桌面伙伴**; for another companion it reads **应用并换上此伙伴** (or **换上此伙伴** when nothing was edited) and also puts it on the desktop. When there is nothing to apply it is greyed out as **应用**, and the status on the left reads **已应用**. The 待命 / 说话 / 互动 buttons under the preview also make the companion on the desktop act out that state for a few seconds (not during a conversation).
 
 Preview edits remain local to the editor until applied. Switching between characters retains their unapplied drafts while the editor stays open. **恢复此角色的默认外观** previews the default; click Apply to finish restoring it. Cosmetic edits do not change the voice persona or provider.
 

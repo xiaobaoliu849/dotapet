@@ -382,6 +382,18 @@ export class PetStateMachine {
     }, 1800);
   }
 
+  /** Shows one state for a moment, as the customizer previews it; a busy pet is left alone. */
+  showState(stateKey, duration = 3000) {
+    if (!this.isPetMode || this.isDragging || this.isFeeding || this.isFetching || this.isSpecial) return;
+    this.setState(stateKey, true);
+    if (stateKey === 'idle') { this.resetIdleTimer(); return; }
+    this.stateTimer = setTimeout(() => {
+      this.stateTimer = null;
+      this.setState('idle', true);
+      this.resetIdleTimer();
+    }, duration);
+  }
+
   /**
    * Petting detection on mouse movement over pet head
    */
