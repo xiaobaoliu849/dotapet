@@ -1,9 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
-import fs from 'node:fs';
-import vm from 'node:vm';
 import { createVoiceConnection } from '../src/main/voiceConnection.js';
+import { createVoiceMicrophone } from '../src/renderer/companion/voiceMicrophone.js';
 
 function fixture(t, options = {}) {
   const engine = Object.assign(new EventEmitter(), { provider: null, isConnected: false });
@@ -114,20 +113,18 @@ test('missing or unreadable keys require settings; network errors are sanitized'
   assert.equal(result.needsSettings, undefined);
 });
 
-const rendererSource = fs.readFileSync(new URL('../src/renderer/app.js', import.meta.url), 'utf8');
-const micSource = rendererSource.slice(rendererSource.indexOf('async function startMicrophone()'), rendererSource.indexOf('/**\n * Copy text helper'));
 const deferred = () => { let resolve; const promise = new Promise(done => { resolve = done; }); return { promise, resolve }; };
 function renderer() {
   const connection = deferred(), media = deferred();
   const state = { microphoneGeneration: 0, voiceDisconnectGeneration: 0, voiceConnected: false };
   const calls = { media: 0, settings: 0, cancelled: [] };
-  const context = vm.createContext({ state, navigator: { mediaDevices: { getUserMedia() { calls.media++; return media.promise; } } },
-    window: { electronAPI: { ensureVoiceConnected: () => connection.promise, cancelVoiceConnect: id => calls.cancelled.push(id),
-      openAISettings: () => calls.settings++, commitVoiceUtterance() {} } },
+  const microphone = createVoiceMicrophone({ state,
+    mediaDevices: { getUserMedia() { calls.media++; return media.promise; } },
+    api: { ensureVoiceConnected: () => connection.promise, cancelVoiceConnect: id => calls.cancelled.push(id),
+      openAISettings: () => calls.settings++, commitVoiceUtterance() {} },
     elements: { pttLabel: {}, btnPttMic: { classList: { remove() {} } } },
-    setAppState() {}, showToast() {}, console });
-  vm.runInContext(micSource, context);
-  return { context, state, calls, connection, media, start: () => vm.runInContext('startMicrophone()', context), stop: () => vm.runInContext('stopMicrophone()', context) };
+    AudioContextClass: class {}, isReplyPlaying: () => false, setAppState() {}, showToast() {}, showTranscriptPanel() {} });
+  return { state, calls, connection, media, microphone, start: () => microphone.start(), stop: () => microphone.stop() };
 }
 
 test('cancel during connection never requests microphone, even with late success', async () => {
@@ -162,5 +159,31 @@ test('only configuration failures open settings; network errors never open mic',
     r.connection.resolve({ ok: false, error: 'test failure', needsSettings }); await started;
     assert.equal(r.calls.settings, needsSettings ? 1 : 0);
     assert.equal(r.calls.media, 0); assert.equal(r.state.isMicStarting, false);
+  }
+});
+
+/** An open microphone, as startMicrophone leaves it, without a real audio graph. */
+function openMicrophone() {
+  const r = renderer();
+  let stopped = 0;
+  Object.assign(r.state, { isMicActive: true, voiceConnected: true, mediaStream: { getTracks: () => [{ stop() { stopped++; } }] } });
+  return { ...r, stopped: () => stopped };
+}
+
+test('a Google Live persona restart keeps the call and its microphone open', () => {
+  const r = openMicrophone();
+  r.microphone.handleVoiceStatus({ status: 'connecting', providerId: 'google', restarting: true });
+  assert.equal(r.state.isMicActive, true); assert.equal(r.stopped(), 0);
+  assert.equal(r.state.voiceConnected, true);
+  r.microphone.handleVoiceStatus({ status: 'connected', providerId: 'google' });
+  assert.equal(r.state.isMicActive, true);
+});
+
+test('a plain reconnect or an error still closes the microphone', () => {
+  for (const status of [{ status: 'connecting', providerId: 'google' }, { status: 'error', error: 'gone' }]) {
+    const r = openMicrophone();
+    r.microphone.handleVoiceStatus(status);
+    assert.equal(r.state.isMicActive, false); assert.equal(r.stopped(), 1);
+    assert.equal(r.state.voiceConnected, false);
   }
 });
