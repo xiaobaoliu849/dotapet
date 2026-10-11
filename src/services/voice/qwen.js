@@ -2,7 +2,8 @@
 import WebSocket from 'ws';
 import { appendAssistantDelta, cleanQwenTranscriptArtifacts, streamingNovelty } from '../transcriptStream.js';
 import {
-  DEFAULT_DASHSCOPE_REALTIME_MODEL, QWEN_AUDIO_BENIGN_ERROR_PATTERNS, CLOUD_KEYS, loadEnv,
+  DEFAULT_DASHSCOPE_REALTIME_MODEL, DEFAULT_DASHSCOPE_REALTIME_VOICE, DEFAULT_QWEN_OMNI_TURN_DETECTION,
+  QWEN_AUDIO_BENIGN_ERROR_PATTERNS, CLOUD_KEYS, loadEnv,
 } from './constants.js';
 import { detectPrimaryLanguage, generateEventId } from './shared.js';
 
@@ -427,5 +428,61 @@ export class QwenProvider {
       default:
         break;
     }
+  }
+
+/** Re-sends the persona and voice; Qwen applies a session.update mid-call. */
+  sendQwenSessionUpdate() {
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
+    const sessionConfig = {
+      type: 'session.update',
+      session: {
+        modalities: ['text', 'audio'],
+        voice: this.voice || process.env.DASHSCOPE_REALTIME_VOICE || DEFAULT_DASHSCOPE_REALTIME_VOICE,
+        instructions: this.getHeroSystemPrompt('bilingual'),
+        input_audio_format: 'pcm',
+        output_audio_format: 'pcm',
+        turn_detection: {
+          ...DEFAULT_QWEN_OMNI_TURN_DETECTION,
+        },
+        max_history_turns: 20,
+      },
+    };
+    try {
+      this.ws.send(JSON.stringify(sessionConfig));
+    } catch (err) {
+      console.error('[CloudVoiceEngine] Failed to send Qwen session update:', err);
+    }
+  }
+
+  /** Barge-in: drops the playing reply's residue and asks the server to cancel it. */
+  cancelQwenResponse(wasPlaying) {
+    if (wasPlaying) {
+      const activeId = String(this.activeTurnId || this.activeResponseId || '');
+      if (activeId) {
+        this.qwenSuppressedResponseIds.add(activeId);
+      }
+    }
+    this.activeTurnId = null;
+    this.activeResponseId = null;
+    this.qwenFamilyState = {};
+    this.aiAcc = '';
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      try {
+        this.ws.send(JSON.stringify({ type: 'response.cancel' }));
+      } catch (e) {}
+    }
+  }
+
+  /** A user text turn, answered at once. */
+  sendQwenUserTurn(text) {
+    this.ws.send(JSON.stringify({
+      type: 'conversation.item.create',
+      item: {
+        type: 'message',
+        role: 'user',
+        content: [{ type: 'input_text', text }],
+      },
+    }));
+    this.ws.send(JSON.stringify({ type: 'response.create' }));
   }
 }

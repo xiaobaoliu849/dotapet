@@ -2,11 +2,10 @@ import WebSocket from 'ws';
 import EventEmitter from 'events';
 import { normalizeConversationPreferences, conversationGreeting } from './conversationPreferences.js';
 import {
-  DEFAULT_DOUBAO_DUPLEX_DIALOG_MODEL, DEFAULT_DOUBAO_REALTIME_VOICE,
-  DEFAULT_DASHSCOPE_REALTIME_VOICE, DEFAULT_QWEN_OMNI_TURN_DETECTION,
-  DEFAULT_GOOGLE_REALTIME_VOICE, RESTART_TIMEOUT_MS, loadEnv,
+  DEFAULT_DOUBAO_DUPLEX_DIALOG_MODEL, DEFAULT_DOUBAO_REALTIME_VOICE, DEFAULT_GOOGLE_REALTIME_VOICE,
+  PROVIDER_FAMILIES, RESTART_TIMEOUT_MS, loadEnv,
 } from './voice/constants.js';
-import { detectPrimaryLanguage, generateEventId, mixin } from './voice/shared.js';
+import { audioBuffer, detectPrimaryLanguage, mixin } from './voice/shared.js';
 import { PersonaPrompts } from './voice/persona.js';
 import { CartesiaProvider } from './voice/cartesia.js';
 import { DoubaoProvider } from './voice/doubao.js';
@@ -145,7 +144,7 @@ export class CloudVoiceEngine extends EventEmitter {
     this.currentHero = heroConfig;
     console.log(`[CloudVoiceEngine] Injected Hero Persona: ${heroConfig?.nameZh} (${heroConfig?.id})`);
     if (this.isConnected) {
-      if (this.provider === 'doubao' || this.provider === 'qwen' || this.provider === 'dashscope') {
+      if (['doubao', 'qwen'].includes(this.providerFamily())) {
         this.sendSessionUpdate();
       } else if (this.provider === 'google') {
         // Chat sessions bake systemInstruction into the Live setup message and
@@ -176,6 +175,11 @@ export class CloudVoiceEngine extends EventEmitter {
     this.restartTimer.unref?.();
   }
 
+  /** Which provider module runs this.provider: 'cartesia', 'doubao', 'qwen', 'google' or null. */
+  providerFamily() {
+    return PROVIDER_FAMILIES[this.provider] || null;
+  }
+
   setProvider(providerName) {
     const normalized = (providerName === 'cloud-stream' || providerName === 'cartesia-deepseek') ? 'cartesia' : providerName;
     if (this.provider === normalized && this.isConnected) return;
@@ -202,59 +206,19 @@ export class CloudVoiceEngine extends EventEmitter {
 
   connect() {
     loadEnv();
-    if (this.provider === 'cartesia' || this.provider === 'cloud-stream' || this.provider === 'cartesia-deepseek') {
-      this.connectCartesiaPipeline();
-      return;
-    }
-
-    if (this.provider === 'doubao') {
-      this.connectDoubaoRealtime();
-      return;
-    }
-
-    if (this.provider === 'qwen' || this.provider === 'dashscope' || this.provider === 'dashscope-ws') {
-      this.connectQwenRealtime();
-      return;
-    }
-
-    if (this.provider === 'google' || this.provider === 'google-translate') {
-      this.connectGoogleLive();
-      return;
-    }
-
-    this.emit('status', { status: 'error', error: '不支持的实时语音服务商。', providerId: this.provider });
+    const family = this.providerFamily();
+    if (family === 'cartesia') this.connectCartesiaPipeline();
+    else if (family === 'doubao') this.connectDoubaoRealtime();
+    else if (family === 'qwen') this.connectQwenRealtime();
+    else if (family === 'google') this.connectGoogleLive();
+    else this.emit('status', { status: 'error', error: '不支持的实时语音服务商。', providerId: this.provider });
   }
 
   sendSessionUpdate() {
-    if (!this.isConnected && !(this.isConnecting && ['qwen', 'dashscope'].includes(this.provider))) return;
-
-    if (this.provider === 'doubao') {
-      this.sendDoubaoSessionCreate();
-      return;
-    }
-
-    if (this.provider === 'qwen' || this.provider === 'dashscope') {
-      if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
-      const sessionConfig = {
-        type: 'session.update',
-        session: {
-          modalities: ['text', 'audio'],
-          voice: this.voice || process.env.DASHSCOPE_REALTIME_VOICE || DEFAULT_DASHSCOPE_REALTIME_VOICE,
-          instructions: this.getHeroSystemPrompt('bilingual'),
-          input_audio_format: 'pcm',
-          output_audio_format: 'pcm',
-          turn_detection: {
-            ...DEFAULT_QWEN_OMNI_TURN_DETECTION,
-          },
-          max_history_turns: 20,
-        },
-      };
-      try {
-        this.ws.send(JSON.stringify(sessionConfig));
-      } catch (err) {
-        console.error('[CloudVoiceEngine] Failed to send Qwen session update:', err);
-      }
-    }
+    const family = this.providerFamily();
+    if (!this.isConnected && !(this.isConnecting && family === 'qwen')) return;
+    if (family === 'doubao') this.sendDoubaoSessionCreate();
+    else if (family === 'qwen') this.sendQwenSessionUpdate();
   }
 
   /**
@@ -266,103 +230,25 @@ export class CloudVoiceEngine extends EventEmitter {
     const wasPlaying = this.ttsActive || Boolean(this.activeResponseId);
     this.suppressOutput = true;
     this.ttsActive = false;
-    if (this.provider === 'doubao') {
-      // Arm the same targeted residue window an ASR-started barge-in uses:
-      // the doubao downlink gates on response identity, so a blanket flag
-      // alone would let the cancelled reply's remaining chunks through.
-      // Only when there is actually something to cancel — arming while idle
-      // would blank-suppress the NEXT legitimate reply's opening text until
-      // its own started event arrives.
-      if (wasPlaying) {
-        this.suppressedResponseId = this.activeResponseId || '';
-        this.turnFinalized = false;
-      }
-    }
-    if (this.provider === 'google' || this.provider === 'google-translate') {
-      // The Live API has no client-side cancel primitive: blank the local
-      // player and suppress the dying turn's downstream residue until the
-      // server's turnComplete (or the translate idle finalizer) lifts it.
-      // Arm ONLY when something is actually playing — translate sessions
-      // never receive turnComplete, so a blanket window here would eat the
-      // NEXT turn's translated text until its own idle finalize (same
-      // reasoning as the Doubao suppressedResponseId guard above).
-      if (wasPlaying) {
-        this.googleSuppress = true;
-        this.googleAiAcc = '';
-        this.googleAudioStarted = false;
-      }
-    }
+    const family = this.providerFamily();
+    // Doubao and Google gate their residue before anyone hears of the interrupt.
+    if (family === 'doubao') this.armDoubaoInterrupt(wasPlaying);
+    if (family === 'google') this.armGoogleInterrupt(wasPlaying);
     this.emit('interrupted', { interrupted: true });
-
-    if (this.provider === 'cartesia' || this.provider === 'cloud-stream') {
-      this.interruptCartesia();
-      return;
-    }
-
-    if (this.provider === 'qwen' || this.provider === 'dashscope') {
-      if (wasPlaying) {
-        const activeId = String(this.activeTurnId || this.activeResponseId || '');
-        if (activeId) {
-          this.qwenSuppressedResponseIds.add(activeId);
-        }
-      }
-      this.activeTurnId = null;
-      this.activeResponseId = null;
-      this.qwenFamilyState = {};
-      this.aiAcc = '';
-      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-        try {
-          this.ws.send(JSON.stringify({ type: 'response.cancel' }));
-        } catch (e) {}
-      }
-    }
+    if (family === 'cartesia') this.interruptCartesia();
+    else if (family === 'qwen') this.cancelQwenResponse(wasPlaying);
   }
 
   sendAudioChunk(chunk) {
     if (!this.isConnected) return;
-
-    // 1. Cartesia Ink-2 STT WebSocket
-    if (this.provider === 'cartesia' || this.provider === 'cloud-stream' || this.provider === 'cartesia-deepseek') {
-      if (this.cartesiaSttWs && this.cartesiaSttWs.readyState === WebSocket.OPEN) {
-        let binaryBuffer = null;
-        if (Buffer.isBuffer(chunk)) {
-          binaryBuffer = chunk;
-        } else if (chunk instanceof ArrayBuffer) {
-          binaryBuffer = Buffer.from(chunk);
-        } else if (chunk?.buffer && chunk.buffer instanceof ArrayBuffer) {
-          binaryBuffer = Buffer.from(chunk.buffer, chunk.byteOffset || 0, chunk.byteLength || chunk.length);
-        } else if (typeof chunk === 'string') {
-          binaryBuffer = Buffer.from(chunk, 'base64');
-        }
-        if (binaryBuffer && binaryBuffer.length > 0) {
-          try {
-            this.cartesiaSttWs.send(binaryBuffer);
-          } catch (err) {
-            console.error('[CloudVoiceEngine] Cartesia STT send error:', err);
-          }
-        }
-      }
-      return;
-    }
-
+    const family = this.providerFamily();
+    if (family === 'cartesia') return this.sendCartesiaAudio(chunk);
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
-
-    let base64Audio = '';
-    if (Buffer.isBuffer(chunk)) {
-      base64Audio = chunk.toString('base64');
-    } else if (chunk instanceof ArrayBuffer) {
-      base64Audio = Buffer.from(chunk).toString('base64');
-    } else if (chunk?.buffer && chunk.buffer instanceof ArrayBuffer) {
-      base64Audio = Buffer.from(chunk.buffer, chunk.byteOffset || 0, chunk.byteLength || chunk.length).toString('base64');
-    } else if (typeof chunk === 'string') {
-      base64Audio = chunk;
-    }
-
+    const base64Audio = typeof chunk === 'string' ? chunk : audioBuffer(chunk)?.toString('base64') || '';
     if (!base64Audio) return;
 
-    // 2. Doubao Duplex, 3. Qwen Realtime and 4. Google Live share a JSON
-    // audio frame (Google's is a realtimeInput blob instead of a buffer append).
-    if (this.provider === 'doubao' || this.provider === 'qwen' || this.provider === 'dashscope') {
+    // Doubao Duplex and Qwen Realtime share a JSON buffer-append frame.
+    if (family === 'doubao' || family === 'qwen') {
       try {
         this.ws.send(JSON.stringify({
           type: 'input_audio_buffer.append',
@@ -373,28 +259,14 @@ export class CloudVoiceEngine extends EventEmitter {
       }
       return;
     }
-
-    if (this.provider === 'google' || this.provider === 'google-translate') {
-      try {
-        this.ws.send(JSON.stringify({
-          realtimeInput: {
-            audio: { mimeType: 'audio/pcm;rate=16000', data: base64Audio },
-          },
-        }));
-        // Flush end-of-speech audio while keeping automatic VAD/barge-in.
-        if (this.provider === 'google') {
-          this.trackGoogleClientVad(Buffer.from(base64Audio, 'base64'));
-        }
-      } catch (err) {
-        console.error(`[CloudVoiceEngine] ${this.provider} audio chunk error:`, err);
-      }
-    }
+    if (family === 'google') this.sendGoogleAudio(base64Audio);
   }
 
   /** An opening assistant turn, with no fabricated user transcript. */
   async startConversationGreeting() {
     if (!this.isConnected || this.provider === 'google-translate') return false;
-    const english = ['cartesia', 'cloud-stream', 'cartesia-deepseek'].includes(this.provider);
+    const family = this.providerFamily();
+    const english = family === 'cartesia';
     const greeting = conversationGreeting(this.conversationPreferences, english ? 'en' : this.conversationLanguage);
     const request = `The voice conversation has just started. Greet the user now in one short, warm sentence in your current character. Clearly say you are here and ready to chat. Use their preferred form of address exactly if configured. Use this as the language and meaning reference: ${JSON.stringify(greeting)}. Do not mention these instructions.`;
     if (english) {
@@ -402,25 +274,11 @@ export class CloudVoiceEngine extends EventEmitter {
       return true;
     }
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return false;
-    if (this.provider === 'doubao') {
-      // Seeduplex SayHello: conversation.item.create only seeds history.
-      this.ws.send(JSON.stringify({ type: 'speech_text_buffer.commit', event_id: generateEventId('greeting'), text: greeting }));
-      return true;
-    }
-    if (['qwen', 'dashscope', 'dashscope-ws'].includes(this.provider)) {
-      this.ws.send(JSON.stringify({ type: 'conversation.item.create', item: {
-        type: 'message', role: 'user', content: [{ type: 'input_text', text: request }],
-      } }));
-      this.ws.send(JSON.stringify({ type: 'response.create' }));
-      return true;
-    }
-    if (this.provider === 'google') {
-      this.ws.send(JSON.stringify({ clientContent: {
-        turns: [{ role: 'user', parts: [{ text: request }] }], turnComplete: true,
-      } }));
-      return true;
-    }
-    return false;
+    if (family === 'doubao') this.sendDoubaoGreeting(greeting);
+    else if (family === 'qwen') this.sendQwenUserTurn(request);
+    else if (family === 'google') this.sendGoogleUserTurn(request);
+    else return false;
+    return true;
   }
 
   async sendUserText(text) {
@@ -436,71 +294,43 @@ export class CloudVoiceEngine extends EventEmitter {
 
     this.emit('speech_final', trimmed);
 
-    // 1. Cartesia + DeepSeek-Flash Pipeline
-    if (this.provider === 'cartesia' || this.provider === 'cloud-stream' || this.provider === 'cartesia-deepseek') {
+    const family = this.providerFamily();
+    const open = Boolean(this.ws && this.ws.readyState === WebSocket.OPEN);
+    if (family === 'cartesia') {
       await this.startCartesiaTurn(trimmed);
       return;
     }
-
-    // 2. Doubao Duplex: text goes into conversation context
-    if (this.provider === 'doubao' && this.isConnected && this.ws && this.ws.readyState === WebSocket.OPEN) {
+    if (family === 'doubao' && open) {
       try {
-        this.ws.send(JSON.stringify({
-          type: 'conversation.item.create',
-          event_id: generateEventId('item_create'),
-          items: [{
-            type: 'message',
-            role: 'user',
-            content: [{ type: 'input_text', text: trimmed }],
-          }],
-        }));
+        this.sendDoubaoTextContext(trimmed);
       } catch (e) {
         console.warn('[CloudVoiceEngine] Doubao text context send error:', e);
       }
       return;
     }
-
-    // 3. Qwen Realtime WebSocket
-    if ((this.provider === 'qwen' || this.provider === 'dashscope') && this.isConnected && this.ws && this.ws.readyState === WebSocket.OPEN) {
+    if (family === 'qwen' && open) {
       try {
-        this.ws.send(JSON.stringify({
-          type: 'conversation.item.create',
-          item: {
-            type: 'message',
-            role: 'user',
-            content: [{ type: 'input_text', text: trimmed }],
-          },
-        }));
-        this.ws.send(JSON.stringify({ type: 'response.create' }));
+        this.sendQwenUserTurn(trimmed);
         return;
       } catch (e) {
         console.warn('[CloudVoiceEngine] Qwen text send failed');
       }
     }
-
-    // 4. Google Gemini Live
-    if (this.provider === 'google' || this.provider === 'google-translate') {
-      if (this.provider === 'google-translate') {
-        // Live Translate is audio-only: no systemInstruction, no text turns.
-        this.emit('status', {
-          status: 'error',
-          error: '谷歌实时翻译 (Live Translate) 仅支持实时语音输入，不支持文本输入。',
-          provider: '谷歌 Gemini Live',
-        });
+    if (this.provider === 'google-translate') {
+      // Live Translate is audio-only: no systemInstruction, no text turns.
+      this.emit('status', {
+        status: 'error',
+        error: '谷歌实时翻译 (Live Translate) 仅支持实时语音输入，不支持文本输入。',
+        provider: '谷歌 Gemini Live',
+      });
+      return;
+    }
+    if (family === 'google' && open) {
+      try {
+        this.sendGoogleUserTurn(trimmed);
         return;
-      }
-      if (this.isConnected && this.ws && this.ws.readyState === WebSocket.OPEN) {
-        try {
-          this.ws.send(JSON.stringify({
-            clientContent: {
-              turns: [{ role: 'user', parts: [{ text: trimmed }] }],
-              turnComplete: true,
-            },
-          }));
-          return;
-        } catch (e) {
-          console.warn('[CloudVoiceEngine] Google clientContent send failed:', e);
-        }
+      } catch (e) {
+        console.warn('[CloudVoiceEngine] Google clientContent send failed:', e);
       }
     }
 
@@ -539,11 +369,8 @@ export class CloudVoiceEngine extends EventEmitter {
     // mic gate keeps trusting a socket that is already gone. providerId is
     // normalized to the canonical tray id — legacy aliases (dashscope,
     // cloud-stream…) have no radio of their own.
-    const providerId = (this.provider === 'dashscope' || this.provider === 'dashscope-ws')
-      ? 'qwen'
-      : (this.provider === 'cloud-stream' || this.provider === 'cartesia-deepseek')
-        ? 'cartesia'
-        : this.provider;
+    const family = this.providerFamily();
+    const providerId = family === 'qwen' || family === 'cartesia' ? family : this.provider;
     this.emit('status', { status: 'connecting', providerId, provider: '重连中…' });
     this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = null;
@@ -564,32 +391,11 @@ export class CloudVoiceEngine extends EventEmitter {
       this.reconnectTimer = null;
     }
 
-    // Clean Cartesia STT / TTS WebSockets
-    if (this.cartesiaAbortController) {
-      try { this.cartesiaAbortController.abort(); } catch (e) {}
-      this.cartesiaAbortController = null;
-    }
-    if (this.cartesiaSttWs) {
-      try { this.cartesiaSttWs.close(); } catch (e) {}
-      this.cartesiaSttWs = null;
-    }
-    if (this.cartesiaTtsWs) {
-      try { this.cartesiaTtsWs.close(); } catch (e) {}
-      this.cartesiaTtsWs = null;
-    }
-    this.cartesiaIsSttOpen = false;
-    this.cartesiaIsTtsOpen = false;
+    this.closeCartesia();
 
-    // Clean Doubao / Qwen WebSocket
+    // Doubao, Qwen and Google share this.ws.
     if (this.ws) {
-      if (this.ws.readyState === WebSocket.OPEN && this.provider === 'doubao') {
-        try {
-          this.ws.send(JSON.stringify({
-            type: 'session.close',
-            event_id: generateEventId('sess_close'),
-          }));
-        } catch (e) {}
-      }
+      if (this.ws.readyState === WebSocket.OPEN && this.provider === 'doubao') this.sendDoubaoSessionClose();
       try { this.ws.close(); } catch (e) {}
       this.ws = null;
     }

@@ -499,4 +499,47 @@ export class GoogleLiveProvider {
       console.log('[CloudVoiceEngine] Google client-VAD: utterance committed (audioStreamEnd)');
     } catch (e) {}
   }
+
+/**
+   * Barge-in. The Live API has no client-side cancel primitive: blank the local
+   * player and suppress the dying turn's downstream residue until the server's
+   * turnComplete (or the translate idle finalizer) lifts it. Arm ONLY when
+   * something is actually playing — translate sessions never receive
+   * turnComplete, so a blanket window here would eat the NEXT turn's translated
+   * text until its own idle finalize (same reasoning as Doubao's
+   * suppressedResponseId guard).
+   */
+  armGoogleInterrupt(wasPlaying) {
+    if (wasPlaying) {
+      this.googleSuppress = true;
+      this.googleAiAcc = '';
+      this.googleAudioStarted = false;
+    }
+  }
+
+  /** A realtimeInput blob; chat also flushes end-of-speech while keeping automatic VAD/barge-in. */
+  sendGoogleAudio(base64Audio) {
+    try {
+      this.ws.send(JSON.stringify({
+        realtimeInput: {
+          audio: { mimeType: 'audio/pcm;rate=16000', data: base64Audio },
+        },
+      }));
+      if (this.provider === 'google') {
+        this.trackGoogleClientVad(Buffer.from(base64Audio, 'base64'));
+      }
+    } catch (err) {
+      console.error(`[CloudVoiceEngine] ${this.provider} audio chunk error:`, err);
+    }
+  }
+
+  /** A complete user text turn. */
+  sendGoogleUserTurn(text) {
+    this.ws.send(JSON.stringify({
+      clientContent: {
+        turns: [{ role: 'user', parts: [{ text }] }],
+        turnComplete: true,
+      },
+    }));
+  }
 }

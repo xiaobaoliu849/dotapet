@@ -412,4 +412,45 @@ export class DoubaoProvider {
         break;
     }
   }
+
+/**
+   * Barge-in. Arm the same targeted residue window an ASR-started barge-in uses:
+   * the doubao downlink gates on response identity, so a blanket flag alone
+   * would let the cancelled reply's remaining chunks through. Only when there is
+   * actually something to cancel — arming while idle would blank-suppress the
+   * NEXT legitimate reply's opening text until its own started event arrives.
+   */
+  armDoubaoInterrupt(wasPlaying) {
+    if (wasPlaying) {
+      this.suppressedResponseId = this.activeResponseId || '';
+      this.turnFinalized = false;
+    }
+  }
+
+  /** Seeduplex SayHello: conversation.item.create only seeds history. */
+  sendDoubaoGreeting(greeting) {
+    this.ws.send(JSON.stringify({ type: 'speech_text_buffer.commit', event_id: generateEventId('greeting'), text: greeting }));
+  }
+
+  /** Typed text goes into the conversation context. */
+  sendDoubaoTextContext(text) {
+    this.ws.send(JSON.stringify({
+      type: 'conversation.item.create',
+      event_id: generateEventId('item_create'),
+      items: [{
+        type: 'message',
+        role: 'user',
+        content: [{ type: 'input_text', text }],
+      }],
+    }));
+  }
+
+  sendDoubaoSessionClose() {
+    try {
+      this.ws.send(JSON.stringify({
+        type: 'session.close',
+        event_id: generateEventId('sess_close'),
+      }));
+    } catch (e) {}
+  }
 }

@@ -93,6 +93,14 @@ export const GOOGLE_REALTIME_VOICES = [
 // Live Translate turns close on 2s of downstream silence, mirroring VoiceSpirit's
 // inactivity monitor (complete_live_translate_turn_if_needed force branch).
 export const GOOGLE_LIVE_TRANSLATE_IDLE_MS = 2000;
+// Every provider id the engine accepts, legacy aliases included, by the module that runs it.
+export const PROVIDER_FAMILIES = Object.freeze({
+  cartesia: 'cartesia', 'cloud-stream': 'cartesia', 'cartesia-deepseek': 'cartesia',
+  doubao: 'doubao',
+  qwen: 'qwen', dashscope: 'qwen', 'dashscope-ws': 'qwen',
+  google: 'google', 'google-translate': 'google',
+});
+
 // A session restarted to apply a new persona or language must be back by then, or the call ends.
 export const RESTART_TIMEOUT_MS = 15000;
 // Keep the client-side end-of-speech flush alongside automatic server VAD.

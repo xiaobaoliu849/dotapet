@@ -31,3 +31,12 @@ export function mixin(target, ...sources) {
     }
   }
 }
+
+/** A PCM chunk as a Buffer, whatever shape it arrived in (a string is base64). */
+export function audioBuffer(chunk) {
+  if (Buffer.isBuffer(chunk)) return chunk;
+  if (chunk instanceof ArrayBuffer) return Buffer.from(chunk);
+  if (chunk?.buffer && chunk.buffer instanceof ArrayBuffer) return Buffer.from(chunk.buffer, chunk.byteOffset || 0, chunk.byteLength || chunk.length);
+  if (typeof chunk === 'string') return Buffer.from(chunk, 'base64');
+  return null;
+}

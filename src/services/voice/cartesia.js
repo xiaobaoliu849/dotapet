@@ -4,7 +4,7 @@ import { stripMarkdownForTts } from '../transcriptStream.js';
 import {
   CARTESIA_VERSION, DEFAULT_CARTESIA_VOICE, DEFAULT_CARTESIA_MODEL, CLOUD_KEYS, loadEnv,
 } from './constants.js';
-import { generateEventId } from './shared.js';
+import { audioBuffer, generateEventId } from './shared.js';
 
 /** Mixed into CloudVoiceEngine; `this` is the engine. */
 export class CartesiaProvider {
@@ -360,5 +360,35 @@ export class CartesiaProvider {
         } catch (e) {}
       }
     }
+  }
+
+/** Raw PCM to the Ink-2 STT socket. */
+  sendCartesiaAudio(chunk) {
+    if (!this.cartesiaSttWs || this.cartesiaSttWs.readyState !== WebSocket.OPEN) return;
+    const binaryBuffer = audioBuffer(chunk);
+    if (!binaryBuffer || binaryBuffer.length === 0) return;
+    try {
+      this.cartesiaSttWs.send(binaryBuffer);
+    } catch (err) {
+      console.error('[CloudVoiceEngine] Cartesia STT send error:', err);
+    }
+  }
+
+  /** Closes the STT/TTS sockets and aborts a DeepSeek turn still streaming. */
+  closeCartesia() {
+    if (this.cartesiaAbortController) {
+      try { this.cartesiaAbortController.abort(); } catch (e) {}
+      this.cartesiaAbortController = null;
+    }
+    if (this.cartesiaSttWs) {
+      try { this.cartesiaSttWs.close(); } catch (e) {}
+      this.cartesiaSttWs = null;
+    }
+    if (this.cartesiaTtsWs) {
+      try { this.cartesiaTtsWs.close(); } catch (e) {}
+      this.cartesiaTtsWs = null;
+    }
+    this.cartesiaIsSttOpen = false;
+    this.cartesiaIsTtsOpen = false;
   }
 }
