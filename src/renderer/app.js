@@ -2981,7 +2981,10 @@ function setupEventListeners() {
       // instead of guessing from UI state.
       const wasConnected = state.voiceConnected;
       if (['error', 'disconnected'].includes(statusData?.status)) state.voiceDisconnectGeneration++;
-      state.voiceConnected = statusData?.status === 'connected';
+      // A session restarting for a new persona (Google Live) is the same call:
+      // the mic stays open, and the engine ends the call if it never returns.
+      const restarting = statusData?.status === 'connecting' && statusData.restarting;
+      if (!restarting) state.voiceConnected = statusData?.status === 'connected';
       if (state.voiceConnected && !wasConnected) showTranscriptPanel({ force: true });
       if (!state.voiceConnected && (state.isMicActive || (state.isMicStarting && !state.isVoiceConnecting))) stopMicrophone();
       if (statusData?.status === 'error') {

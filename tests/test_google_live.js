@@ -82,7 +82,8 @@ class MockGoogleLiveServer {
           if (msg.setup && !gotSetup) {
             gotSetup = true;
             this.setup = msg.setup;
-            socket.send(JSON.stringify({ setupComplete: {} }));
+            // A silent mock takes the setup but never completes it.
+            if (!this.silent) socket.send(JSON.stringify({ setupComplete: {} }));
           }
         });
         socket.on('close', () => this.sockets.delete(socket));
@@ -347,8 +348,50 @@ async function runAsyncTests() {
     engine.disconnect();
   });
 
+  // --- A new persona restarts the session without ending the call ------
+  chatEvents.length = 0;
+  chatEngine.setHero({ id: 'axe', nameZh: '斧王', nameEn: 'Axe', systemPrompt: 'x', catchphrases: [] });
+  await sleep(150);
+
+  test('Chat: a new persona restarts the session and says so, so the mic stays open', () => {
+    const statuses = chatEvents.filter(([n]) => n === 'status').map(([, d]) => d);
+    assert.deepStrictEqual(statuses.map(d => d.status), ['connecting', 'connected']);
+    assert.strictEqual(statuses[0].restarting, true);
+    assert.ok(chatMock.setup.systemInstruction.parts[0].text.includes('斧王'));
+    assert.strictEqual(chatEngine.restartTimer, null, 'a returned restart leaves no timer behind');
+  });
+
+  chatEngine.disconnect();
+  chatEvents.length = 0;
+  chatEngine.connect();
+  await sleep(100);
+  test('Chat: a plain connect is not a restart', () => {
+    const connecting = chatEvents.find(([n, d]) => n === 'status' && d.status === 'connecting');
+    assert.ok(connecting && connecting[1].restarting === undefined);
+  });
+
   chatEngine.disconnect();
   await chatMock.stop();
+
+  // --- A restart that never returns ends the call -----------------------
+  const stuckMock = await new MockGoogleLiveServer().start();
+  CLOUD_KEYS.google_ws_url = `ws://127.0.0.1:${stuckMock.port}`;
+  const stuckEngine = new CloudVoiceEngine({ provider: 'google', apiKey: 'test-key', autoReconnect: false, restartTimeoutMs: 150 });
+  const stuckEvents = [];
+  stuckEngine.on('status', (data) => stuckEvents.push(data.status));
+  stuckEngine.connect();
+  await sleep(100);
+  stuckMock.silent = true;
+  stuckEngine.setHero({ id: 'axe', nameZh: '斧王', nameEn: 'Axe', systemPrompt: 'x', catchphrases: [] });
+  await sleep(300);
+
+  test('Chat: a restart that never completes reports an error instead of hanging', () => {
+    assert.deepStrictEqual(stuckEvents, ['connecting', 'connected', 'connecting', 'error']);
+    assert.strictEqual(stuckEngine.ws, null);
+  });
+
+  stuckEngine.disconnect();
+  await stuckMock.stop();
 
   // --- Translate-mode live flow --------------------------------------
   const trMock = await new MockGoogleLiveServer().start();

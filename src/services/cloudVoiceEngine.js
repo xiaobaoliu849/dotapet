@@ -125,6 +125,8 @@ export const GOOGLE_REALTIME_VOICES = [
 // Live Translate turns close on 2s of downstream silence, mirroring VoiceSpirit's
 // inactivity monitor (complete_live_translate_turn_if_needed force branch).
 export const GOOGLE_LIVE_TRANSLATE_IDLE_MS = 2000;
+// A session restarted to apply a new persona or language must be back by then, or the call ends.
+export const RESTART_TIMEOUT_MS = 15000;
 // Keep the client-side end-of-speech flush alongside automatic server VAD.
 // The official Live API supports audioStreamEnd with automatic VAD enabled;
 // it flushes cached audio and subsequent audio reopens the stream. This also
@@ -306,6 +308,7 @@ export class CloudVoiceEngine extends EventEmitter {
     this.sessionId = null;
     this.apiKey = options.apiKey || null;
     this.autoReconnect = options.autoReconnect !== false;
+    this.restartTimeoutMs = options.restartTimeoutMs ?? RESTART_TIMEOUT_MS;
     this.autoVoice = options.autoVoice !== false;
     this.googleModel = options.googleModel || null;
     this.googleTranslateModel = options.googleTranslateModel || null;
@@ -555,10 +558,28 @@ export class CloudVoiceEngine extends EventEmitter {
         // there is no mid-session update primitive — reconnect so the new
         // persona takes effect. Translate sessions have no persona at all,
         // so they keep running uninterrupted.
-        this.disconnect();
-        this.connect();
+        this.restartSession();
       }
     }
+  }
+
+  /**
+   * Reconnects a live session to apply settings its provider reads only at setup.
+   * The call goes on: the 'connecting' status says `restarting`, so the renderer
+   * keeps the mic open. A restart that never comes back ends the call instead of
+   * leaving the mic open on nothing.
+   */
+  restartSession() {
+    this.disconnect();
+    this.sessionRestarting = true;
+    try { this.connect(); } finally { this.sessionRestarting = false; }
+    this.restartTimer = setTimeout(() => {
+      this.restartTimer = null;
+      if (this.isConnected) return;
+      this.disconnect();
+      this.emit('status', { status: 'error', providerId: this.provider, error: '连接已断开，请手动重试。' });
+    }, this.restartTimeoutMs);
+    this.restartTimer.unref?.();
   }
 
   setProvider(providerName) {
@@ -582,10 +603,7 @@ export class CloudVoiceEngine extends EventEmitter {
     if (!lang || lang === this.translateTargetLanguage) return;
     this.translateTargetLanguage = lang;
     console.log(`[CloudVoiceEngine] Live Translate target language set to: ${lang}`);
-    if (this.provider === 'google-translate' && (this.isConnected || this.isConnecting)) {
-      this.disconnect();
-      this.connect();
-    }
+    if (this.provider === 'google-translate' && (this.isConnected || this.isConnecting)) this.restartSession();
   }
 
   getHeroSystemPrompt(mode = 'auto') {
@@ -1888,6 +1906,7 @@ Rules:
       status: 'connecting',
       providerId: isTranslate ? 'google-translate' : 'google',
       provider: isTranslate ? '谷歌实时翻译 (Gemini Live Translate)' : '谷歌实时对话 (Gemini Live)',
+      ...(this.sessionRestarting && { restarting: true }),
     });
 
     const wsUrl = CLOUD_KEYS.google_ws_url || GOOGLE_LIVE_WS_URL;
@@ -2069,6 +2088,8 @@ Rules:
 
     if (event.setupComplete !== undefined) {
       this.isConnected = true;
+      clearTimeout(this.restartTimer);
+      this.restartTimer = null;
       this.isConnecting = false;
       this.sessionId = generateEventId('sess_google');
       console.log(`[CloudVoiceEngine] Google Live setupComplete (${this.googleActiveModel}, mode=${this.provider})`);
@@ -2620,6 +2641,8 @@ Rules:
   disconnect() {
     this.suppressReconnect = true;
     this.stopHeartbeat();
+    clearTimeout(this.restartTimer);
+    this.restartTimer = null;
     // Invalidate any connectGoogleLive() still awaiting proxy resolution so
     // it cannot open a socket behind this disconnect.
     this.googleConnectGen = (this.googleConnectGen || 0) + 1;
