@@ -1885,6 +1885,7 @@ async function startMicrophone() {
     // Alt+Q is explicit permission to connect using the saved credentials.
     // The main process waits for provider setup, including Qwen's config ACK.
     state.isVoiceConnecting = true;
+    updateTranscriptEmptyHint();
     elements.pttLabel.textContent = '取消连接';
     showToast('正在连接语音，再按 Alt+Q 可取消…', 20000);
     const result = await window.electronAPI.ensureVoiceConnected(requestId);
@@ -1959,11 +1960,12 @@ async function startMicrophone() {
     muteGain.connect(state.audioContext.destination);
 
     state.isMicActive = true;
+    updateTranscriptEmptyHint();
     showTranscriptPanel({ force: true });
     elements.btnPttMic.classList.add('active');
     elements.pttLabel.textContent = '停止语音';
     setAppState('listening', '正在聆听...');
-    showToast('🎙️ 麦克风已开启，再点一次或按 Alt+Q 关闭');
+    showToast('🎙️ 已开麦，直接说话吧 · 再按 Alt+Q 结束');
   } catch (err) {
     if (generation !== state.microphoneGeneration) return;
     state.mediaStream?.getTracks().forEach(track => track.stop()); state.mediaStream = null;
@@ -1976,6 +1978,7 @@ async function startMicrophone() {
       state.isVoiceConnecting = false;
       state.voiceConnectionRequest = null;
       if (!state.isMicActive) elements.pttLabel.textContent = '语音';
+      updateTranscriptEmptyHint();
     }
   }
 }
@@ -2023,6 +2026,7 @@ function stopMicrophone() {
     state.audioContext = null;
   }
   state.isMicActive = false;
+  updateTranscriptEmptyHint();
   // Flush cached speech when the mic stops; keep the transcript open so the
   // final reply and history remain readable after capture has ended.
   window.electronAPI?.commitVoiceUtterance?.();
@@ -2039,6 +2043,17 @@ function toggleMicrophone() {
   } else {
     startMicrophone();
   }
+}
+
+/**
+ * The empty transcript tells the user what the voice session is doing right now:
+ * Alt+Q already opens the mic, so it must never ask them to start it again.
+ */
+function updateTranscriptEmptyHint() {
+  if (!elements.transcriptEmpty) return;
+  elements.transcriptEmpty.textContent = state.isMicActive ? '正在聆听，直接开口说话吧'
+    : state.isMicStarting ? '正在连接语音…'
+      : '还没有对话，按 Alt+Q 开始语音吧';
 }
 
 /**

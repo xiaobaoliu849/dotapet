@@ -69,7 +69,7 @@
  "正在连接…": "Connecting…",
  "设置有更改，保存后重新连接即可生效。": "Settings changed. Save and reconnect to apply.",
  "正在连接，请稍等…": "Connecting, please wait…",
- "已连接！按 Alt+Q 和小伙伴说话。": "Connected! Press Alt+Q to talk to your pet.",
+ "通话中，直接说话即可；再按 Alt+Q 结束并停止计费。": "In a call. Just talk; press Alt+Q again to end and stop billing.",
  "连接失败，请检查密钥与网络后重试。": "Connection failed. Check your key and network, then try again.",
  "连接失败：{0}": "Connection failed: {0}",
  "✓ 已保存": "✓ Saved",
@@ -535,5 +535,9 @@
  "截图翻译失败：请求过于频繁或额度不足，请稍后再试。": "Screenshot translation failed: too many requests or not enough quota. Please try again later.",
  "截图翻译超时，请只框选聊天区域后重试。": "Screenshot translation timed out. Frame just the chat area and try again.",
  "截图翻译未完成。请检查密钥、视觉模型权限和网络后重试；不会自动改用其他服务商。": "Screenshot translation did not finish. Check the key, vision model access and network, then try again; no other provider is used automatically.",
- "截到的是黑屏：当前显示模式不允许直接截图。请在 Dota 2 视频设置中改用「无边框窗口」；或者按 Win+Shift+S 框选聊天，切出游戏后再按 Alt+T。": "The capture came back black: this display mode blocks direct capture. Switch Dota 2 to Borderless Window in video settings, or snip the chat with Win+Shift+S, switch out of the game, then press Alt+T."
+ "截到的是黑屏：当前显示模式不允许直接截图。请在 Dota 2 视频设置中改用「无边框窗口」；或者按 Win+Shift+S 框选聊天，切出游戏后再按 Alt+T。": "The capture came back black: this display mode blocks direct capture. Switch Dota 2 to Borderless Window in video settings, or snip the chat with Win+Shift+S, switch out of the game, then press Alt+T.",
+ "🎙️ 已开麦，直接说话吧 · 再按 Alt+Q 结束": "🎙️ Mic on. Just talk · Press Alt+Q again to end",
+ "正在聆听，直接开口说话吧": "Listening. Just start talking",
+ "正在连接语音…": "Connecting voice…",
+ "还没有对话，按 Alt+Q 开始语音吧": "No conversation yet. Press Alt+Q to start voice chat"
 }

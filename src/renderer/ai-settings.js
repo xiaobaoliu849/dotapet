@@ -75,7 +75,7 @@ function status(event) {
   if (event) lastStatus = event;
   const selected = !event?.providerId || event.providerId === profile()?.id;
   const state = selected ? event?.status || 'disconnected' : 'disconnected';
-  const names = { disconnected: '按 Alt+Q 开麦聊天，再按一次断开；只在聊天时计费。', connecting: '正在连接，请稍等…', connected: '已连接！按 Alt+Q 和小伙伴说话。', error: '连接失败，请检查密钥与网络后重试。' };
+  const names = { disconnected: '按 Alt+Q 开麦聊天，再按一次断开；只在聊天时计费。', connecting: '正在连接，请稍等…', connected: '通话中，直接说话即可；再按 Alt+Q 结束并停止计费。', error: '连接失败，请检查密钥与网络后重试。' };
   byId('connection-status').dataset.state = state;
   byId('connection-status').textContent = state === 'error' && event.error ? `连接失败：${event.error}` : names[state] || names.disconnected;
   byId('finish').hidden = !(setupVerified || state === 'connected') || dirty;
