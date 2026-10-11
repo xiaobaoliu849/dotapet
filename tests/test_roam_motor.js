@@ -22,17 +22,12 @@ function test(name, fn) {
 }
 
 /**
- * RoamMotor lives in the renderer bundle (a classic <script>, so it has no
- * exports). Rather than change how the app loads, lift the class source out of
- * app.js and evaluate it against stubbed DOM globals — the code under test is
- * byte-for-byte what ships.
+ * RoamMotor reads the DOM and the preload bridge as globals, so it is evaluated
+ * in a vm context with stubbed ones; the code under test is byte-for-byte what
+ * ships, minus its export keyword.
  */
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const appSrc = fs.readFileSync(path.join(__dirname, '../src/renderer/app.js'), 'utf8');
-const classStart = appSrc.indexOf('class RoamMotor {');
-const classEnd = appSrc.indexOf('const roamMotor = new RoamMotor();');
-assert.ok(classStart > -1 && classEnd > classStart, 'could not locate RoamMotor in app.js');
-const motorSource = appSrc.slice(classStart, classEnd);
+const motorSource = fs.readFileSync(path.join(__dirname, '../src/renderer/companion/roamMotor.js'), 'utf8').replace(/^export /m, '');
 
 function createMotor({ cruiseSpeed = 40, accel = 90, decel = 110 } = {}) {
   const frames = [];
