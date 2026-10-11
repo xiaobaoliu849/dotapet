@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import { exec } from 'child_process';
 import { fileURLToPath, pathToFileURL } from 'url';
-import { registerShortcuts, unregisterShortcuts } from './shortcuts.js';
+import { registerShortcuts, unregisterShortcuts, getDefaultShortcuts, getShortcutActions, validateShortcutsConfig } from './shortcuts.js';
 import { createGamePhraseShortcuts } from './gamePhraseShortcuts.js';
 import { PhrasesStore } from './phrasesStore.js';
 export { DEFAULT_SIMPLIFIED_PHRASES } from './phrasesStore.js';
@@ -112,6 +112,17 @@ let micOwnedVoiceSession = false;
 let ahkEngine = null;
 let chatRegionPicker = null;
 let gamePhraseShortcuts = null;
+let appShortcutHandlers = null;
+
+function applyAppShortcuts(customShortcuts = null) {
+  unregisterShortcuts();
+  const saved = customShortcuts || loadSettings().shortcuts;
+  const defaults = getDefaultShortcuts();
+  const effective = { ...defaults, ...(saved || {}) };
+  const failures = registerShortcuts(mainWindow, appShortcutHandlers, effective);
+  return { ok: true, shortcuts: effective, failures };
+}
+
 let roamEngine = null;
 let gsiServer = null;
 let heroesConfig = null;
@@ -1499,6 +1510,48 @@ function setupIPC() {
     return { translated: text, meaningZh: text };
   });
 
+  // Global Customizable Shortcuts IPC
+  ipcMain.handle('shortcuts:get-config', () => {
+    const saved = loadSettings().shortcuts;
+    const defaults = getDefaultShortcuts();
+    const shortcuts = { ...defaults, ...(saved || {}) };
+    return {
+      ok: true,
+      shortcuts,
+      defaults,
+      actions: getShortcutActions(),
+    };
+  });
+
+  ipcMain.handle('shortcuts:save-config', (event, newShortcuts) => {
+    const validation = validateShortcutsConfig(newShortcuts);
+    if (!validation.valid) {
+      return { ok: false, error: validation.error };
+    }
+    saveSettings({ shortcuts: validation.shortcuts });
+    const result = applyAppShortcuts(validation.shortcuts);
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send('shortcuts:changed', { shortcuts: validation.shortcuts });
+    }
+    if (controlCenter?.window && !controlCenter.window.isDestroyed()) {
+      controlCenter.window.webContents.send('shortcuts:changed', { shortcuts: validation.shortcuts });
+    }
+    return { ok: true, shortcuts: validation.shortcuts, failures: result.failures };
+  });
+
+  ipcMain.handle('shortcuts:reset-defaults', () => {
+    const defaults = getDefaultShortcuts();
+    saveSettings({ shortcuts: defaults });
+    const result = applyAppShortcuts(defaults);
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send('shortcuts:changed', { shortcuts: defaults });
+    }
+    if (controlCenter?.window && !controlCenter.window.isDestroyed()) {
+      controlCenter.window.webContents.send('shortcuts:changed', { shortcuts: defaults });
+    }
+    return { ok: true, shortcuts: defaults, failures: result.failures };
+  });
+
   ipcMain.on('clipboard:write', (event, text) => {
     if (smokeTest) smokeClipboardText = text;
     else clipboard.writeText(text);
@@ -1788,7 +1841,7 @@ if (app?.whenReady) {  app.whenReady().then(() => {
     powerMonitor.on('unlock-screen', () => reassertTopmost(mainWindow, { invalidate: true }));
 
     // Persistent desktop controls; digit shortcuts follow Dota foreground focus.
-    registerShortcuts(mainWindow, {
+    appShortcutHandlers = {
       onTriggerTranslate: () => {
         if (ahkEngine) ahkEngine.handleClipboardTranslation(currentHeroId);
       },
@@ -1818,7 +1871,8 @@ if (app?.whenReady) {  app.whenReady().then(() => {
       onToggleCompact: () => {
         cycleScaleMode();
       },
-    });
+    };
+    applyAppShortcuts();
 
     if (ahkEngine?.gameInput?.isSupported()) {
       gamePhraseShortcuts = createGamePhraseShortcuts({

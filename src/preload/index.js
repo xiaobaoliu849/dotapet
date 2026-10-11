@@ -178,6 +178,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.on('shortcut:toggle-compact', subscription);
     return () => ipcRenderer.removeListener('shortcut:toggle-compact', subscription);
   },
+  onShortcutsChanged: (callback) => {
+    const subscription = (_event, data) => callback(data);
+    ipcRenderer.on('shortcuts:changed', subscription);
+    return () => ipcRenderer.removeListener('shortcuts:changed', subscription);
+  },
 
   // Roaming & Autonomous Wandering
   toggleRoam: () => ipcRenderer.send('roam:toggle'),

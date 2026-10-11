@@ -14,4 +14,12 @@ contextBridge.exposeInMainWorld('controlCenter', {
     ipcRenderer.on('hub:state', listener);
     return () => ipcRenderer.removeListener('hub:state', listener);
   },
+  getShortcuts: () => ipcRenderer.invoke('shortcuts:get-config'),
+  saveShortcuts: shortcuts => ipcRenderer.invoke('shortcuts:save-config', shortcuts),
+  resetShortcuts: () => ipcRenderer.invoke('shortcuts:reset-defaults'),
+  onShortcutsChanged: callback => {
+    const listener = (_event, value) => callback(value);
+    ipcRenderer.on('shortcuts:changed', listener);
+    return () => ipcRenderer.removeListener('shortcuts:changed', listener);
+  },
 });

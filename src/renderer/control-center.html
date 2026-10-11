@@ -24,17 +24,24 @@
     <h1>快捷键与帮助</h1>
     <p class="lead">常用操作都有快捷键，游戏中也能用。</p>
     <section class="card">
-      <h2>快捷键</h2>
-      <dl class="shortcut-list">
-        <div><dt><kbd>Alt</kbd>+<kbd>Q</kbd></dt><dd>开始 / 结束和它说话</dd></div>
-        <div><dt><kbd>Alt</kbd>+<kbd>T</kbd></dt><dd>DOTA 2 里直接截取并翻译聊天；其他时候翻译复制的文字或截图</dd></div>
-        <div><dt><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>T</kbd></dt><dd>框选聊天区域（只需一次）</dd></div>
-        <div><dt><kbd>F8</kbd></dt><dd>把游戏里输入的中文翻成英文</dd></div>
-        <div><dt><kbd>F6</kbd></dt><dd>在游戏上方打开快捷短语，点一下复制中 / 英文</dd></div>
-        <div><dt><kbd>Ctrl</kbd> / <kbd>Alt</kbd>+<kbd>1–0</kbd></dt><dd>DOTA 2 在前台时复制中文 / 英文短语，再在聊天框按 Ctrl+V</dd></div>
-        <div><dt><kbd>Alt</kbd>+<kbd>L</kbd></dt><dd>固定 / 解除固定位置</dd></div>
-        <div><dt><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>M</kbd></dt><dd>隐藏 / 显示桌宠</dd></div>
-        <div><dt><kbd>Ctrl</kbd>+<kbd>Tab</kbd></dt><dd>在设置中心切换页面</dd></div>
+      <div class="card-header-row">
+        <div>
+          <h2>快捷键设置</h2>
+          <p class="sub-hint">点击按键框后按下新快捷键即可修改；按 Backspace 或 Delete 可清除/禁用。</p>
+        </div>
+        <button id="btn-reset-shortcuts" class="btn-subtle" type="button" title="恢复所有快捷键为默认值">恢复默认</button>
+      </div>
+      <div id="shortcuts-feedback" class="shortcuts-feedback" hidden></div>
+      <div id="shortcuts-editor" class="shortcuts-editor-list">
+        <!-- Rendered by control-center.js -->
+      </div>
+    </section>
+    <section class="card">
+      <h2>游戏内短语与窗口操作</h2>
+      <dl class="shortcut-list static-shortcuts">
+        <div><dt><kbd>Ctrl</kbd>+<kbd>1–0</kbd></dt><dd>DOTA 2 前台时复制对应行中文短语（按 Ctrl+V 发送）</dd></div>
+        <div><dt><kbd>Alt</kbd>+<kbd>1–0</kbd></dt><dd>DOTA 2 前台时复制对应行英文短语（按 Ctrl+V 发送）</dd></div>
+        <div><dt><kbd>Ctrl</kbd>+<kbd>Tab</kbd></dt><dd>在设置中心按顺序快速切换页面</dd></div>
       </dl>
     </section>
     <section class="card">

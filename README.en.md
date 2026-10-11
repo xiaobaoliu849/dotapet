@@ -92,6 +92,8 @@ In voice settings, enter **What should your companion call you?** (for example, 
 
 ### Keep these shortcuts handy
 
+> **Note**: All global shortcuts can be customized in **Settings → Shortcuts & help** with real-time key recording, conflict detection, and reset to defaults.
+
 | Action | Shortcut |
 |---|---|
 | Start / stop talking | `Alt+Q` |
