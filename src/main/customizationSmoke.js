@@ -55,6 +55,8 @@ export async function runCustomizationSmoke({ controller, controlCenter, mainWin
     get('background-mode').value='color'; get('background-mode').dispatchEvent(new Event('input'));
     get('background-color').value='#8ca99a'; get('background-color').dispatchEvent(new Event('input'));
     get('background-scope').value='scene'; get('background-scope').dispatchEvent(new Event('input'));
+    get('persona-prompt').value='  傲娇毒舌的小狼\\n嘴硬心软  '; get('persona-prompt').dispatchEvent(new Event('input'));
+    if (get('persona-count').textContent !== get('persona-prompt').value.length+' / 2000') throw new Error('Persona counter does not follow the text');
     if ((await window.customizationAPI.get()).state.profiles['pet:aurora_wolf']) throw new Error('Preview applied before Apply');
     if (get('apply').textContent !== '应用并换上此伙伴') throw new Error('Apply does not say it will switch companions');
     get('apply').click();
@@ -62,10 +64,26 @@ export async function runCustomizationSmoke({ controller, controlCenter, mainWin
     await waitFor(async()=>(await window.customizationAPI.get()).state.activeKey==='pet:aurora_wolf');
     await waitFor(()=>idle() && get('draft-status').textContent.includes('已应用'));
     if (!get('apply').disabled || get('apply').textContent !== '已应用') throw new Error('Apply stays active with nothing to apply');
+    if ((await window.customizationAPI.get()).state.profiles['pet:aurora_wolf'].persona !== '傲娇毒舌的小狼\\n嘴硬心软') throw new Error('Persona was not saved with the profile');
     const favorite=document.querySelector('.asset-actions button[aria-pressed]'); favorite.click();
     await waitFor(async()=>(await window.customizationAPI.get()).state.assets[0].favorite);
     get('preset-name').value='暖金小兔'; get('save-preset').click();
     await waitFor(()=>document.querySelectorAll('.preset-row').length===1);
+    if ((await window.customizationAPI.get()).state.presets[0].profile.persona !== '') throw new Error('Preset carries the persona');
+    // A persona belongs to its character: unsaved text follows it across switches and never leaks to another.
+    get('persona-prompt').value='冷静的老猎手'; get('persona-prompt').dispatchEvent(new Event('input'));
+    get('character').value='hero:companion'; get('character').dispatchEvent(new Event('change'));
+    if (get('persona-prompt').value !== '') throw new Error('Persona leaked to another character');
+    get('character').value='pet:aurora_wolf'; get('character').dispatchEvent(new Event('change'));
+    if (get('persona-prompt').value !== '冷静的老猎手') throw new Error('Unsaved persona lost when switching characters');
+    get('restore').click();
+    if (get('persona-prompt').value !== '冷静的老猎手') throw new Error('Restoring the look erased the persona');
+    document.querySelector('.preset-row button').click();
+    if (get('persona-prompt').value !== '冷静的老猎手') throw new Error('Previewing a preset replaced the persona');
+    // The preset is the applied look, so only the persona changed; it applies to the companion already on the desktop.
+    get('apply').click();
+    await waitFor(async()=>(await window.customizationAPI.get()).state.profiles['pet:aurora_wolf'].persona==='冷静的老猎手');
+    await waitFor(()=>idle() && get('feedback').textContent.includes('角色性格已应用'));
     if (document.documentElement.scrollWidth>document.documentElement.clientWidth) throw new Error('Editor overflows');
     // Only the settings column scrolls: the page never does, so the character column cannot move.
     const column=document.querySelector('aside'), settings=document.querySelector('.settings');
@@ -110,6 +128,8 @@ export async function runCustomizationSmoke({ controller, controlCenter, mainWin
   await capture('customization.png');
   await editor.executeJavaScript("document.getElementById('library-section').scrollIntoView({block:'start'})");
   await capture('customization-library.png');
+  await editor.executeJavaScript("document.getElementById('persona-prompt').closest('section').scrollIntoView({block:'end'})");
+  await capture('customization-persona.png');
   controlCenter.window.setSize(680, 750);
   await new Promise(resolve => setTimeout(resolve, 150));
   await editor.executeJavaScript(`if(document.documentElement.scrollWidth>document.documentElement.clientWidth) throw new Error('Narrow customization editor overflows'); document.getElementById('editor').scrollTo(0,0);`);
@@ -162,6 +182,7 @@ export async function runCustomizationSmoke({ controller, controlCenter, mainWin
   })()`);
   const restored = new CustomizationStore(controller.store.directory).snapshot();
   if (restored.assets.length !== 2 || restored.profiles['pet:aurora_wolf'].appearance.assetId !== assetId) throw new Error('Customization did not survive store reload');
+  if (restored.profiles['pet:aurora_wolf'].persona !== '冷静的老猎手' || restored.presets.some(preset => preset.profile.persona)) throw new Error('Persona did not survive store reload, or travelled with a preset');
   if (errors.length) throw new Error(`Renderer errors: ${errors.join('; ')}`);
   controlCenter.window.setSize(1060, 820);
   return { assets: restored.assets.length, presets: restored.presets.length, migratedHero: true, heroAndPet: true };

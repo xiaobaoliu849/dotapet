@@ -18,9 +18,10 @@ aside { align-self: start; display: flex; flex-direction: column; max-height: 10
 .settings { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 var(--gutter) 16px 0; scroll-padding-block: 12px; }
 aside > * { flex-shrink: 0; }
 label { display: block; font-weight: 600; font-size: var(--control-size); margin: 12px 0 7px; }
-select, input[type=text], input:not([type]) { width: 100%; min-height: 44px; border: 1px solid var(--control-border); padding: 10px 13px; background: var(--control); color: var(--ink); border-radius: var(--control-radius); min-width: 0; }
+select, textarea, input[type=text], input:not([type]) { width: 100%; min-height: 44px; border: 1px solid var(--control-border); padding: 10px 13px; background: var(--control); color: var(--ink); border-radius: var(--control-radius); min-width: 0; }
 input::placeholder { color: var(--faint); }
-select:focus, input[type=text]:focus, input:not([type]):focus { border-color: var(--green); box-shadow: var(--focus-shadow); outline: none; background: var(--surface); }
+textarea { display: block; min-height: 132px; resize: vertical; font: inherit; line-height: 1.6; }
+select:focus, textarea:focus, input[type=text]:focus, input:not([type]):focus { border-color: var(--green); box-shadow: var(--focus-shadow); outline: none; background: var(--surface); }
 button { transition: background .15s; }
 button:disabled { cursor: default; opacity: .55; }
 .quiet { background: transparent; font-size: var(--caption-size); }

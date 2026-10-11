@@ -10,6 +10,13 @@ const clamp = (value, min, max, fallback) => Number.isFinite(value) ? Math.max(m
 const id = value => typeof value === 'string' && /^[a-zA-Z0-9_-]{1,100}$/.test(value) ? value : null;
 export function validCharacterKey(key) { return typeof key === 'string' && /^(hero|pet):[a-z0-9_]{1,80}$/.test(key); }
 
+export const PERSONA_MAX_LENGTH = 2000;
+/** Who the companion is (personality, tone, backstory). Who the user is stays in the global chat preferences. */
+export function normalizePersona(value) {
+  if (typeof value !== 'string') return '';
+  return value.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f\u2028\u2029]/g, '').trim().slice(0, PERSONA_MAX_LENGTH);
+}
+
 export function normalizeProfile(value = {}) {
   const a = value?.appearance || {};
   const b = value?.background || {};
@@ -27,6 +34,7 @@ export function normalizeProfile(value = {}) {
       opacity: clamp(b.opacity, 0, 1, .65), dim: clamp(b.dim, 0, .85, .25),
     },
     accent: /^#[0-9a-f]{6}$/i.test(value?.accent) ? value.accent : null,
+    persona: normalizePersona(value?.persona),
   };
 }
 

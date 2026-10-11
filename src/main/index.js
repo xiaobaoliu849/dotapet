@@ -11,6 +11,7 @@ export { DEFAULT_SIMPLIFIED_PHRASES } from './phrasesStore.js';
 import { VoiceSpiritClient } from '../services/voiceSpiritClient.js';
 import { FREE_CHAT_HERO_ID } from '../services/cloudVoiceEngine.js';
 import { buildPetPseudoHero } from '../services/petPersona.js';
+import { applyPersonaOverride, personaForKey } from '../services/personaOverride.js';
 import { AhkMigratedEngine } from './ahkMigratedEngine.js';
 import { createChatCapture } from './chatCapture.js';
 import { createChatRegionPicker } from './chatRegionPicker.js';
@@ -816,6 +817,30 @@ function getCurrentHero() {
   return null;
 }
 
+/** The character on the desktop, keyed like its customization profile. */
+function activeCharacterKey() {
+  return activePetPersona?.id || `hero:${currentHeroId}`;
+}
+
+/** The persona the voice engine talks as: the desktop character plus the persona the user wrote for it. */
+function activeVoicePersona() {
+  const base = activePetPersona || getCurrentHero();
+  let persona = '';
+  try { persona = personaForKey(customizationController?.store?.data.profiles, activeCharacterKey()); }
+  catch (error) { console.warn('[Persona] Custom persona unavailable:', error.message); }
+  return applyPersonaOverride(base, persona);
+}
+
+/** Saving the desktop character's profile re-injects its persona, but only when the persona text changed. */
+function refreshVoicePersona(key) {
+  if (!voiceClient || key !== activeCharacterKey()) return;
+  const next = activeVoicePersona();
+  const current = voiceClient.cloudEngine?.currentHero;
+  if (!next || (current?.id === next.id && (current?.customPersona || '') === (next.customPersona || ''))) return;
+  console.log(`[Persona] Custom persona ${next.customPersona ? 'applied' : 'cleared'} for ${key}`);
+  voiceClient.setHero(next);
+}
+
 function createWindow() {
   const primaryDisplay = screen.getPrimaryDisplay();
   const { x: areaX, y: areaY, width: screenWidth, height: screenHeight } = primaryDisplay.workArea;
@@ -1386,7 +1411,7 @@ function selectHero(heroId) {
   // setHero call is skipped entirely — re-injecting the same pet persona would
   // bounce the Google Live session for nothing.
   if (voiceClient && !activePetPersona) {
-    voiceClient.setHero(hero);
+    voiceClient.setHero(activeVoicePersona());
   }
 
   if (mainWindow && !mainWindow.isDestroyed() && !activePetPersona) {
@@ -1451,7 +1476,7 @@ function setupServices() {
 
 function setupVoiceService() {
   voiceClient = new VoiceSpiritClient({
-    currentHero: getCurrentHero(), translateTargetLanguage, autoReconnect: false,
+    currentHero: activeVoicePersona(), translateTargetLanguage, autoReconnect: false,
   });
   voiceConnection = createVoiceConnection({
     engine: voiceClient.cloudEngine,
@@ -1642,7 +1667,7 @@ function setupIPC() {
     if (activePetPersona?.id !== previousId) {
       console.log(`[Pet] Voice persona -> ${activePetPersona ? `${activePetPersona.nameZh} (${activePetPersona.id})` : `hero: ${currentHeroId}`}`);
       if (voiceClient) {
-        voiceClient.setHero(activePetPersona || getCurrentHero());
+        voiceClient.setHero(activeVoicePersona());
       }
     }
     updateTrayMenu();
@@ -1918,12 +1943,13 @@ if (app?.whenReady) {  app.whenReady().then(() => {
     // The same editor as the F6 panel, drawn in the settings center's light style.
     controlCenter.register('phrases', { file: 'phrases.html', query: { embedded: '1' }, preload: '../preload/phrases.js', background: '#f6f7f2' });
     createWindow();
-    if (!smokeTest) { setupTray(); setupServices(); }
-    setupIPC();
+    // Before the voice service: its first persona already includes the user's custom one.
     customizationController = createCustomizationController({ electron, rendererDirectory: path.join(__dirname, '../renderer'),
       hub: controlCenter, getMainWindow: () => mainWindow, getHeroesConfig: () => heroesConfig,
       getCompanionHero: () => COMPANION_PSEUDO_HERO,
-      getActiveKey: () => activePetPersona?.id || `hero:${currentHeroId}`, getLanguage: currentLanguage, t });
+      getActiveKey: activeCharacterKey, getLanguage: currentLanguage, t, onProfileSaved: refreshVoicePersona });
+    if (!smokeTest) { setupTray(); setupServices(); }
+    setupIPC();
     welcomeController = createWelcomeController({ electron, openSettings: openAISettings });
 
     if (smokeTest) {

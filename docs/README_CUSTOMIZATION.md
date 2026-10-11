@@ -14,6 +14,12 @@ Start the desktop companion with `npm start`. Right-click the companion (or the 
 
 Preview edits remain local to the editor until applied. Switching between characters retains their unapplied drafts while the editor stays open. **恢复此角色的默认外观** previews the default; click Apply to finish restoring it. Cosmetic edits do not change the voice persona or provider.
 
+## Give the companion a personality
+
+Under **角色性格**, describe who the selected character is: personality, attitude, backstory and tone of voice (for example tsundere, sharp-tongued but caring). It applies with the same button as the look and is saved per character. Voice chat uses it in place of the built-in hero or pet persona, with a rule that it outranks the default tone; leave it empty to keep the default. Editing the companion already on the desktop takes effect from its next voice reply.
+
+The persona describes the companion only. How it addresses you (**希望小伙伴怎么称呼你？** and chat preferences under **语音与翻译**) stays global and is still appended for every character. Restoring the default look and previewing a preset keep the persona; presets never carry one.
+
 ## Reuse pictures and presets
 
 Import PNG, JPEG, GIF, WebP or SVG images up to 12 MB and 8192 pixels per side. Drag-and-drop has a role selector; file imports have separate companion and background buttons. Static images remain static across speaking and interaction states. Animated GIF/WebP files retain their own animation.
@@ -33,7 +39,8 @@ Catalog entries without distinct artwork are offered as **点缀色** choices, r
 ## Storage and verification
 
 - Electron userData holds `customization.json` (schema version 1) and `customization-assets/` (content-addressed image files).
-- Each profile is keyed by `hero:<id>` or `pet:<id>` and independently saves appearance, background and accent.
+- Each profile is keyed by `hero:<id>` or `pet:<id>` and independently saves appearance, background, accent and persona (up to 2000 characters).
+- `src/services/personaOverride.js` attaches a character's persona to the voice persona in the main process; `CloudVoiceEngine` puts it in place of the built-in lore.
 - `src/services/appearance.js` provides the shared normalization, resolver and rendering rules.
 - `src/main/customizationStore.js` owns durable storage, migration and preset portability. Renderer IPC restricts access to the local desktop/editor documents.
 - `npm test` covers migration, persistence, deletion, validation and portable presets alongside the existing suite.

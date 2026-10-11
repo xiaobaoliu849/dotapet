@@ -592,19 +592,45 @@ export class CloudVoiceEngine extends EventEmitter {
     return personalizeConversationPrompt(this.getBaseHeroSystemPrompt(mode), this.conversationPreferences);
   }
 
+  isEnglishPromptMode(mode) {
+    return (mode === 'en') || (mode === 'auto' && (this.provider === 'cartesia' || this.provider === 'cloud-stream'));
+  }
+
+  isFreeChatPersona() {
+    return !this.currentHero || FREE_CHAT_HERO_IDS.has(String(this.currentHero.id || ''));
+  }
+
+  /**
+   * The character template, plus the precedence rule for a persona the user
+   * wrote in the customizer (`customPersona`). Hero and pet templates already
+   * carry that persona in place of the built-in lore; free chat has no lore
+   * slot, so its text is added here.
+   */
   getBaseHeroSystemPrompt(mode = 'auto') {
+    const template = this.getCharacterTemplate(mode);
+    const persona = typeof this.currentHero?.customPersona === 'string' ? this.currentHero.customPersona.trim() : '';
+    if (!persona) return template;
+    const freeChat = this.isFreeChatPersona();
+    if (this.isEnglishPromptMode(mode)) {
+      return `${template}\n\nCustom persona written by the user for this character${freeChat ? '' : ' (given above as your Lore & Persona)'}: it defines who you are — identity, personality, attitude, backstory and speaking tone — and overrides any default personality or tone described above. Keep the reply-length and language rules.${freeChat ? `\n${persona}` : ''}`;
+    }
+    return `${template}\n\n【召唤师定制的角色设定】${freeChat ? '' : '（即上文的设定/性格特点）'}由召唤师亲自为这个角色编写，定义你的身份、性格、态度、背景故事与说话语气；与上文默认的性格或语气要求冲突时，以它为准。回复长度与语言规则仍然适用。${freeChat ? `\n${persona}` : ''}`;
+  }
+
+  getCharacterTemplate(mode = 'auto') {
     const heroNameZh = this.currentHero?.nameZh || '英雄';
     const heroNameEn = this.currentHero?.nameEn || this.currentHero?.id || 'Hero';
-    const heroCustomPrompt = this.currentHero?.systemPrompt || '';
+    const customPersona = typeof this.currentHero?.customPersona === 'string' ? this.currentHero.customPersona.trim() : '';
+    const heroCustomPrompt = customPersona || this.currentHero?.systemPrompt || '';
     const catchphrases = (this.currentHero?.catchphrases || []).join(' / ');
 
-    const isEnglishMode = (mode === 'en') || (mode === 'auto' && (this.provider === 'cartesia' || this.provider === 'cloud-stream'));
+    const isEnglishMode = this.isEnglishPromptMode(mode);
 
     // 0. Free-Chat Companion Mode: no hero persona locked in. Casual chat by
     // default; the MODEL handles smart routing — adopting any hero's persona
     // when the summoner addresses one, and sliding back to companion mode
     // afterwards. No client-side intent detection needed.
-    if (!this.currentHero || FREE_CHAT_HERO_IDS.has(String(this.currentHero.id || ''))) {
+    if (this.isFreeChatPersona()) {
       if (isEnglishMode) {
         return `You are DotaPet, the summoner's AI desktop companion for real-time voice chat — a warm, witty friend who knows DOTA 2 inside out.
 Default mode — FREE CHAT: no fixed character. Talk about anything: daily life, mood, fun stories, or general DOTA 2 strategy.
@@ -627,7 +653,7 @@ Rules:
     // walking on their desktop (信使小驴 etc.). Never fall through to the hero
     // template — that is exactly how "选了信使，开口却是英雄" happened.
     if (this.currentHero?.kind === 'pet') {
-      const petLore = this.currentHero.systemPrompt || 'DOTA 2 战场上的忠实小跟班';
+      const petLore = customPersona || this.currentHero.systemPrompt || 'DOTA 2 战场上的忠实小跟班';
       const petCatchphrases = catchphrases || '咿昂~';
       if (isEnglishMode) {
         return `You are "${this.currentHero.nameEn || this.currentHero.nameZh}", the summoner's desktop pet courier for real-time voice chat — a cute, loyal little creature from the DOTA 2 battlefield.

@@ -7,7 +7,7 @@ import { isTrustedSettingsSender } from './aiSettingsIpc.js';
 
 /** The editor is the settings center's 形象与背景 page; `hub` hosts it. */
 export function createCustomizationController({ electron, rendererDirectory, hub, getMainWindow, getHeroesConfig, getCompanionHero, getActiveKey,
-  getLanguage = () => 'zh', t = text => text }) {
+  getLanguage = () => 'zh', t = text => text, onProfileSaved = () => {} }) {
   const { app, ipcMain, dialog, nativeImage } = electron;
   const editorURL = pathToFileURL(path.join(rendererDirectory, 'customize.html')).href;
   const desktopURL = pathToFileURL(path.join(rendererDirectory, 'index.html')).href;
@@ -93,6 +93,8 @@ export function createCustomizationController({ electron, rendererDirectory, hub
   ipcMain.handle('customization:save-profile', handler(changed(payload => {
     if (!characters().some(character => character.key === payload?.key)) throw new Error('角色不存在。');
     store.saveProfile(payload.key, payload.profile);
+    // The voice persona may have changed; a failure there must not fail the save.
+    try { onProfileSaved(payload.key); } catch (error) { console.warn('[Customize] Persona refresh:', error.message); }
   })));
   ipcMain.handle('customization:activate', handler(payload => {
     if (!validCharacterKey(payload) || !characters().some(character => character.key === payload)) throw new Error('角色不存在。');

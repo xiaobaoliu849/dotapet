@@ -143,9 +143,10 @@ export class CustomizationStore {
     // Metadata is committed before removing the file. Failed cleanup cannot lose settings.
     try { fs.unlinkSync(this.assetPath(asset)); } catch (error) { if (error.code !== 'ENOENT') console.warn('[Customize] Asset cleanup:', error.message); }
   }
+  // Presets are looks shared across characters; a persona belongs to one character and never travels with them.
   savePreset(name, profile) {
     return this.transaction(() => {
-      const preset = { id: `preset_${randomUUID()}`, name: label(name, '我的预设'), profile: this.checkProfile(profile) };
+      const preset = { id: `preset_${randomUUID()}`, name: label(name, '我的预设'), profile: { ...this.checkProfile(profile), persona: '' } };
       this.data.presets.push(preset);
       return preset;
     });
@@ -156,7 +157,7 @@ export class CustomizationStore {
     if (!preset) throw new Error('预设不存在。');
     const ids = new Set([preset.profile.appearance.assetId, preset.profile.background.assetId]);
     return {
-      format: 'voicespirit-customization', version: 1, name: preset.name, profile: preset.profile,
+      format: 'voicespirit-customization', version: 1, name: preset.name, profile: { ...preset.profile, persona: '' },
       assets: this.data.assets.filter(asset => ids.has(asset.id)).map(asset => ({
         id: asset.id, name: asset.name, dataUrl: `data:${asset.mime};base64,${fs.readFileSync(this.assetPath(asset)).toString('base64')}`,
       })),
@@ -167,7 +168,7 @@ export class CustomizationStore {
     return this.transaction(() => {
       const mapping = new Map();
       for (const asset of bundle.assets) mapping.set(asset.id, this.addImage(asset.dataUrl, asset.name).id);
-      const profile = normalizeProfile(bundle.profile);
+      const profile = { ...normalizeProfile(bundle.profile), persona: '' };
       for (const key of ['appearance', 'background']) {
         if (profile[key].assetId) {
           if (!mapping.has(profile[key].assetId)) throw new Error('预设缺少所需图片。');

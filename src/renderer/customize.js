@@ -1,4 +1,4 @@
-import { APPEARANCE_STYLES, normalizeProfile, resolveAppearance, applyImageAppearance, applyBackground } from '../services/appearance.js';
+import { APPEARANCE_STYLES, PERSONA_MAX_LENGTH, normalizeProfile, resolveAppearance, applyImageAppearance, applyBackground } from '../services/appearance.js';
 
 const api = window.customizationAPI;
 const $ = id => document.getElementById(id);
@@ -117,6 +117,9 @@ function fillControls() {
   $('accent').value = draft.accent || defaultAccent();
   for (const field of ['mode', 'scope', 'color', 'fit']) $(`background-${field}`).value = b[field];
   $('background-opacity').value = b.opacity * 100; $('background-dim').value = b.dim * 100;
+  // Rewritten only when the saved text differs, so a trailing space or newline being typed survives.
+  if ($('persona-prompt').value.trim() !== draft.persona) $('persona-prompt').value = draft.persona;
+  personaCount();
   renderPreview(); draftStatus();
 }
 function renderPreview() {
@@ -139,6 +142,7 @@ function renderPreview() {
   $('background-color-controls').hidden = draft.background.mode !== 'color';
   $('background-options').hidden = draft.background.mode === 'transparent';
 }
+function personaCount() { $('persona-count').textContent = `${$('persona-prompt').value.length} / ${PERSONA_MAX_LENGTH}`; }
 function edit(operation) { operation(); draft = normalizeProfile(draft); drafts.set(key, structuredClone(draft)); renderPreview(); draftStatus(); message(''); }
 function selectAsset(id, role) {
   edit(() => {
@@ -172,7 +176,8 @@ function renderPresets() {
     const row = document.createElement('div'); row.className = 'preset-row';
     const name = document.createElement('span'); name.textContent = preset.name; name.translate = false;
     row.append(name, button('预览', () => {
-      draft = normalizeProfile(preset.profile);
+      // A preset is a look; the character keeps its own persona.
+      draft = { ...normalizeProfile(preset.profile), persona: draft.persona };
       if (draft.appearance.builtinId && !character().options.some(look => look.id === draft.appearance.builtinId && look.kind === 'appearance')) draft.appearance.builtinId = null;
       drafts.set(key, structuredClone(draft)); fillControls(); message('已载入预设预览，满意后点击右下角按钮应用。');
     }), button('导出', () => call(() => api.exportPreset(preset.id), '预设已导出。')),
@@ -250,7 +255,9 @@ for (const field of ['mode','scope','fit','color','asset','opacity','dim']) {
   $(`background-${field}`).addEventListener('input', () => edit(() => { const value = $(`background-${field}`).value; draft.background[field === 'asset' ? 'assetId' : field] = ['opacity','dim'].includes(field) ? Number(value) / 100 : value || null; }));
 }
 for (const b of document.querySelectorAll('[data-state]')) b.addEventListener('click', () => { previewState = b.dataset.state; for (const item of document.querySelectorAll('[data-state]')) item.setAttribute('aria-pressed', String(item === b)); renderPreview(); });
-$('restore').addEventListener('click', () => { draft = normalizeProfile(); drafts.set(key, structuredClone(draft)); fillControls(); message('已预览默认外观，点击右下角按钮完成恢复。'); });
+$('persona-prompt').addEventListener('input', () => { edit(() => { draft.persona = $('persona-prompt').value; }); personaCount(); });
+// Restores the look only; the persona is cleared by emptying its text.
+$('restore').addEventListener('click', () => { draft = { ...normalizeProfile(), persona: draft.persona }; drafts.set(key, structuredClone(draft)); fillControls(); message('已预览默认外观，点击右下角按钮完成恢复。'); });
 /** The desktop switches asynchronously; wait until it reports the new companion. */
 async function waitForDesktop(target) {
   for (let i = 0; i < 40; i++) {
@@ -263,6 +270,7 @@ async function waitForDesktop(target) {
 $('apply').addEventListener('click', async () => {
   if (draft.background.mode === 'image' && !draft.background.assetId) { message('请先选择背景图片。', true); return; }
   const target = key, name = character().name, dirty = isDirty(), switching = !onDesktop();
+  const personaChanged = draft.persona !== normalizeProfile(data.profiles[target]).persona;
   if (dirty) {
     const result = await call(() => api.saveProfile({ key: target, profile: draft }));
     if (!result) return;
@@ -275,7 +283,7 @@ $('apply').addEventListener('click', async () => {
     });
     if (!switched) return;
   }
-  message(!switching ? '外观已应用到桌面伙伴。' : dirty ? `已换上${name}，外观已应用。` : `已换上${name}。`);
+  message(!switching ? (personaChanged ? '角色性格已应用，从下一句语音回复开始生效。' : '外观已应用到桌面伙伴。') : dirty ? `已换上${name}，外观已应用。` : `已换上${name}。`);
 });
 for (const role of ['appearance','background']) $(`import-${role}`).addEventListener('click', () => { importRole = role; $('image-file').click(); });
 $('image-file').addEventListener('change', event => importFile(event.target.files[0]));

@@ -87,6 +87,13 @@
         <p class="help">预设可用于其他英雄和宠物。导出的文件包含图片，不包含语音密钥。</p>
         <div id="preset-list"></div>
       </section>
+      <section>
+        <h2>06 <span>角色性格</span></h2>
+        <label for="persona-prompt">这个伙伴是谁、怎么说话 <output id="persona-count">0 / 2000</output></label>
+        <textarea id="persona-prompt" rows="6" maxlength="2000"></textarea>
+        <p class="help">写下它的性格、态度、背景故事和说话语气，例如：傲娇、毒舌但关心人、说话带点古风。语音聊天时会代替内置设定；留空则使用默认。</p>
+        <p class="help">只属于当前角色，不会随预设导出。它怎么称呼你，仍在「语音与翻译」里设置。</p>
+      </section>
     </div>
   </main>
   <footer><div><span id="draft-status">加载中…</span><p id="feedback" role="status" aria-live="polite"></p></div><button id="apply" class="primary" disabled>应用到桌面伙伴</button></footer>
