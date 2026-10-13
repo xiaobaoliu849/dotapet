@@ -60,6 +60,21 @@ test('conversation preferences persist globally, preserve credentials and can be
   assert.deepEqual(reloaded.publicSettings().conversation, { preferredAddress: '', customInstructions: '' });
 });
 
+test('name auto-save changes only preferences, never provider, voice or keys', t => {
+  const store = vault(t);
+  store.save({ provider: 'doubao', voice: 'zh_female_vv_jupiter_bigtts', secrets: { apiKey: 'voice-key' } });
+  const before = structuredClone(store.data);
+  const visible = store.saveConversation({ preferredAddress: ' 队长 ', customInstructions: 'Short answers.' });
+  assert.deepEqual(visible.conversation, { preferredAddress: '队长', customInstructions: 'Short answers.' });
+  assert.equal(store.data.selectedProvider, before.selectedProvider);
+  assert.deepEqual(store.data.providers, before.providers);
+  const reloaded = new AISettingsStore({ filePath: store.filePath, safeStorage: encryption });
+  assert.equal(engineOptions(reloaded, 'doubao').conversationPreferences.preferredAddress, '队长');
+  const saved = fs.readFileSync(store.filePath, 'utf8');
+  assert.throws(() => store.saveConversation({ preferredAddress: 'a\nb' }));
+  assert.equal(fs.readFileSync(store.filePath, 'utf8'), saved);
+});
+
 test('old vaults migrate with empty preferences; invalid preferences cannot overwrite the vault', t => {
   const store = vault(t);
   store.save({ provider: 'qwen', secrets: { apiKey: 'preserved' } });

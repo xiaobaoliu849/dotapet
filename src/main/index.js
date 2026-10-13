@@ -1383,6 +1383,11 @@ function setupIPC() {
     applyAIConfiguration(aiSettingsStore);
     return { settings };
   }));
+  // Name / chat preferences auto-save. A live session keeps going; the next
+  // Alt+Q connect picks them up through engineOptions().
+  ipcMain.handle('ai:save-conversation', settingsHandler(payload => ({
+    settings: aiSettingsStore.saveConversation(payload),
+  })));
   ipcMain.handle('ai:delete-secrets', settingsHandler(payload => {
     const { provider, field } = typeof payload === 'string' ? { provider: payload } : payload || {};
     stopVoiceForSettings();

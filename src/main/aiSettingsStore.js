@@ -234,6 +234,13 @@ export class AISettingsStore {
     return this.commit(next);
   }
 
+  /** Saves only the user's form of address and chat preferences; no provider, key or voice changes. */
+  saveConversation(conversation) {
+    const next = structuredClone(this.data);
+    next.conversation = normalizeConversationPreferences(conversation);
+    return this.commit(next);
+  }
+
   /** Removes a key everywhere it is shared; without a field, all of the provider's keys. */
   deleteSecrets(id, fieldId) {
     const definition = providerDefinition(id);

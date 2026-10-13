@@ -181,7 +181,7 @@ function renderProfile() {
     byId('custom-voice-id').value = byId('voice-custom').value;
     byId('all-voices').value = byId('voice').value;
   }
-  if (conversationDraft || draft?.dirty || item.fields.some(field => keyDrafts.get(field.account))) markDirty();
+  if (draft?.dirty || item.fields.some(field => keyDrafts.get(field.account))) markDirty();
   updateConnectAction();
   renderTranslator();
 }
@@ -360,9 +360,38 @@ byId('all-voices').addEventListener('change', () => {
 });
 byId('custom-voice-id').addEventListener('input', () => { byId('voice-custom').value = byId('custom-voice-id').value; markDirty(); });
 for (const id of ['model', 'workspace']) byId(id).addEventListener('input', markDirty);
-for (const id of ['preferred-address', 'custom-instructions']) byId(id).addEventListener('input', () => {
-  conversationDraft = { preferredAddress: byId('preferred-address').value, customInstructions: byId('custom-instructions').value };
-  markDirty();
+// Name and chat preferences belong to the user, not to a provider: they save on
+// their own when the field loses focus, without the provider save button.
+const conversationHints = { 'preferred-address': 'address-hint', 'custom-instructions': 'instructions-hint' };
+const translate = text => window.t?.(text) || text;
+function flashHint(hint, message, kind) {
+  hint.dataset.original ??= hint.textContent;
+  clearTimeout(Number(hint.dataset.timer));
+  hint.textContent = message; hint.dataset.kind = kind;
+  hint.dataset.timer = String(setTimeout(() => { hint.textContent = hint.dataset.original; hint.dataset.kind = ''; }, 4000));
+}
+async function saveConversationNow(sourceId) {
+  const value = { preferredAddress: byId('preferred-address').value, customInstructions: byId('custom-instructions').value };
+  const hint = byId(conversationHints[sourceId]);
+  try {
+    const response = await api.saveConversation(value);
+    if (!response.ok) throw new Error(response.error);
+    if (settings) settings.conversation = response.settings.conversation;
+    conversationDraft = null;
+    flashHint(hint, translate('✓ 已保存，下次按 Alt+Q 生效。'), 'success');
+  } catch (error) {
+    flashHint(hint, error.message || translate('保存失败，请重试。'), 'error');
+  }
+}
+for (const id of Object.keys(conversationHints)) {
+  // Keep typing across re-renders, but it is not an unsaved provider change.
+  byId(id).addEventListener('input', () => {
+    conversationDraft = { preferredAddress: byId('preferred-address').value, customInstructions: byId('custom-instructions').value };
+  });
+  byId(id).addEventListener('change', () => saveConversationNow(id));
+}
+byId('preferred-address').addEventListener('keydown', event => {
+  if (event.key === 'Enter' && !event.isComposing) { event.preventDefault(); byId('preferred-address').blur(); }
 });
 byId('region').addEventListener('change', markDirty);
 byId('translate-change').addEventListener('click', () => { changingTranslateKey = true; renderTranslator(); byId('translate-secret')?.focus?.(); });

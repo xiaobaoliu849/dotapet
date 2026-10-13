@@ -6,6 +6,7 @@ contextBridge.exposeInMainWorld('dotapetI18n', ipcRenderer.sendSync('i18n:get'))
 contextBridge.exposeInMainWorld('electronAPI', {
   getAISettings: () => ipcRenderer.invoke('ai:get-settings'),
   saveAISettings: settings => ipcRenderer.invoke('ai:save-settings', settings),
+  saveConversation: conversation => ipcRenderer.invoke('ai:save-conversation', conversation),
   deleteAISecrets: (provider, field) => ipcRenderer.invoke('ai:delete-secrets', { provider, field }),
   importAIConfig: () => ipcRenderer.invoke('ai:import-config'),
   testAIConnection: provider => ipcRenderer.invoke('ai:test-connection', provider),
