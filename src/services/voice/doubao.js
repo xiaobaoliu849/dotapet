@@ -22,7 +22,12 @@ export class DoubaoProvider {
 
     this.isConnecting = true;
     this.suppressReconnect = false;
-    this.emit('status', { status: 'connecting', providerId: 'doubao', provider: '字节豆包 (Doubao Duplex)' });
+    this.emit('status', {
+      status: 'connecting',
+      providerId: 'doubao',
+      provider: '字节豆包 (Doubao Duplex)',
+      ...(this.sessionRestarting && { restarting: true }),
+    });
 
     let endpoint = CLOUD_KEYS.doubao_ws_url || DEFAULT_DOUBAO_DUPLEX_ENDPOINT;
     if (endpoint.includes('/api/v3/realtime/dialogue')) {

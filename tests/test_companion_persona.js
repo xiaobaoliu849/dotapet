@@ -101,3 +101,23 @@ test('who the companion is (persona) and who the user is (nickname) stay separat
   const persona = prompt.indexOf(TSUNDERE), address = prompt.indexOf('Preferred form of address: "队长"');
   assert.ok(persona >= 0 && address > persona, 'the nickname is still appended after the persona');
 });
+
+test('Doubao restarts session with restarting flag when persona changes mid-call', () => {
+  const engine = new CloudVoiceEngine({ provider: 'doubao', currentHero: hero });
+  engine.isConnected = true;
+  let restarts = 0;
+  engine.restartSession = () => { restarts++; };
+  engine.setHero(applyPersonaOverride(hero, '我是ame'));
+  assert.equal(restarts, 1, 'Doubao must restart session to apply new persona prompt');
+});
+
+test('custom character with Ame persona enforces first-person identity over generic assistant', () => {
+  const custom = buildPetPseudoHero({ name: 'custom_12345678', displayName: '哥哥', description: '' });
+  const engine = new CloudVoiceEngine({ provider: 'doubao', currentHero: applyPersonaOverride(custom, '我是ame') });
+  const prompt = engine.getHeroSystemPrompt();
+  assert.ok(prompt.includes('我是ame'));
+  assert.ok(prompt.includes('哥哥'));
+  assert.ok(prompt.includes('当设定指明具体人物、身份、性格或特定人设时，你即拥有该身份与人设'));
+  assert.ok(prompt.includes('切勿以泛化的“桌面伴侣/助手”套话自称'));
+});
+

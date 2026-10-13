@@ -144,11 +144,11 @@ export class CloudVoiceEngine extends EventEmitter {
     this.currentHero = heroConfig;
     console.log(`[CloudVoiceEngine] Injected Hero Persona: ${heroConfig?.nameZh} (${heroConfig?.id})`);
     if (this.isConnected) {
-      if (['doubao', 'qwen'].includes(this.providerFamily())) {
+      if (this.providerFamily() === 'qwen') {
         this.sendSessionUpdate();
-      } else if (this.provider === 'google') {
-        // Chat sessions bake systemInstruction into the Live setup message and
-        // there is no mid-session update primitive — reconnect so the new
+      } else if (['google', 'doubao', 'cartesia'].includes(this.providerFamily())) {
+        // Chat sessions bake systemInstruction / instructions into setup or handshake,
+        // and there is no mid-session update primitive — reconnect so the new
         // persona takes effect. Translate sessions have no persona at all,
         // so they keep running uninterrupted.
         this.restartSession();

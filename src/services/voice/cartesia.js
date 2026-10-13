@@ -21,7 +21,12 @@ export class CartesiaProvider {
     this.suppressReconnect = false;
     this.cartesiaIsSttOpen = false;
     this.cartesiaIsTtsOpen = false;
-    this.emit('status', { status: 'connecting', providerId: 'cartesia', provider: 'Cartesia + DeepSeek (English Voice 对局纯英对练)' });
+    this.emit('status', {
+      status: 'connecting',
+      providerId: 'cartesia',
+      provider: 'Cartesia + DeepSeek (English Voice 对局纯英对练)',
+      ...(this.sessionRestarting && { restarting: true }),
+    });
 
     const sttUrl = `wss://api.cartesia.ai/stt/turns/websocket?model=ink-2&encoding=pcm_s16le&sample_rate=16000&cartesia_version=${CARTESIA_VERSION}&language=en`;
     const ttsUrl = `wss://api.cartesia.ai/tts/websocket?cartesia_version=${CARTESIA_VERSION}`;

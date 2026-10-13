@@ -129,7 +129,12 @@ export class QwenProvider {
 
     this.isConnecting = true;
     this.suppressReconnect = false;
-    this.emit('status', { status: 'connecting', providerId: 'qwen', provider: '阿里千问 (Qwen-Audio Realtime)' });
+    this.emit('status', {
+      status: 'connecting',
+      providerId: 'qwen',
+      provider: '阿里千问 (Qwen-Audio Realtime)',
+      ...(this.sessionRestarting && { restarting: true }),
+    });
 
     const modelName = this.model && this.model.startsWith('qwen') ? this.model : (process.env.DASHSCOPE_REALTIME_MODEL || DEFAULT_DASHSCOPE_REALTIME_MODEL);
     let wsUrl = CLOUD_KEYS.dashscope_ws_url || 'wss://dashscope.aliyuncs.com/api-ws/v1/realtime';
