@@ -178,6 +178,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.on('shortcut:toggle-compact', subscription);
     return () => ipcRenderer.removeListener('shortcut:toggle-compact', subscription);
   },
+  onShortcutOpenSettings: (callback) => {
+    const subscription = () => callback();
+    ipcRenderer.on('shortcut:open-settings', subscription);
+    return () => ipcRenderer.removeListener('shortcut:open-settings', subscription);
+  },
   onShortcutsChanged: (callback) => {
     const subscription = (_event, data) => callback(data);
     ipcRenderer.on('shortcuts:changed', subscription);

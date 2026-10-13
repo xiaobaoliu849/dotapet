@@ -10,9 +10,9 @@ import {
   unregisterShortcuts,
 } from '../src/main/shortcuts.js';
 
-test('getShortcutActions returns all 13 configurable actions', () => {
+test('getShortcutActions returns all 15 configurable actions', () => {
   const actions = getShortcutActions();
-  assert.equal(actions.length, 13);
+  assert.equal(actions.length, 15);
   const ids = actions.map(a => a.id);
   assert.ok(ids.includes('toggleVoice'));
   assert.ok(ids.includes('translate'));
@@ -27,6 +27,8 @@ test('getShortcutActions returns all 13 configurable actions', () => {
   assert.ok(ids.includes('cycleVoice'));
   assert.ok(ids.includes('heroMenu'));
   assert.ok(ids.includes('petSpecial'));
+  assert.ok(ids.includes('openSettings'));
+  assert.ok(ids.includes('quit'));
 });
 
 test('getDefaultShortcuts returns expected default keybindings', () => {
@@ -44,6 +46,8 @@ test('getDefaultShortcuts returns expected default keybindings', () => {
   assert.equal(defaults.cycleVoice, 'Alt+V');
   assert.equal(defaults.heroMenu, 'Alt+H');
   assert.equal(defaults.petSpecial, 'Alt+E');
+  assert.equal(defaults.openSettings, 'Alt+S');
+  assert.equal(defaults.quit, 'Alt+Shift+Q');
 });
 
 test('normalizeAccelerator orders modifiers and capitalizes base keys', () => {
@@ -130,6 +134,8 @@ test('registerShortcuts registers keys, handles custom overrides and reports fai
       onToggleVoice: () => events.push('voice'),
       onTriggerTranslate: () => events.push('translate'),
       onTogglePhrasePanel: () => events.push('phrases'),
+      onOpenSettings: () => events.push('settings'),
+      onQuit: () => events.push('quit'),
       onShortcutFailures: (failures) => events.push({ failures }),
     };
 
@@ -139,11 +145,15 @@ test('registerShortcuts registers keys, handles custom overrides and reports fai
     assert.ok(registered.has('Alt+Q'));
     assert.ok(registered.has('F8'));
     assert.ok(registered.has('F6'));
+    assert.ok(registered.has('Alt+S'));
+    assert.ok(registered.has('Alt+Shift+Q'));
     assert.ok(registered.has('Alt+Shift+L'), 'compat alias registered');
 
     // Triggering a registered callback executes handler
     registered.get('Alt+Q')();
-    assert.deepEqual(events, ['voice']);
+    registered.get('Alt+S')();
+    registered.get('Alt+Shift+Q')();
+    assert.deepEqual(events, ['voice', 'settings', 'quit']);
 
     // Unregister
     mockGlobalShortcut.unregisterAll();

@@ -2561,6 +2561,10 @@ function setupEventListeners() {
       }
     });
 
+    window.electronAPI.onShortcutOpenSettings?.(() => {
+      window.electronAPI?.openAISettings?.();
+    });
+
     window.electronAPI.onVoiceTextDelta((data) => {
       setAppState('speaking', 'AI回复中...');
       state.activeSpeechText = data?.fullText || (state.activeSpeechText + (data?.delta || ''));

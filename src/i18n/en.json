@@ -580,5 +580,9 @@
   "点击修改此快捷键": "Click to customize this shortcut",
   "禁用 / 清除此快捷键": "Disable / clear this shortcut",
   "正在录制，请按下组合键；按 Esc 取消": "Recording, press key combination; Esc to cancel",
-  "固定 / 解锁位置": "Pin / unpin position"
+  "固定 / 解锁位置": "Pin / unpin position",
+  "打开设置中心": "Open Settings Center",
+  "快速呼出偏好与控制中心": "Quickly open preferences and control center",
+  "退出桌面宠物": "Quit Desktop Pet",
+  "彻底关闭并退出应用": "Completely close and exit application"
 }

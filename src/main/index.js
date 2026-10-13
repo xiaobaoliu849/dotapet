@@ -1735,6 +1735,10 @@ function reportShortcutFailures(failures) {
     });
 }
 
+function openSettingsFromShortcut() {
+  openAISettings();
+}
+
 // App lifecycle
 if (app?.whenReady) {  app.whenReady().then(() => {
     app.setAppUserModelId?.('fun.dota2bot.companion');
@@ -1871,6 +1875,12 @@ if (app?.whenReady) {  app.whenReady().then(() => {
       },
       onToggleCompact: () => {
         cycleScaleMode();
+      },
+      onOpenSettings: () => {
+        openSettingsFromShortcut();
+      },
+      onQuit: () => {
+        app.quit();
       },
     };
     applyAppShortcuts();

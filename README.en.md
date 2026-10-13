@@ -21,7 +21,7 @@ DOTA 2 desktop companions · AI voice chat · Bilingual phrases · Text & screen
 
 Keep a hero or courier on your desktop, chat with it, and make it your own. In DOTA 2, reach for bilingual quick phrases or translate a screenshot of team chat into Chinese. Desktop companionship works without configuring an AI provider.
 
-**Current version: 0.2.0 (Windows Early Preview).** Features continue to iterate rapidly, with the latest capabilities in 0.2.0. The screenshots below show the current UI.
+**Current version: 0.2.1 (Windows Early Preview).** Features continue to iterate rapidly, with the latest capabilities in 0.2.1. The screenshots below show the current UI.
 
 **Latest voice settings: your preferred name and custom chat instructions. Billing only runs while you talk — Alt+Q connects, another press disconnects.** The screenshot below shows the new name and instruction fields directly.
 
@@ -96,6 +96,8 @@ In voice settings, enter **What should your companion call you?** (for example, 
 
 | Action | Shortcut |
 |---|---|
+| Open Settings Center | `Alt+S` |
+| Quit Companion | `Alt+Shift+Q` |
 | Start / stop talking | `Alt+Q` |
 | Translate text on screen | Press `Alt+Shift+S`, drag a box around it, release |
 | Translate copied text | Copy it, then `Alt+T` |

@@ -18,6 +18,8 @@ const SHORTCUT_ACTIONS = [
   { id: 'cycleVoice', label: '切换语音引擎', description: '在配置的 AI 语音提供商之间切换', defaultKey: 'Alt+V' },
   { id: 'heroMenu', label: '英雄切换菜单', description: '快速打开英雄切换选择', defaultKey: 'Alt+H' },
   { id: 'petSpecial', label: '专属技能互动', description: '触发当前宠物的特色专属技能', defaultKey: 'Alt+E' },
+  { id: 'openSettings', label: '打开设置中心', description: '快速呼出偏好与控制中心', defaultKey: 'Alt+S' },
+  { id: 'quit', label: '退出桌面宠物', description: '彻底关闭并退出应用', defaultKey: 'Alt+Shift+Q' },
 ];
 
 export function getShortcutActions() {
@@ -253,6 +255,19 @@ function resolveActionHandler(actionId, mainWindow, handlers) {
     case 'petSpecial':
       return () => {
         if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('shortcut:trigger-pet-special');
+      };
+    case 'openSettings':
+      return () => {
+        if (handlers.onOpenSettings) handlers.onOpenSettings();
+        else if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('shortcut:open-settings');
+      };
+    case 'quit':
+      return () => {
+        if (handlers.onQuit) handlers.onQuit();
+        else {
+          const app = electron?.app || globalThis?.electron?.app;
+          app?.quit?.();
+        }
       };
     default:
       return null;
