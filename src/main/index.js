@@ -1135,7 +1135,7 @@ function updateTrayMenu() {
       submenu: providerSubmenu,
     },
     // Voice, appearance, phrases, help and updates all live in the settings center.
-    { label: '⚙️ 设置中心', click: () => openAISettings() },
+    { label: '⚙️ 设置中心 (Alt+S)', click: () => openAISettings() },
     // Updates have their own sidebar page; the tray only speaks up when one is waiting.
     ...(updateService?.state.version && ['available', 'ready', 'downloading'].includes(updateService.state.phase)
       ? [{ label: `⬆️ 更新到 v${updateService.state.version}`, click: () => updateController?.open() }] : []),
@@ -1171,7 +1171,7 @@ function updateTrayMenu() {
       },
     },
     {
-      label: '👋 退出伴侣',
+      label: '👋 退出伴侣 (Alt+Shift+Q)',
       click: () => {
         app.quit();
       },

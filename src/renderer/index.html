@@ -30,7 +30,7 @@
         <button id="btn-transcript" class="icon-btn" title="实时对话转写记录 (语音对话时自动弹出)" aria-controls="transcript-panel" aria-expanded="false">💬</button>
         <button id="btn-snap" class="icon-btn" title="边缘吸附">📍</button>
         <button id="btn-minimize" class="icon-btn" title="隐藏 (Alt+Shift+M)">➖</button>
-        <button id="btn-close" class="icon-btn btn-close" title="退出桌面伴侣">👋</button>
+        <button id="btn-close" class="icon-btn btn-close" title="退出桌面伴侣 (Alt+Shift+Q)">👋</button>
       </div>
     </header>
 
@@ -142,9 +142,9 @@
       <div class="ctx-divider" role="separator"></div>
       <button class="ctx-item" id="ctx-btn-pin"><span class="ctx-icon">📌</span> 固定位置 <span class="ctx-shortcut">Alt+L</span></button>
       <div class="ctx-divider" role="separator"></div>
-      <button class="ctx-item" id="ctx-btn-ai-settings"><span class="ctx-icon">⚙️</span> 设置中心 <span class="ctx-shortcut">Alt+S</span></button>
-      <button class="ctx-item" id="ctx-btn-hide"><span class="ctx-icon">➖</span> 隐藏桌宠 <span class="ctx-shortcut">Alt+Shift+M</span></button>
-      <button class="ctx-item ctx-danger" id="ctx-btn-quit"><span class="ctx-icon">👋</span> 退出 <span class="ctx-shortcut">Alt+Shift+Q</span></button>
+      <button class="ctx-item" id="ctx-btn-ai-settings" title="打开设置中心 (Alt+S)"><span class="ctx-icon">⚙️</span> 设置中心 <span class="ctx-shortcut">Alt+S</span></button>
+      <button class="ctx-item" id="ctx-btn-hide" title="隐藏桌宠 (Alt+Shift+M)"><span class="ctx-icon">➖</span> 隐藏桌宠 <span class="ctx-shortcut">Alt+Shift+M</span></button>
+      <button class="ctx-item ctx-danger" id="ctx-btn-quit" title="彻底退出伴侣 (Alt+Shift+Q)"><span class="ctx-icon">👋</span> 退出 <span class="ctx-shortcut">Alt+Shift+Q</span></button>
     </div>
 
     <!-- Bottom Quick Action Dock (two rows: main buttons + centered tool pill) -->
@@ -167,7 +167,7 @@
       </div>
 
       <div class="dock-row-tools">
-        <button id="btn-ai-settings" class="dock-mini-btn" title="设置中心：语音、形象、快捷短语与帮助" aria-label="设置中心">⚙️</button>
+        <button id="btn-ai-settings" class="dock-mini-btn" title="设置中心 (Alt+S)：语音、形象、快捷短语与帮助" aria-label="设置中心">⚙️</button>
         <div class="pet-quick-tools" id="pet-quick-tools">
           <button id="btn-tool-special" class="dock-mini-btn btn-special-skill" title="释放专属萌宠绝招 (Alt+E)">✨</button>
           <button id="btn-tool-tango" class="dock-mini-btn" title="投喂吃树 (+115 HP)">🌿</button>
