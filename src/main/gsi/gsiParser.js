@@ -306,6 +306,29 @@ export class GSIParser extends EventEmitter {
       }
     }
 
+    // 6. 3x Divine Rapier "BKB Avatar Giant Mode" detection in hero inventory
+    if (items && typeof items === 'object') {
+      let rapierCount = 0;
+      for (const key of ['slot0', 'slot1', 'slot2', 'slot3', 'slot4', 'slot5']) {
+        if (items[key]?.name === 'item_rapier') {
+          rapierCount++;
+        }
+      }
+      if (rapierCount >= 3) {
+        const rapierKey = `rapier_bkb_${Math.floor(t / 60)}`;
+        if (!this.triggeredTimers.has(rapierKey)) {
+          this.triggeredTimers.add(rapierKey);
+          this.emit('tactical_timer', {
+            type: 'rapier_bkb_avatar',
+            rapierCount,
+            title: '👑 三圣剑合璧 · BKB天神下凡！',
+            message: '⚡ 三圣剑在手，BKB 天神下凡已开启！魔免金身，请问还有谁？！❓',
+            secondsRemaining: 0,
+          });
+        }
+      }
+    }
+
     this.lastClockTime = t;
   }
 

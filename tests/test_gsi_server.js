@@ -206,6 +206,24 @@ async function runTests() {
     throw new Error(`No-TP warning failed, expected no_tp_warning got ${timerAlert?.type}`);
   }
 
+  // Step 3g: 3x Divine Rapier "BKB Avatar" Inventory Detection
+  console.log('  -> Sending inventory with 3 Divine Rapiers...');
+  timerAlert = null;
+  await sendMockPayload({
+    map: { matchid: '987654321', game_state: 'DOTA_GAMERULES_STATE_GAME_IN_PROGRESS', clock_time: 620 },
+    player: { kills: 7, deaths: 2, assists: 4 },
+    hero: { name: 'npc_dota_hero_invoker', level: 15, alive: true, health: 1500, max_health: 1500, health_percent: 100 },
+    items: {
+      slot0: { name: 'item_rapier' },
+      slot1: { name: 'item_rapier' },
+      slot2: { name: 'item_rapier' },
+      teleport0: { name: 'item_tpscroll' },
+    },
+  });
+  if (timerAlert?.type !== 'rapier_bkb_avatar' || timerAlert?.rapierCount < 3) {
+    throw new Error(`3x Rapier BKB detection failed, expected rapier_bkb_avatar got ${timerAlert?.type}`);
+  }
+
   server.stop();
   console.log('\n🎉 ALL GSI INTEGRATION TESTS PASSED SUCCESSFULLY! 🎉');
 }

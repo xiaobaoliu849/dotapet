@@ -455,6 +455,8 @@ function handlePetDoubleClick() {
 
   elements.petContainer.classList.add('pet-pop-anim');
   setPetSprite('action');
+  const { cx, cy } = petStateMachine.getAvatarCenter();
+  petStateMachine.fx?.spawnQuestionMarks(cx, cy - 20, 4);
   setTimeout(() => {
     elements.petContainer.classList.remove('pet-pop-anim');
     setPetSprite('idle');
@@ -2363,52 +2365,42 @@ function setupEventListeners() {
     });
 
     elements.btnToolSpecial?.addEventListener('click', () => {
-      if (!state.isPetMode) togglePetMode(true);
       petStateMachine.triggerSpecialSkill();
     });
     elements.ctxBtnPetSpecial?.addEventListener('click', () => {
       closePetContextMenu();
-      if (!state.isPetMode) togglePetMode(true);
       petStateMachine.triggerSpecialSkill();
     });
 
     elements.btnToolTango?.addEventListener('click', () => {
-      if (!state.isPetMode) togglePetMode(true);
       petStateMachine.feedItem('tango');
     });
     elements.ctxBtnPetFeedTango?.addEventListener('click', () => {
       closePetContextMenu();
-      if (!state.isPetMode) togglePetMode(true);
       petStateMachine.feedItem('tango');
     });
 
     elements.btnToolSalve?.addEventListener('click', () => {
-      if (!state.isPetMode) togglePetMode(true);
       petStateMachine.feedItem('salve');
     });
     elements.ctxBtnPetFeedSalve?.addEventListener('click', () => {
       closePetContextMenu();
-      if (!state.isPetMode) togglePetMode(true);
       petStateMachine.feedItem('salve');
     });
 
     elements.btnToolRapier?.addEventListener('click', () => {
-      if (!state.isPetMode) togglePetMode(true);
       petStateMachine.feedItem('rapier');
     });
     elements.ctxBtnPetFeedRapier?.addEventListener('click', () => {
       closePetContextMenu();
-      if (!state.isPetMode) togglePetMode(true);
       petStateMachine.feedItem('rapier');
     });
 
     elements.btnToolSnowball?.addEventListener('click', () => {
-      if (!state.isPetMode) togglePetMode(true);
       petStateMachine.throwSnowball();
     });
     elements.ctxBtnPetSnowball?.addEventListener('click', () => {
       closePetContextMenu();
-      if (!state.isPetMode) togglePetMode(true);
       petStateMachine.throwSnowball();
     });
 
@@ -2790,9 +2782,7 @@ function setupEventListeners() {
     });
 
     window.electronAPI.onGsiCombatDeath?.((data) => {
-      if (state.isPetMode) {
-        petStateMachine.onHeroDeath();
-      }
+      petStateMachine.onHeroDeath();
 
       displayTranslationHUD({
         original: `${data.title} (阵亡)`,
@@ -2804,9 +2794,7 @@ function setupEventListeners() {
     });
 
     window.electronAPI.onGsiLowHealth?.((data) => {
-      if (state.isPetMode) {
-        petStateMachine.onLowHealthAlert();
-      }
+      petStateMachine.onLowHealthAlert();
 
       displayTranslationHUD({
         original: data.title,
@@ -2829,6 +2817,9 @@ function setupEventListeners() {
         }
       } else if (data?.type === 'no_tp_warning') {
         suggestions = ['buying tp', 'no tp wait', 'care i have no tp'];
+      } else if (data?.type === 'rapier_bkb_avatar') {
+        suggestions = ['?', 'bkb ready', 'end mid'];
+        petStateMachine.activateBkbAvatar();
       }
 
       displayTranslationHUD({

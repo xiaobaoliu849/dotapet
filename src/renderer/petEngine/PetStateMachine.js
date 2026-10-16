@@ -318,12 +318,11 @@ export class PetStateMachine {
   }
 
   /**
-   * Feed DOTA 2 Item to pet.
+   * Feed DOTA 2 Item to pet or hero companion.
    * Easter egg: feeding 3 Divine Rapiers within 20 seconds activates
    * "BKB Avatar Giant Mode" (1.28x size + golden immunity aura + '?' shower)!
    */
   feedItem(itemType) {
-    if (!this.isPetMode) return;
     this.isFeeding = true;
     const stateKey = `feed_${itemType}`;
 
@@ -336,7 +335,11 @@ export class PetStateMachine {
       this.lastRapierFeedAt = now;
     }
 
-    this.setState(stateKey, true);
+    if (this.isPetMode) {
+      this.setState(stateKey, true);
+    } else {
+      this.triggerStateFX(stateKey);
+    }
 
     if (itemType === 'rapier') {
       if (this.rapierComboCount >= 3) {
@@ -350,8 +353,10 @@ export class PetStateMachine {
     this.stateTimer = setTimeout(() => {
       this.stateTimer = null;
       this.isFeeding = false;
-      this.setState('idle');
-      this.resetIdleTimer();
+      if (this.isPetMode) {
+        this.setState('idle');
+        this.resetIdleTimer();
+      }
     }, 2800);
   }
 
@@ -496,7 +501,12 @@ export class PetStateMachine {
 
   onHeroDeath() {
     this.consecutiveDeaths++;
-    this.setState('sleep', true);
+    if (this.isPetMode) {
+      this.setState('sleep', true);
+    } else {
+      const { cx, cy } = this.getAvatarCenter();
+      this.fx.spawnGhosts?.(cx, cy);
+    }
 
     if (this.consecutiveDeaths >= 2) {
       const { cx, cy } = this.getAvatarCenter();
@@ -517,17 +527,28 @@ export class PetStateMachine {
 
     this.stateTimer = setTimeout(() => {
       this.stateTimer = null;
-      this.setState('idle', true);
-      this.resetIdleTimer();
+      if (this.isPetMode) {
+        this.setState('idle', true);
+        this.resetIdleTimer();
+      } else if (this.statusTextEl && !this.isBkbAvatar) {
+        this.statusTextEl.textContent = '待命';
+      }
     }, 4000);
   }
 
   onLowHealthAlert() {
-    this.setState('drag', true);
+    if (this.isPetMode) {
+      this.setState('drag', true);
+    } else {
+      const { cx, cy } = this.getAvatarCenter();
+      this.fx.spawnSweat?.(cx, cy - 20);
+    }
     this.stateTimer = setTimeout(() => {
       this.stateTimer = null;
-      this.setState('idle', true);
-      this.resetIdleTimer();
+      if (this.isPetMode) {
+        this.setState('idle', true);
+        this.resetIdleTimer();
+      }
     }, 1800);
   }
 
