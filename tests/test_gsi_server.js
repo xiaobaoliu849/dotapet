@@ -150,6 +150,57 @@ async function runTests() {
     throw new Error(`Timer alert failed, expected bounty_lotus got ${timerAlert?.type}`);
   }
 
+  // Step 3e: Clutch Escape (Low HP <= 25% -> heals to >= 45% without dying)
+  console.log('  -> Sending low HP (18%) followed by survival heal (60%) for Clutch Escape...');
+  timerAlert = null;
+  await sendMockPayload({
+    map: { matchid: '987654321', game_state: 'DOTA_GAMERULES_STATE_GAME_IN_PROGRESS', clock_time: 170 },
+    player: { kills: 5, deaths: 1, assists: 2 },
+    hero: { name: 'npc_dota_hero_invoker', level: 8, alive: true, health: 180, max_health: 1000, health_percent: 18 },
+  });
+  await sendMockPayload({
+    map: { matchid: '987654321', game_state: 'DOTA_GAMERULES_STATE_GAME_IN_PROGRESS', clock_time: 174 },
+    player: { kills: 5, deaths: 1, assists: 2 },
+    hero: { name: 'npc_dota_hero_invoker', level: 8, alive: true, health: 600, max_health: 1000, health_percent: 60 },
+  });
+  if (timerAlert?.type !== 'clutch_escape') {
+    throw new Error(`Clutch escape alert failed, expected clutch_escape got ${timerAlert?.type}`);
+  }
+
+  // Guard: Low HP -> Death -> Respawn at 100% HP must NOT falsely trigger clutch_escape
+  timerAlert = null;
+  await sendMockPayload({
+    map: { matchid: '987654321', game_state: 'DOTA_GAMERULES_STATE_GAME_IN_PROGRESS', clock_time: 180 },
+    player: { kills: 5, deaths: 1, assists: 2 },
+    hero: { name: 'npc_dota_hero_invoker', level: 8, alive: true, health: 150, max_health: 1000, health_percent: 15 },
+  });
+  await sendMockPayload({
+    map: { matchid: '987654321', game_state: 'DOTA_GAMERULES_STATE_GAME_IN_PROGRESS', clock_time: 182 },
+    player: { kills: 5, deaths: 2, assists: 2 },
+    hero: { name: 'npc_dota_hero_invoker', level: 8, alive: false, health: 0, max_health: 1000, health_percent: 0, respawn_seconds: 25 },
+  });
+  await sendMockPayload({
+    map: { matchid: '987654321', game_state: 'DOTA_GAMERULES_STATE_GAME_IN_PROGRESS', clock_time: 210 },
+    player: { kills: 5, deaths: 2, assists: 2 },
+    hero: { name: 'npc_dota_hero_invoker', level: 8, alive: true, health: 1000, max_health: 1000, health_percent: 100 },
+  });
+  if (timerAlert?.type === 'clutch_escape') {
+    throw new Error('Respawning after dying at low HP must NOT falsely emit clutch_escape');
+  }
+
+  // Step 3f: Forgetful Carry No-TP Scroll Warning (10:00+, full HP, teleport0 empty)
+  console.log('  -> Sending 10:10 full HP payload with empty teleport0 slot...');
+  timerAlert = null;
+  await sendMockPayload({
+    map: { matchid: '987654321', game_state: 'DOTA_GAMERULES_STATE_GAME_IN_PROGRESS', clock_time: 610 },
+    player: { kills: 6, deaths: 2, assists: 4 },
+    hero: { name: 'npc_dota_hero_invoker', level: 11, alive: true, health: 1200, max_health: 1200, health_percent: 100 },
+    items: { teleport0: { name: 'empty' } },
+  });
+  if (timerAlert?.type !== 'no_tp_warning') {
+    throw new Error(`No-TP warning failed, expected no_tp_warning got ${timerAlert?.type}`);
+  }
+
   server.stop();
   console.log('\n🎉 ALL GSI INTEGRATION TESTS PASSED SUCCESSFULLY! 🎉');
 }

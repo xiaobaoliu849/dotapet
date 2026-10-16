@@ -155,6 +155,28 @@ export class SnowEffectManager {
     this.ensureRunning();
   }
 
+  /**
+   * Spawn iconic DOTA 2 golden '?' taunt / clutch-escape particles
+   */
+  spawnQuestionMarks(x, y, count = 4, color = '#facc15') {
+    const safeCount = Math.max(1, Math.min(12, Number(count) || 4));
+    for (let i = 0; i < safeCount; i++) {
+      this.particles.push({
+        type: 'question',
+        x: x + (Math.random() - 0.5) * 44,
+        y: y - 10 + (Math.random() - 0.5) * 18,
+        vx: (Math.random() - 0.5) * 0.8,
+        vy: -1.4 - Math.random() * 1.2,
+        phase: Math.random() * Math.PI * 2,
+        size: 16 + Math.random() * 7,
+        alpha: 1.0,
+        decay: 0.016,
+        color,
+      });
+    }
+    this.ensureRunning();
+  }
+
   animate() {
     if (!this.ctx) {
       this.isRunning = false;
@@ -185,6 +207,18 @@ export class SnowEffectManager {
         p.y += p.vy;
         this.ctx.fillStyle = p.color;
         this.drawHeart(p.x, p.y, p.size);
+      } else if (p.type === 'question') {
+        p.phase = (p.phase || 0) + 0.14;
+        p.x += p.vx + Math.sin(p.phase) * 0.45;
+        p.y += p.vy;
+        this.ctx.font = `900 ${Math.round(p.size)}px "Segoe UI", "Microsoft YaHei", sans-serif`;
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+        this.ctx.lineWidth = 3;
+        this.ctx.strokeStyle = 'rgba(69, 26, 3, 0.85)';
+        this.ctx.strokeText('?', p.x, p.y);
+        this.ctx.fillStyle = p.color;
+        this.ctx.fillText('?', p.x, p.y);
       } else if (p.type === 'sparkle' || p.type === 'snow') {
         p.x += p.vx;
         p.y += p.vy;

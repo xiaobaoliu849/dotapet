@@ -99,9 +99,9 @@ export class GSIParser extends EventEmitter {
       this.processCombatEvents(player, hero);
     }
 
-    // 4. Tactical Clock & Rune Timers
+    // 4. Tactical Clock, Rune Timers & TP Scroll Reminder
     if (this.enableRuneTimers && typeof map.clock_time === 'number' && !map.paused) {
-      this.processTacticalTimers(map.clock_time, map.game_state);
+      this.processTacticalTimers(map.clock_time, map.game_state, hero, data.items);
     }
 
     // 5. Generate and emit consolidated snapshot for UI (throttled)
@@ -159,7 +159,9 @@ export class GSIParser extends EventEmitter {
     }
 
     // Detect Death
-    if (deaths > this.lastDeaths || (this.lastAlive && !isAlive)) {
+    const diedThisTick = deaths > this.lastDeaths || (this.lastAlive && !isAlive);
+    if (diedThisTick) {
+      this.wasLowHealth = false;
       const respawnSec = Number(hero.respawn_seconds) || 0;
       const buybackCost = Number(hero.buyback_cost) || 0;
       const buybackCd = Number(hero.buyback_cooldown) || 0;
@@ -183,9 +185,9 @@ export class GSIParser extends EventEmitter {
       });
     }
 
-    // Low HP Panic Alert (< 25% health and alive)
+    // Low HP Panic Alert (< 25% health and alive) & Clutch Survival Detection
     const healthPercent = Number(hero.health_percent) || 100;
-    if (isAlive && healthPercent > 0 && healthPercent <= 25) {
+    if (!diedThisTick && isAlive && healthPercent > 0 && healthPercent <= 25) {
       if (!this.wasLowHealth) {
         this.wasLowHealth = true;
         this.emit('low_health_alert', {
@@ -194,6 +196,16 @@ export class GSIParser extends EventEmitter {
           healthPercent,
           title: '⚠️ 濒血警报！',
           message: `生命值仅剩 ${healthPercent}%，注意开 BKB 或吃魔棒大药！`,
+        });
+      }
+    } else if (!diedThisTick && isAlive && this.lastAlive && healthPercent >= 45) {
+      if (this.wasLowHealth) {
+        this.wasLowHealth = false;
+        this.emit('tactical_timer', {
+          type: 'clutch_escape',
+          healthPercent,
+          title: '❓ 极限残血逃生！',
+          message: '残血神仙拉扯不死！对面头顶已经飘满问号，建议公屏打个 ？',
         });
       }
     } else if (healthPercent > 40) {
@@ -207,7 +219,7 @@ export class GSIParser extends EventEmitter {
     this.lastAlive = isAlive;
   }
 
-  processTacticalTimers(clockTime, gameState) {
+  processTacticalTimers(clockTime, gameState, hero = {}, items = null) {
     if (gameState !== 'DOTA_GAMERULES_STATE_GAME_IN_PROGRESS' && gameState !== 'DOTA_GAMERULES_STATE_PRE_GAME') {
       return;
     }
@@ -276,6 +288,21 @@ export class GSIParser extends EventEmitter {
           title: '⚔️ 痛苦魔方即将降临',
           message: '30秒后 (20:00) 痛苦魔方刷新，可组织队伍击杀获取魔晶！',
           secondsRemaining: 30,
+        });
+      }
+    }
+
+    // 5. Forgetful Carry "No TP Scroll" Nagging (10:00+, full HP, teleport0 slot empty)
+    if (t >= 600 && hero?.alive !== false && Number(hero?.health_percent) >= 95 && items?.teleport0?.name === 'empty') {
+      const windowKey = `no_tp_${Math.floor(t / 300)}`;
+      if (!this.triggeredTimers.has(windowKey)) {
+        this.triggeredTimers.add(windowKey);
+        this.emit('tactical_timer', {
+          type: 'no_tp_warning',
+          targetMinute: Math.floor(t / 60),
+          title: '📜 大哥忘带 TP 啦！',
+          message: '已过10分钟且满血出门，身上没有回城卷轴(TP)，快买一张防被抓或随时支援！',
+          secondsRemaining: 0,
         });
       }
     }

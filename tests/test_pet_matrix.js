@@ -331,6 +331,84 @@ async function runTests() {
     assert.strictEqual(sm.live2d.isMouseTracking, true, 'live2d mouse tracking must resume after land');
   });
 
+  test('Fun Easter Eggs: 3x Rapier triggers BKB Avatar giant mode, consecutive deaths trigger "?" roast, and clutch escape spawns golden "?"', () => {
+    const avatarClasses = new Set();
+    const quotes = [];
+    const statusTextEl = { textContent: '' };
+    const statusPillEl = { className: '', style: {} };
+    const mockAvatar = {
+      src: '',
+      style: { transform: '' },
+      classList: {
+        add: (c) => avatarClasses.add(c),
+        remove: (c) => avatarClasses.delete(c),
+        has: (c) => avatarClasses.has(c),
+      },
+      getBoundingClientRect: () => ({ left: 40, top: 40, width: 120, height: 120 }),
+      addEventListener: () => {},
+    };
+
+    const sm = new PetStateMachine({
+      container: { style: { setProperty: () => {} }, classList: { add: () => {}, remove: () => {} } },
+      avatarEl: mockAvatar,
+      statusTextEl,
+      statusPillEl,
+      onQuote: (q) => quotes.push(q),
+      bkbAvatarDurationMs: 5000,
+    });
+
+    const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, '../src/renderer/assets/pets/baby_roshan/pet.json'), 'utf8'));
+    const pkg = sm.loader.normalizePetPackage(manifest, 'assets/pets/baby_roshan');
+    sm.loader.loadedPets.set('baby_roshan', pkg);
+    sm.setPetMode(true);
+    sm.switchPet('baby_roshan');
+
+    // 1. Feed 3 Rapiers -> activates BKB Avatar Giant Mode
+    sm.feedItem('rapier');
+    assert.strictEqual(sm.isBkbAvatar, false);
+    assert.strictEqual(sm.rapierComboCount, 1);
+
+    sm.feedItem('rapier');
+    assert.strictEqual(sm.isBkbAvatar, false);
+    assert.strictEqual(sm.rapierComboCount, 2);
+    assert.ok(statusTextEl.textContent.includes('双圣剑'));
+
+    sm.feedItem('rapier');
+    assert.strictEqual(sm.isBkbAvatar, true, '3rd Rapier must activate BKB Avatar mode');
+    assert.ok(avatarClasses.has('is-bkb-avatar'), 'avatar must receive is-bkb-avatar CSS class');
+    assert.ok(statusTextEl.textContent.includes('BKB天神下凡'));
+    assert.ok(statusPillEl.className.includes('status-bkb-avatar'));
+    assert.ok(quotes.at(-1).includes('三圣剑合璧'));
+    assert.ok(sm.fx.particles.some((p) => p.type === 'question'), 'BKB Avatar must spawn golden ? particles');
+
+    // 2. Consecutive deaths: 1st death is gentle, 2nd consecutive death roasts with '?'
+    sm.onHeroDeath();
+    assert.strictEqual(sm.consecutiveDeaths, 1);
+    assert.ok(!statusTextEl.textContent.includes('连跪吐槽中'));
+
+    sm.onHeroDeath();
+    assert.strictEqual(sm.consecutiveDeaths, 2);
+    assert.ok(statusTextEl.textContent.includes('连跪吐槽中 ❓ (x2)'));
+    assert.ok(quotes.at(-1).includes('❓'));
+
+    // Getting a kill resets consecutiveDeaths
+    sm.onKillStreak('double');
+    assert.strictEqual(sm.consecutiveDeaths, 0, 'a kill must reset consecutiveDeaths');
+
+    // 3. Clutch escape & manual '?' taunt
+    sm.onClutchEscape();
+    assert.strictEqual(statusTextEl.textContent, '极限逃生 ❓');
+    assert.ok(quotes.at(-1).includes('残血神仙拉扯'));
+
+    const tauntLine = sm.triggerQuestionTaunt();
+    assert.ok(tauntLine.includes('❓'));
+
+    // Turning off Pet Mode cleans up BKB Avatar state and timers
+    sm.setPetMode(false);
+    assert.strictEqual(sm.isBkbAvatar, false);
+    assert.ok(!avatarClasses.has('is-bkb-avatar'));
+  });
+
   console.log(`\n=== Test Results: ${passedTests}/${totalTests} Passed ===`);
   if (passedTests === totalTests) {
     console.log('All Pet Matrix & Live2D tests passed successfully!\n');

@@ -38,6 +38,15 @@ export class PetStateMachine {
     this.isFetching = false;
     this.isSpecial = false;
 
+    // Fun / Easter-egg states: 3x Rapier BKB Avatar & consecutive death roast tracker
+    this.rapierComboCount = 0;
+    this.lastRapierFeedAt = 0;
+    this.isBkbAvatar = false;
+    this.bkbAvatarTimer = null;
+    this.bkbAvatarDurationMs = options.bkbAvatarDurationMs || 12000;
+    this.consecutiveDeaths = 0;
+    this.tauntIndex = 0;
+
     this.idleTimer = null;
     this.sleepTimeoutMs = 180000; // 3 mins idle -> auto sleep
     this.pettingMoves = 0;
@@ -143,6 +152,8 @@ export class PetStateMachine {
       // no-op, but its flag would latch forever).
       clearTimeout(this.stateTimer);
       this.stateTimer = null;
+      this.clearBkbAvatar();
+      this.rapierComboCount = 0;
       this.isFeeding = false;
       this.isFetching = false;
       this.isSpecial = false;
@@ -201,7 +212,7 @@ export class PetStateMachine {
     }
 
     if (this.statusPillEl) {
-      this.statusPillEl.className = `status-pill status-${newState}`;
+      this.statusPillEl.className = `status-pill status-${newState}${this.isBkbAvatar ? ' status-bkb-avatar' : ''}`;
     }
 
     // Trigger quote if available
@@ -213,14 +224,21 @@ export class PetStateMachine {
     this.triggerStateFX(newState);
   }
 
+  getAvatarCenter() {
+    if (!this.avatarEl?.getBoundingClientRect) return { cx: 100, cy: 100 };
+    const rect = this.avatarEl.getBoundingClientRect();
+    return {
+      cx: rect.left + rect.width / 2,
+      cy: rect.top + rect.height / 2,
+    };
+  }
+
   /**
    * Trigger Particle FX based on state and active pet
    */
   triggerStateFX(state) {
     if (!this.avatarEl) return;
-    const rect = this.avatarEl.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
+    const { cx: centerX, cy: centerY } = this.getAvatarCenter();
 
     if (state === 'pet') {
       this.fx.spawnHearts(centerX, centerY - 20);
@@ -298,13 +316,34 @@ export class PetStateMachine {
   }
 
   /**
-   * Feed DOTA 2 Item to pet
+   * Feed DOTA 2 Item to pet.
+   * Easter egg: feeding 3 Divine Rapiers within 20 seconds activates
+   * "BKB Avatar Giant Mode" (1.28x size + golden immunity aura + '?' shower)!
    */
   feedItem(itemType) {
     if (!this.isPetMode) return;
     this.isFeeding = true;
     const stateKey = `feed_${itemType}`;
-    this.setState(stateKey);
+
+    if (itemType === 'rapier') {
+      const now = Date.now();
+      if (now - this.lastRapierFeedAt > 20000) {
+        this.rapierComboCount = 0;
+      }
+      this.rapierComboCount++;
+      this.lastRapierFeedAt = now;
+    }
+
+    this.setState(stateKey, true);
+
+    if (itemType === 'rapier') {
+      if (this.rapierComboCount >= 3) {
+        this.rapierComboCount = 0;
+        this.activateBkbAvatar();
+      } else if (this.rapierComboCount === 2 && this.statusTextEl) {
+        this.statusTextEl.textContent = '双圣剑在手 (+700 攻击) 🔥';
+      }
+    }
 
     this.stateTimer = setTimeout(() => {
       this.stateTimer = null;
@@ -312,6 +351,67 @@ export class PetStateMachine {
       this.setState('idle');
       this.resetIdleTimer();
     }, 2800);
+  }
+
+  /**
+   * Activate 3-Rapier "BKB Avatar Giant Mode" (天神下凡)
+   */
+  activateBkbAvatar() {
+    clearTimeout(this.bkbAvatarTimer);
+    this.isBkbAvatar = true;
+    this.avatarEl?.classList?.add('is-bkb-avatar');
+    this.container?.classList?.add('is-bkb-avatar-root');
+    if (this.statusTextEl) {
+      this.statusTextEl.textContent = '👑 BKB天神下凡 (+1050 圣剑暴走)';
+    }
+    if (this.statusPillEl) {
+      this.statusPillEl.className = `status-pill status-${this.currentState} status-bkb-avatar`;
+    }
+
+    const { cx, cy } = this.getAvatarCenter();
+    this.fx.spawnGoldSparkles(cx, cy);
+    this.fx.spawnQuestionMarks(cx, cy - 22, 6);
+    this.live2d.triggerSquashImpact(-0.22);
+
+    if (this.onQuote) {
+      this.onQuote('⚡ 三圣剑合璧，BKB 天神下凡已开启！魔免金身，请问还有谁？！❓', this.getCurrentPet());
+    }
+
+    this.bkbAvatarTimer = setTimeout(() => {
+      this.clearBkbAvatar();
+    }, this.bkbAvatarDurationMs);
+  }
+
+  clearBkbAvatar() {
+    clearTimeout(this.bkbAvatarTimer);
+    this.bkbAvatarTimer = null;
+    this.isBkbAvatar = false;
+    this.avatarEl?.classList?.remove('is-bkb-avatar');
+    this.container?.classList?.remove('is-bkb-avatar-root');
+    if (this.statusPillEl && typeof this.statusPillEl.className === 'string') {
+      this.statusPillEl.className = this.statusPillEl.className.replace(/\s*status-bkb-avatar/g, '');
+    }
+  }
+
+  /**
+   * Spawn a burst of iconic DOTA 2 golden '?' taunt particles & banter
+   */
+  triggerQuestionTaunt(customQuote = '') {
+    const { cx, cy } = this.getAvatarCenter();
+    this.fx.spawnQuestionMarks(cx, cy - 22, 5);
+    this.live2d?.triggerJoyWiggle();
+
+    const tauntQuotes = [
+      '❓ 公屏飘起一串金色问号：就这？对面技能全空啦！',
+      '❓ 战术问号已就位！这波操作拉满，建议打个 ？ 致敬对手~',
+      '❓ 满头问号！这也能活下来，对面怕是要敲碎键盘了！',
+      '❓ 经典刀塔礼仪：打得好叫 wp，反杀必须飘个 ？',
+    ];
+    const quote = customQuote || tauntQuotes[this.tauntIndex++ % tauntQuotes.length];
+    if (this.onQuote) {
+      this.onQuote(quote, this.getCurrentPet());
+    }
+    return quote;
   }
 
   /**
@@ -338,8 +438,11 @@ export class PetStateMachine {
    * DOTA 2 GSI Combat Reactions with Pet Personalities
    */
   onRampage() {
+    this.consecutiveDeaths = 0;
     this.setState('feed_rapier', true);
-    this.triggerPetSpecialFX(100, 100);
+    const { cx, cy } = this.getAvatarCenter();
+    this.triggerPetSpecialFX(cx, cy);
+    this.fx.spawnQuestionMarks(cx, cy - 22, 6);
     this.stateTimer = setTimeout(() => {
       this.stateTimer = null;
       this.setState('special', true);
@@ -352,11 +455,14 @@ export class PetStateMachine {
   }
 
   onKillStreak(streakType = 'single') {
+    this.consecutiveDeaths = 0;
     if (streakType === 'rampage' || streakType === 'ultra') {
       this.onRampage();
       return;
     }
     this.setState('pet', true);
+    const { cx, cy } = this.getAvatarCenter();
+    this.fx.spawnQuestionMarks(cx, cy - 20, streakType === 'triple' ? 5 : 3);
     this.stateTimer = setTimeout(() => {
       this.stateTimer = null;
       this.setState('idle', true);
@@ -364,8 +470,45 @@ export class PetStateMachine {
     }, 2000);
   }
 
+  onClutchEscape() {
+    const { cx, cy } = this.getAvatarCenter();
+    this.setState('special', true);
+    this.fx.spawnHealSparkles(cx, cy);
+    this.fx.spawnQuestionMarks(cx, cy - 24, 6);
+    if (this.statusTextEl) {
+      this.statusTextEl.textContent = '极限逃生 ❓';
+    }
+    if (this.onQuote) {
+      this.onQuote('❓ 残血神仙拉扯反秀！对面头顶已经飘满问号啦！', this.getCurrentPet());
+    }
+    this.stateTimer = setTimeout(() => {
+      this.stateTimer = null;
+      this.setState('idle', true);
+      this.resetIdleTimer();
+    }, 2800);
+  }
+
   onHeroDeath() {
+    this.consecutiveDeaths++;
     this.setState('sleep', true);
+
+    if (this.consecutiveDeaths >= 2) {
+      const { cx, cy } = this.getAvatarCenter();
+      this.fx.spawnQuestionMarks(cx, cy - 20, 4);
+      const roastQuotes = [
+        `❓ 已经连倒 ${this.consecutiveDeaths} 次啦！兄弟，对面野怪都没你刷得勤，稳住别上头！`,
+        `❓ 连送 ${this.consecutiveDeaths} 波？桌宠都看呆了，快买个真假眼抱紧队友大腿！`,
+        `❓ 警报！连续阵亡 ${this.consecutiveDeaths} 次，先把键盘上的冲脸键扣掉冷静十秒~`,
+      ];
+      const roast = roastQuotes[(this.consecutiveDeaths - 2) % roastQuotes.length];
+      if (this.statusTextEl) {
+        this.statusTextEl.textContent = `连跪吐槽中 ❓ (x${this.consecutiveDeaths})`;
+      }
+      if (this.onQuote) {
+        this.onQuote(roast, this.getCurrentPet());
+      }
+    }
+
     this.stateTimer = setTimeout(() => {
       this.stateTimer = null;
       this.setState('idle', true);
@@ -466,5 +609,12 @@ export class PetStateMachine {
         this.resetIdleTimer();
       }
     });
+
+    if (this.statusPillEl?.addEventListener) {
+      this.statusPillEl.addEventListener('click', (e) => {
+        e?.stopPropagation?.();
+        this.triggerQuestionTaunt();
+      });
+    }
   }
 }

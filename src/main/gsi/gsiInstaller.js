@@ -20,7 +20,7 @@ export function generateGsiConfigContent(port = DEFAULT_PORT) {
         "player"        "1"
         "hero"          "1"
         "abilities"     "0"
-        "items"         "0"
+        "items"         "1"
         "draft"         "0"
         "wearables"     "0"
     }

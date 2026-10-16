@@ -2750,13 +2750,15 @@ function setupEventListeners() {
       } else if (elements.petContainer) {
         elements.petContainer.classList.add('pet-joy-hop');
         setTimeout(() => elements.petContainer?.classList.remove('pet-joy-hop'), 800);
+        const { cx, cy } = petStateMachine.getAvatarCenter();
+        petStateMachine.fx?.spawnQuestionMarks(cx, cy - 20, data?.streakType === 'rampage' ? 6 : 3);
       }
 
       displayTranslationHUD({
         original: `${data.title} (${data.kills}/${data.deaths}/${data.assists})`,
         meaningZh: data.message,
         intent: data.streakType === 'rampage' ? 'urgent' : 'strategy',
-        suggestions: ['ez', 'well played', 'push towers now'],
+        suggestions: ['?', 'ez', 'well played'],
         autoDismissMs: data.streakType === 'rampage' ? 6000 : 3500,
       });
 
@@ -2794,12 +2796,25 @@ function setupEventListeners() {
     });
 
     window.electronAPI.onGsiTacticalTimer?.((data) => {
+      let suggestions = ['get rune', 'lotus up', 'stack camps'];
+      if (data?.type === 'clutch_escape') {
+        suggestions = ['?', 'ez', 'not even close'];
+        if (state.isPetMode) {
+          petStateMachine.onClutchEscape();
+        } else {
+          const { cx, cy } = petStateMachine.getAvatarCenter();
+          petStateMachine.fx?.spawnQuestionMarks(cx, cy - 22, 6);
+        }
+      } else if (data?.type === 'no_tp_warning') {
+        suggestions = ['buying tp', 'no tp wait', 'care i have no tp'];
+      }
+
       displayTranslationHUD({
         original: data.title,
         meaningZh: data.message,
-        intent: 'strategy',
-        suggestions: ['get rune', 'lotus up', 'stack camps'],
-        autoDismissMs: 4000,
+        intent: data?.type === 'no_tp_warning' ? 'urgent' : 'strategy',
+        suggestions,
+        autoDismissMs: 4200,
       });
 
       // Subtle TTS voice announcement for important tactical runes
