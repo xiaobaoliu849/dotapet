@@ -403,6 +403,14 @@ async function runTests() {
     const tauntLine = sm.triggerQuestionTaunt();
     assert.ok(tauntLine.includes('❓'));
 
+    // Returning to idle while BKB Avatar is active keeps the BKB Avatar status label
+    sm.setState('idle', true);
+    assert.strictEqual(statusTextEl.textContent, '👑 BKB天神下凡 (魔免金身)');
+
+    // When BKB Avatar expires while idle, status text restores to '待命'
+    sm.clearBkbAvatar();
+    assert.strictEqual(statusTextEl.textContent, '待命');
+
     // Turning off Pet Mode cleans up BKB Avatar state and timers
     sm.setPetMode(false);
     assert.strictEqual(sm.isBkbAvatar, false);

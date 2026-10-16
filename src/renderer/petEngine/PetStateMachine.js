@@ -195,7 +195,7 @@ export class PetStateMachine {
 
     if (this.statusTextEl) {
       const stateLabels = {
-        idle: '待命',
+        idle: this.isBkbAvatar ? '👑 BKB天神下凡 (魔免金身)' : '待命',
         walk: '漫步巡航',
         pet: '享受抚摸 ❤️',
         drag: '悬空扑腾',
@@ -225,11 +225,13 @@ export class PetStateMachine {
   }
 
   getAvatarCenter() {
-    if (!this.avatarEl?.getBoundingClientRect) return { cx: 100, cy: 100 };
+    if (!this.avatarEl?.getBoundingClientRect) return { cx: 110, cy: 110 };
     const rect = this.avatarEl.getBoundingClientRect();
+    const rawCx = rect.width > 0 ? rect.left + rect.width / 2 : 110;
+    const rawCy = rect.height > 0 ? rect.top + rect.height / 2 : 110;
     return {
-      cx: rect.left + rect.width / 2,
-      cy: rect.top + rect.height / 2,
+      cx: Math.max(30, rawCx),
+      cy: Math.max(42, rawCy),
     };
   }
 
@@ -385,11 +387,15 @@ export class PetStateMachine {
   clearBkbAvatar() {
     clearTimeout(this.bkbAvatarTimer);
     this.bkbAvatarTimer = null;
+    const wasActive = this.isBkbAvatar;
     this.isBkbAvatar = false;
     this.avatarEl?.classList?.remove('is-bkb-avatar');
     this.container?.classList?.remove('is-bkb-avatar-root');
     if (this.statusPillEl && typeof this.statusPillEl.className === 'string') {
       this.statusPillEl.className = this.statusPillEl.className.replace(/\s*status-bkb-avatar/g, '');
+    }
+    if (wasActive && this.isPetMode && this.currentState === 'idle' && this.statusTextEl) {
+      this.statusTextEl.textContent = '待命';
     }
   }
 

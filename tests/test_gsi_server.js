@@ -150,8 +150,8 @@ async function runTests() {
     throw new Error(`Timer alert failed, expected bounty_lotus got ${timerAlert?.type}`);
   }
 
-  // Step 3e: Clutch Escape (Low HP <= 25% -> heals to >= 45% without dying)
-  console.log('  -> Sending low HP (18%) followed by survival heal (60%) for Clutch Escape...');
+  // Step 3e: Clutch Escape (Low HP <= 25% -> gradual heal through 42% -> >= 45% without dying)
+  console.log('  -> Sending low HP (18%) followed by gradual heal (42% -> 48%) for Clutch Escape...');
   timerAlert = null;
   await sendMockPayload({
     map: { matchid: '987654321', game_state: 'DOTA_GAMERULES_STATE_GAME_IN_PROGRESS', clock_time: 170 },
@@ -159,12 +159,17 @@ async function runTests() {
     hero: { name: 'npc_dota_hero_invoker', level: 8, alive: true, health: 180, max_health: 1000, health_percent: 18 },
   });
   await sendMockPayload({
+    map: { matchid: '987654321', game_state: 'DOTA_GAMERULES_STATE_GAME_IN_PROGRESS', clock_time: 172 },
+    player: { kills: 5, deaths: 1, assists: 2 },
+    hero: { name: 'npc_dota_hero_invoker', level: 8, alive: true, health: 420, max_health: 1000, health_percent: 42 },
+  });
+  await sendMockPayload({
     map: { matchid: '987654321', game_state: 'DOTA_GAMERULES_STATE_GAME_IN_PROGRESS', clock_time: 174 },
     player: { kills: 5, deaths: 1, assists: 2 },
-    hero: { name: 'npc_dota_hero_invoker', level: 8, alive: true, health: 600, max_health: 1000, health_percent: 60 },
+    hero: { name: 'npc_dota_hero_invoker', level: 8, alive: true, health: 480, max_health: 1000, health_percent: 48 },
   });
   if (timerAlert?.type !== 'clutch_escape') {
-    throw new Error(`Clutch escape alert failed, expected clutch_escape got ${timerAlert?.type}`);
+    throw new Error(`Clutch escape alert failed on gradual heal, expected clutch_escape got ${timerAlert?.type}`);
   }
 
   // Guard: Low HP -> Death -> Respawn at 100% HP must NOT falsely trigger clutch_escape

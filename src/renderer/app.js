@@ -136,7 +136,8 @@ function setupWindowDragging() {
       target.closest('.skin-item-card') ||
       target.closest('.catchphrase-item') ||
       target.closest('.ability-card') ||
-      target.closest('.transcript-panel')
+      target.closest('.transcript-panel') ||
+      target.closest('.status-pill')
     );
   };
 
@@ -701,14 +702,23 @@ function displayPetBubbleQuote(quote, pet = null) {
   // Pet animation states also emit canned quotes. They must not replace a
   // live reply or cover the reading area during a voice conversation.
   if (document.body.classList.contains('has-transcript-open') || state.isMicActive) return;
-  const currentPet = pet || petStateMachine.getCurrentPet();
-  const icon = getPetIcon(currentPet?.name);
-  const displayName = currentPet?.displayName || 'DOTA 2 萌宠';
+
+  let headerText;
+  let intentLabel = 'PET';
+  if (!state.isPetMode && state.currentHero) {
+    headerText = `⚔️ ${state.currentHero.nameZh || state.currentHero.nameEn}:`;
+    intentLabel = 'HERO';
+  } else {
+    const currentPet = pet || petStateMachine.getCurrentPet();
+    const icon = getPetIcon(currentPet?.name);
+    const displayName = currentPet?.displayName || 'DOTA 2 萌宠';
+    headerText = `${icon} ${displayName}:`;
+  }
 
   if (elements.hudOriginal && elements.hudMeaning && elements.dialogueHud) {
-    elements.hudOriginal.textContent = `${icon} ${displayName}:`;
+    elements.hudOriginal.textContent = headerText;
     elements.hudMeaning.textContent = quote;
-    if (elements.hudIntent) elements.hudIntent.textContent = 'PET';
+    if (elements.hudIntent) elements.hudIntent.textContent = intentLabel;
     elements.dialogueHud.classList.remove('hidden');
     clearTimeout(window._petQuoteTimer);
     window._petQuoteTimer = setTimeout(() => {
@@ -2732,6 +2742,9 @@ function setupEventListeners() {
     });
 
     window.electronAPI.onGsiHeroDetected?.((data) => {
+      if (data?.isNew) {
+        petStateMachine.consecutiveDeaths = 0;
+      }
       if (data?.heroData) {
         displayTranslationHUD({
           original: `🎮 DOTA 2 选人同步: ${data.heroData.nameZh} (${data.rawName})`,

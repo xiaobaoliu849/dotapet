@@ -186,7 +186,8 @@ export class GSIParser extends EventEmitter {
     }
 
     // Low HP Panic Alert (< 25% health and alive) & Clutch Survival Detection
-    const healthPercent = Number(hero.health_percent) || 100;
+    const rawHpPct = Number(hero.health_percent);
+    const healthPercent = Number.isFinite(rawHpPct) ? rawHpPct : 100;
     if (!diedThisTick && isAlive && healthPercent > 0 && healthPercent <= 25) {
       if (!this.wasLowHealth) {
         this.wasLowHealth = true;
@@ -208,8 +209,6 @@ export class GSIParser extends EventEmitter {
           message: '残血神仙拉扯不死！对面头顶已经飘满问号，建议公屏打个 ？',
         });
       }
-    } else if (healthPercent > 40) {
-      this.wasLowHealth = false;
     }
 
     this.lastKills = kills;
