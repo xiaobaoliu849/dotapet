@@ -262,6 +262,84 @@ describe('Chinese glossary fallback when cloud translation is unavailable', () =
   }));
 });
 
+describe('DOTA 2 Slang Instant Dictionary & Disambiguation (EN / RU / ZH)', () => {
+  it('instantly translates "smoke" as 开雾 (Smoke of Deceit) without calling cloud API', async () => {
+    const service = new TranslationService();
+    let cloudCalled = false;
+    service.callCloudLLMTranslation = async () => { cloudCalled = true; return null; };
+
+    const resSmoke = await service.analyzeText('smoke');
+    assert.strictEqual(cloudCalled, false, 'instant slang hit must not call cloud');
+    assert.strictEqual(resSmoke.instantSlang, true);
+    assert.ok(resSmoke.translated.includes('开雾'));
+    assert.ok(resSmoke.meaningZh.includes('诡计之雾'));
+    assert.ok(resSmoke.meaningZh.includes('切勿译为抽烟'));
+
+    const resRuRosh = await service.analyzeText('го рош!');
+    assert.strictEqual(resRuRosh.instantSlang, true);
+    assert.ok(resRuRosh.translated.includes('肉山'));
+
+    const resSsMid = await service.analyzeText('/all ss mid');
+    assert.strictEqual(resSsMid.commandPrefix, '/all ');
+    assert.ok(resSsMid.translated.includes('中路'));
+
+    const resCnSmoke = await service.analyzeText('开雾');
+    assert.strictEqual(resCnSmoke.translated, 'smoke now');
+  });
+
+  it('injects anti-mistranslation slang glossary into cloud LLM prompt for complex sentences', async () => {
+    const service = new TranslationService();
+    const capturedPrompts = [];
+    CLOUD_KEYS.dashscope = 'test-key';
+    CLOUD_KEYS.translation_provider = 'qwen';
+    service.callChatCompletions = async (_url, _key, _model, systemPrompt) => {
+      capturedPrompts.push(systemPrompt);
+      return { translated: 'wait my bkb then smoke rosh', meaningZh: '等我BKB开雾打肉山', intent: 'strategy', suggestions: [] };
+    };
+
+    try {
+      await service.analyzeText('wait my bkb then smoke rosh and buy dust');
+      assert.strictEqual(capturedPrompts.length, 1);
+      assert.ok(capturedPrompts[0].includes('DOTA 2 黑话强制术语对照'));
+      assert.ok(capturedPrompts[0].includes('开雾（使用诡计之雾突袭/抓人/偷盾，绝非“抽烟”）'));
+      assert.ok(capturedPrompts[0].includes('显影之尘（反隐用的“粉”，绝非“灰尘”）'));
+    } finally {
+      CLOUD_KEYS.dashscope = '';
+    }
+  });
+
+  it('preserves question-mark intent on "rosh?" and "开雾？" instead of flattening to statements', async () => {
+    const service = new TranslationService();
+    const askRosh = await service.analyzeText('rosh?');
+    assert.strictEqual(askRosh.instantSlang, true);
+    assert.ok(askRosh.translated.startsWith('询问：'));
+    assert.ok(askRosh.translated.endsWith('？'));
+
+    const askSmokeCn = await service.analyzeText('开雾？');
+    assert.strictEqual(askSmokeCn.instantSlang, true);
+    assert.strictEqual(askSmokeCn.translated, 'smoke now?');
+  });
+
+  it('guards Cyrillic & Latin word boundaries against false positives ("хорошо", "rubick") while matching mid-sentence Cyrillic ("го сс мид")', () => withCloudKeysBlanked(async () => {
+    const service = new TranslationService();
+    // "хорошо" ("good" in Russian) contains the substring "рош" — must NOT trigger Roshan!
+    const khorosho = await service.analyzeText('хорошо сыграно');
+    assert.ok(!khorosho.meaningZh.includes('肉山'), 'must not false-match рош inside хорошо');
+
+    // "rubick" contains the letter "b" — must NOT trigger "b = retreat"!
+    const rubick = await service.analyzeText('rubick mid');
+    assert.ok(!rubick.meaningZh.includes('提示撤退'), 'must not false-match single letter b inside rubick');
+
+    // Mid-sentence Cyrillic "сс" after a space must match (JS \\b fails on Cyrillic, Unicode boundary succeeds)
+    const ruSs = await service.analyzeText('парни сс мид осторожно');
+    assert.ok(ruSs.meaningZh.includes('消失'), 'must match Cyrillic сс surrounded by spaces');
+
+    // Chinese punctuation in offline F8 glossary substitution is normalized to clean ASCII
+    const cnPunct = await service.analyzeText('开雾，肉山！');
+    assert.strictEqual(cnPunct.translated, 'Smoke, Roshan!');
+  }));
+});
+
 // ---------- GameInputHelper JSON-line protocol ----------
 
 function makeFakeChild() {
