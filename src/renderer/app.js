@@ -716,6 +716,9 @@ function displayPetBubbleQuote(quote, pet = null) {
   }
 
   if (elements.hudOriginal && elements.hudMeaning && elements.dialogueHud) {
+    elements.dialogueHud.classList.remove('is-greeting-bubble');
+    if (elements.bubbleHeader) elements.bubbleHeader.style.display = '';
+    if (elements.suggestionContainer) elements.suggestionContainer.style.display = 'none';
     elements.hudOriginal.textContent = headerText;
     elements.hudMeaning.textContent = quote;
     if (elements.hudIntent) elements.hudIntent.textContent = intentLabel;
@@ -1112,6 +1115,7 @@ function getActiveHeroSkin(hero) {
  */
 function setPetSprite(spriteType) {
   if (state.isPetMode) {
+    if (spriteType === 'action') return;
     petStateMachine.setState(spriteType === 'speaking' ? 'speak' : 'idle');
     return;
   }
@@ -1251,6 +1255,7 @@ function syncCustomCharacters() {
  */
 function setAppState(newStatus, label = null) {
   state.appState = newStatus;
+  elements.visualizerRing.className = `visualizer-ring ${newStatus}`;
 
   if (state.isPetMode) {
     if (newStatus === 'listening' || newStatus === 'thinking') {
@@ -1260,6 +1265,10 @@ function setAppState(newStatus, label = null) {
     } else if (newStatus === 'idle') {
       petStateMachine.setState('idle');
     }
+    if (label) {
+      elements.statusText.textContent = label;
+    }
+    return;
   }
 
   elements.petStatusPill.className = `status-pill status-${newStatus}`;
@@ -1272,9 +1281,7 @@ function setAppState(newStatus, label = null) {
   };
 
   elements.statusText.textContent = label || labels[newStatus] || '待命';
-  elements.visualizerRing.className = `visualizer-ring ${newStatus}`;
 
-  if (state.isPetMode) return;
   if (newStatus === 'speaking') {
     setPetSprite('speaking');
   } else {
@@ -1587,10 +1594,12 @@ function displayTranslationHUD(data) {
 
   elements.dialogueHud.classList.remove('hidden');
 
-  setPetSprite('action');
-  setTimeout(() => {
-    if (state.appState === 'idle') setPetSprite('idle');
-  }, 1200);
+  if (!state.isPetMode) {
+    setPetSprite('action');
+    setTimeout(() => {
+      if (state.appState === 'idle' && !state.isPetMode) setPetSprite('idle');
+    }, 1200);
+  }
 
   if (isGreeting || data.autoDismissMs) {
     const dismissMs = data.autoDismissMs || 3500;

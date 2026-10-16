@@ -133,9 +133,33 @@ export async function runConversationSmoke({ mainWindow, outputDirectory }) {
     await geometry();
     fs.writeFileSync(path.join(outputDirectory, 'conversation-hero.png'), (await page.capturePage()).toPNG());
     await run(`get('btn-close-transcript').click(); get('btn-close-bubble').click();`);
+    // Verify DOTA Fun Features in live Electron renderer (#pet-status-pill '?' taunt, 3x #btn-tool-rapier BKB Avatar, GSI clutch_escape & no_tp_warning)
+    await run(`
+      get('btn-pet-toggle').click(); await wait(); await wait();
+      get('btn-close-transcript').click(); get('btn-close-bubble').click();
+      get('pet-status-pill').click(); await wait();
+      check(!get('dialogue-hud').classList.contains('hidden') && get('hud-meaning').textContent.includes('❓'),
+        'Clicking status pill did not trigger ? taunt bubble: ' + get('hud-meaning').textContent);
+      const rapierBtn = get('btn-tool-rapier');
+      rapierBtn.click(); rapierBtn.click(); rapierBtn.click(); await wait();
+      check(get('pet-avatar').classList.contains('is-bkb-avatar') && get('companion-root').classList.contains('is-bkb-avatar-root'), '3x Rapier did not activate BKB Avatar classes');
+      check(get('status-text').textContent.includes('BKB天神下凡'), '3x Rapier did not update status text to BKB Avatar');
+    `);
+    await page.capturePage();
+    fs.writeFileSync(path.join(outputDirectory, 'conversation-bkb-avatar.png'), (await page.capturePage()).toPNG());
+    send('gsi:tactical-timer', { type: 'clutch_escape', title: '❓ 极限逃生 · 公屏打问号', message: '丝血反杀/极限逃生！全屏飘起灵魂问号 ？' });
+    await run(`await wait();
+      check(get('hud-meaning').textContent.includes('灵魂问号'), 'GSI clutch_escape did not trigger ? bubble');
+    `);
+    send('gsi:tactical-timer', { type: 'no_tp_warning', title: '📜 忘带 TP 警告 (10:00+)', message: '比赛已过 10 分钟，主人身上还没有回城卷轴（TP）！出门别忘买 TP 支援/逃生哦~' });
+    await run(`await wait();
+      check(get('hud-meaning').textContent.includes('TP'), 'GSI no_tp_warning did not show TP reminder bubble');
+      get('btn-pet-toggle').click(); await wait(); await wait();
+      get('btn-close-transcript').click(); get('btn-close-bubble').click();
+    `);
     if (JSON.stringify(mainWindow.getBounds()) !== JSON.stringify(before)) throw new Error('Conversation moved or resized the desktop window');
     return { connectedLayout: true, fixedReadingArea: true, historyScroll: true, manualCollapse: true,
-      microphoneStop: true, offlineHistory: true, hiddenHistoryPruning: true, scales: 3, gsi: true, petQuotes: true, translation: true, fixedWindow: true };
+      microphoneStop: true, offlineHistory: true, hiddenHistoryPruning: true, scales: 3, gsi: true, petQuotes: true, translation: true, funFeatures: true, fixedWindow: true };
   } finally {
     await page.removeInsertedCSS(style);
   }
