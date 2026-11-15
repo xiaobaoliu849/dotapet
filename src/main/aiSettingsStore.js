@@ -87,6 +87,11 @@ export class AISettingsStore {
       if (parsed.version !== 1 || !parsed.providers || typeof parsed.providers !== 'object' || Array.isArray(parsed.providers)) throw new Error('invalid settings');
       providerDefinition(parsed.selectedProvider);
       if (!['qwen', 'deepseek'].includes(parsed.translationProvider)) throw new Error('invalid translator');
+      if (parsed.providers.moss?.voice === 'en') {
+        parsed.providers.moss.voice = DEFAULT_MOSS_ENGLISH_VOICE;
+      } else if (parsed.providers.moss?.voice === 'zh') {
+        parsed.providers.moss.voice = DEFAULT_MOSS_CHINESE_VOICE;
+      }
       for (const [id, saved] of Object.entries(parsed.providers)) validateProfile(id, saved);
       parsed.conversation = normalizeConversationPreferences(parsed.conversation);
       this.data = parsed;
@@ -95,11 +100,6 @@ export class AISettingsStore {
       // voices and encrypted credentials, including the separate translator.
       if (['gemini-3.1-flash-live-preview', 'models/gemini-3.1-flash-live-preview'].includes(this.data.providers.google?.model)) {
         this.data.providers.google.model = DEFAULT_GOOGLE_REALTIME_MODEL;
-      }
-      if (this.data.providers.moss?.voice === 'en') {
-        this.data.providers.moss.voice = DEFAULT_MOSS_ENGLISH_VOICE;
-      } else if (this.data.providers.moss?.voice === 'zh') {
-        this.data.providers.moss.voice = DEFAULT_MOSS_CHINESE_VOICE;
       }
       this.shareSavedKeys(this.data);
     } catch {

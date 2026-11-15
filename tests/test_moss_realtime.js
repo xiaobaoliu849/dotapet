@@ -262,6 +262,14 @@ test('AISettingsStore and engineOptions support MOSS-Live voice UUIDs', () => {
     assert.equal(aiKeyPage('moss'), 'https://platform.moss.cn');
 
     assert.throws(() => store.save({ provider: 'moss', voice: 'not-a-moss-voice' }), /请选择支持的音色/);
+
+    // Verify legacy 'en' / 'zh' voice values in existing ai-settings.json migrate cleanly on load
+    const rawVault = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    rawVault.providers.moss.voice = 'en';
+    fs.writeFileSync(filePath, JSON.stringify(rawVault));
+    const reloaded = new AISettingsStore({ filePath, safeStorage });
+    assert.equal(reloaded.error, '');
+    assert.equal(reloaded.getPrivate('moss').voice, DEFAULT_MOSS_ENGLISH_VOICE);
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
