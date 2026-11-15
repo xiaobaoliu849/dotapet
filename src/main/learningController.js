@@ -6,8 +6,9 @@ import { isTrustedSettingsSender } from './aiSettingsIpc.js';
 import { recordAnswer } from '../learning/model.js';
 import { fetchCatalog } from '../learning/update.js';
 import { planStudy, studyOptions, studySummary, STUDY_DEFAULTS } from '../learning/study.js';
+import { diffCatalog } from '../learning/contentAudit.js';
 
-export function createLearningController({ electron, hub, rendererDirectory, dataDirectory }) {
+export function createLearningController({ electron, hub, rendererDirectory, dataDirectory, refreshCatalog = fetchCatalog }) {
   const { ipcMain, shell } = electron;
   const catalogFile = path.join(dataDirectory, 'learning-catalog.json');
   const progressFile = path.join(dataDirectory, 'learning-progress.json');
@@ -15,6 +16,8 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
   const read = (file, fallback) => { try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch { return fallback; } };
   const bundled = read(path.join(rendererDirectory, '../learning/catalog.json'), null);
   const audio = read(path.join(rendererDirectory, '../learning/audio-manifest.json'), { entries: {}, missing: [] });
+  const baseline = read(path.join(rendererDirectory, '../learning/audio-baseline.json'), { entries: {} });
+  const audioBaseline = { entries: Object.fromEntries(Object.entries(baseline.entries).map(([id, entry]) => [id, { candidateSpeech: entry.candidateSpeech, evidence: entry.evidence }])) };
   const cached = read(catalogFile, null);
   let catalog = cached?.schema === 1 && Array.isArray(cached.lessons)
     && Date.parse(cached.fetchedAt) > Date.parse(bundled.fetchedAt) ? cached : bundled;
@@ -33,7 +36,7 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
     if (!trusted(event)) return { ok: false, error: 'Untrusted learning page' };
     try { return { ok: true, ...await fn(...args) }; } catch (error) { return { ok: false, error: error.message }; }
   };
-  ipcMain.handle('learning:load', respond(() => ({ catalog, audio, ...snapshot() })));
+  ipcMain.handle('learning:load', respond(() => ({ catalog, audio, audioBaseline, ...snapshot() })));
   ipcMain.handle('learning:progress', respond((id, action, value) => {
     if (!catalog.lessons.some(r => r.id === id)) throw new Error('Unknown lesson');
     let next;
@@ -71,10 +74,13 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
     if (updating) throw new Error('An update is already running');
     updating = true;
     try {
-      const fresh = await fetchCatalog({ onProgress: state => { const contents = hub.contents('learning'); if (contents) contents.send('learning:update-progress', state); } });
+      const fresh = await refreshCatalog({ onProgress: state => { const contents = hub.contents('learning'); if (contents) contents.send('learning:update-progress', state); } });
       fresh.lessons.push(...catalog.lessons.filter(r => r.kind === 'phrase'));
+      const changes = diffCatalog(catalog, fresh);
+      write(path.join(dataDirectory, 'learning-catalog.previous.json'), catalog);
+      write(path.join(dataDirectory, 'learning-catalog-changes.json'), changes);
       write(catalogFile, fresh); catalog = fresh;
-      return { catalog };
+      return { catalog, changes };
     } finally { updating = false; }
   }));
   hub.register('learning', { file: 'learning.html', preload: '../preload/learning.js', background: '#f6f7f2',

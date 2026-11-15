@@ -1,4 +1,5 @@
 import { recordedAudio } from '../learning/audioAssets.js';
+import { audioFreshness } from '../learning/contentAudit.js';
 import { createLearningAudio } from './learning-audio.js';
 import { filterLessons } from '../learning/model.js';
 import { localDay, STUDY_DEFAULTS } from '../learning/study.js';
@@ -24,6 +25,7 @@ if (chinese) {
 }
 let catalog, progress = {}, study = { preferences: STUDY_DEFAULTS, active: null, history: [] }, mode = 'browse', limit = 24;
 let audioManifest = { entries: {} };
+let audioBaseline = { entries: {} };
 let pendingAnswer = false, starting = false, feedbackIndex = null;
 const node = (tag, value, className) => { const element = document.createElement(tag); element.textContent = value; if (className) element.className = className; return element; };
 const due = r => !progress[r.id]?.due || progress[r.id].due <= Date.now();
@@ -54,13 +56,16 @@ const player = createLearningAudio({ onChange: ({ id, status }) => {
 } });
 function audioButton(lesson) {
   const entry = recordedAudio(audioManifest, lesson);
-  const label = !entry ? text('No recording yet', '暂无录音') : entry.content === 'biography' ? text('▶ Hero story', '▶ 英雄故事') : entry.content === 'expression' ? text('▶ Play expression', '▶ 播放表达') : text('▶ AI recording', '▶ AI 录音');
+  const freshness = audioFreshness(entry, lesson, audioBaseline);
+  const changed = freshness.status === 'baseline-changed', extraContext = freshness.status === 'baseline-extra-context', unresolved = freshness.status === 'unresolved-current', needsStats = freshness.status === 'needs-stats-template';
+  const label = !entry ? text('No recording yet', '暂无录音') : changed ? text('▶ Archive · text changed', '▶ 历史录音 · 文字有变') : extraContext ? text('▶ Archive · extra notes', '▶ 历史录音 · 含额外说明') : needsStats ? text('▶ Archive · check stats', '▶ 历史录音 · 属性待核验') : unresolved ? text('▶ Archive · check values', '▶ 历史录音 · 数值待核验') : entry.content === 'biography' ? text('▶ Hero story', '▶ 英雄故事') : entry.content === 'expression' ? text('▶ Play expression', '▶ 播放表达') : text('▶ AI recording', '▶ AI 录音');
   const button = node('button', label);
   button.className = 'recording-button'; button.disabled = !entry;
   if (entry) {
     button.dataset.audioId = lesson.id; button.dataset.audioLabel = label;
+    button.dataset.audioFreshness = freshness.status;
     button.setAttribute('aria-pressed', 'false');
-    button.title = text('Your AI recording from the bilingual library. Archive wording may differ from current descriptions.', '来自双语词典的 AI 录音，历史内容可能与当前课程文字不同。');
+    button.title = changed ? text('The current explanation differs from the archived source. Treat this recording as historical; use current text for gameplay.', '当前说明与历史来源文字不同。此录音作为历史内容，游戏机制请以当前文字为准。') : extraContext ? text('The main explanation matches the archived source, but extra notes and stats still need review.', '主要说明与历史来源一致，额外备注和数值仍需核验。') : needsStats ? text('The current item source has attributes without a written explanation. This recording needs a separate stats check.', '当前物品来源提供属性，未提供文字说明；此录音需要单独核验属性。') : unresolved ? text('Some current values could not be resolved. Check the game before relying on recorded numbers.', '部分当前数值尚未解析，请在游戏中确认后再采用录音中的数字。') : text('Archived AI recording. Matching source text does not verify the MP3 transcript.', '历史 AI 录音。来源文字相同不代表已经核验 MP3 的实际台词。');
     button.onclick = () => player.toggle(lesson.id, new URL('assets/learning-audio/' + entry.file, location.href).href);
   }
   return button;
@@ -224,5 +229,5 @@ api.onHidden(() => player.stop());
 window.addEventListener('pagehide', () => player.stop());
 try {
   const response = await api.load(); if (!response.ok) throw new Error(response.error);
-  catalog = response.catalog; audioManifest = response.audio; receive(response); $('session-size').value = study.preferences.size; $('session-scope').value = study.preferences.scope; render();
+  catalog = response.catalog; audioManifest = response.audio; audioBaseline = response.audioBaseline; receive(response); $('session-size').value = study.preferences.size; $('session-scope').value = study.preferences.scope; render();
 } catch (error) { $('message').textContent = error.message; for (const button of document.querySelectorAll('button')) button.disabled = true; }

@@ -19,6 +19,12 @@ export async function runLearningAudioSmoke(page) {
       audio.removeAttribute('src'); audio.load();
     }
     const byId = id => document.getElementById(id);
+    byId('kind').value='ability'; byId('search').value='Persecutor'; byId('search').dispatchEvent(new Event('input'));
+    if(document.querySelector('#lessons .recording-button')?.dataset.audioFreshness!=='baseline-changed') throw new Error('Changed archive warning is missing');
+    byId('kind').value='item'; byId('search').value='Blink Dagger'; byId('search').dispatchEvent(new Event('input'));
+    if(document.querySelector('#lessons .recording-button')?.dataset.audioFreshness!=='baseline-extra-context') throw new Error('Extra archive notes were misclassified');
+    byId('search').value='Blades of Attack'; byId('search').dispatchEvent(new Event('input'));
+    if(document.querySelector('#lessons .recording-button')?.dataset.audioFreshness!=='needs-stats-template') throw new Error('Stat-only item source was misclassified');
     byId('kind').value='ability'; byId('search').value='Mana Break'; byId('search').dispatchEvent(new Event('input'));
     const button = document.querySelector('#lessons .recording-button:not(:disabled)');
     if(!button) throw new Error('Recorded ability button missing');
