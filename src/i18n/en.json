@@ -590,8 +590,17 @@
   "刀塔英语学堂": "Dota English",
   "英雄、物品与测验": "Heroes, items & quizzes",
   "全双工 · 原生英/中口音": "Full duplex · native English/Chinese accents",
+  "原生英/中口音": "Native EN/ZH accents",
   "Native English · 原生英语口音": "Native English accent",
   "Native Chinese · 原生中文口音": "Native Chinese accent",
+  "Amber · 原生英语": "Amber · Native English",
+  "豆包 · 原生中文": "Doubao · Native Chinese",
+  "暖暖 · 温柔中文": "Nuannuan · Gentle Chinese",
+  "沐沐 · 自然男声": "Mumu · Natural male",
+  "女7 · 美式英语": "Voice 7 · American English",
+  "自定义2 · 英语女声": "Custom 2 · English female",
+  "Chenlin · 英语女声": "Chenlin · English female",
+  "默认中文音色": "Default Chinese voice",
   "MOSS-Live 全双工语音 (MOSI)": "MOSS-Live full-duplex voice (MOSI)",
   "在 platform.moss.cn 获取 API Key，支持原生英语与原生中文口音的全双工实时对话。": "Get an API key at platform.moss.cn for full-duplex live conversations with native English and Chinese accents."
 }

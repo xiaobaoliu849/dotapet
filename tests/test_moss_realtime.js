@@ -72,7 +72,7 @@ function waitFor(predicate, timeoutMs = 2000) {
   });
 }
 
-test('MOSS-Live connects with Bearer auth, sends change_voice for native US English voice, and frames 640B audio', async () => {
+test('MOSS-Live connects with Bearer auth, sends change_voice for native English voice (Amber), and frames 640B audio', async () => {
   const server = await startMockMossServer();
   const prevUrl = CLOUD_KEYS.moss_ws_url;
   configureCloudKeys({ moss_ws_url: server.wsUrl });
@@ -104,7 +104,8 @@ test('MOSS-Live connects with Bearer auth, sends change_voice for native US Engl
     const mic = conn.jsonMessages.find(m => m.action === 'mic_state');
     assert.ok(attach);
     assert.equal(changeVoice?.voice_name, DEFAULT_MOSS_ENGLISH_VOICE);
-    assert.ok(update?.session?.instructions.includes('native US English accent'));
+    assert.ok(update?.session?.instructions.includes('native UK English accent'));
+    assert.ok(update?.session?.instructions.includes('Never utter Chinese characters'));
     assert.equal(mic?.enabled, true);
 
     // Send 1000 bytes -> 1 frame of 640 bytes, 360 bytes buffered; then +300 bytes -> 2nd 640-byte frame.
@@ -263,13 +264,15 @@ test('AISettingsStore and engineOptions support MOSS-Live voice UUIDs', () => {
 
     assert.throws(() => store.save({ provider: 'moss', voice: 'not-a-moss-voice' }), /请选择支持的音色/);
 
-    // Verify legacy 'en' / 'zh' voice values in existing ai-settings.json migrate cleanly on load
-    const rawVault = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    rawVault.providers.moss.voice = 'en';
-    fs.writeFileSync(filePath, JSON.stringify(rawVault));
-    const reloaded = new AISettingsStore({ filePath, safeStorage });
-    assert.equal(reloaded.error, '');
-    assert.equal(reloaded.getPrivate('moss').voice, DEFAULT_MOSS_ENGLISH_VOICE);
+    // Verify legacy 'en' / '0f2815fb-0d4c-4cee-ac8c-0bb916af7b28' voice values in existing ai-settings.json migrate cleanly on load
+    for (const legacyVoice of ['en', '0f2815fb-0d4c-4cee-ac8c-0bb916af7b28']) {
+      const rawVault = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+      rawVault.providers.moss.voice = legacyVoice;
+      fs.writeFileSync(filePath, JSON.stringify(rawVault));
+      const reloaded = new AISettingsStore({ filePath, safeStorage });
+      assert.equal(reloaded.error, '');
+      assert.equal(reloaded.getPrivate('moss').voice, DEFAULT_MOSS_ENGLISH_VOICE);
+    }
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

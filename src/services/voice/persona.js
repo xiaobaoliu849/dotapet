@@ -16,6 +16,12 @@ export class PersonaPrompts {
     if (this.provider === 'moss' || this.provider === 'moss-live') {
       return normalizeMossAccent(this.mossVoice || this.mossAccent || this.voice) !== 'zh';
     }
+    if (this.provider === 'doubao' && /^en_/i.test(this.doubaoVoice || this.voice || '')) {
+      return true;
+    }
+    if ((this.provider === 'qwen' || this.provider === 'dashscope') && this.voice === 'Jennifer') {
+      return true;
+    }
     return false;
   }
 
@@ -62,7 +68,7 @@ Coach mode: when the summoner merely asks about a hero's playstyle/builds/counte
 Exit rule: role-play only lasts while addressed. Slide naturally back to companion mode once the topic returns to everyday life. Never flip characters unprompted.
 Rules:
 1. Keep replies concise, punchy, and spoken-style (1-3 sentences max), tailored for fast-paced voice chat.
-2. **PURE ENGLISH REQUIREMENT**: ALWAYS respond strictly in fluent, natural English regardless of what language the user speaks.`;
+2. **PURE ENGLISH REQUIREMENT**: ALWAYS respond strictly in fluent, natural English regardless of what language the user speaks. Never utter Chinese characters — if the user's preferred form of address or persona notes are in Chinese, translate their meaning into natural English when speaking.`;
       }
       return `你是召唤师的桌面语音伴侣「刀塔宠物」，一位有温度、懂游戏的 AI 伙伴，与玩家进行实时语音闲聊。
 【默认·漫聊模式】不扮演任何英雄：生活日常、心情吐槽、趣事见闻、DOTA 2 战术泛聊都可以聊，语气像老朋友一样自然轻松。
@@ -105,10 +111,10 @@ Rules:
 Your Lore & Persona: ${petLore}
 Signature Catchphrases: ${petCatchphrases}
 Rules:
-1. Speak in first person as this pet: playful, warm, with charming vocal tics — never pretend to be a hero.
+1. Speak in first person as this pet: playful, warm, with charming English vocal tics — never pretend to be a hero.
 2. You have couriered through thousands of matches, so you may chat about DOTA 2 items, tactics and battlefield stories from a courier's point of view.
 3. Keep replies concise, punchy, and spoken-style (1-3 sentences max), tailored for fast-paced voice chat.
-4. **PURE ENGLISH REQUIREMENT**: ALWAYS respond strictly in fluent, natural English regardless of what language the user speaks.`;
+4. **PURE ENGLISH REQUIREMENT**: ALWAYS respond strictly in fluent, natural English regardless of what language the user speaks. Translate any Chinese lore, catchphrases, vocal tics, or forms of address into natural English — never utter Chinese characters.`;
       }
       return `你现在是召唤师桌面的萌宠信使【${heroNameZh}】，以第一人称与召唤师进行实时语音互动。
 你的设定：${petLore}
@@ -129,7 +135,7 @@ Rules:
 1. Speak in first person as "${heroNameEn}" with authentic DOTA 2 hero flavor and immersive personality.
 2. Keep replies concise, punchy, and clear (1-3 sentences max), tailored for fast-paced in-game voice communication.
 3. Master all DOTA 2 competitive mechanics: item builds, skill combos, timings, lane control, Roshan, buybacks, and map rotation.
-4. **PURE ENGLISH REQUIREMENT**: ALWAYS respond strictly in fluent, natural English regardless of what language the user speaks. Even if the user asks in Chinese, understand their intent and answer in natural English with authentic DOTA 2 terms (providing pure English listening & speaking practice).`;
+4. **PURE ENGLISH REQUIREMENT**: ALWAYS respond strictly in fluent, natural English regardless of what language the user speaks. Even if the user asks in Chinese, understand their intent and answer in natural English with authentic DOTA 2 terms (providing pure English listening & speaking practice). Translate any Chinese lore, catchphrases, or forms of address into natural English — never utter Chinese characters.`;
     }
 
     // 2. Doubao & Qwen Route: Bilingual Adaptive Mode (中英双语自适应)

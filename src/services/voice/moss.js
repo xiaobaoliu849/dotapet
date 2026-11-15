@@ -38,12 +38,8 @@ import { audioBuffer, generateEventId } from './shared.js';
  */
 export function resolveMossVoice(voiceOrAccent) {
   const raw = String(voiceOrAccent || '').trim();
-  if (!raw || raw.toLowerCase() === 'en' || raw.toLowerCase() === 'en-us') {
+  if (!raw || ['en', 'en-us', 'en-gb', 'uk'].includes(raw.toLowerCase())) {
     return { voiceId: DEFAULT_MOSS_ENGLISH_VOICE, ...MOSS_VOICE_CATALOG[DEFAULT_MOSS_ENGLISH_VOICE] };
-  }
-  if (raw.toLowerCase() === 'en-gb' || raw.toLowerCase() === 'uk') {
-    const ukId = '29ab8244-1319-40d4-b508-2b58bb5e2d81'; // Amber
-    return { voiceId: ukId, ...MOSS_VOICE_CATALOG[ukId] };
   }
   if (raw.toLowerCase() === 'zh' || raw.toLowerCase() === 'zh-cn') {
     return { voiceId: DEFAULT_MOSS_CHINESE_VOICE, ...MOSS_VOICE_CATALOG[DEFAULT_MOSS_CHINESE_VOICE] };
@@ -196,9 +192,9 @@ export class MossProvider {
     if (resolved.lang === 'zh') {
       accentRule = '【原生中文口音要求】请全程使用地道、流畅的原生中文（Native Chinese accent）进行实时语音对话，发音自然清晰，贴近母语者日常口语节奏。';
     } else if (resolved.accent === 'en-GB') {
-      accentRule = 'Native English Accent Requirement: Speak strictly in natural, idiomatic British English with an authentic native UK English accent, cadence, and phrasing.';
+      accentRule = 'Native English Accent Requirement: Speak strictly in natural, idiomatic British English with an authentic native UK English accent, cadence, and phrasing. Never utter Chinese characters, Chinese interjections, or non-English titles — translate any Chinese lore, catchphrases, or user titles into natural English before speaking so every syllable stays in pure native English.';
     } else {
-      accentRule = 'Native English Accent Requirement: Speak strictly in natural, idiomatic American English with an authentic native US English accent, cadence, and phrasing.';
+      accentRule = 'Native English Accent Requirement: Speak strictly in natural, idiomatic American English with an authentic native US English accent, cadence, and phrasing. Never utter Chinese characters, Chinese interjections, or non-English titles — translate any Chinese lore, catchphrases, or user titles into natural English before speaking so every syllable stays in pure native English.';
     }
     const instructions = `${basePrompt}\n\n${accentRule}`;
     const personaName = this.currentHero?.nameEn || this.currentHero?.nameZh || 'DotaPet';
