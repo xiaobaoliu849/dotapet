@@ -128,7 +128,7 @@ function audioButton(lesson) {
   const entry = recordedAudio(audioManifest, lesson);
   const freshness = audioFreshness(entry, lesson, audioBaseline);
   const changed = freshness.status === 'baseline-changed', extraContext = freshness.status === 'baseline-extra-context', unresolved = freshness.status === 'unresolved-current', needsStats = freshness.status === 'needs-stats-template';
-  const label = !entry ? text('No recording yet', '暂无录音') : changed ? text('▶ Archive · text changed', '▶ 历史录音 · 文字有变') : extraContext ? text('▶ Archive · extra notes', '▶ 历史录音 · 含额外说明') : needsStats ? text('▶ Archive · check stats', '▶ 历史录音 · 属性待核验') : unresolved ? text('▶ Archive · check values', '▶ 历史录音 · 数值待核验') : entry.content === 'biography' ? text('▶ Hero story', '▶ 英雄故事') : entry.content === 'expression' ? text('▶ Play expression', '▶ 播放表达') : text('▶ AI recording', '▶ AI 录音');
+  const label = !entry ? text('No recording yet', '暂无录音') : entry.content === 'biography' ? text('▶ Hero story', '▶ 英雄故事') : entry.content === 'expression' ? text('▶ Play expression', '▶ 播放表达') : text('▶ Listen', '▶ 听发音');
   const button = node('button', label);
   button.className = 'recording-button'; button.disabled = !entry;
   if (entry) {
@@ -323,28 +323,79 @@ function isActiveItem(item) {
   const desc = `${item.descriptionEn || ''} ${item.descriptionZh || ''}`;
   return Boolean(cds || manas || /\bActive:|主动[:：]/i.test(desc));
 }
-function buildLessonCard(lesson, onUpdated) {
-  const card = node('article', '', 'lesson');
-  const topicWrap = node('div', '', '');
-  topicWrap.append(node('span', labels[lesson.kind], 'topic'));
-  if (lesson.kind === 'item' && lesson.mechanics?.item_cost) {
-    topicWrap.append(node('span', `🪙 ${lesson.mechanics.item_cost}g`, 'item-cost-pill'));
+const STAT_LABELS = {
+  bonus_armor: ['Armor', '护甲', ''],
+  bonus_regen: ['HP Regen', '生命恢复', ''],
+  bonus_health_regen: ['HP Regen', '生命恢复', ''],
+  bonus_mana_regen: ['Mana Regen', '魔法恢复', ''],
+  bonus_damage: ['Damage', '攻击力', ''],
+  bonus_speed: ['Move Speed', '移速', ''],
+  bonus_attack_speed: ['Attack Speed', '攻击速度', ''],
+  bonus_attack_speed_pct: ['Attack Speed', '攻击速度', '%'],
+  bonus_strength: ['Strength', '力量', ''],
+  bonus_agility: ['Agility', '敏捷', ''],
+  bonus_intellect: ['Intelligence', '智力', ''],
+  bonus_all_stats: ['All Attributes', '全属性', ''],
+  bonus_health: ['Health', '生命值', ''],
+  bonus_mana: ['Mana', '魔法值', ''],
+  bonus_magical_armor: ['Magic Resist', '魔法抗性', '%'],
+  tooltip_resist: ['Magic Resist', '魔法抗性', '%'],
+  bonus_evasion: ['Evasion', '闪避', '%'],
+  spell_amp: ['Spell Amp', '技能增强', '%'],
+  cast_range_bonus: ['Cast Range', '施法距离', ''],
+  lifesteal_aura: ['Lifesteal Aura', '吸血光环', '%'],
+  mana_regen_aura: ['Mana Regen Aura', '回蓝光环', ''],
+  armor_aura: ['Armor Aura', '护甲光环', ''],
+  damage_aura: ['Damage Aura', '攻击力光环', '%'],
+  slow_resistance: ['Slow Resist', '减速抗性', '%'],
+};
+function formatItemStats(item) {
+  const pills = [];
+  for (const sv of item.mechanics?.special_values || []) {
+    if (!sv?.name || /^Ability/i.test(sv.name) || /radius|duration/i.test(sv.name)) continue;
+    const val = (sv.values || []).find(v => typeof v === 'number' && v !== 0);
+    if (val === undefined) continue;
+    const known = STAT_LABELS[sv.name];
+    if (known) {
+      const [en, zh, unit] = known;
+      const sign = val > 0 ? '+' : '';
+      pills.push(`${sign}${val}${unit} ${text(en, `${zh} · ${en}`)}`);
+    } else if (/^bonus_/i.test(sv.name)) {
+      const label = sv.name.replace(/^bonus_/i, '').replace(/_/g, ' ');
+      pills.push(`${val > 0 ? '+' : ''}${val} ${label}`);
+    }
+    if (pills.length >= 4) break;
   }
-  card.append(topicWrap);
-  if (lesson.parent) card.append(node('p', lesson.parent, 'parent'));
-  card.append(node('h2', lesson.en), node('p', lesson.zh, 'zh'));
+  return pills;
+}
+function buildLessonCard(lesson, onUpdated, { hideTopic = false } = {}) {
+  const card = node('article', '', 'lesson');
+  const head = node('div', '', 'lesson-head');
+  const titles = node('div', '', 'lesson-titles');
+  if (!hideTopic) titles.append(node('span', labels[lesson.kind], 'topic'));
+  if (lesson.parent) titles.append(node('p', lesson.parent, 'parent'));
+  titles.append(node('h2', lesson.en), node('p', lesson.zh, 'zh'));
+  head.append(titles);
+  if (lesson.kind === 'item' && lesson.mechanics?.item_cost) {
+    head.append(node('span', `🪙 ${lesson.mechanics.item_cost}g`, 'item-cost-pill'));
+  }
+  card.append(head);
   const cds = lesson.mechanics?.cooldowns?.filter(n => n > 0);
   const manas = lesson.mechanics?.mana_costs?.filter(n => n > 0);
-  if (cds?.length || manas?.length) {
+  const statPills = lesson.kind === 'item' && !lesson.descriptionEn ? formatItemStats(lesson) : [];
+  if (cds?.length || manas?.length || statPills.length) {
     const pills = node('div', '', 'ability-pills');
     if (cds?.length) pills.append(node('span', `CD: ${[...new Set(cds)].join(' / ')}s`, 'mech-pill'));
     if (manas?.length) pills.append(node('span', `Mana: ${[...new Set(manas)].join(' / ')}`, 'mech-pill'));
+    for (const s of statPills) pills.append(node('span', s, 'mech-pill'));
     card.append(pills);
   }
   if (lesson.descriptionEn) card.append(node('p', lesson.descriptionEn, 'description'));
-  const translation = node('details', '', 'translation');
-  translation.append(node('summary', text('Chinese explanation', '中文说明')), node('p', lesson.descriptionZh || lesson.zh, 'description'));
-  card.append(translation);
+  if (lesson.descriptionZh && lesson.descriptionZh.trim() !== lesson.zh.trim()) {
+    const translation = node('details', '', 'translation');
+    translation.append(node('summary', text('Chinese explanation', '中文说明')), node('p', lesson.descriptionZh, 'description'));
+    card.append(translation);
+  }
   const actions = node('div', '', 'actions');
   actions.append(audioButton(lesson), saveButton(lesson, onUpdated));
   card.append(actions);
@@ -381,7 +432,7 @@ function renderItemBrowser() {
   const list = $('item-list');
   list.replaceChildren();
   for (const item of matching.slice(0, limit)) {
-    list.append(buildLessonCard(item, () => { stats(); renderItemBrowser(); }));
+    list.append(buildLessonCard(item, () => { stats(); renderItemBrowser(); }, { hideTopic: true }));
   }
   $('more').hidden = matching.length <= limit;
 }
