@@ -49,6 +49,7 @@ export function recordAnswer(previous = {}, correct, now = Date.now()) {
 }
 
 export function makeQuestion(lesson, lessons, direction = 'en', random = Math.random) {
+  if (!lesson?.en || !lesson?.zh || lesson.en.trim().toLowerCase() === lesson.zh.trim().toLowerCase()) return null;
   const field = direction === 'en' ? 'zh' : 'en';
   const pool = [...new Set(lessons.filter(r => r.kind === lesson.kind && r[field] !== lesson[field]).map(r => r[field]))];
   const shuffle = array => {

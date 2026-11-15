@@ -135,3 +135,9 @@ test('voicePractice builds hero-ability and spoken-phrase personas and dispatche
   assert.equal(res.ok, true);
   assert.equal(received.id, heroPersona.id);
 });
+
+test('makeQuestion skips lessons whose English and Chinese names are identical', () => {
+  const identical = { id: 'item:test', kind: 'item', en: 'Black Grimoire\n(Warlock)', zh: 'Black Grimoire\n(Warlock)' };
+  assert.equal(makeQuestion(identical, catalog.lessons, 'en'), null);
+  assert.equal(makeQuestion(identical, catalog.lessons, 'zh'), null);
+});
