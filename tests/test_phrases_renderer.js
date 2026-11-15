@@ -12,7 +12,11 @@ const decode = value => value.replaceAll('&quot;', '"').replaceAll('&#039;', "'"
 
 async function renderer(overrides = {}, config = initial()) {
   class Element {
-    constructor() { this.dataset = {}; this.children = []; this.listeners = {}; this.value = ''; this.disabled = false; this.classList = { add() {}, remove() {} }; }
+    constructor() {
+      this.dataset = {}; this.children = []; this.listeners = {}; this.value = ''; this.disabled = false;
+      const classes = new Set();
+      this.classList = { add: name => classes.add(name), remove: name => classes.delete(name), contains: name => classes.has(name) };
+    }
     addEventListener(event, fn) { this.listeners[event] = fn; }
     appendChild(child) { child.parent = this; this.children.push(child); }
     contains(child) { return this.children.includes(child); }
@@ -46,7 +50,8 @@ async function renderer(overrides = {}, config = initial()) {
     translatePhraseText: async text => { calls.translations.push(text); return { translated: 'Translated' }; },
     onPhrasesChanged: callback => { calls.changed = callback; }, ...overrides };
   const document = { documentElement: { dataset: {} }, getElementById: id => nodes.get(id), createElement: () => new Element() };
-  vm.runInNewContext(source, { document, window: { electronAPI: api, addEventListener() {}, close() {} }, console,
+  const windowListeners = {};
+  vm.runInNewContext(source, { document, window: { electronAPI: api, addEventListener: (event, fn) => { windowListeners[event] = fn; }, close() {} }, console,
     setTimeout: () => 1, clearTimeout() {} });
   await tick();
   const row = index => nodes.get('phrases-rows-container').children[index];
@@ -54,7 +59,7 @@ async function renderer(overrides = {}, config = initial()) {
     const input = row(index).querySelector(`.phrase-${language}`); input.value = text;
     nodes.get('phrases-rows-container').listeners.input({ target: input });
   };
-  return { nodes, calls, row, type, api, translate: index => row(index).querySelector('.btn-phrase-trans').click(),
+  return { nodes, calls, row, type, api, windowListeners, translate: index => row(index).querySelector('.btn-phrase-trans').click(),
     save: () => nodes.get('btn-save-phrases').click(), toast: () => nodes.get('hud-toast').textContent,
     status: () => nodes.get('phrases-draft-status').textContent };
 }
@@ -220,4 +225,33 @@ test('loading saved phrases cannot overwrite a template chosen before initializa
   request.resolve({ phrases: initial(), revision: 0 }); await tick();
   assert.equal(ui.row(0).querySelector('.phrase-en').value, 'English 0');
   assert.equal(ui.nodes.get('btn-reset-default-phrases').disabled, false);
+});
+
+test('row translate falls back to EN -> CN when Chinese is empty and English is present', async () => {
+  const config = initial();
+  config[0] = { cn: '', en: 'Push mid now' };
+  const ui = await renderer({
+    translatePhraseText: async text => {
+      assert.equal(text, 'Push mid now');
+      return { translated: 'Push mid now', meaningZh: '快推中路' };
+    },
+  }, config);
+  await ui.translate(0);
+  assert.equal(ui.row(0).querySelector('.phrase-cn').value, '快推中路');
+  assert.match(ui.status(), /1 行有未保存/);
+});
+
+test('copy button shows inline confirmation and Ctrl+S triggers save', async () => {
+  const copied = [];
+  const ui = await renderer({ copyToClipboard: text => copied.push(text) });
+  const copyBtn = ui.row(0).querySelectorAll('.btn-phrase-copy')[0];
+  copyBtn.click();
+  assert.deepEqual(copied, ['English 0']);
+  assert.equal(copyBtn.textContent, '✓ 已复制');
+  assert.equal(copyBtn.classList.contains('is-copied'), true);
+
+  let prevented = false;
+  await ui.windowListeners.keydown({ key: 's', ctrlKey: true, preventDefault() { prevented = true; } });
+  assert.equal(prevented, true);
+  assert.equal(ui.calls.saves.length, 1);
 });

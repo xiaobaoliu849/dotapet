@@ -138,7 +138,7 @@ function renderPhrasesRows(phrasesList = []) {
       <input type="text" class="phrase-input phrase-cn" data-index="${i}" aria-label="第 ${digitLabel} 行中文短语" placeholder="输入中文短语 (局内 Ctrl+${digitLabel})" value="${escapeHtml(phrase.cn || '')}" />
       <input type="text" class="phrase-input phrase-en" data-index="${i}" aria-label="第 ${digitLabel} 行英文短语" placeholder="输入英文短语 (局内 Alt+${digitLabel})" value="${escapeHtml(phrase.en || '')}" />
       <div class="phrase-row-actions">
-        <button class="btn-phrase-trans" data-index="${i}" title="使用设置中选择的翻译服务商翻译此行">⚡ 译</button>
+        <button class="btn-phrase-trans" data-index="${i}" title="双向翻译此行（有中文时译为英文，仅英文时译为中文）">⚡ 译</button>
         <button class="btn-phrase-copy" data-index="${i}" data-type="en" aria-label="复制第 ${digitLabel} 行英文短语" title="复制英文短语">复制英文</button>
         <button class="btn-phrase-copy" data-index="${i}" data-type="cn" aria-label="复制第 ${digitLabel} 行中文短语" title="复制中文短语">复制中文</button>
       </div>
@@ -149,21 +149,26 @@ function renderPhrasesRows(phrasesList = []) {
       const cnInput = rowEl.querySelector('.phrase-cn');
       const enInput = rowEl.querySelector('.phrase-en');
       const cnText = (cnInput?.value || '').trim();
-      if (!cnText) {
-        showToast('请先输入中文短语');
+      const enText = (enInput?.value || '').trim();
+      if (!cnText && !enText) {
+        showToast('请先输入中文或英文短语');
         return;
       }
+      const toEnglish = Boolean(cnText);
+      const sourceText = toEnglish ? cnText : enText;
       btnTrans.textContent = '...';
       btnTrans.disabled = true;
       const snapshot = snapshotRow(rowEl);
       try {
-        const res = await window.electronAPI?.translatePhraseText?.(cnText);
+        const res = await window.electronAPI?.translatePhraseText?.(sourceText);
+        const targetText = toEnglish ? res?.translated : (res?.meaningZh || res?.translated);
         if (!rowUnchanged(snapshot)) {
           showToast('此行已有新改动，已保留；可重新翻译');
-        } else if (res && res.translated) {
-          enInput.value = res.translated;
+        } else if (targetText) {
+          if (toEnglish) enInput.value = targetText;
+          else cnInput.value = targetText;
           markDirty(i);
-          showToast(`⚡ 第 ${digitLabel} 行 AI 翻译成功: "${res.translated}"`);
+          showToast(`⚡ 第 ${digitLabel} 行 AI 翻译成功: "${targetText}"`);
         } else {
           showToast('翻译返回为空');
         }
@@ -183,6 +188,14 @@ function renderPhrasesRows(phrasesList = []) {
         if (text) {
           window.electronAPI?.copyToClipboard?.(text);
           showToast(`📋 已复制到剪贴板: "${text}"`);
+          if (!btn.dataset.defaultLabel) btn.dataset.defaultLabel = btn.textContent;
+          btn.textContent = '✓ 已复制';
+          btn.classList.add('is-copied');
+          clearTimeout(btn._copyResetTimer);
+          btn._copyResetTimer = setTimeout(() => {
+            btn.classList.remove('is-copied');
+            btn.textContent = btn.dataset.defaultLabel || (type === 'cn' ? '复制中文' : '复制英文');
+          }, 1400);
         } else {
           showToast('内容为空');
         }
@@ -241,21 +254,24 @@ async function translateAllEmptyRows() {
       const cnText = (cnInput?.value || '').trim();
       const enText = (enInput?.value || '').trim();
 
-      if (cnText && !enText) {
+      if ((cnText && !enText) || (enText && !cnText)) {
+        const toEnglish = Boolean(cnText && !enText);
         const snapshot = snapshotRow(row);
         attempted++;
-        const res = await window.electronAPI?.translatePhraseText?.(cnText);
+        const res = await window.electronAPI?.translatePhraseText?.(toEnglish ? cnText : enText);
+        const targetText = toEnglish ? res?.translated : (res?.meaningZh || res?.translated);
         if (!rowUnchanged(snapshot)) {
           preserved++;
-        } else if (res && res.translated) {
-          enInput.value = res.translated;
+        } else if (targetText) {
+          if (toEnglish) enInput.value = targetText;
+          else cnInput.value = targetText;
           markDirty(row.dataset.index);
           count++;
         }
       }
     }
     showToast(preserved ? `已完成 ${count} 行翻译；${preserved} 行有新改动，已保留` :
-      count ? `⚡ 已完成 ${count} 行智能翻译！` : attempted ? '翻译返回为空，请重试' : '没有需要补全的中文行');
+      count ? `⚡ 已完成 ${count} 行智能翻译！` : attempted ? '翻译返回为空，请重试' : '没有需要补全的空白行');
   } catch (err) {
     showToast(`批量翻译异常: ${err.message}`);
   } finally {
@@ -357,7 +373,12 @@ btnResetDefault?.addEventListener('click', () => resetDefaultPhrases());
 btnSave?.addEventListener('click', () => savePhrasesFromUI());
 btnCancel?.addEventListener('click', () => closeEditor());
 window.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeEditor();
+  if (e.key === 'Escape') {
+    closeEditor();
+  } else if ((e.ctrlKey || e.metaKey) && e.key?.toLowerCase() === 's') {
+    e.preventDefault();
+    savePhrasesFromUI();
+  }
 });
 
 init();

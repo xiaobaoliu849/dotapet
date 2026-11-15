@@ -478,6 +478,21 @@ textarea,
   word-break: break-word;
   max-height: 32px;
   overflow-y: auto;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 1px 3px;
+  margin-left: -3px;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.bubble-original:hover {
+  color: #e6dcc4;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.bubble-original.is-copied {
+  color: #86efac;
+  background: rgba(34, 197, 94, 0.14);
 }
 
 .bubble-suggestions {
@@ -3111,6 +3126,12 @@ body.is-turning .pet-avatar-container {
 .btn-phrase-copy:hover {
   background: rgba(255, 255, 255, 0.2);
   color: #ffffff;
+}
+
+.btn-phrase-copy.is-copied {
+  background: rgba(34, 197, 94, 0.25);
+  border-color: rgba(134, 239, 172, 0.6);
+  color: #bbf7d0;
 }
 
 .phrases-modal-footer {

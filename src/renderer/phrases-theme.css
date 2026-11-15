@@ -43,6 +43,7 @@ html[data-settings-theme='green'] .btn-phrase-trans { color: var(--green); backg
 html[data-settings-theme='green'] .btn-secondary-action { padding: 9px 14px; font-size: var(--control-size); }
 html[data-settings-theme='green'] .btn-phrase-trans:hover, html[data-settings-theme='green'] .btn-phrase-copy:hover,
 html[data-settings-theme='green'] .btn-secondary-action:hover { background: var(--control-hover); color: var(--green); }
+html[data-settings-theme='green'] .btn-phrase-copy.is-copied { background: var(--green); border-color: var(--green); color: #fff; }
 html[data-settings-theme='green'] .btn-secondary-action.btn-dim { color: var(--muted); }
 html[data-settings-theme='green'] button:focus-visible, html[data-settings-theme='green'] select:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
 
