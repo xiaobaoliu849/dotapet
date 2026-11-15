@@ -139,7 +139,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   // In-Game Shortcuts
   onShortcutToggleVoice: (callback) => {
-    const subscription = () => callback();
+    const subscription = (_event, action) => callback(action);
     ipcRenderer.on('shortcut:toggle-voice', subscription);
     return () => ipcRenderer.removeListener('shortcut:toggle-voice', subscription);
   },

@@ -1808,12 +1808,12 @@ if (app?.whenReady) {  app.whenReady().then(() => {
         if (!voiceClient) throw new Error('语音服务尚未就绪，请稍后再试。');
         voiceClient.setHero(persona);
         if (mainWindow && !mainWindow.isDestroyed()) {
-          mainWindow.webContents.send('shortcut:toggle-voice');
+          mainWindow.webContents.send('shortcut:toggle-voice', 'start');
         }
       },
       onStopVoice: () => {
         if (mainWindow && !mainWindow.isDestroyed()) {
-          mainWindow.webContents.send('shortcut:toggle-voice');
+          mainWindow.webContents.send('shortcut:toggle-voice', 'stop');
         }
       },
     });

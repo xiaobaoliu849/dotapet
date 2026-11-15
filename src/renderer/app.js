@@ -2528,8 +2528,10 @@ function setupEventListeners() {
       window.electronAPI?.cycleScaleMode?.();
     });
 
-    window.electronAPI.onShortcutToggleVoice(() => {
-      microphone.toggle();
+    window.electronAPI.onShortcutToggleVoice((action) => {
+      if (action === 'start') microphone.start();
+      else if (action === 'stop') microphone.stop();
+      else microphone.toggle();
     });
 
     window.electronAPI.onPhraseSent?.((data) => {
