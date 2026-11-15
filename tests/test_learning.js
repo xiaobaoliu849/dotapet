@@ -5,6 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { filterLessons, recordAnswer, makeQuestion, pairRecords, describe } from '../src/learning/model.js';
+import { summarizeMastery } from '../src/learning/mastery.js';
 import { createLearningController } from '../src/main/learningController.js';
 import { fetchCatalog } from '../src/learning/update.js';
 
@@ -83,4 +84,25 @@ test('failed updater retries and returns no partial catalog', async () => {
   let calls = 0;
   await assert.rejects(fetchCatalog({ fetcher: async () => { calls++; return { ok: false, status: 503 }; } }), /Valve HTTP 503/);
   assert.equal(calls, 3);
+});
+
+test('summarizeMastery computes practiced, mastered, and saved counts per category', () => {
+  const sampleProgress = {
+    'hero:1': { saved: true, attempts: 2, correct: 2, box: 2 },
+    'ability:5003': { saved: false, attempts: 1, correct: 1, box: 1 },
+    'spoken:smoke-triangle': { saved: true, attempts: 3, correct: 3, box: 3 },
+  };
+  const summary = summarizeMastery(catalog.lessons, sampleProgress);
+  assert.equal(summary.length, 4);
+  const hero = summary.find(s => s.key === 'hero');
+  const ability = summary.find(s => s.key === 'ability');
+  const phrase = summary.find(s => s.key === 'phrase');
+  assert.equal(hero.practiced, 1);
+  assert.equal(hero.mastered, 1);
+  assert.equal(hero.saved, 1);
+  assert.equal(ability.practiced, 1);
+  assert.equal(ability.mastered, 0);
+  assert.equal(phrase.practiced, 1);
+  assert.equal(phrase.mastered, 1);
+  assert.equal(phrase.saved, 1);
 });

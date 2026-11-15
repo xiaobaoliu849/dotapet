@@ -2,6 +2,7 @@ import { recordedAudio } from '../learning/audioAssets.js';
 import { audioFreshness } from '../learning/contentAudit.js';
 import { createLearningAudio } from './learning-audio.js';
 import { filterLessons } from '../learning/model.js';
+import { summarizeMastery } from '../learning/mastery.js';
 import { SPOKEN_CATEGORIES, SPOKEN_PHRASES } from '../learning/spokenPhrases.js';
 import { localDay, STUDY_DEFAULTS } from '../learning/study.js';
 const api = window.learningAPI;
@@ -49,6 +50,30 @@ function stats() {
   const records = Object.values(progress), attempts = records.reduce((n, r) => n + (r.attempts || 0), 0);
   $('accuracy').textContent = attempts ? Math.round(records.reduce((n, r) => n + (r.correct || 0), 0) / attempts * 100) + '%' : '—';
   $('source').textContent = `${catalog.sourceLabel} · ${new Date(catalog.fetchedAt).toLocaleString()} · ${catalog.patch || text('Patch number unverified', '未核验版本号')}`;
+  const strip = $('mastery-strip');
+  if (strip) {
+    strip.replaceChildren();
+    for (const item of summarizeMastery(catalog.lessons, progress)) {
+      const card = node('button', '', 'mastery-card');
+      card.type = 'button';
+      const top = node('div', '', 'mastery-card-top');
+      top.append(node('span', `${item.icon} ${text(item.en, item.zh)}`, 'mastery-title'), node('span', `${item.practiced}/${item.total}`, 'mastery-count'));
+      const bar = node('div', '', 'mastery-bar');
+      const fill = node('div', '', 'mastery-fill');
+      fill.style.width = `${Math.max(item.pct, item.practiced > 0 ? 4 : 0)}%`;
+      bar.append(fill);
+      const sub = node('span', text(`${item.mastered} mastered · ${item.saved} saved`, `已掌握 ${item.mastered} · 收藏 ${item.saved}`), 'mastery-sub');
+      card.append(top, bar, sub);
+      card.onclick = () => {
+        player.stop();
+        if (item.key === 'hero') { mode = 'heroes'; selectedHeroId = null; }
+        else if (item.key === 'phrase') { mode = 'phrases'; }
+        else { mode = 'browse'; $('kind').value = item.key; limit = 24; }
+        render();
+      };
+      strip.append(card);
+    }
+  }
 }
 async function persist(id, action, value) {
   const response = await api.save(id, action, value);
@@ -273,7 +298,10 @@ function render() {
   $('lessons').replaceChildren();
   for (const lesson of rows.slice(0, limit)) {
     const card = node('article', '', 'lesson');
-    card.append(node('span', labels[lesson.kind], 'topic'));
+    const topicText = lesson.kind === 'item' && lesson.mechanics?.item_cost
+      ? `${labels[lesson.kind]} · 🪙 ${lesson.mechanics.item_cost}g`
+      : labels[lesson.kind];
+    card.append(node('span', topicText, 'topic'));
     if (lesson.parent) card.append(node('p', lesson.parent, 'parent'));
     card.append(node('h2', lesson.en), node('p', lesson.zh, 'zh'));
     if (lesson.descriptionEn) card.append(node('p', lesson.descriptionEn, 'description'));
