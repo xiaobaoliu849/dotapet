@@ -56,4 +56,6 @@ npm run learning:import-baseline
 
 The queue contains 200 candidate scripts: 88 changed-source candidates and 112 missing-recording candidates with usable current descriptions. Every entry starts unreviewed. Missing items require an active-item availability check; stat-only descriptions needing a template, unresolved values and extra-context-only differences are not queued for automatic replacement.
 
+An initial set of eight changed-source lessons has now been source-reviewed and synthesized as separate auditions, with two optional faster comparisons. [Listen to the batch](audio-samples/REVIEW.html) and see its [provenance and checks](audio-samples/README.md). No API key was needed for the original Jenny/Edge TTS route. These samples remain separate from installed recordings; the audit queue itself is not a synthesis-approval ledger.
+
 App refreshes now preserve `learning-catalog.previous.json` and `learning-catalog-changes.json` in the user's local data directory. Maintainer refreshes preserve the previous snapshot and differences under `docs/audits`. The new catalog records balance facts and hero biographies as well as lesson prose. The normal ability feed also includes innate entries; their presence does not require a separate request or prove that they are newly introduced abilities.

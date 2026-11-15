@@ -91,3 +91,19 @@ Maintenance details and limitations: [AI audio library](DOTAPAD_AUDIO.md).
 - No MP3 synthesis, transcript certification or mass replacement was performed. This is an audit of archived input candidates and current official data; full listening/ASR review remains separate.
 
 Recommendation and review workflow: [Content update policy](DOTAPAD_CONTENT_UPDATE_POLICY.md). Machine-readable evidence and the review queue are under `docs/audits/`. Changes continue as separate commits on the existing feature branch.
+
+## 2026-11-15 — First current-content Jenny audition batch
+
+- Confirmed the original scripts use `edge-tts` with `en-US-JennyNeural`; verified the voice is currently available. No API key was needed or used.
+- Reviewed eight changed-source scripts against live official descriptions: Persecutor, Marksmanship, Sacred Arrow, Necromastery, Disperser, Shiva's Guard, Manta Style and Bloodstone.
+- For the four items, checked the current official late-game recommendation flags and positive costs. This is feed evidence, not an independent in-game shop check.
+- Generated eight original-speed audition MP3s and two optional +10% pace comparisons for Manta Style and Bloodstone. Existing app recordings remain unchanged.
+- Recorded exact spoken scripts, source text, both text hashes, audio hashes, generation time, source-check time, voice and versioned synthesis settings. Listening approval and promotion remain false.
+- Decoded all ten MP3 files with FFmpeg and measured duration, audio levels and approximate pacing. All decoded fully; none had peaks near full scale.
+- A local cached Whisper-base pass recognized the critical numeric phrases and complete numeric occurrence counts in every final sample. A cached Whisper-small model cross-checked Sacred Arrow and both Bloodstone versions. These are automated checks, not subjective listening approval.
+- The first pass flagged Sacred Arrow's final sentence and Bloodstone's heading-heavy phrasing. Reworded those scripts for clarity and regenerated only the affected auditions. Bloodstone's original-speed pacing improved from about 90 to 125 words/minute; the updated script retains all current gameplay numbers.
+- The general Conda ASR environment had an OpenMP conflict. The existing isolated `whisperx` environment ran the cached models successfully; no workaround to suppress the conflict and no new model download was used.
+- Added an offline A/B comparison page with the original archives, new samples, optional faster variants, scripts and official source links: [Listen and compare](audio-samples/REVIEW.html).
+- Added offline checks for source/script/audio hashes, successful media validation, ASR number checks and unchanged original app assets. Final automated suite: **267 tests passed, 0 failed**. All ten samples passed complete decoding and ASR numeric-occurrence checks; subjective listening approval remains pending.
+
+The original regeneration queue remains an audit candidate report. Source-reviewed audition execution is tracked separately in `docs/audio-samples/batch-plan.json` and the batch manifest. The auditions are not installed as current lesson audio yet.
