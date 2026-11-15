@@ -566,7 +566,8 @@ $('refresh').onclick = async () => {
   } catch (error) { $('update-status').textContent = text('Update failed; offline lessons remain available. ', '更新失败，仍可使用离线课程。') + error.message; }
   finally { $('refresh').disabled = false; }
 };
-function setVoiceBarActive(active) {
+function setVoiceBarState(state, active) {
+  $('voice-practice-bar').dataset.state = state;
   $('voice-bar-stop').hidden = !active;
   $('voice-bar-dismiss').hidden = active;
 }
@@ -575,13 +576,12 @@ function startVoiceBar(topic) {
   $('voice-bar-topic').textContent = `🎙️ ${topic}`;
   $('voice-bar-status').textContent = text('Connecting…', '正在连接语音…');
   $('voice-bar-stop').textContent = text('■ Stop Voice', '■ 停止语音');
-  setVoiceBarActive(true);
-  $('voice-practice-bar').scrollIntoView({ block: 'nearest' });
+  setVoiceBarState('connecting', true);
 }
 $('voice-bar-stop').onclick = async () => {
   await api.stopVoice?.();
   $('voice-bar-status').textContent = text('Stopped', '已停止');
-  setVoiceBarActive(false);
+  setVoiceBarState('disconnected', false);
 };
 $('voice-bar-dismiss').onclick = () => {
   $('voice-practice-bar').hidden = true;
@@ -596,15 +596,18 @@ api.onVoiceStatus?.((data) => {
     disconnected: text('Disconnected', '已断开'),
     error: data?.error || text('Voice error', '语音出错'),
   };
-  $('voice-bar-status').textContent = map[data?.status] || data?.provider || data?.status || '';
-  setVoiceBarActive(!['disconnected', 'error'].includes(data?.status));
+  const status = data?.status || 'connected';
+  $('voice-bar-status').textContent = map[status] || data?.provider || status;
+  setVoiceBarState(status, !['disconnected', 'error'].includes(status));
 });
 api.onVoiceEvent?.(({ channel }) => {
   if ($('voice-practice-bar').hidden) return;
   if (channel === 'voice:text-delta') {
     $('voice-bar-status').textContent = text('Coach speaking…', '教练正在回复…');
+    $('voice-practice-bar').dataset.state = 'speaking';
   } else if (channel === 'voice:complete') {
     $('voice-bar-status').textContent = text('Listening… Speak English now', '已连接 · 请开口说英语');
+    $('voice-practice-bar').dataset.state = 'connected';
   }
 });
 api.onProgress(({ done, total }) => { $('update-status').textContent = text(`Updating ${done}/${total} heroes and items…`, `更新英雄与物品 ${done}/${total}…`); });
