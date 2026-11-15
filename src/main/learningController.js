@@ -9,7 +9,7 @@ import { fetchCatalog } from '../learning/update.js';
 import { planStudy, studyOptions, studySummary, STUDY_DEFAULTS } from '../learning/study.js';
 import { diffCatalog } from '../learning/contentAudit.js';
 
-export function createLearningController({ electron, hub, rendererDirectory, dataDirectory, refreshCatalog = fetchCatalog }) {
+export function createLearningController({ electron, hub, rendererDirectory, dataDirectory, refreshCatalog = fetchCatalog, onPracticeVoice = null }) {
   const { ipcMain, shell } = electron;
   const catalogFile = path.join(dataDirectory, 'learning-catalog.json');
   const progressFile = path.join(dataDirectory, 'learning-progress.json');
@@ -87,6 +87,16 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
     return snapshot();
   }));
   ipcMain.handle('learning:sources', respond(async () => { await shell.openExternal('https://www.dota2.com/patches/'); return {}; }));
+  ipcMain.handle('learning:practice-voice', respond(async (persona) => {
+    if (!persona || typeof persona !== 'object' || typeof persona.systemPrompt !== 'string') {
+      throw new Error('Invalid voice practice context');
+    }
+    if (typeof onPracticeVoice !== 'function') {
+      throw new Error('Voice practice is unavailable right now');
+    }
+    await onPracticeVoice(persona);
+    return {};
+  }));
   ipcMain.handle('learning:update', respond(async () => {
     if (updating) throw new Error('An update is already running');
     updating = true;

@@ -7,6 +7,7 @@ contextBridge.exposeInMainWorld('learningAPI', {
   answerSession: (sessionId, lessonId, choice) => ipcRenderer.invoke('learning:answer-session', sessionId, lessonId, choice),
   update: () => ipcRenderer.invoke('learning:update'),
   sources: () => ipcRenderer.invoke('learning:sources'),
+  practiceVoice: persona => ipcRenderer.invoke('learning:practice-voice', persona),
   onProgress: callback => ipcRenderer.on('learning:update-progress', (_event, state) => callback(state)),
   onHidden: callback => ipcRenderer.on('learning:hidden', callback),
 });

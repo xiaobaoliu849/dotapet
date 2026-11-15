@@ -4,6 +4,7 @@ import { createLearningAudio } from './learning-audio.js';
 import { filterLessons } from '../learning/model.js';
 import { summarizeMastery } from '../learning/mastery.js';
 import { SPOKEN_CATEGORIES, SPOKEN_PHRASES } from '../learning/spokenPhrases.js';
+import { buildHeroPracticePersona, buildPhrasePracticePersona } from '../learning/voicePractice.js';
 import { localDay, STUDY_DEFAULTS } from '../learning/study.js';
 const api = window.learningAPI;
 const $ = id => document.getElementById(id);
@@ -191,7 +192,17 @@ function renderHeroDetail(hero) {
     header.append(bio);
   }
   const heroActions = node('div', '', 'actions');
-  heroActions.append(audioButton(hero), saveButton(hero, render));
+  const talkBtn = node('button', text('🎙️ Practice with Pet (Alt+Q)', '🎙️ 和桌宠实时语音练技能 (Alt+Q)'), 'voice-practice-btn');
+  talkBtn.onclick = async () => {
+    talkBtn.disabled = true;
+    try {
+      const res = await api.practiceVoice(buildHeroPracticePersona({ hero, abilities }));
+      if (!res.ok) throw new Error(res.error);
+      $('message').textContent = text(`Started real-time voice practice for ${hero.en}!`, `已开启 ${hero.zh} 技能实时语音练习！`);
+    } catch (error) { $('message').textContent = error.message; }
+    finally { talkBtn.disabled = false; }
+  };
+  heroActions.append(audioButton(hero), saveButton(hero, render), talkBtn);
   header.append(heroActions);
 
   const list = $('hero-abilities');
@@ -259,7 +270,17 @@ function renderSpokenBrowser() {
         copyBtn.textContent = text('Copy failed', '复制失败');
       }
     };
-    actions.append(copyBtn, saveButton(phrase, render));
+    const talkBtn = node('button', text('🎙️ Practice on Mic (Alt+Q)', '🎙️ 实时语音试说 (Alt+Q)'), 'voice-practice-btn');
+    talkBtn.onclick = async () => {
+      talkBtn.disabled = true;
+      try {
+        const res = await api.practiceVoice(buildPhrasePracticePersona({ phrase }));
+        if (!res.ok) throw new Error(res.error);
+        $('message').textContent = text('Started live mic practice with your pet!', '已开启实时语音口语对练！');
+      } catch (error) { $('message').textContent = error.message; }
+      finally { talkBtn.disabled = false; }
+    };
+    actions.append(copyBtn, saveButton(phrase, render), talkBtn);
     card.append(actions);
     list.append(card);
   }

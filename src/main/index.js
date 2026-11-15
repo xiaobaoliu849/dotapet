@@ -1792,7 +1792,20 @@ if (app?.whenReady) {  app.whenReady().then(() => {
       onHide: contents => contents.send('settings:hidden') });
     // The same editor as the F6 panel, drawn in the settings center's light style.
     controlCenter.register('phrases', { file: 'phrases.html', query: { embedded: '1' }, preload: '../preload/phrases.js', background: '#f6f7f2' });
-    createLearningController({ electron, hub: controlCenter, rendererDirectory: path.join(__dirname, '../renderer'), dataDirectory: app.getPath('userData') });
+    createLearningController({
+      electron,
+      hub: controlCenter,
+      rendererDirectory: path.join(__dirname, '../renderer'),
+      dataDirectory: app.getPath('userData'),
+      onPracticeVoice: (persona) => {
+        if (!voiceClient) throw new Error('语音服务尚未就绪，请稍后再试。');
+        voiceClient.setHero(persona);
+        if (mainWindow && !mainWindow.isDestroyed()) {
+          if (!mainWindow.isVisible()) mainWindow.show();
+          mainWindow.webContents.send('shortcut:toggle-voice');
+        }
+      },
+    });
     createWindow();
     // Before the voice service: its first persona already includes the user's custom one.
     customizationController = createCustomizationController({ electron, rendererDirectory: path.join(__dirname, '../renderer'),

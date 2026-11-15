@@ -6,6 +6,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { filterLessons, recordAnswer, makeQuestion, pairRecords, describe } from '../src/learning/model.js';
 import { summarizeMastery } from '../src/learning/mastery.js';
+import { buildHeroPracticePersona, buildPhrasePracticePersona } from '../src/learning/voicePractice.js';
 import { createLearningController } from '../src/main/learningController.js';
 import { fetchCatalog } from '../src/learning/update.js';
 
@@ -105,4 +106,32 @@ test('summarizeMastery computes practiced, mastered, and saved counts per catego
   assert.equal(phrase.practiced, 1);
   assert.equal(phrase.mastered, 1);
   assert.equal(phrase.saved, 1);
+});
+
+test('voicePractice builds hero-ability and spoken-phrase personas and dispatches via IPC', async t => {
+  const hero = catalog.lessons.find(r => r.kind === 'hero');
+  const abilities = catalog.lessons.filter(r => r.kind === 'ability' && r.parent === `${hero.en} · ${hero.zh}`);
+  const heroPersona = buildHeroPracticePersona({ hero, abilities });
+  assert.ok(heroPersona.systemPrompt.includes(hero.en));
+  assert.ok(heroPersona.systemPrompt.includes(abilities[0].en));
+
+  const phrasePersona = buildPhrasePracticePersona({ phrase: { id: 'spoken:test', zh: '开雾打肉山', en: 'Smoke and rosh now.' } });
+  assert.ok(phrasePersona.systemPrompt.includes('Smoke and rosh now.'));
+
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'dotapet-voice-practice-'));
+  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+  const handlers = new Map(), frame = {}, contents = { mainFrame: frame, isDestroyed: () => false };
+  const rendererDirectory = path.resolve('src/renderer'); frame.url = pathToFileURL(path.join(rendererDirectory, 'learning.html')).href;
+  let received = null;
+  createLearningController({
+    electron: { ipcMain: { handle: (name, fn) => handlers.set(name, fn) }, shell: {} },
+    hub: { contents: () => contents, register() {} },
+    rendererDirectory,
+    dataDirectory: directory,
+    onPracticeVoice: persona => { received = persona; },
+  });
+  const trusted = { sender: contents, senderFrame: frame };
+  const res = await handlers.get('learning:practice-voice')(trusted, heroPersona);
+  assert.equal(res.ok, true);
+  assert.equal(received.id, heroPersona.id);
 });
