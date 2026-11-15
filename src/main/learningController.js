@@ -9,7 +9,7 @@ import { fetchCatalog } from '../learning/update.js';
 import { planStudy, studyOptions, studySummary, STUDY_DEFAULTS } from '../learning/study.js';
 import { diffCatalog } from '../learning/contentAudit.js';
 
-export function createLearningController({ electron, hub, rendererDirectory, dataDirectory, refreshCatalog = fetchCatalog, onPracticeVoice = null }) {
+export function createLearningController({ electron, hub, rendererDirectory, dataDirectory, refreshCatalog = fetchCatalog, onPracticeVoice = null, onStopVoice = null }) {
   const { ipcMain, shell } = electron;
   const catalogFile = path.join(dataDirectory, 'learning-catalog.json');
   const progressFile = path.join(dataDirectory, 'learning-progress.json');
@@ -28,6 +28,7 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
           complexity: h.complexity || 1,
           attackType: h.attackType || '',
           themeColor: h.themeColor || '',
+          photoUrl: h.photoUrl || '',
         },
       ]),
   );
@@ -95,6 +96,10 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
       throw new Error('Voice practice is unavailable right now');
     }
     await onPracticeVoice(persona);
+    return {};
+  }));
+  ipcMain.handle('learning:stop-voice', respond(async () => {
+    if (typeof onStopVoice === 'function') await onStopVoice();
     return {};
   }));
   ipcMain.handle('learning:update', respond(async () => {

@@ -2,7 +2,7 @@
 <html lang="en" data-settings-theme="green">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https://cdn.cloudflare.steamstatic.com https://cdn.steamstatic.com; script-src 'self'; style-src 'self'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <script src="i18n.js"></script><title>DotaPad · Learn</title>
   <link rel="stylesheet" href="settings-theme.css"><link rel="stylesheet" href="learning.css">
   <script src="learning.js" type="module"></script>
@@ -17,6 +17,16 @@
   <p id="message" role="status" aria-live="polite"></p>
   <p id="audio-status" class="audio-status" role="status" aria-live="polite" hidden></p>
   <button id="practice-saved" hidden>Practice my saved words →</button>
+  <section id="voice-practice-bar" class="voice-practice-bar" hidden aria-label="Live voice practice">
+    <div class="voice-bar-top">
+      <div class="voice-bar-meta">
+        <span id="voice-bar-topic" class="voice-bar-topic">🎙️ Live Voice Practice</span>
+        <span id="voice-bar-status" class="voice-bar-status">Connecting…</span>
+      </div>
+      <button id="voice-bar-stop" class="voice-bar-stop" type="button">■ Stop Voice</button>
+    </div>
+    <div id="voice-bar-transcript" class="voice-bar-transcript" translate="no"></div>
+  </section>
   <section id="spoken-browser" hidden aria-label="Spoken Dota 2 phrases">
     <div id="spoken-filters" class="attr-filters" role="group" aria-label="Match situations"></div>
     <div id="spoken-list" class="spoken-list" translate="no"></div>

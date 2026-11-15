@@ -39,8 +39,24 @@ const ATTR_GROUPS = [
   { key: 'agi', en: 'Agility', zh: '敏捷', icon: '🟢' },
 ];
 const heroAttr = lesson => heroMeta[lesson.en.toLowerCase()]?.attribute || 'str';
+const heroPhoto = lesson => heroMeta[lesson.en.toLowerCase()]?.photoUrl || '';
 const heroInitials = en => en.split(/[\s-]+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('');
 const heroAbilities = hero => catalog.lessons.filter(l => l.kind === 'ability' && l.parent === `${hero.en} · ${hero.zh}`);
+function heroAvatarNode(hero, large = false) {
+  const attrKey = heroAttr(hero);
+  const url = heroPhoto(hero);
+  const fallback = () => node('span', heroInitials(hero.en), `hero-crest ${large ? 'hero-crest-lg ' : ''}attr-${attrKey}`);
+  if (!url) return fallback();
+  const wrap = node('span', '', `hero-portrait-wrap${large ? ' hero-portrait-lg' : ''}`);
+  const img = document.createElement('img');
+  img.src = url;
+  img.alt = hero.en;
+  img.loading = 'lazy';
+  img.className = 'hero-portrait';
+  img.onerror = () => { wrap.replaceWith(fallback()); };
+  wrap.append(img);
+  return wrap;
+}
 const node = (tag, value, className) => { const element = document.createElement(tag); element.textContent = value; if (className) element.className = className; return element; };
 const due = r => !progress[r.id]?.due || progress[r.id].due <= Date.now();
 function selection() { return filterLessons(catalog.lessons, { kind: $('kind').value, search: $('search').value, saved: mode === 'saved', progress }); }
@@ -157,10 +173,9 @@ function renderHeroBrowser() {
       const abilitiesCount = heroAbilities(hero).length;
       const tile = node('button', '', `hero-tile attr-${group.key}`);
       tile.type = 'button';
-      const crest = node('span', heroInitials(hero.en), `hero-crest attr-${group.key}`);
       const info = node('span', '', 'hero-tile-info');
       info.append(node('strong', hero.en), node('span', hero.zh, 'hero-tile-zh'), node('span', text(`${abilitiesCount} abilities`, `${abilitiesCount} 个技能`), 'hero-tile-meta'));
-      tile.append(crest, info);
+      tile.append(heroAvatarNode(hero, false), info);
       if (progress[hero.id]?.saved) tile.append(node('span', '★', 'hero-tile-saved'));
       tile.onclick = () => { selectedHeroId = hero.id; render(); $('hero-detail').scrollIntoView({ block: 'start' }); };
       grid.append(tile);
@@ -177,10 +192,9 @@ function renderHeroDetail(hero) {
   const header = $('hero-detail-header');
   header.replaceChildren();
   const topRow = node('div', '', 'hero-detail-top');
-  const crest = node('div', heroInitials(hero.en), `hero-crest hero-crest-lg attr-${attrKey}`);
   const titleWrap = node('div', '', 'hero-detail-title');
   titleWrap.append(node('span', `${group.icon} ${group.en} · ${group.zh}`, `topic attr-badge-${attrKey}`), node('h2', `${hero.en} · ${hero.zh}`));
-  topRow.append(crest, titleWrap);
+  topRow.append(heroAvatarNode(hero, true), titleWrap);
   header.append(topRow);
   if (hero.descriptionEn) header.append(node('p', hero.descriptionEn, 'description'));
   if (hero.descriptionZh) header.append(node('p', hero.descriptionZh, 'description zh-block'));
@@ -196,10 +210,11 @@ function renderHeroDetail(hero) {
   talkBtn.onclick = async () => {
     talkBtn.disabled = true;
     try {
+      startVoiceBar(`${hero.en} · ${hero.zh}`);
       const res = await api.practiceVoice(buildHeroPracticePersona({ hero, abilities }));
       if (!res.ok) throw new Error(res.error);
       $('message').textContent = text(`Started real-time voice practice for ${hero.en}!`, `已开启 ${hero.zh} 技能实时语音练习！`);
-    } catch (error) { $('message').textContent = error.message; }
+    } catch (error) { $('message').textContent = error.message; $('voice-bar-status').textContent = error.message; }
     finally { talkBtn.disabled = false; }
   };
   heroActions.append(audioButton(hero), saveButton(hero, render), talkBtn);
@@ -274,10 +289,11 @@ function renderSpokenBrowser() {
     talkBtn.onclick = async () => {
       talkBtn.disabled = true;
       try {
+        startVoiceBar(phrase.en);
         const res = await api.practiceVoice(buildPhrasePracticePersona({ phrase }));
         if (!res.ok) throw new Error(res.error);
         $('message').textContent = text('Started live mic practice with your pet!', '已开启实时语音口语对练！');
-      } catch (error) { $('message').textContent = error.message; }
+      } catch (error) { $('message').textContent = error.message; $('voice-bar-status').textContent = error.message; }
       finally { talkBtn.disabled = false; }
     };
     actions.append(copyBtn, saveButton(phrase, render), talkBtn);
@@ -461,6 +477,57 @@ $('refresh').onclick = async () => {
   } catch (error) { $('update-status').textContent = text('Update failed; offline lessons remain available. ', '更新失败，仍可使用离线课程。') + error.message; }
   finally { $('refresh').disabled = false; }
 };
+let voiceBarLines = [], voiceDraft = '';
+function renderVoiceTranscript() {
+  const box = $('voice-bar-transcript');
+  if (!box) return;
+  box.replaceChildren();
+  const entries = voiceDraft ? [...voiceBarLines, { who: text('Coach', '教练'), text: voiceDraft }] : voiceBarLines;
+  for (const item of entries.slice(-4)) {
+    const p = node('p', '', 'voice-line');
+    p.append(node('strong', `${item.who}: `), document.createTextNode(item.text));
+    box.append(p);
+  }
+}
+function startVoiceBar(topic) {
+  voiceBarLines = []; voiceDraft = '';
+  $('voice-practice-bar').hidden = false;
+  $('voice-bar-topic').textContent = `🎙️ ${topic}`;
+  $('voice-bar-status').textContent = text('Connecting…', '正在连接语音…');
+  $('voice-bar-stop').textContent = text('■ Stop Voice', '■ 停止语音');
+  renderVoiceTranscript();
+  $('voice-practice-bar').scrollIntoView({ block: 'nearest' });
+}
+$('voice-bar-stop').onclick = async () => {
+  await api.stopVoice?.();
+  $('voice-bar-status').textContent = text('Stopped', '已停止');
+};
+api.onVoiceStatus?.((data) => {
+  if ($('voice-practice-bar').hidden && data?.status === 'disconnected') return;
+  $('voice-practice-bar').hidden = false;
+  const map = {
+    connecting: text('Connecting…', '正在连接…'),
+    connected: text('Listening… Speak English now', '已连接 · 请开口说英语'),
+    speaking: text('Coach speaking…', '教练正在回复…'),
+    disconnected: text('Disconnected', '已断开'),
+    error: data?.error || text('Voice error', '语音出错'),
+  };
+  $('voice-bar-status').textContent = map[data?.status] || data?.provider || data?.status || '';
+});
+api.onVoiceEvent?.(({ channel, data }) => {
+  if (channel === 'voice:user-final' && data?.text) {
+    voiceBarLines.push({ who: text('You', '你'), text: data.text });
+    renderVoiceTranscript();
+  } else if (channel === 'voice:text-delta' && data?.delta) {
+    voiceDraft += data.delta;
+    renderVoiceTranscript();
+  } else if (channel === 'voice:complete') {
+    const finalText = data?.text || voiceDraft;
+    if (finalText) voiceBarLines.push({ who: text('Coach', '教练'), text: finalText });
+    voiceDraft = '';
+    renderVoiceTranscript();
+  }
+});
 api.onProgress(({ done, total }) => { $('update-status').textContent = text(`Updating ${done}/${total} heroes and items…`, `更新英雄与物品 ${done}/${total}…`); });
 api.onHidden(() => player.stop());
 window.addEventListener('pagehide', () => player.stop());

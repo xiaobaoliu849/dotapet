@@ -8,6 +8,9 @@ contextBridge.exposeInMainWorld('learningAPI', {
   update: () => ipcRenderer.invoke('learning:update'),
   sources: () => ipcRenderer.invoke('learning:sources'),
   practiceVoice: persona => ipcRenderer.invoke('learning:practice-voice', persona),
+  stopVoice: () => ipcRenderer.invoke('learning:stop-voice'),
   onProgress: callback => ipcRenderer.on('learning:update-progress', (_event, state) => callback(state)),
+  onVoiceStatus: callback => ipcRenderer.on('learning:voice-status', (_event, data) => callback(data)),
+  onVoiceEvent: callback => ipcRenderer.on('learning:voice-event', (_event, data) => callback(data)),
   onHidden: callback => ipcRenderer.on('learning:hidden', callback),
 });

@@ -154,6 +154,7 @@ function publishVoiceStatus(data, { sanitized = false } = {}) {
   lastVoiceStatus = data?.status === 'error' && !sanitized ? { ...data, error: connectionError(data.error) } : data;
   if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('voice:status', lastVoiceStatus);
   settingsPage()?.send('voice:status', lastVoiceStatus);
+  controlCenter?.contents('learning')?.send('learning:voice-status', lastVoiceStatus);
 }
 
 function cancelConnectionTest() {
@@ -1253,6 +1254,9 @@ function setupServices() {
       if (mainWindow && !mainWindow.isDestroyed()) {
         mainWindow.webContents.send(channel, data);
       }
+      if (['voice:user-final', 'voice:text-delta', 'voice:complete'].includes(channel)) {
+        controlCenter?.contents('learning')?.send('learning:voice-event', { channel, data });
+      }
     });
   }
 
@@ -1316,6 +1320,9 @@ function setupVoiceService() {
       }
       if (mainWindow && !mainWindow.isDestroyed()) {
         mainWindow.webContents.send(channel, data);
+      }
+      if (['voice:user-final', 'voice:text-delta', 'voice:complete'].includes(channel)) {
+        controlCenter?.contents('learning')?.send('learning:voice-event', { channel, data });
       }
     });
   }
@@ -1801,7 +1808,11 @@ if (app?.whenReady) {  app.whenReady().then(() => {
         if (!voiceClient) throw new Error('语音服务尚未就绪，请稍后再试。');
         voiceClient.setHero(persona);
         if (mainWindow && !mainWindow.isDestroyed()) {
-          if (!mainWindow.isVisible()) mainWindow.show();
+          mainWindow.webContents.send('shortcut:toggle-voice');
+        }
+      },
+      onStopVoice: () => {
+        if (mainWindow && !mainWindow.isDestroyed()) {
           mainWindow.webContents.send('shortcut:toggle-voice');
         }
       },
