@@ -38,7 +38,7 @@ export async function runLanguageSmoke({ controlCenter, openPanel, nativeImage, 
   await pageLoaded(controlCenter.window.webContents);
   // The shell's own script must be running before its sidebar can be clicked.
   await controlCenter.window.webContents.executeJavaScript(`new Promise(resolve => document.readyState === 'complete' ? resolve() : addEventListener('load', resolve))`);
-  for (const page of ['services', 'appearance', 'phrases', 'help']) {
+  for (const page of ['services', 'learning', 'appearance', 'phrases', 'help']) {
     await navigateHub(controlCenter, page);
     const contents = controlCenter.contents(page);
     if (contents) { await pageLoaded(contents); await check(page, contents); }
