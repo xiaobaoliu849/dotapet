@@ -1,4 +1,5 @@
-import { filterLessons, makeQuestion } from '../learning/model.js';
+import { filterLessons } from '../learning/model.js';
+import { localDay, STUDY_DEFAULTS } from '../learning/study.js';
 const api = window.learningAPI;
 const $ = id => document.getElementById(id);
 const chinese = window.dotapetI18n?.language === 'zh';
@@ -7,16 +8,19 @@ const labels = { hero: text('Hero', '英雄'), ability: text('Hero ability', '�
 const translations = {
   heading: '玩懂刀塔，开口说英语。', intro: '每天一点刀塔英语，桌面小伙伴一直陪着你。', 'total-label': '条双语课程', 'saved-label': '个收藏词条', 'due-label': '条待复习', 'accuracy-label': '答题正确率',
   browse: '探索课程', saved: '我的词本', quiz: '练习测验', 'search-label': '查找课程', 'kind-label': '学习主题', 'direction-label': '练习方向', next: '下一题 →', more: '加载更多',
+  'study-heading': '每日学习小课', 'study-help': '先复习到期的错题和旧词，再学习新词。', 'size-label': '每轮课程数量', 'scope-label': '练习词库', 'start-session': '开始学习 →', 'practice-saved': '练习我的收藏词条 →', 'summary-heading': '本轮学习完成', 'mistakes-heading': '需要再看看的词条', 'new-session': '安排下一轮 →',
   'sources-heading': '让知识保持更新', freshness: '技能说明是有日期的数据快照。数值和机制请以官方更新日志为准。', refresh: '从 Valve 更新课程', patches: '官方更新日志 ↗',
 };
 if (chinese) {
   for (const [id, value] of Object.entries(translations)) $(id).textContent = value;
   const names = ['全部主题', '英雄', '英雄技能', '物品', '团队表达'];
   [...$('kind').options].forEach((option, index) => { option.textContent = names[index]; });
+  [...$('session-size').options].forEach(option => { option.textContent = option.value + ' 条课程'; });
+  [...$('session-scope').options].forEach((option, index) => { option.textContent = ['符合筛选的全部课程', '仅收藏词条'][index]; });
   $('search').placeholder = '搜索英文 / 中文 / 英雄名…';
 }
-let catalog, progress = {}, mode = 'browse', limit = 24, question, answered = false, session = 0, correct = 0;
-let quizIds = [];
+let catalog, progress = {}, study = { preferences: STUDY_DEFAULTS, active: null, history: [] }, mode = 'browse', limit = 24;
+let pendingAnswer = false, starting = false, feedbackIndex = null;
 const node = (tag, value, className) => { const element = document.createElement(tag); element.textContent = value; if (className) element.className = className; return element; };
 const due = r => !progress[r.id]?.due || progress[r.id].due <= Date.now();
 function selection() { return filterLessons(catalog.lessons, { kind: $('kind').value, search: $('search').value, saved: mode === 'saved', progress }); }
@@ -42,8 +46,12 @@ function speak(value) {
 function render() {
   stats();
   for (const id of ['browse', 'saved', 'quiz']) $(id).setAttribute('aria-pressed', String(mode === id));
-  $('library').hidden = mode === 'quiz'; $('practice').hidden = mode !== 'quiz';
-  if (mode === 'quiz') return;
+  $('library').hidden = mode === 'quiz'; $('study-setup').hidden = mode !== 'quiz';
+  $('practice-saved').hidden = mode !== 'saved';
+  $('practice').hidden = true; $('session-summary').hidden = true;
+  const active = mode === 'quiz' && study.active && !study.active.completedAt;
+  for (const id of ['search', 'kind', 'direction', 'session-size', 'session-scope']) $(id).disabled = Boolean(active);
+  if (mode === 'quiz') { $('message').textContent = ''; renderStudy(); return; }
   const rows = selection();
   $('message').textContent = rows.length ? text(`${rows.length} lessons · Read, listen, then save a word to practice.`, `${rows.length} 条课程 · 阅读、听发音、收藏后练习。`) : text('No lessons found. Try another topic or save some words.', '暂无课程，请更换筛选条件或先收藏词条。');
   $('lessons').replaceChildren();
@@ -64,50 +72,124 @@ function render() {
   }
   $('more').hidden = rows.length <= limit;
 }
-function startQuestion() {
-  answered = false; question = null; $('answers').replaceChildren(); $('result').textContent = ''; $('quiz-explanation').textContent = '';
-  const pool = selection().filter(due);
-  const candidates = pool.filter(r => !quizIds.includes(r.id));
-  const lesson = candidates[Math.floor(Math.random() * candidates.length)];
-  $('next').hidden = true;
-  if (!lesson) {
-    $('question').textContent = text('Review complete', '本轮复习完成');
-    $('quiz-context').textContent = text('Try another topic, or return when more lessons are due.', '可以更换主题，或稍后复习到期课程。');
-    $('quiz-counter').textContent = `${correct} / ${session}`; return;
-  }
-  question = makeQuestion(lesson, catalog.lessons, $('direction').value);
-  if (!question) { $('question').textContent = text('More lessons are needed for this quiz.', '此主题需要更多课程才能生成测验。'); return; }
-  $('quiz-counter').textContent = text(`Practice · ${correct}/${session} correct this session`, `练习 · 本轮答对 ${correct}/${session}`);
-  $('quiz-context').textContent = `${labels[lesson.kind]} · ${lesson.parent || ''}`;
-  $('question').textContent = question.prompt;
-  for (const option of question.options) {
-    const button = node('button', option);
+function receive(response) {
+  if (!response.ok) throw new Error(response.error);
+  progress = response.progress; study = response.study; stats();
+}
+function today() {
+  const completed = study.history.filter(entry => entry.day === localDay());
+  $('today').textContent = text(
+    'Today: ' + completed.length + ' sessions · ' + completed.reduce((n, r) => n + r.total, 0) + ' answers',
+    '今日完成 ' + completed.length + ' 轮 · 共 ' + completed.reduce((n, r) => n + r.total, 0) + ' 道题');
+}
+function renderStudy() {
+  today();
+  const active = study.active;
+  const running = active && !active.completedAt;
+  $('start-session').hidden = Boolean(running || active?.completedAt);
+  if (!active) return;
+  const showFeedback = feedbackIndex !== null && active.answers[feedbackIndex];
+  if (active.completedAt && !showFeedback) { renderSummary(active); return; }
+  const index = showFeedback ? feedbackIndex : active.answers.length;
+  const item = active.items[index];
+  if (!item) return;
+  $('practice').hidden = false;
+  $('quiz-counter').textContent = text('Lesson ', '第 ') + (index + 1) + ' / ' + active.items.length;
+  $('session-progress').max = active.items.length; $('session-progress').value = active.answers.length;
+  $('quiz-context').textContent = labels[item.lesson.kind] + ' · ' + (item.lesson.parent || '');
+  $('question').textContent = item.question.prompt;
+  $('answers').replaceChildren(); $('result').textContent = ''; $('quiz-explanation').textContent = '';
+  $('next').hidden = !showFeedback;
+  $('next').textContent = active.completedAt ? text('See session summary →', '查看学习总结 →') : text('Next question →', '下一题 →');
+  for (const option of item.question.options) {
+    const button = node('button', option); button.disabled = Boolean(showFeedback || pendingAnswer);
+    if (showFeedback && option === item.question.answer) button.classList.add('correct');
+    if (showFeedback && !showFeedback.correct && option === showFeedback.choice) button.classList.add('wrong');
     button.onclick = async () => {
-      if (answered) return;
-      answered = true; const right = option === question.answer;
-      for (const b of $('answers').children) { b.disabled = true; if (b.textContent === question.answer) b.classList.add('correct'); }
-      if (!right) button.classList.add('wrong');
+      if (pendingAnswer || study.active.id !== active.id || study.active.answers.length !== index) return;
+      pendingAnswer = true;
+      for (const control of $('answers').children) control.disabled = true;
       try {
-        await persist(lesson.id, 'answer', right);
-        session++; correct += Number(right); quizIds.push(lesson.id);
-        $('result').textContent = right ? text('Correct! Scheduled for a later review.', '答对了！已安排后续复习。') : text(`Answer: ${question.answer}. Review again in a minute.`, `正确答案：${question.answer}。一分钟后可再次复习。`);
-        $('quiz-explanation').textContent = `${lesson.descriptionEn}\n${lesson.descriptionZh}`;
-        $('next').hidden = false;
-      } catch (error) { $('result').textContent = error.message; answered = false; for (const b of $('answers').children) b.disabled = false; }
+        receive(await api.answerSession(active.id, item.lesson.id, option));
+        feedbackIndex = index;
+        if (mode === 'quiz') render();
+      } catch (error) { $('result').textContent = error.message; for (const control of $('answers').children) control.disabled = false; }
+      finally { pendingAnswer = false; }
     };
     $('answers').append(button);
   }
+  if (showFeedback) {
+    $('result').textContent = showFeedback.correct ? text('Correct! Scheduled for a later review.', '答对了！已安排后续复习。') : text('Answer: ', '正确答案：') + item.question.answer;
+    $('quiz-explanation').textContent = item.lesson.descriptionEn + '\n' + item.lesson.descriptionZh;
+  }
 }
-for (const id of ['browse', 'saved', 'quiz']) $(id).onclick = () => { window.speechSynthesis?.cancel(); mode = id; limit = 24; render(); if (id === 'quiz') { quizIds = []; startQuestion(); } };
-for (const id of ['search', 'kind', 'direction']) $(id).addEventListener(id === 'search' ? 'input' : 'change', () => { limit = 24; render(); if (mode === 'quiz') { quizIds = []; startQuestion(); } });
+function renderSummary(active) {
+  $('session-summary').hidden = false;
+  const correct = active.answers.filter(answer => answer.correct).length;
+  $('summary-score').textContent = text('You answered ', '本轮答对 ') + correct + ' / ' + active.items.length + text(' correctly.', ' 道题。');
+  $('summary-tip').textContent = text('Correct words return on their review date. Mistakes are due again after one minute.', '答对的词条按复习日期再次出现，错题一分钟后到期。');
+  const mistakes = active.answers.filter(answer => !answer.correct);
+  $('mistakes-heading').hidden = !mistakes.length;
+  $('session-mistakes').replaceChildren();
+  for (const answer of mistakes) {
+    const item = active.items.find(item => item.lesson.id === answer.id);
+    const card = node('article', '', 'review-word');
+    card.append(node('strong', item.lesson.en + ' · ' + item.lesson.zh));
+    const actions = node('div', '', 'actions'), listen = node('button', text('▶ Listen', '▶ 听发音'));
+    const save = node('button', progress[answer.id]?.saved ? text('★ Saved', '★ 已收藏') : text('☆ Save word', '☆ 收藏'));
+    listen.onclick = () => speak(item.lesson.en);
+    save.onclick = async () => {
+      save.disabled = true;
+      try { await persist(answer.id, 'saved', !progress[answer.id]?.saved); renderSummary(active); }
+      catch (error) { $('study-status').textContent = error.message; save.disabled = false; }
+    };
+    actions.append(listen, save); card.append(actions); $('session-mistakes').append(card);
+  }
+}
+function enterPractice(scope) {
+  mode = 'quiz'; feedbackIndex = null;
+  const options = study.active?.options || study.preferences;
+  $('session-size').value = options.size; $('session-scope').value = study.active && !study.active.completedAt ? options.scope : scope || options.scope;
+  if (study.active && !study.active.completedAt) {
+    $('kind').value = options.kind; $('search').value = options.search; $('direction').value = options.direction;
+  }
+  render();
+  focusStudy();
+}
+function focusStudy() {
+  const heading = !$('practice').hidden ? $('question') : !$('session-summary').hidden ? $('summary-heading') : $('study-heading');
+  heading.tabIndex = -1;
+  heading.focus({ preventScroll: true });
+  heading.closest('section').scrollIntoView({ block: 'start' });
+}
+async function beginSession() {
+  if (starting) return;
+  starting = true; $('start-session').disabled = true; $('new-session').disabled = true;
+  try {
+    const response = await api.startSession({ size: Number($('session-size').value), scope: $('session-scope').value,
+      kind: $('kind').value, search: $('search').value, direction: $('direction').value });
+    receive(response); feedbackIndex = null;
+    $('study-status').textContent = response.empty ? text('No words are ready in this collection. Save some words, change topic, or return when reviews are due.', '此词库暂无到期课程。请先收藏词条、更换主题，或到复习时间再来。') : text('Your session is saved automatically. You can finish it later.', '本轮进度自动保存，可以稍后继续。');
+    if (mode === 'quiz') { render(); focusStudy(); }
+  } catch (error) { $('study-status').textContent = error.message; }
+  finally { starting = false; $('start-session').disabled = false; $('new-session').disabled = false; }
+}
+for (const id of ['browse', 'saved', 'quiz']) $(id).onclick = () => {
+  window.speechSynthesis?.cancel();
+  if (id === 'quiz') enterPractice(); else { mode = id; limit = 24; render(); }
+};
+for (const id of ['search', 'kind', 'direction']) $(id).addEventListener(id === 'search' ? 'input' : 'change', () => { limit = 24; render(); });
+$('practice-saved').onclick = () => { enterPractice('saved'); };
+$('start-session').onclick = beginSession;
+$('new-session').onclick = beginSession;
 $('more').onclick = () => { limit += 24; render(); };
-$('next').onclick = startQuestion;
+$('next').onclick = () => { feedbackIndex = null; render(); focusStudy(); };
 $('patches').onclick = async () => { const response = await api.sources(); if (!response.ok) $('update-status').textContent = response.error; };
 $('refresh').onclick = async () => {
   $('refresh').disabled = true; $('update-status').textContent = text('Fetching bilingual lessons from Valve. This can take a few minutes…', '正在从 Valve 获取双语课程，可能需要几分钟…');
   try {
     const response = await api.update(); if (!response.ok) throw new Error(response.error);
-    catalog = response.catalog; quizIds = []; render(); if (mode === 'quiz') startQuestion();
+    catalog = response.catalog; render();
     $('update-status').textContent = text('Catalog updated. Your learning progress is preserved.', '课程已更新，学习进度已保留。');
   } catch (error) { $('update-status').textContent = text('Update failed; offline lessons remain available. ', '更新失败，仍可使用离线课程。') + error.message; }
   finally { $('refresh').disabled = false; }
@@ -116,5 +198,5 @@ api.onProgress(({ done, total }) => { $('update-status').textContent = text(`Upd
 api.onHidden(() => window.speechSynthesis?.cancel());
 try {
   const response = await api.load(); if (!response.ok) throw new Error(response.error);
-  catalog = response.catalog; progress = response.progress; render();
+  catalog = response.catalog; receive(response); $('session-size').value = study.preferences.size; $('session-scope').value = study.preferences.scope; render();
 } catch (error) { $('message').textContent = error.message; for (const button of document.querySelectorAll('button')) button.disabled = true; }
