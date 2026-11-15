@@ -45,3 +45,7 @@ The manifest maps stable lesson IDs to local files and records the original rela
 - The unpacked Windows preview includes the recordings inside `resources/app.asar`.
 - The complete desktop smoke test passed against both the source build and packaged preview, exercising actual muted playback from the app archive.
 - No claim is made that the recording transcripts match all current game numbers. Regenerating stale descriptions is a separate content task.
+
+## Content audit and future updates
+
+The [content update policy](DOTAPAD_CONTENT_UPDATE_POLICY.md) records the November 15 audit, changed-source candidates, numeric differences and the recommended selective-regeneration process. The app now labels recordings with changed source wording, extra archive context or unresolved current values. Matching archived candidate text remains unverified MP3 provenance; no existing audio was replaced during the audit.

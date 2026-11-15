@@ -74,3 +74,20 @@ User instructions: [Daily practice guide](DOTAPAD_DAILY_PRACTICE.md). Publicatio
 - Full source and packaged-preview desktop smoke tests both passed, including actual muted MP3 playback from source files and from `app.asar`, normal speed, stop toggling and stopping when leaving the learning page.
 
 Maintenance details and limitations: [AI audio library](DOTAPAD_AUDIO.md).
+
+## 2026-11-15 — Current-content audit and selective audio updates
+
+- Refreshed the complete official English/Chinese catalog at 15:31 China time and preserved the previous snapshot. Added numeric balance fields and hero biographies for meaningful future comparisons.
+- Fixed description interpolation to use exact special-value names before fallback aliases, resolve supplied built-in duration/channel values and avoid doubled percent markers.
+- Imported public archived candidate scripts and comparable numeric facts, including innate abilities that were stored separately in the older reference export. No reference files or MP3s were changed.
+- Audited all 1,310 lessons: **884 baseline matches; 100 matching main descriptions with extra archive context; 88 changed candidate scripts (45 abilities, 43 items); 65 stat-only sources needing a narration template; 1 unresolved-current-source case; 8 without a comparable transcript; 164 without recordings**.
+- Found 323 records with differences in shared numeric fields. Text and numeric counts overlap and are not patch-specific change totals.
+- Corrected an audit false positive: archived item scripts often include notes and attributes omitted from the current main-description field. Those 100 cases are now separate from changed wording.
+- Prepared 200 unreviewed synthesis candidates (88 changed scripts and 112 usable missing-recording scripts). Excluded stat-only sources needing a narration template, unresolved source values and extra-context-only cases. Item availability requires review; the official feed includes historical/internal entries.
+- Added per-recording archive labels distinguishing changed wording, extra notes and unresolved values. MP3s remain playable as archived material.
+- Successful refreshes now save the previous snapshot and a change report; tests verify that a failed fetch preserves current data and that ongoing daily sessions survive refreshes.
+- Checked the 20 most recent official Steam announcements: latest gameplay announcement found was 7.41f (September 15). No confirmed next-major-patch date found in those posts; no forecast or new automation was created.
+- Validation: **264 automated tests passed, 0 failed**, plus the English Settings check. Desktop verification covers the changed/extra-context labels, MP3 playback, saved words and daily sessions.
+- No MP3 synthesis, transcript certification or mass replacement was performed. This is an audit of archived input candidates and current official data; full listening/ASR review remains separate.
+
+Recommendation and review workflow: [Content update policy](DOTAPAD_CONTENT_UPDATE_POLICY.md). Machine-readable evidence and the review queue are under `docs/audits/`. Changes continue as separate commits on the existing feature branch.

@@ -1,0 +1,113 @@
+{
+  "checkedAt": "2026-11-15T07:38:39.953Z",
+  "source": "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=570&count=20&maxlength=0&feeds=steam_community_announcements",
+  "scope": "20 most recent official Steam community announcements; not all client hotfix builds",
+  "latestGameplayAnnouncement": {
+    "title": "7.41f Gameplay Patch",
+    "publishedAt": "2026-09-15T18:44:25.000Z",
+    "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1843481262705400"
+  },
+  "nextMajorPatchDate": "No confirmed date found in the checked announcements",
+  "headlines": [
+    {
+      "title": "Inside the Trove of Terror",
+      "publishedAt": "2026-10-07T00:22:41.000Z",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1846018067924633"
+    },
+    {
+      "title": "7.41f Gameplay Patch",
+      "publishedAt": "2026-09-15T18:44:25.000Z",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1843481262705400"
+    },
+    {
+      "title": "The International 2026 Grand Champions",
+      "publishedAt": "2026-08-27T01:07:42.000Z",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1842212951298513"
+    },
+    {
+      "title": "The International Main Event",
+      "publishedAt": "2026-08-19T02:46:04.000Z",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1841579228661427"
+    },
+    {
+      "title": "The International: Streams, Secret Shop, and More",
+      "publishedAt": "2026-08-12T00:28:39.000Z",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1840944183772671"
+    },
+    {
+      "title": "Gameplay Patch 7.41e and Summer Scrub",
+      "publishedAt": "2026-07-30T23:58:15.000Z",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1839676055886687"
+    },
+    {
+      "title": "The International: Predictions, Fantasy, and Supporter Bundles",
+      "publishedAt": "2026-07-30T23:57:48.000Z",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1839676055886685"
+    },
+    {
+      "title": "Dota 2 Update - 7/1/2026",
+      "publishedAt": "2026-07-01T23:26:01.000Z",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1836506165566626"
+    },
+    {
+      "title": "The Dark Carnival",
+      "publishedAt": "2026-06-25T19:55:51.000Z",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1836506165551627"
+    },
+    {
+      "title": "7.41d Gameplay Patch",
+      "publishedAt": "2026-06-05T00:45:14.000Z",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1834602721189111"
+    },
+    {
+      "title": "The International 2026 Ticket Sales",
+      "publishedAt": "2026-05-26T04:09:28.000Z",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1833334318578495"
+    },
+    {
+      "title": "The International 2026 Invitations and Qualifiers",
+      "publishedAt": "2026-05-26T03:30:03.000Z",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1833334318578465"
+    },
+    {
+      "title": "7.41c Gameplay Patch",
+      "publishedAt": "2026-05-06T22:17:55.000Z",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1832065502810383"
+    },
+    {
+      "title": "The International Team Registration",
+      "publishedAt": "2026-05-04T22:12:15.000Z",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1831432155578766"
+    },
+    {
+      "title": "7.41b Gameplay Patch",
+      "publishedAt": "2026-04-07T20:24:46.000Z",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1828894815568310"
+    },
+    {
+      "title": "Dota 2 Update - 3/31/2026",
+      "publishedAt": "2026-03-31T22:52:06.000Z",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1828894815553165"
+    },
+    {
+      "title": "7.41a Gameplay Patch",
+      "publishedAt": "2026-03-27T22:15:21.000Z",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1828441623105709"
+    },
+    {
+      "title": "7.41 Gameplay Patch",
+      "publishedAt": "2026-03-24T23:43:44.000Z",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1827626365766968"
+    },
+    {
+      "title": "The International 2026",
+      "publishedAt": "2026-02-12T00:05:34.000Z",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1824459501605090"
+    },
+    {
+      "title": "Dota 2 Update - 1/30/2026",
+      "publishedAt": "2026-01-30T23:12:19.000Z",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1823191198606637"
+    }
+  ]
+}

@@ -1,0 +1,1467 @@
+{
+  "from": "2026-11-15T06:41:09.439Z",
+  "to": "2026-11-15T07:31:22.731Z",
+  "changes": [
+    {
+      "id": "ability:1166",
+      "name": "One Man Army",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Axe gains Strength based on 50%% of his Armor as long as there are no allied heroes within 700 distance from Axe.  The effect fades over %bonus_linger_duration%s after approaching an ally.",
+        "descriptionZh": "只要斧王附近700范围内没有友方英雄，他就会获得50%%自身护甲值的力量加成。这个效果在接近一名友军后会在%bonus_linger_duration%秒内消失。"
+      },
+      "after": {
+        "descriptionEn": "Axe gains Strength based on 50% of his Armor as long as there are no allied heroes within 700 distance from Axe.  The effect fades over 3s after approaching an ally.",
+        "descriptionZh": "只要斧王附近700范围内没有友方英雄，他就会获得50%自身护甲值的力量加成。这个效果在接近一名友军后会在3秒内消失。"
+      }
+    },
+    {
+      "id": "ability:5129",
+      "name": "Freezing Field",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "CHANNELED - Surrounds Crystal Maiden with 100 random icy explosions that slow enemies and deal massive damage. Lasts %abilitychanneltime% seconds.",
+        "descriptionZh": "持续施法 - 以水晶室女为中心召唤100次随机冰爆轰炸敌人，将其减速并造成大量伤害。持续%abilitychanneltime%秒。"
+      },
+      "after": {
+        "descriptionEn": "CHANNELED - Surrounds Crystal Maiden with 100 random icy explosions that slow enemies and deal massive damage. Lasts 10 seconds.",
+        "descriptionZh": "持续施法 - 以水晶室女为中心召唤100次随机冰爆轰炸敌人，将其减速并造成大量伤害。持续10秒。"
+      }
+    },
+    {
+      "id": "ability:5019",
+      "name": "Frost Arrows",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Adds a freezing effect to Drow's attacks, slowing enemy movement and dealing bonus damage.  Slow lasts %abilityduration% seconds.",
+        "descriptionZh": "卓尔游侠在箭矢中附上冰冻效果，减缓敌人的移动速度并造成额外伤害。持续%abilityduration%秒。"
+      },
+      "after": {
+        "descriptionEn": "Adds a freezing effect to Drow's attacks, slowing enemy movement and dealing bonus damage.  Slow lasts 1.5 seconds.",
+        "descriptionZh": "卓尔游侠在箭矢中附上冰冻效果，减缓敌人的移动速度并造成额外伤害。持续1.5秒。"
+      }
+    },
+    {
+      "id": "ability:343",
+      "name": "Multishot",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "CHANNELED - Drow releases a flurry of arrows in continuous salvos, hitting enemies for extra damage and applying Frost Arrows with a range of Drow's Attack Range + 475. Lasts up to %abilitychanneltime% seconds.\n\nDrow can move slowly and use items while casting Multishot.",
+        "descriptionZh": "持续施法 - 卓尔游侠在最多%abilitychanneltime%秒内不断地射出阵阵箭矢，对卓尔游侠攻击距离 + 475的距离内击中的敌人造成额外伤害，并施加霜冻之箭效果。\n\n卓尔游侠在施放数箭齐发时可以缓慢移动和使用物品。"
+      },
+      "after": {
+        "descriptionEn": "CHANNELED - Drow releases a flurry of arrows in continuous salvos, hitting enemies for extra damage and applying Frost Arrows with a range of Drow's Attack Range + 475. Lasts up to 1.75 seconds.\n\nDrow can move slowly and use items while casting Multishot.",
+        "descriptionZh": "持续施法 - 卓尔游侠在最多1.75秒内不断地射出阵阵箭矢，对卓尔游侠攻击距离 + 475的距离内击中的敌人造成额外伤害，并施加霜冻之箭效果。\n\n卓尔游侠在施放数箭齐发时可以缓慢移动和使用物品。"
+      }
+    },
+    {
+      "id": "ability:5024",
+      "name": "Enchant Totem",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Empowers Earthshaker's totem, causing it to deal extra damage and have %bonus_attack_range% bonus attack range on the next attack.",
+        "descriptionZh": "强化撼地者的图腾，使下次攻击拥有额外攻击力和%bonus_attack_range%攻击距离加成。"
+      },
+      "after": {
+        "descriptionEn": "Empowers Earthshaker's totem, causing it to deal extra damage and have 100 bonus attack range on the next attack.",
+        "descriptionZh": "强化撼地者的图腾，使下次攻击拥有额外攻击力和100攻击距离加成。"
+      }
+    },
+    {
+      "id": "ability:5029",
+      "name": "Healing Ward",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Summons a Healing Ward which heals all nearby allied units, based on their max health.  The Healing Ward moves at 325 movement speed after being summoned.  Lasts %abilityduration% seconds.",
+        "descriptionZh": "召唤一个治疗守卫，按周围友军单位最大生命值的一定比例治疗他们。治疗守卫可以移动，移动速度为325。持续%abilityduration%秒。"
+      },
+      "after": {
+        "descriptionEn": "Summons a Healing Ward which heals all nearby allied units, based on their max health.  The Healing Ward moves at 325 movement speed after being summoned.  Lasts 18 / 20 / 22 / 24 seconds.",
+        "descriptionZh": "召唤一个治疗守卫，按周围友军单位最大生命值的一定比例治疗他们。治疗守卫可以移动，移动速度为325。持续18 / 20 / 22 / 24秒。"
+      }
+    },
+    {
+      "id": "ability:5105",
+      "name": "Epicenter",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "After a cast point of %abilitycastpoint% seconds, Sand King sends a disturbance into the earth, causing it to shudder violently. All enemies caught within range will take damage and become slowed. Each subsequent pulse increases the radius of damage dealt.",
+        "descriptionZh": "经过%abilitycastpoint%秒施法前摇后，沙王向地中发送扰动，引起大地剧烈震动。所有范围内的敌人会受到伤害并被减速。每次后续震波都会提高伤害传播半径。"
+      },
+      "after": {
+        "descriptionEn": "After a cast point of 2 seconds, Sand King sends a disturbance into the earth, causing it to shudder violently. All enemies caught within range will take damage and become slowed. Each subsequent pulse increases the radius of damage dealt.",
+        "descriptionZh": "经过2秒施法前摇后，沙王向地中发送扰动，引起大地剧烈震动。所有范围内的敌人会受到伤害并被减速。每次后续震波都会提高伤害传播半径。"
+      }
+    },
+    {
+      "id": "ability:5098",
+      "name": "Static Remnant",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Creates an explosively charged image of Storm Spirit that walks to the target position and lasts for %abilityduration% seconds. Will detonate and deal damage if an enemy unit comes near it.",
+        "descriptionZh": "风暴之灵制造一个充满爆炸性能量的自身残影，会向目标地点走去，残影持续%abilityduration%秒。如果有人接近就会引爆造成伤害。\n\n技能设为多样施法（右键点击技能栏图标）后始终在风暴之灵的位置制造残影。"
+      },
+      "after": {
+        "descriptionEn": "Creates an explosively charged image of Storm Spirit that walks to the target position and lasts for 12 seconds. Will detonate and deal damage if an enemy unit comes near it.",
+        "descriptionZh": "风暴之灵制造一个充满爆炸性能量的自身残影，会向目标地点走去，残影持续12秒。如果有人接近就会引爆造成伤害。\n\n技能设为多样施法（右键点击技能栏图标）后始终在风暴之灵的位置制造残影。"
+      }
+    },
+    {
+      "id": "ability:5097",
+      "name": "God's Strength",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Sven channels his rogue strength, granting bonus damage and slow resistance for %abilityduration% seconds.",
+        "descriptionZh": "斯温爆发出他流浪剑客的力量，获得攻击力加成和减速抗性，持续%abilityduration%秒。"
+      },
+      "after": {
+        "descriptionEn": "Sven channels his rogue strength, granting bonus damage and slow resistance for 30 seconds.",
+        "descriptionZh": "斯温爆发出他流浪剑客的力量，获得攻击力加成和减速抗性，持续30秒。"
+      }
+    },
+    {
+      "id": "ability:1238",
+      "name": "Retribution",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Vengeful Spirit is considered both a ranged and a melee attacker to gain the respective bonuses.\n\nWhen killed by an enemy hero, Vengeful Spirit deals %bonus_damage%%% bonus damage to her killer until their next death. Only one debuff can exist at a time.",
+        "descriptionZh": "复仇之魂的攻击同时被视为远程和近战，可以获得相应加成。\n\n只要敌方英雄击杀了复仇之魂，他们会获得一个负面效果，直到下次阵亡，期间复仇之魂会对他们造成%bonus_damage%%%额外伤害。同一时间只能存在一个负面效果。"
+      },
+      "after": {
+        "descriptionEn": "Vengeful Spirit is considered both a ranged and a melee attacker to gain the respective bonuses.\n\nWhen killed by an enemy hero, Vengeful Spirit deals 20% bonus damage to her killer until their next death. Only one debuff can exist at a time.",
+        "descriptionZh": "复仇之魂的攻击同时被视为远程和近战，可以获得相应加成。\n\n只要敌方英雄击杀了复仇之魂，他们会获得一个负面效果，直到下次阵亡，期间复仇之魂会对他们造成20%额外伤害。同一时间只能存在一个负面效果。"
+      }
+    },
+    {
+      "id": "ability:5131",
+      "name": "Powershot",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "CHANNELED - Windranger charges her bow for up to %abilitychanneltime% second for a single powerful shot, which deals more damage the longer it is charged. The arrow damages and slows enemies' movement speed along its path. For each enemy that Powershot hits, its damage and slow is reduced.",
+        "descriptionZh": "持续施法 - 风行者为她的弓蓄力，射出一支强力的箭矢，最长可蓄力%abilitychanneltime%秒，其间可以打断蓄力，蓄力时间越长，箭矢伤害越高。这支箭会对穿过的所有敌方单位造成伤害和减速效果，并破坏树木。每伤害一个单位，箭矢的伤害和减速效果都会降低。"
+      },
+      "after": {
+        "descriptionEn": "CHANNELED - Windranger charges her bow for up to 1 second for a single powerful shot, which deals more damage the longer it is charged. The arrow damages and slows enemies' movement speed along its path. For each enemy that Powershot hits, its damage and slow is reduced.",
+        "descriptionZh": "持续施法 - 风行者为她的弓蓄力，射出一支强力的箭矢，最长可蓄力1秒，其间可以打断蓄力，蓄力时间越长，箭矢伤害越高。这支箭会对穿过的所有敌方单位造成伤害和减速效果，并破坏树木。每伤害一个单位，箭矢的伤害和减速效果都会降低。"
+      }
+    },
+    {
+      "id": "ability:5133",
+      "name": "Focus Fire",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Windranger channels the wind to gain %bonus_attack_speed% additional attack speed against a single enemy unit or structure, though with a reduction to her attack damage.  Extra damage from secondary item effects is not reduced.",
+        "descriptionZh": "风行者受风的引领，攻击敌方单位或建筑的攻击速度增加%bonus_attack_speed%，但是攻击力降低。不过次级物品效果的额外伤害不会降低。"
+      },
+      "after": {
+        "descriptionEn": "Windranger channels the wind to gain 350 / 425 / 500 additional attack speed against a single enemy unit or structure, though with a reduction to her attack damage.  Extra damage from secondary item effects is not reduced.",
+        "descriptionZh": "风行者受风的引领，攻击敌方单位或建筑的攻击速度增加350 / 425 / 500，但是攻击力降低。不过次级物品效果的额外伤害不会降低。"
+      }
+    },
+    {
+      "id": "ability:5134",
+      "name": "Frost Blast",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Blasts the target enemy unit with damaging frost, dealing area damage and slowing movement and attack rates for %abilityduration% seconds.  The primary target receives both base and area damage.",
+        "descriptionZh": "破坏性的寒霜在目标敌方单位身上爆发，造成范围伤害并降低范围内敌人的移动和攻击速度，持续%abilityduration%秒。主要目标所受伤害最高。"
+      },
+      "after": {
+        "descriptionEn": "Blasts the target enemy unit with damaging frost, dealing area damage and slowing movement and attack rates for 4 seconds.  The primary target receives both base and area damage.",
+        "descriptionZh": "破坏性的寒霜在目标敌方单位身上爆发，造成范围伤害并降低范围内敌人的移动和攻击速度，持续4秒。主要目标所受伤害最高。"
+      }
+    },
+    {
+      "id": "ability:5141",
+      "name": "Death Ward",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "CHANNELED - Summons a deadly ward to attack enemy heroes within its attack range. Lasts a maximum of %abilitychanneltime% seconds. Death Ward has %bonus_accuracy%%% bonus accuracy.",
+        "descriptionZh": "持续施法 - 召唤一个死亡守卫，会优先攻击其攻击距离内的敌方英雄。最多持续%abilitychanneltime%秒。死亡守卫拥有%bonus_accuracy%%%额外必中率。"
+      },
+      "after": {
+        "descriptionEn": "CHANNELED - Summons a deadly ward to attack enemy heroes within its attack range. Lasts a maximum of 8 seconds. Death Ward has 50% bonus accuracy.",
+        "descriptionZh": "持续施法 - 召唤一个死亡守卫，会优先攻击其攻击距离内的敌方英雄。最多持续8秒。死亡守卫拥有50%额外必中率。"
+      }
+    },
+    {
+      "id": "ability:5154",
+      "name": "Shrapnel",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Consumes a charge to launch a ball of shrapnel that showers the target area in explosive pellets. Enemies are subject to damage and slowed movement. Reveals the targeted area. Shrapnel charges restore every %abilitychargerestoretime% seconds.",
+        "descriptionZh": "消耗一点能量射出一发带有爆炸弹片的榴霰弹，在目标区域降下弹雨。区域内的敌军受到伤害并被减速。榴霰弹将给予目标区域的视野。榴霰弹的能量每过%abilitychargerestoretime%秒恢复1点。"
+      },
+      "after": {
+        "descriptionEn": "Consumes a charge to launch a ball of shrapnel that showers the target area in explosive pellets. Enemies are subject to damage and slowed movement. Reveals the targeted area. Shrapnel charges restore every 35 seconds.",
+        "descriptionZh": "消耗一点能量射出一发带有爆炸弹片的榴霰弹，在目标区域降下弹雨。区域内的敌军受到伤害并被减速。榴霰弹将给予目标区域的视野。榴霰弹的能量每过35秒恢复1点。"
+      }
+    },
+    {
+      "id": "ability:1268",
+      "name": "Keen Scope",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Sniper’s attacks deal bonus damage for every %bonus_damage_distance% units of distance Sniper is from the target.",
+        "descriptionZh": "狙击手和目标相距每%bonus_damage_distance%距离，他的攻击都会造成额外伤害。"
+      },
+      "after": {
+        "descriptionEn": "Sniper’s attacks deal bonus damage for every 100 units of distance Sniper is from the target.",
+        "descriptionZh": "狙击手和目标相距每100距离，他的攻击都会造成额外伤害。"
+      }
+    },
+    {
+      "id": "ability:5164",
+      "name": "Upheaval",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "CHANNELED - A powerful slowing and damaging current that grows stronger as it's channeled. Lasts up to %abilitychanneltime% seconds. Enemies are slowed for 1 second after leaving the area or the spell ends.",
+        "descriptionZh": "持续施法 - 随施法时间增强的减速气流，还会造成伤害。持续最多%abilitychanneltime%秒。在魔法结束或目标离开生效区域后，敌人仍会被减速1秒。"
+      },
+      "after": {
+        "descriptionEn": "CHANNELED - A powerful slowing and damaging current that grows stronger as it's channeled. Lasts up to 10 / 12 / 14 / 16 seconds. Enemies are slowed for 1 second after leaving the area or the spell ends.",
+        "descriptionZh": "持续施法 - 随施法时间增强的减速气流，还会造成伤害。持续最多10 / 12 / 14 / 16秒。在魔法结束或目标离开生效区域后，敌人仍会被减速1秒。"
+      }
+    },
+    {
+      "id": "ability:5093",
+      "name": "Exorcism",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Unleashes evil spirits to drain the life of nearby enemy units and structures. Spirits need to return back to Death Prophet in order to attack again. At the end of the spell's duration, Death Prophet is healed in proportion to the damage dealt. Deals 50% damage to buildings. Lasts %abilityduration% seconds.",
+        "descriptionZh": "释放恶灵偷走敌方单位和建筑的生命。恶灵需要回到她身上才能再次攻击。持续时间结束后，死亡先知根据造成的伤害量，获得一定比例的治疗。对建筑造成50%%伤害。持续%abilityduration%秒。"
+      },
+      "after": {
+        "descriptionEn": "Unleashes evil spirits to drain the life of nearby enemy units and structures. Spirits need to return back to Death Prophet in order to attack again. At the end of the spell's duration, Death Prophet is healed in proportion to the damage dealt. Deals 50% damage to buildings. Lasts 40 seconds.",
+        "descriptionZh": "释放恶灵偷走敌方单位和建筑的生命。恶灵需要回到她身上才能再次攻击。持续时间结束后，死亡先知根据造成的伤害量，获得一定比例的治疗。对建筑造成50%伤害。持续40秒。"
+      }
+    },
+    {
+      "id": "ability:7853",
+      "name": "Psionic Projection",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "CHANNELED - Allows Templar Assassin to teleport to any Psionic Trap after channeling for %abilitychanneltime% seconds, detonating it upon arrival as if it was fully charged and instantly dealing 400 bonus damage. Channeling Psionic Projection does not break Meld.",
+        "descriptionZh": "持续施法 - 圣堂刺客经过%abilitychanneltime%秒持续施法后可以传送至任意灵能陷阱，到达时引爆灵能陷阱，陷阱总是最大效果，并且立刻造成400点额外伤害。灵能投射在持续施法时不会脱离隐匿效果。"
+      },
+      "after": {
+        "descriptionEn": "CHANNELED - Allows Templar Assassin to teleport to any Psionic Trap after channeling for 2 seconds, detonating it upon arrival as if it was fully charged and instantly dealing 400 bonus damage. Channeling Psionic Projection does not break Meld.",
+        "descriptionZh": "持续施法 - 圣堂刺客经过2秒持续施法后可以传送至任意灵能陷阱，到达时引爆灵能陷阱，陷阱总是最大效果，并且立刻造成400点额外伤害。灵能投射在持续施法时不会脱离隐匿效果。"
+      }
+    },
+    {
+      "id": "ability:320",
+      "name": "Sproink",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Leaps backward, dodges incoming projectiles, and launches an Impetus attack on the 2 furthest enemy units within Enchantress' attack range + %bonus_attack_range%.",
+        "descriptionZh": "向后跳跃，躲避多种飞行过程中的攻击和技能弹道，并向魅惑魔女的攻击距离+%bonus_attack_range%范围内最远的2个敌方单位发动一次附有推进的攻击。"
+      },
+      "after": {
+        "descriptionEn": "Leaps backward, dodges incoming projectiles, and launches an Impetus attack on the 2 furthest enemy units within Enchantress' attack range + 100.",
+        "descriptionZh": "向后跳跃，躲避多种飞行过程中的攻击和技能弹道，并向魅惑魔女的攻击距离+100范围内最远的2个敌方单位发动一次附有推进的攻击。"
+      }
+    },
+    {
+      "id": "ability:1324",
+      "name": "Lvl ? Pain",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Doom's attacks curse enemy heroes. After 2.5s, the cursed hero bursts with a pillar of fire, damaging itself and all units in a 66 AoE for %bonus_damage_pct_base%%% of the damage taken from Doom during the curse. The damage and radius of the curse is %bonus_at_level_pct%%% stronger if the enemy's level is a multiple of 6.",
+        "descriptionZh": "末日使者的攻击会诅咒敌方英雄。2.5秒后，被诅咒的英雄会爆发出一根火柱，对自身和66范围内所有敌方单位造成伤害，伤害量为诅咒期间内承受来自末日使者的%bonus_damage_pct_base%%%伤害。如果被诅咒的英雄等级为6的倍数，诅咒的伤害和作用范围会提升%bonus_at_level_pct%%%。"
+      },
+      "after": {
+        "descriptionEn": "Doom's attacks curse enemy heroes. After 2.5s, the cursed hero bursts with a pillar of fire, damaging itself and all units in a 66 AoE for 10% of the damage taken from Doom during the curse. The damage and radius of the curse is 66% stronger if the enemy's level is a multiple of 6.",
+        "descriptionZh": "末日使者的攻击会诅咒敌方英雄。2.5秒后，被诅咒的英雄会爆发出一根火柱，对自身和66范围内所有敌方单位造成伤害，伤害量为诅咒期间内承受来自末日使者的10%伤害。如果被诅咒的英雄等级为6的倍数，诅咒的伤害和作用范围会提升66%。"
+      }
+    },
+    {
+      "id": "ability:5357",
+      "name": "Earthshock",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Ursa leaps forward 250 units and slams the earth, causing a powerful shock to damage and slow all enemy units in a nearby area for %abilityduration% seconds.",
+        "descriptionZh": "熊战士向前跳跃250距离并猛击地面带来强烈的冲击，对附近范围内的所有敌方单位造成伤害并减速%abilityduration%秒。"
+      },
+      "after": {
+        "descriptionEn": "Ursa leaps forward 250 units and slams the earth, causing a powerful shock to damage and slow all enemy units in a nearby area for 4 seconds.",
+        "descriptionZh": "熊战士向前跳跃250距离并猛击地面带来强烈的冲击，对附近范围内的所有敌方单位造成伤害并减速4秒。"
+      }
+    },
+    {
+      "id": "ability:5359",
+      "name": "Fury Swipes",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Ursa's claws dig deeper wounds in the enemy, causing consecutive attacks to the same enemy to deal more damage.  If the same target is not attacked after %bonus_reset_time% seconds, the bonus damage is lost.",
+        "descriptionZh": "熊战士的利爪深深地撕裂敌人的伤口，对同一敌人连续攻击将造成更多伤害。如果同一个目标在%bonus_reset_time%秒内不受攻击，将失去额外伤害加成。"
+      },
+      "after": {
+        "descriptionEn": "Ursa's claws dig deeper wounds in the enemy, causing consecutive attacks to the same enemy to deal more damage.  If the same target is not attacked after 8 / 12 / 16 / 20 seconds, the bonus damage is lost.",
+        "descriptionZh": "熊战士的利爪深深地撕裂敌人的伤口，对同一敌人连续攻击将造成更多伤害。如果同一个目标在8 / 12 / 16 / 20秒内不受攻击，将失去额外伤害加成。"
+      }
+    },
+    {
+      "id": "ability:5363",
+      "name": "Flak Cannon",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Gyrocopter's attacks hit all enemy units in an area around it for a limited number of attacks.  Only the main target of attacks will receive attack bonuses such as Critical Strike.  Lasts %abilityduration% seconds or until the attacks are used.",
+        "descriptionZh": "矮人直升机的攻击会击中目标周围一定范围内的所有敌人，持续一定次数的攻击。只有主要目标会受到致命一击等攻击特效。持续%abilityduration%秒或攻击次数耗尽。"
+      },
+      "after": {
+        "descriptionEn": "Gyrocopter's attacks hit all enemy units in an area around it for a limited number of attacks.  Only the main target of attacks will receive attack bonuses such as Critical Strike.  Lasts 12 seconds or until the attacks are used.",
+        "descriptionZh": "矮人直升机的攻击会击中目标周围一定范围内的所有敌人，持续一定次数的攻击。只有主要目标会受到致命一击等攻击特效。持续12秒或攻击次数耗尽。"
+      }
+    },
+    {
+      "id": "ability:5423",
+      "name": "Shadow Poison",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Deals damage in a line, and afflicts enemy units with a poison effect. The poison deals 1/2/4/8/16 times the stack damage based on the number of stacks on the target, up to 5 stacks. Additional stacks cause 24 / 36 / 48 / 60 damage each.  This deferred damage is dealt when Shadow Poison's duration is expired, or the Release sub-ability is used.",
+        "descriptionZh": "在一条直线上造成伤害，并以毒咒折磨敌方单位。根据目标身上的叠加层数，毒咒造成1/2/4/8/16倍的叠加伤害，至多5层。更多层的叠加每层造成24 / 36 / 48 / 60点伤害。这部分延缓的伤害在暗影毒的持续时间结束后生效，或者使用附属技能立刻造成伤害。"
+      },
+      "after": {
+        "descriptionEn": "Deals damage in a line, and afflicts enemy units with a poison effect. The poison deals 1/2/4/8/16 times the stack damage based on the number of stacks on the target, up to 5 stacks. Additional stacks cause 60 damage each.  This deferred damage is dealt when Shadow Poison's duration is expired, or the Release sub-ability is used.",
+        "descriptionZh": "在一条直线上造成伤害，并以毒咒折磨敌方单位。根据目标身上的叠加层数，毒咒造成1/2/4/8/16倍的叠加伤害，至多5层。更多层的叠加每层造成60点伤害。这部分延缓的伤害在暗影毒的持续时间结束后生效，或者使用附属技能立刻造成伤害。"
+      }
+    },
+    {
+      "id": "ability:5414",
+      "name": "Savage Roar",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Lone Druid and the Spirit Bear roar fiercely causing nearby enemies to flee towards their base in terror. Their movement speed is increased by %bonus_speed%%%.",
+        "descriptionZh": "独行德鲁伊和熊灵发出野性的咆哮，使周围敌人恐惧，朝自己的基地狂奔。敌人的移动速度将增加%bonus_speed%%%。"
+      },
+      "after": {
+        "descriptionEn": "Lone Druid and the Spirit Bear roar fiercely causing nearby enemies to flee towards their base in terror. Their movement speed is increased by 20%.",
+        "descriptionZh": "独行德鲁伊和熊灵发出野性的咆哮，使周围敌人恐惧，朝自己的基地狂奔。敌人的移动速度将增加20%。"
+      }
+    },
+    {
+      "id": "ability:683",
+      "name": "Silent as the Grave",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Visage gains flying movement and bonus movement speed.  Upon attacking or casting, the speed and flying movement are lost and Visage and his familiars deal additional attack damage for %bonus_duration%s.",
+        "descriptionZh": "维萨吉获得飞行移动状态和移动速度加成。攻击或施法后，将失去移速加成和飞行移动状态，同时维萨吉和他的佣兽在%bonus_duration%秒内拥有额外攻击力。"
+      },
+      "after": {
+        "descriptionEn": "Visage gains flying movement and bonus movement speed.  Upon attacking or casting, the speed and flying movement are lost and Visage and his familiars deal additional attack damage for 2s.",
+        "descriptionZh": "维萨吉获得飞行移动状态和移动速度加成。攻击或施法后，将失去移速加成和飞行移动状态，同时维萨吉和他的佣兽在2秒内拥有额外攻击力。"
+      }
+    },
+    {
+      "id": "ability:5630",
+      "name": "Supernova",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "The Phoenix willingly ends its current life for the chance to be reborn. Transforms into a burning sun that scorches enemies in a huge area. The sun can be destroyed by attacks from enemy Heroes. After %abilityduration% seconds the sun explodes, stunning all nearby enemies while restoring Phoenix to full health and mana with refreshed abilities.\n\nDISPEL TYPE: Strong Dispel",
+        "descriptionZh": "凤凰十分乐意终结自己现在的生命来换取重生。将自己变为一颗燃烧的恒星，灼烧附近一大片区域内的敌人。恒星受到敌方英雄一定次数的攻击后将会被摧毁。经过%abilityduration%秒后恒星将会爆炸，眩晕周围所有敌人。而凤凰的生命和魔法值都会回到满状态，并且所有技能的冷却时间都会刷新。\n\n驱散类型：强驱散"
+      },
+      "after": {
+        "descriptionEn": "The Phoenix willingly ends its current life for the chance to be reborn. Transforms into a burning sun that scorches enemies in a huge area. The sun can be destroyed by attacks from enemy Heroes. After 6 seconds the sun explodes, stunning all nearby enemies while restoring Phoenix to full health and mana with refreshed abilities.\n\nDISPEL TYPE: Strong Dispel",
+        "descriptionZh": "凤凰十分乐意终结自己现在的生命来换取重生。将自己变为一颗燃烧的恒星，灼烧附近一大片区域内的敌人。恒星受到敌方英雄一定次数的攻击后将会被摧毁。经过6秒后恒星将会爆炸，眩晕周围所有敌人。而凤凰的生命和魔法值都会回到满状态，并且所有技能的冷却时间都会刷新。\n\n驱散类型：强驱散"
+      }
+    },
+    {
+      "id": "ability:5644",
+      "name": "Minefield Sign",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Plant a warning sign, causing Proximity Mines within its radius to be invulnerable and deal %bonus_mine_damage_pct%%% more damage. Only one sign can exist at a time. Lasts 240 seconds.\n\nWhen an enemy Hero walks within 200 units of a minefield sign, the 1000 units area around the sign will become a minefield for 10 seconds, dealing damage to enemy Heroes any time they move within its area. Minefield Sign is destroyed after this effect ends.",
+        "descriptionZh": "在指定地点放置警示牌，使作用范围内的感应地雷为无敌状态，并且造成的伤害增加%bonus_mine_damage_pct%%%。同一时间只能存在一个标识。持续240秒。\n\n敌方英雄进入标识的200范围内时标识附近整个1000范围变成一片雷区，持续10秒。敌方单位在区域内移动都会受到伤害。雷区持续时间结束后标识会被摧毁。"
+      },
+      "after": {
+        "descriptionEn": "Plant a warning sign, causing Proximity Mines within its radius to be invulnerable and deal 15% more damage. Only one sign can exist at a time. Lasts 240 seconds.\n\nWhen an enemy Hero walks within 200 units of a minefield sign, the 1000 units area around the sign will become a minefield for 10 seconds, dealing damage to enemy Heroes any time they move within its area. Minefield Sign is destroyed after this effect ends.",
+        "descriptionZh": "在指定地点放置警示牌，使作用范围内的感应地雷为无敌状态，并且造成的伤害增加15%。同一时间只能存在一个标识。持续240秒。\n\n敌方英雄进入标识的200范围内时标识附近整个1000范围变成一片雷区，持续10秒。敌方单位在区域内移动都会受到伤害。雷区持续时间结束后标识会被摧毁。"
+      }
+    },
+    {
+      "id": "ability:1428",
+      "name": "Special Delivery",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Marci whistles to instantly summon her courier to her. If the courier started in the fountain, it will take items from Marci's stash. After teleporting it will transfer these items to Marci and head back to the fountain.\n\nPassively grants all allied couriers %bonus_levels% bonus levels and %bonus_hp_tooltip% bonus health.",
+        "descriptionZh": "玛西吹起口哨，立刻把她的信使传送到她身边。如果信使起始于泉水，它会带上玛西储藏处内的物品。传送后会把这些物品移交给玛西，再返回泉水。\n\n所有友方信使被动获得%bonus_levels%级额外等级和%bonus_hp_tooltip%点额外生命。"
+      },
+      "after": {
+        "descriptionEn": "Marci whistles to instantly summon her courier to her. If the courier started in the fountain, it will take items from Marci's stash. After teleporting it will transfer these items to Marci and head back to the fountain.\n\nPassively grants all allied couriers 3 bonus levels and 1 bonus health.",
+        "descriptionZh": "玛西吹起口哨，立刻把她的信使传送到她身边。如果信使起始于泉水，它会带上玛西储藏处内的物品。传送后会把这些物品移交给玛西，再返回泉水。\n\n所有友方信使被动获得3级额外等级和1点额外生命。"
+      }
+    },
+    {
+      "id": "ability:8198",
+      "name": "Unleash",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Marci taps a hidden power, gaining Fury charges that allow her to deliver a rapid sequence of strikes that slow movement and attack speed of the target for 2s. The last strike in every Fury combo creates a damaging pulse around the target. In between Fury combos, Marci is unable to attack for 1.5s.\n\nMarci gains %bonus_movespeed%%% movement speed when Unleash is cast.",
+        "descriptionZh": "玛西释放潜藏的力量，获得狂怒的猛攻效果，使自身可以发动快速的打击，并且降低打击目标的移动和攻击速度，持续2秒。每次狂怒连技的最后一击都会创造一个脉冲效果，对目标周围的敌人造成伤害。在狂怒连技的间隔，玛西无法攻击，持续1.5秒。\n\n玛西施放怒拳破时移动速度提升%bonus_movespeed%%%。"
+      },
+      "after": {
+        "descriptionEn": "Marci taps a hidden power, gaining Fury charges that allow her to deliver a rapid sequence of strikes that slow movement and attack speed of the target for 2s. The last strike in every Fury combo creates a damaging pulse around the target. In between Fury combos, Marci is unable to attack for 1.5s.\n\nMarci gains 15% movement speed when Unleash is cast.",
+        "descriptionZh": "玛西释放潜藏的力量，获得狂怒的猛攻效果，使自身可以发动快速的打击，并且降低打击目标的移动和攻击速度，持续2秒。每次狂怒连技的最后一击都会创造一个脉冲效果，对目标周围的敌人造成伤害。在狂怒连技的间隔，玛西无法攻击，持续1.5秒。\n\n玛西施放怒拳破时移动速度提升15%。"
+      }
+    },
+    {
+      "id": "ability:1785",
+      "name": "Spectral Slug",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Muerta shoots a spectral bullet at an enemy, dealing damage, knocking them back, and turning them ethereal for 3s - rendering them immune to physical damage and unable to attack. The target is slowed and %bonus_spell_damage_pct%%% more vulnerable to magic damage. Enemies will not be knocked out of Muerta's attack range.",
+        "descriptionZh": "琼英碧灵对一个敌人射出一颗幽灵子弹，造成伤害，将其击退并将其变为虚无状态，持续3秒——使他们对物理伤害免疫，并且无法攻击。目标被减速，并且承受的魔法伤害增加%bonus_spell_damage_pct%%%。敌人不会被击出琼英碧灵的攻击距离。"
+      },
+      "after": {
+        "descriptionEn": "Muerta shoots a spectral bullet at an enemy, dealing damage, knocking them back, and turning them ethereal for 3s - rendering them immune to physical damage and unable to attack. The target is slowed and -20% more vulnerable to magic damage. Enemies will not be knocked out of Muerta's attack range.",
+        "descriptionZh": "琼英碧灵对一个敌人射出一颗幽灵子弹，造成伤害，将其击退并将其变为虚无状态，持续3秒——使他们对物理伤害免疫，并且无法攻击。目标被减速，并且承受的魔法伤害增加-20%。敌人不会被击出琼英碧灵的攻击距离。"
+      }
+    },
+    {
+      "id": "ability:352",
+      "name": "Tame the Beasts",
+      "kind": "ability",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "CHANNELED - Ringmaster twirls his whip for up to %abilitychanneltime% second then cracks it. Whipped enemies are damaged and flee in fear from Ringmaster. Channel time exponentially increases damage and extends the fear duration, but reduces the radius.",
+        "descriptionZh": "持续施法 - 百戏大王卷起他的鞭子，最多持续%abilitychanneltime%秒，然后猛甩出去。被鞭打的敌人会受到伤害，并且被恐惧，逃离百戏大王。持续施法时间会使伤害和恐惧时间成倍增加，但是作用范围减少。"
+      },
+      "after": {
+        "descriptionEn": "CHANNELED - Ringmaster twirls his whip for up to 1 second then cracks it. Whipped enemies are damaged and flee in fear from Ringmaster. Channel time exponentially increases damage and extends the fear duration, but reduces the radius.",
+        "descriptionZh": "持续施法 - 百戏大王卷起他的鞭子，最多持续1秒，然后猛甩出去。被鞭打的敌人会受到伤害，并且被恐惧，逃离百戏大王。持续施法时间会使伤害和恐惧时间成倍增加，但是作用范围减少。"
+      }
+    },
+    {
+      "id": "item:603",
+      "name": "Swift Blink",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Active: Swift Blink\n Teleport to a target point up to 1200 units away.\n\nAfter teleportation, you gain %bonus_movement%%% phased movement speed and +%bonus_agi_active% Agility for 6 seconds. \n\nSwift Blink cannot be used for 3 seconds after taking damage from an enemy hero or Roshan.",
+        "descriptionZh": "主动：迅疾闪光\n传送到最远1200距离的位置。\n\n传送后获得%bonus_movement%%%移动速度加成和相位移动状态，+%bonus_agi_active%点敏捷，持续6秒。\n\n受到来自敌方英雄或肉山的攻击时，迅疾闪光将在3秒内无法使用。"
+      },
+      "after": {
+        "descriptionEn": "Active: Swift Blink\n Teleport to a target point up to 1200 units away.\n\nAfter teleportation, you gain 40% phased movement speed and +35 Agility for 6 seconds. \n\nSwift Blink cannot be used for 3 seconds after taking damage from an enemy hero or Roshan.",
+        "descriptionZh": "主动：迅疾闪光\n传送到最远1200距离的位置。\n\n传送后获得40%移动速度加成和相位移动状态，+35点敏捷，持续6秒。\n\n受到来自敌方英雄或肉山的攻击时，迅疾闪光将在3秒内无法使用。"
+      }
+    },
+    {
+      "id": "item:7",
+      "name": "Javelin",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Passive: Pierce\nGrants each attack a %bonus_chance%%% chance to pierce through evasion and deal %bonus_chance_damage% bonus magical damage.",
+        "descriptionZh": "被动：穿刺\n 每次攻击有%bonus_chance%%%几率无视闪避并造成额外%bonus_chance_damage%点魔法伤害。"
+      },
+      "after": {
+        "descriptionEn": "Passive: Pierce\nGrants each attack a 25% chance to pierce through evasion and deal 60 bonus magical damage.",
+        "descriptionZh": "被动：穿刺\n 每次攻击有25%几率无视闪避并造成额外60点魔法伤害。"
+      }
+    },
+    {
+      "id": "item:44",
+      "name": "Tango",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Use: Devour\n Consumes a target tree to gain 7 health regeneration for 16 seconds. Consuming an Ironwood Tree doubles the heal duration.\n\nComes with 3 charges.  Can be used on an allied hero to give them one Tango.\n\nTree Range: %abilitycastrange%",
+        "descriptionZh": "使用：吞食\n吃掉一棵树，获得7点/秒生命恢复，持续16秒。食用铁树枝干种下的小树后恢复时间加倍。\n\n可以使用3次。对友方英雄使用可以分给他一次使用机会。\n\n吞食树木施法距离：%abilitycastrange%"
+      },
+      "after": {
+        "descriptionEn": "Use: Devour\n Consumes a target tree to gain 7 health regeneration for 16 seconds. Consuming an Ironwood Tree doubles the heal duration.\n\nComes with 3 charges.  Can be used on an allied hero to give them one Tango.\n\nTree Range: 165",
+        "descriptionZh": "使用：吞食\n吃掉一棵树，获得7点/秒生命恢复，持续16秒。食用铁树枝干种下的小树后恢复时间加倍。\n\n可以使用3次。对友方英雄使用可以分给他一次使用机会。\n\n吞食树木施法距离：165"
+      }
+    },
+    {
+      "id": "item:241",
+      "name": "Tango (Shared)",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Use: Devour\n Consumes a target tree to gain 3.5 health regeneration for 16 seconds. Consuming an Ironwood Tree doubles the heal duration.\n\nTree Range: %abilitycastrange%",
+        "descriptionZh": "使用：吞食\n吃掉一棵树，获得3.5点/秒生命恢复，持续16秒。食用铁树枝干种下的小树后恢复时间加倍。\n\n距离：%abilitycastrange%"
+      },
+      "after": {
+        "descriptionEn": "Use: Devour\n Consumes a target tree to gain 3.5 health regeneration for 16 seconds. Consuming an Ironwood Tree doubles the heal duration.\n\nTree Range: 165",
+        "descriptionZh": "使用：吞食\n吃掉一棵树，获得3.5点/秒生命恢复，持续16秒。食用铁树枝干种下的小树后恢复时间加倍。\n\n距离：165"
+      }
+    },
+    {
+      "id": "item:63",
+      "name": "Power Treads",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Active: Switch Attribute\nSwitches between +%bonus_stat% Strength, +%bonus_stat% Agility, or +%bonus_stat% Intelligence.\nMovement speed bonuses from multiple pairs of boots do not stack.",
+        "descriptionZh": "主动：属性切换\n将附加属性在力量，敏捷以及智力三者间切换，选择+%bonus_stat%点力量，+%bonus_stat%点敏捷或+%bonus_stat%点智力。\n多个鞋类物品提供的移动速度加成不叠加。"
+      },
+      "after": {
+        "descriptionEn": "Active: Switch Attribute\nSwitches between +10 Strength, +10 Agility, or +10 Intelligence.\nMovement speed bonuses from multiple pairs of boots do not stack.",
+        "descriptionZh": "主动：属性切换\n将附加属性在力量，敏捷以及智力三者间切换，选择+10点力量，+10点敏捷或+10点智力。\n多个鞋类物品提供的移动速度加成不叠加。"
+      }
+    },
+    {
+      "id": "item:1107",
+      "name": "Phylactery",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Passive: Empower Spell\n The next Unit Target spell you cast on an enemy deals a separate %bonus_spell_damage% bonus damage to the target and slows them by 30%% for 3s.",
+        "descriptionZh": "被动：法术强化\n 下个对敌人施放的单体技能会单独对目标造成%bonus_spell_damage%点额外伤害，并且减缓30%%移动速度，持续3秒。"
+      },
+      "after": {
+        "descriptionEn": "Passive: Empower Spell\n The next Unit Target spell you cast on an enemy deals a separate 150 bonus damage to the target and slows them by 30% for 3s.",
+        "descriptionZh": "被动：法术强化\n 下个对敌人施放的单体技能会单独对目标造成150点额外伤害，并且减缓30%移动速度，持续3秒。"
+      }
+    },
+    {
+      "id": "item:1808",
+      "name": "Khanda",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Passive: Empower Spell\n The next Unit Target spell you cast on an enemy deals a separate %bonus_spell_damage% additional damage, disables their passives, and slows their movement speed by 30%% for 4s.",
+        "descriptionZh": "被动：法术强化\n下个对敌人施放的单体技能会单独对目标造成%bonus_spell_damage%点额外伤害，禁用其被动技能，并且减缓30%%移动速度，持续4秒。"
+      },
+      "after": {
+        "descriptionEn": "Passive: Empower Spell\n The next Unit Target spell you cast on an enemy deals a separate 250 additional damage, disables their passives, and slows their movement speed by 30% for 4s.",
+        "descriptionZh": "被动：法术强化\n下个对敌人施放的单体技能会单独对目标造成250点额外伤害，禁用其被动技能，并且减缓30%移动速度，持续4秒。"
+      }
+    },
+    {
+      "id": "item:65",
+      "name": "Hand of Midas",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Active: Transmute\n Kills a non-hero target for %bonus_gold% gold. Killing a neutral creep additionally grants a madstone bundle. \n\n Cannot be used on Ancient creeps.",
+        "descriptionZh": "主动：炼金\n立刻炼化一个普通单位，获得%bonus_gold%金钱。对中立生物使用时，在允许的情况下会掉落一包狂石。\n\n无法用于远古单位。"
+      },
+      "after": {
+        "descriptionEn": "Active: Transmute\n Kills a non-hero target for 160 gold. Killing a neutral creep additionally grants a madstone bundle. \n\n Cannot be used on Ancient creeps.",
+        "descriptionZh": "主动：炼金\n立刻炼化一个普通单位，获得160金钱。对中立生物使用时，在允许的情况下会掉落一包狂石。\n\n无法用于远古单位。"
+      }
+    },
+    {
+      "id": "item:86",
+      "name": "Buckler",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Passive: Buckler Aura\n Grants %bonus_aoe_armor% armor to allied player units.\n\nRadius: %bonus_aoe_radius%",
+        "descriptionZh": "被动：玄冥光环\n向友方玩家单位提供%bonus_aoe_armor%点护甲。\n\n作用范围：%bonus_aoe_radius%"
+      },
+      "after": {
+        "descriptionEn": "Passive: Buckler Aura\n Grants 2 armor to allied player units.\n\nRadius: 1200",
+        "descriptionZh": "被动：玄冥光环\n向友方玩家单位提供2点护甲。\n\n作用范围：1200"
+      }
+    },
+    {
+      "id": "item:263",
+      "name": "Hurricane Pike",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Active: Hurricane Thrust\n Pushes you and target enemy 425 units away from each other, and for 5 seconds, allows you to make 5 attacks against the target without range restrictions and with +%bonus_attack_speed% attack speed.\n\nCan be cast on self or allies to push the target 600 units in the direction it is facing.\nEnemy Range: 425",
+        "descriptionZh": "主动：飓风之力\n 将自己和敌方目标朝相反方向各推开425距离，并且接下来对目标的5次攻击将不受英雄攻击距离的限制，同时获得+%bonus_attack_speed%攻击速度，持续5秒。\n\n对自身或友军使用，向面对方向推进600距离。\n对敌军施法距离：425"
+      },
+      "after": {
+        "descriptionEn": "Active: Hurricane Thrust\n Pushes you and target enemy 425 units away from each other, and for 5 seconds, allows you to make 5 attacks against the target without range restrictions and with +100 attack speed.\n\nCan be cast on self or allies to push the target 600 units in the direction it is facing.\nEnemy Range: 425",
+        "descriptionZh": "主动：飓风之力\n 将自己和敌方目标朝相反方向各推开425距离，并且接下来对目标的5次攻击将不受英雄攻击距离的限制，同时获得+100攻击速度，持续5秒。\n\n对自身或友军使用，向面对方向推进600距离。\n对敌军施法距离：425"
+      }
+    },
+    {
+      "id": "item:242",
+      "name": "Crimson Guard",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Active: Guard\n For 7 seconds, grant nearby allied heroes and buildings a 100%% chance to block damage equal to 70 plus 2%% of the caster's max health value from each incoming attack.\n\nRadius: %bonus_aoe_radius%\n\nPassive: Damage Block\n Grants a 60%% chance to block 75 damage from incoming attacks on melee heroes, and 50 damage on ranged.",
+        "descriptionZh": "主动：坚盾\n使周围所有友方英雄和建筑每次受到物理攻击都有100%%几率格挡伤害，数值为70 + 2%%施法者最大生命值。持续7秒。\n\n作用范围：%bonus_aoe_radius%\n\n被动：伤害格挡\n近战英雄每次受到攻击都有60%%几率格挡75点伤害，远程英雄则是格挡50点。"
+      },
+      "after": {
+        "descriptionEn": "Active: Guard\n For 7 seconds, grant nearby allied heroes and buildings a 100% chance to block damage equal to 70 plus 2% of the caster's max health value from each incoming attack.\n\nRadius: 1200\n\nPassive: Damage Block\n Grants a 60% chance to block 75 damage from incoming attacks on melee heroes, and 50 damage on ranged.",
+        "descriptionZh": "主动：坚盾\n使周围所有友方英雄和建筑每次受到物理攻击都有100%几率格挡伤害，数值为70 + 2%施法者最大生命值。持续7秒。\n\n作用范围：1200\n\n被动：伤害格挡\n近战英雄每次受到攻击都有60%几率格挡75点伤害，远程英雄则是格挡50点。"
+      }
+    },
+    {
+      "id": "item:133",
+      "name": "Divine Rapier",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Toggle: Transmute\n Toggle to gain either %bonus_spell_amp%%% bonus spell amplification or %bonus_damage% bonus attack damage.\n\nPassive: Everlasting\n Dropped on death, and cannot be destroyed. \n\nBecomes unusable if picked up by an ally of its owner until it is returned to its owner. It is immediately usable by anybody if an enemy of the owner picks it up and is killed. A dropped Rapier cannot be picked up by a courier.",
+        "descriptionZh": "切换：转变\n在%bonus_spell_amp%%%技能增强加成和%bonus_damage%攻击力加成之间切换。\n\n被动：永恒\n 死亡后掉落，而且无法被摧毁。\n\n当拥有者的队友拾取后，仅在返还给拥有者后才会有效。一旦被敌人拾取，圣剑将不再受此限制，信使无法拾取掉落的圣剑。"
+      },
+      "after": {
+        "descriptionEn": "Toggle: Transmute\n Toggle to gain either 25% bonus spell amplification or 250 bonus attack damage.\n\nPassive: Everlasting\n Dropped on death, and cannot be destroyed. \n\nBecomes unusable if picked up by an ally of its owner until it is returned to its owner. It is immediately usable by anybody if an enemy of the owner picks it up and is killed. A dropped Rapier cannot be picked up by a courier.",
+        "descriptionZh": "切换：转变\n在25%技能增强加成和250攻击力加成之间切换。\n\n被动：永恒\n 死亡后掉落，而且无法被摧毁。\n\n当拥有者的队友拾取后，仅在返还给拥有者后才会有效。一旦被敌人拾取，圣剑将不再受此限制，信使无法拾取掉落的圣剑。"
+      }
+    },
+    {
+      "id": "item:135",
+      "name": "Monkey King Bar",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Passive: Pierce\nGrants each attack a %bonus_chance%%% chance to pierce through evasion and deal %bonus_chance_damage% bonus magical damage.",
+        "descriptionZh": "被动：穿刺\n每次攻击均有%bonus_chance%%%几率无视闪避，并造成额外%bonus_chance_damage%点魔法伤害。"
+      },
+      "after": {
+        "descriptionEn": "Passive: Pierce\nGrants each attack a 80% chance to pierce through evasion and deal 70 bonus magical damage.",
+        "descriptionZh": "被动：穿刺\n每次攻击均有80%几率无视闪避，并造成额外70点魔法伤害。"
+      }
+    },
+    {
+      "id": "item:143",
+      "name": "Skull Basher",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Passive: Bash\n Grants melee heroes a 25%% chance on hit to stun the target for 1.2 seconds and deal %bonus_chance_damage% bonus physical damage.  Bash chance for ranged heroes is 10%%.",
+        "descriptionZh": "被动：重击\n近战英雄的攻击有25%%的概率击晕目标1.2秒并额外造成%bonus_chance_damage%点物理伤害。远程英雄的击晕概率为10%%。"
+      },
+      "after": {
+        "descriptionEn": "Passive: Bash\n Grants melee heroes a 25% chance on hit to stun the target for 1.2 seconds and deal 100 bonus physical damage.  Bash chance for ranged heroes is 10%.",
+        "descriptionZh": "被动：重击\n近战英雄的攻击有25%的概率击晕目标1.2秒并额外造成100点物理伤害。远程英雄的击晕概率为10%。"
+      }
+    },
+    {
+      "id": "item:168",
+      "name": "Desolator",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Passive: Corruption\n Your attacks reduce the target's armor by -6 for 7 seconds.\n\nPassive: Soul Stealer\n Desolator gains +%bonus_damage_per_kill% damage every time an enemy hero dies while affected by Corruption, to a maximum of 30.",
+        "descriptionZh": "被动：毁蚀\n物理攻击将降低目标-6点护甲，持续7秒。\n\n被动：灵魂窃取\n黯灭在装备后每次有英雄死于毁蚀效果下就会+%bonus_damage_per_kill%点攻击力，最高为30点。"
+      },
+      "after": {
+        "descriptionEn": "Passive: Corruption\n Your attacks reduce the target's armor by -6 for 7 seconds.\n\nPassive: Soul Stealer\n Desolator gains +2 damage every time an enemy hero dies while affected by Corruption, to a maximum of 30.",
+        "descriptionZh": "被动：毁蚀\n物理攻击将降低目标-6点护甲，持续7秒。\n\n被动：灵魂窃取\n黯灭在装备后每次有英雄死于毁蚀效果下就会+2点攻击力，最高为30点。"
+      }
+    },
+    {
+      "id": "item:185",
+      "name": "Drum of Endurance",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Active: Endurance\n Gives +%bonus_attack_speed_pct% attack speed and +%bonus_movement_speed_pct%%% movement speed to nearby allies for 6 seconds.\n\nRadius: 1200  \n\nPassive: Swiftness Aura\nGrants 15 movement speed and 2.5 health regeneration to allies.  \n\nRadius: 1200",
+        "descriptionZh": "主动：坚韧\n为周围友军提供+%bonus_attack_speed_pct%攻速加成和+%bonus_movement_speed_pct%%%移动速度加成，持续6秒。\n\n作用范围：1200\n\n被动：迅捷光环\n为周围友军提供15移动速度和2.5点/秒生命恢复。\n\n作用范围：1200"
+      },
+      "after": {
+        "descriptionEn": "Active: Endurance\n Gives +35 attack speed and +13% movement speed to nearby allies for 6 seconds.\n\nRadius: 1200  \n\nPassive: Swiftness Aura\nGrants 15 movement speed and 2.5 health regeneration to allies.  \n\nRadius: 1200",
+        "descriptionZh": "主动：坚韧\n为周围友军提供+35攻速加成和+13%移动速度加成，持续6秒。\n\n作用范围：1200\n\n被动：迅捷光环\n为周围友军提供15移动速度和2.5点/秒生命恢复。\n\n作用范围：1200"
+      }
+    },
+    {
+      "id": "item:931",
+      "name": "Boots of Bearing",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Active: Endurance\n Gives +%bonus_attack_speed_pct% attack speed and +%bonus_movement_speed_pct%%% movement speed to nearby allies for 6 seconds. For the first %bonus_ms_duration% seconds allies are immune to slows.\n\n Radius: 1200  \n\nPassive: Swiftness Aura\nGrants 15 movement speed and 2.5 health regeneration to allies.  \n\nRadius: 1200\nMovement speed bonuses from multiple pairs of boots do not stack.",
+        "descriptionZh": "主动：坚韧\n为周围友军提供+%bonus_attack_speed_pct%攻速加成和+%bonus_movement_speed_pct%%%移动速度加成，持续6秒。而且最初%bonus_ms_duration%秒友军不受减速效果影响。\n\n作用范围：1200\n\n被动：迅捷光环\n为周围友军提供15移动速度和2.5点/秒生命恢复。\n\n作用范围：1200\n多个鞋类物品提供的移动速度加成不叠加。"
+      },
+      "after": {
+        "descriptionEn": "Active: Endurance\n Gives +50 attack speed and +15% movement speed to nearby allies for 6 seconds. For the first 1.5 seconds allies are immune to slows.\n\n Radius: 1200  \n\nPassive: Swiftness Aura\nGrants 15 movement speed and 2.5 health regeneration to allies.  \n\nRadius: 1200\nMovement speed bonuses from multiple pairs of boots do not stack.",
+        "descriptionZh": "主动：坚韧\n为周围友军提供+50攻速加成和+15%移动速度加成，持续6秒。而且最初1.5秒友军不受减速效果影响。\n\n作用范围：1200\n\n被动：迅捷光环\n为周围友军提供15移动速度和2.5点/秒生命恢复。\n\n作用范围：1200\n多个鞋类物品提供的移动速度加成不叠加。"
+      }
+    },
+    {
+      "id": "item:188",
+      "name": "Smoke of Deceit",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Use: Disguise\n Turns the caster and all allied player-controlled targets in a 1200 radius invisible, and grants %bonus_movement_speed%%% bonus movement speed for 45 seconds. \n\n While the caster is still disguised, any allies that come within 300 range of them will also get the buff applied to them. Each smoke can only be applied once to allies. \n\nAttacking or moving within 1025 range of an enemy hero or tower, will break the invisibility. \n\nDisguise grants invisibility that is immune to True Sight. \n\nSmoke of Deceit is usable from the backpack and has no cooldown when swapped into the main inventory.",
+        "descriptionZh": "使用：潜行\n施法者和附近1200范围内的友方玩家控制目标在45秒内获得隐身效果和%bonus_movement_speed%%%移动速度加成。他们在小地图上的图标也会消失。\n\n只要施法者还在潜行状态下，任意友军进入他身边300范围内也会获得加成效果。每个诡计之雾只能对一名友军施加一次效果。 \n\n发动攻击，或靠近敌方英雄或防御塔1025距离后将打破隐身效果。\n\n潜行的隐身效果不受真实视域影响。\n\n诡计之雾在背包中可以直接使用，换至主物品栏时没有冷却时间。"
+      },
+      "after": {
+        "descriptionEn": "Use: Disguise\n Turns the caster and all allied player-controlled targets in a 1200 radius invisible, and grants 15% bonus movement speed for 45 seconds. \n\n While the caster is still disguised, any allies that come within 300 range of them will also get the buff applied to them. Each smoke can only be applied once to allies. \n\nAttacking or moving within 1025 range of an enemy hero or tower, will break the invisibility. \n\nDisguise grants invisibility that is immune to True Sight. \n\nSmoke of Deceit is usable from the backpack and has no cooldown when swapped into the main inventory.",
+        "descriptionZh": "使用：潜行\n施法者和附近1200范围内的友方玩家控制目标在45秒内获得隐身效果和15%移动速度加成。他们在小地图上的图标也会消失。\n\n只要施法者还在潜行状态下，任意友军进入他身边300范围内也会获得加成效果。每个诡计之雾只能对一名友军施加一次效果。 \n\n发动攻击，或靠近敌方英雄或防御塔1025距离后将打破隐身效果。\n\n潜行的隐身效果不受真实视域影响。\n\n诡计之雾在背包中可以直接使用，换至主物品栏时没有冷却时间。"
+      }
+    },
+    {
+      "id": "item:208",
+      "name": "Abyssal Blade",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Active: Overwhelm\n Stuns a target enemy unit for 1.6 seconds. \n\nPierces Debuff Immunity.\n\nPassive: Bash\n Grants melee heroes a 25%% chance on hit to stun the target for 1.2 seconds and deal %bonus_chance_damage% bonus physical damage.  Bash chance for ranged heroes is 10%%.",
+        "descriptionZh": "主动：强击\n击晕一个敌方目标，持续1.6秒。\n\n无视减益免疫。\n\n被动：重击\n近战英雄攻击时有25%%的概率击晕目标1.2秒，并额外造成%bonus_chance_damage%点物理伤害。远程英雄的击晕概率为10%%。"
+      },
+      "after": {
+        "descriptionEn": "Active: Overwhelm\n Stuns a target enemy unit for 1.6 seconds. \n\nPierces Debuff Immunity.\n\nPassive: Bash\n Grants melee heroes a 25% chance on hit to stun the target for 1.2 seconds and deal 120 bonus physical damage.  Bash chance for ranged heroes is 10%.",
+        "descriptionZh": "主动：强击\n击晕一个敌方目标，持续1.6秒。\n\n无视减益免疫。\n\n被动：重击\n近战英雄攻击时有25%的概率击晕目标1.2秒，并额外造成120点物理伤害。远程英雄的击晕概率为10%。"
+      }
+    },
+    {
+      "id": "item:214",
+      "name": "Tranquil Boots",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Passive: Break\n Whenever you attack a hero or are attacked by any unit, the bonus %bonus_health_regen% HP regen is lost and the movement speed bonus is reduced to 40 for 13 seconds.\nMovement speed bonuses from multiple pairs of boots do not stack.",
+        "descriptionZh": "被动：破损\n 只要主动攻击英雄或受到任何单位的攻击，静谧之鞋就会损失%bonus_health_regen%点/秒回复效果，并且移动速度加成降低至40，持续13秒。\n多个鞋类物品提供的移动速度加成不叠加。"
+      },
+      "after": {
+        "descriptionEn": "Passive: Break\n Whenever you attack a hero or are attacked by any unit, the bonus 14 HP regen is lost and the movement speed bonus is reduced to 40 for 13 seconds.\nMovement speed bonuses from multiple pairs of boots do not stack.",
+        "descriptionZh": "被动：破损\n 只要主动攻击英雄或受到任何单位的攻击，静谧之鞋就会损失14点/秒回复效果，并且移动速度加成降低至40，持续13秒。\n多个鞋类物品提供的移动速度加成不叠加。"
+      }
+    },
+    {
+      "id": "item:829",
+      "name": "Arcanist's Armor",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Active: Mega Shield\n Force Field Aura Grants 25%% Damage Reflection for 5 seconds.\n\nPassive: Shield\n Grants +%bonus_aoe_armor% armor and +%bonus_aoe_mres%%% Magic Resistance to all other allies within %bonus_aoe_radius% radius.",
+        "descriptionZh": "主动：巨盾\n盾护光环提供25%%伤害反弹，持续5秒。\n\n被动：盾护\n 向%bonus_aoe_radius%范围内所有友军提供+%bonus_aoe_armor%点护甲和+%bonus_aoe_mres%%%魔法抗性。"
+      },
+      "after": {
+        "descriptionEn": "Active: Mega Shield\n Force Field Aura Grants 25% Damage Reflection for 5 seconds.\n\nPassive: Shield\n Grants +4 armor and +8% Magic Resistance to all other allies within 1200 radius.",
+        "descriptionZh": "主动：巨盾\n盾护光环提供25%伤害反弹，持续5秒。\n\n被动：盾护\n 向1200范围内所有友军提供+4点护甲和+8%魔法抗性。"
+      }
+    },
+    {
+      "id": "item:326",
+      "name": "Spider Legs",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Active: Skitter\n Grants you %bonus_movement_speed_active%%% bonus movement speed, 50%% improved turn rate, and free pathing for 12 seconds. Walking over trees causes them to be destroyed.",
+        "descriptionZh": "主动：急行\n提供%bonus_movement_speed_active%%%移动速度加成，50%%转身速率加成和无视地形的移动，持续12秒。经过树木时会导致树木被摧毁。"
+      },
+      "after": {
+        "descriptionEn": "Active: Skitter\n Grants you 20% bonus movement speed, 50% improved turn rate, and free pathing for 12 seconds. Walking over trees causes them to be destroyed.",
+        "descriptionZh": "主动：急行\n提供20%移动速度加成，50%转身速率加成和无视地形的移动，持续12秒。经过树木时会导致树木被摧毁。"
+      }
+    },
+    {
+      "id": "item:327",
+      "name": "Helm of the Undying",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Passive: Death Delay\n Survive for an extra 6 seconds after receiving a killing blow. If any enemy heroes dies within 1200 units, the death delay effect is extended by %bonus_kill_duration% seconds. The hero cannot attack buildings during Death Delay.",
+        "descriptionZh": "被动：死亡延迟\n受到致死打击后额外存活6秒。如果有敌方英雄在1200范围内阵亡，死亡延迟效果延迟%bonus_kill_duration%秒。死亡延迟期间不能攻击建筑。"
+      },
+      "after": {
+        "descriptionEn": "Passive: Death Delay\n Survive for an extra 6 seconds after receiving a killing blow. If any enemy heroes dies within 1200 units, the death delay effect is extended by 5 seconds. The hero cannot attack buildings during Death Delay.",
+        "descriptionZh": "被动：死亡延迟\n受到致死打击后额外存活6秒。如果有敌方英雄在1200范围内阵亡，死亡延迟效果延迟5秒。死亡延迟期间不能攻击建筑。"
+      }
+    },
+    {
+      "id": "item:331",
+      "name": "Vambrace",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Active: Switch Attributes\nActivate to switch the active attribute between Strength, Agility, and Intelligence. Vambrace provides +%bonus_primary_stat% of the selected attribute and +%bonus_secondary_stat% of the other two attributes.",
+        "descriptionZh": "Active: Switch Attributes\nActivate to switch the active attribute between Strength, Agility, and Intelligence. Vambrace provides +%bonus_primary_stat% of the selected attribute and +%bonus_secondary_stat% of the other two attributes."
+      },
+      "after": {
+        "descriptionEn": "Active: Switch Attributes\nActivate to switch the active attribute between Strength, Agility, and Intelligence. Vambrace provides +10 of the selected attribute and +4 of the other two attributes.",
+        "descriptionZh": "Active: Switch Attributes\nActivate to switch the active attribute between Strength, Agility, and Intelligence. Vambrace provides +10 of the selected attribute and +4 of the other two attributes."
+      }
+    },
+    {
+      "id": "item:356",
+      "name": "Trusty Shovel",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Active: Dig\n Channel for %abilitychanneltime% second. \nCan find a Bounty Rune, a Healing Salve, an Enchanted Mango, or a Kobold. If digging in a river, always digs up a Water Rune.",
+        "descriptionZh": "主动：挖掘\n持续施法%abilitychanneltime%秒。\n可以找到一个赏金神符，一瓶治疗药膏，一颗魔法芒果，或一个狗头人。如果在河道中挖掘，必定会挖出圣水神符。"
+      },
+      "after": {
+        "descriptionEn": "Active: Dig\n Channel for 1 second. \nCan find a Bounty Rune, a Healing Salve, an Enchanted Mango, or a Kobold. If digging in a river, always digs up a Water Rune.",
+        "descriptionZh": "主动：挖掘\n持续施法1秒。\n可以找到一个赏金神符，一瓶治疗药膏，一颗魔法芒果，或一个狗头人。如果在河道中挖掘，必定会挖出圣水神符。"
+      }
+    },
+    {
+      "id": "item:361",
+      "name": "Enchanted Quiver",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Passive: Certain Strike\n Empowers your next attack with %bonus_damage% bonus magical damage and True Strike. Ranged Attackers have +350 bonus range for the attack.",
+        "descriptionZh": "被动：必然打击\n下次攻击造成%bonus_damage%点额外魔法伤害并且拥有克敌机先。远程攻击者攻击时还将获得+350 攻击距离。"
+      },
+      "after": {
+        "descriptionEn": "Passive: Certain Strike\n Empowers your next attack with 250 bonus magical damage and True Strike. Ranged Attackers have +350 bonus range for the attack.",
+        "descriptionZh": "被动：必然打击\n下次攻击造成250点额外魔法伤害并且拥有克敌机先。远程攻击者攻击时还将获得+350 攻击距离。"
+      }
+    },
+    {
+      "id": "item:367",
+      "name": "Ballista",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Passive: Knockback\n Knocks back enemies 50 distance and deals %bonus_damage% pure damage with every attack.",
+        "descriptionZh": "被动：击退\n每次普通攻击都会击退敌人50距离，并造成%bonus_damage%点纯粹伤害。"
+      },
+      "after": {
+        "descriptionEn": "Passive: Knockback\n Knocks back enemies 50 distance and deals 50 pure damage with every attack.",
+        "descriptionZh": "被动：击退\n每次普通攻击都会击退敌人50距离，并造成50点纯粹伤害。"
+      }
+    },
+    {
+      "id": "item:686",
+      "name": "Quicksilver Amulet",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Passive: Quicksilver\nGrants you a bonus %bonus_movement%%% movement speed and %bonus_attack% attack speed anytime one of your abilities are on cooldown.",
+        "descriptionZh": "被动：银闪\n有技能在冷却状态中时额外获得%bonus_movement%%%移动速度加成和%bonus_attack%攻击速度加成。"
+      },
+      "after": {
+        "descriptionEn": "Passive: Quicksilver\nGrants you a bonus 5% movement speed and 20 attack speed anytime one of your abilities are on cooldown.",
+        "descriptionZh": "被动：银闪\n有技能在冷却状态中时额外获得5%移动速度加成和20攻击速度加成。"
+      }
+    },
+    {
+      "id": "item:828",
+      "name": "Brigand's Blade",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Passive: Dark Mercy\nYour attacks deal %bonus_damage% more damage to enemies for each 7%% HP they are missing.",
+        "descriptionZh": "被动：暗黑之仁\n敌人每损失7%%生命值，对其发动攻击就会额外造成%bonus_damage%点伤害。"
+      },
+      "after": {
+        "descriptionEn": "Passive: Dark Mercy\nYour attacks deal 3 more damage to enemies for each 7% HP they are missing.",
+        "descriptionZh": "被动：暗黑之仁\n敌人每损失7%生命值，对其发动攻击就会额外造成3点伤害。"
+      }
+    },
+    {
+      "id": "item:835",
+      "name": "Fae Grenade",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Active: Shadow Brand\nThrows a Mark towards an enemy within %abilitycastrange% range applying a debuff that deals 40 damage every second and provides vision of the unit for 7 seconds.",
+        "descriptionZh": "主动：暗影烙印\n向%abilitycastrange%范围内一个敌人投掷一个面具，施加一个负面效果，造成每秒40点伤害，并获得该单位的视野，持续7秒。"
+      },
+      "after": {
+        "descriptionEn": "Active: Shadow Brand\nThrows a Mark towards an enemy within 900 range applying a debuff that deals 40 damage every second and provides vision of the unit for 7 seconds.",
+        "descriptionZh": "主动：暗影烙印\n向900范围内一个敌人投掷一个面具，施加一个负面效果，造成每秒40点伤害，并获得该单位的视野，持续7秒。"
+      }
+    },
+    {
+      "id": "item:1077",
+      "name": "Dagger of Ristul",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Active: Imbrue\n Consume health to temporarily gain %bonus_damage% damage for 8 seconds.",
+        "descriptionZh": "主动：浸血\n消耗生命值，临时获得%bonus_damage%点攻击力。持续8秒。"
+      },
+      "after": {
+        "descriptionEn": "Active: Imbrue\n Consume health to temporarily gain 25 damage for 8 seconds.",
+        "descriptionZh": "主动：浸血\n消耗生命值，临时获得25点攻击力。持续8秒。"
+      }
+    },
+    {
+      "id": "item:2096",
+      "name": "Vindicator's Axe",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Passive: Vengeance\n Provides %bonus_damage% damage if equipped hero is Silenced and %bonus_armor% armor if equipped hero is Stunned.",
+        "descriptionZh": "被动：复仇\n 装备的英雄被沉默时提供%bonus_damage%点攻击力，被眩晕时提供%bonus_armor%点护甲。"
+      },
+      "after": {
+        "descriptionEn": "Passive: Vengeance\n Provides 30 damage if equipped hero is Silenced and 20 armor if equipped hero is Stunned.",
+        "descriptionZh": "被动：复仇\n 装备的英雄被沉默时提供30点攻击力，被眩晕时提供20点护甲。"
+      }
+    },
+    {
+      "id": "item:2097",
+      "name": "Duelist Gloves",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Passive: Boldness\n Grants %bonus_attack_speed% attack speed as long as there are enemy heroes within 1200 units.",
+        "descriptionZh": "被动：英勇\n1200范围内只要有敌方英雄就提供%bonus_attack_speed% 攻击速度。"
+      },
+      "after": {
+        "descriptionEn": "Passive: Boldness\n Grants 20 attack speed as long as there are enemy heroes within 1200 units.",
+        "descriptionZh": "被动：英勇\n1200范围内只要有敌方英雄就提供20 攻击速度。"
+      }
+    },
+    {
+      "id": "item:1158",
+      "name": "Whisper of the Dread",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Passive: Tunnel Vision\n Equipped Hero has their daytime vision reduced by 15%% but their Spell damage increased by %bonus_spell_damage%%%.",
+        "descriptionZh": "被动：孔中窥人\n佩戴者的白天视野减少15%%，但是技能伤害提升%bonus_spell_damage%%%。"
+      },
+      "after": {
+        "descriptionEn": "Passive: Tunnel Vision\n Equipped Hero has their daytime vision reduced by 15% but their Spell damage increased by 10%.",
+        "descriptionZh": "被动：孔中窥人\n佩戴者的白天视野减少15%，但是技能伤害提升10%。"
+      }
+    },
+    {
+      "id": "item:1603",
+      "name": "Gunpowder Gauntlet",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Passive: Beat the Crowd\n Your next attack deals an additional %bonus_damage% magic damage and splashes to units within 250 units for 50%% of the original attack's damage plus the additional magic damage.",
+        "descriptionZh": "被动：殴击人群\n下次攻击会额外造成%bonus_damage%点魔法伤害，并溅射给250范围内所有敌人，造成攻击伤害和额外魔法伤害的50%%。"
+      },
+      "after": {
+        "descriptionEn": "Passive: Beat the Crowd\n Your next attack deals an additional 120 magic damage and splashes to units within 250 units for 50% of the original attack's damage plus the additional magic damage.",
+        "descriptionZh": "被动：殴击人群\n下次攻击会额外造成120点魔法伤害，并溅射给250范围内所有敌人，造成攻击伤害和额外魔法伤害的50%。"
+      }
+    },
+    {
+      "id": "item:1607",
+      "name": "Magnifying Monocle",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Passive: Keen Eye\n Increases cast range by %bonus_cast_range% and attack range by %bonus_attack_range% (Melee & Ranged). Taking over 25 damage from a player controlled source or Roshan disables this effect for 6 seconds.",
+        "descriptionZh": "被动：锐利目光\n施法距离提升%bonus_cast_range%，攻击距离提升%bonus_attack_range%（近战/远程）。受到来自玩家控制单位或肉山的伤害超过25点会使该效果在6秒内无效。"
+      },
+      "after": {
+        "descriptionEn": "Passive: Keen Eye\n Increases cast range by 100 and attack range by 100 (Melee & Ranged). Taking over 25 damage from a player controlled source or Roshan disables this effect for 6 seconds.",
+        "descriptionZh": "被动：锐利目光\n施法距离提升100，攻击距离提升100（近战/远程）。受到来自玩家控制单位或肉山的伤害超过25点会使该效果在6秒内无效。"
+      }
+    },
+    {
+      "id": "item:1716",
+      "name": "Weighted Dice",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Passive: Loaded\nIncreases your base damage maximum by %bonus_max_damage%. When calculating your base damage or creep bounty from last hits, the value is computed 2 times and the highest value is taken.",
+        "descriptionZh": "被动：欺诈\n最高基础攻击力提升%bonus_max_damage%点。在计算佩戴者针对正补的基础伤害或小兵赏金时，数值会计算2次，并取较高值。"
+      },
+      "after": {
+        "descriptionEn": "Passive: Loaded\nIncreases your base damage maximum by 6. When calculating your base damage or creep bounty from last hits, the value is computed 2 times and the highest value is taken.",
+        "descriptionZh": "被动：欺诈\n最高基础攻击力提升6点。在计算佩戴者针对正补的基础伤害或小兵赏金时，数值会计算2次，并取较高值。"
+      }
+    },
+    {
+      "id": "item:1719",
+      "name": "Metamorphic Mandible",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Active: Pupate\n Enter into an insect form for 5 seconds, increasing magic resistance by %bonus_magic_resistance%%% and movement speed by %bonus_movespeed%%%. While an insect, your size is decreased and your armor is reduced by 45%%.",
+        "descriptionZh": "主动：化蛹\n进入昆虫形态，持续5秒，魔法抗性提升%bonus_magic_resistance%%%，移动速度提升%bonus_movespeed%%%。在昆虫形态下模型大小减少，护甲减少45%%。"
+      },
+      "after": {
+        "descriptionEn": "Active: Pupate\n Enter into an insect form for 5 seconds, increasing magic resistance by 50% and movement speed by 20%. While an insect, your size is decreased and your armor is reduced by 45%.",
+        "descriptionZh": "主动：化蛹\n进入昆虫形态，持续5秒，魔法抗性提升50%，移动速度提升20%。在昆虫形态下模型大小减少，护甲减少45%。"
+      }
+    },
+    {
+      "id": "item:1870",
+      "name": "Ironwood Nut",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Use: Munch\n Grants %bonus_stat% permanent primary attribute.",
+        "descriptionZh": "使用：咀嚼\n永久获得%bonus_stat%点主属性。"
+      },
+      "after": {
+        "descriptionEn": "Use: Munch\n Grants 1 permanent primary attribute.",
+        "descriptionZh": "使用：咀嚼\n永久获得1点主属性。"
+      }
+    },
+    {
+      "id": "item:1873",
+      "name": "Partisan's Brand",
+      "kind": "item",
+      "type": "changed",
+      "fields": [
+        "descriptionEn",
+        "descriptionZh"
+      ],
+      "mechanics": false,
+      "mechanicsChanges": [],
+      "before": {
+        "descriptionEn": "Passive: Brand\n Increases spell damage dealt to player controlled targets by %bonus_damage_pct%%%.",
+        "descriptionZh": "被动：烙印\n对玩家控制目标造成的技能伤害提升%bonus_damage_pct%%%。"
+      },
+      "after": {
+        "descriptionEn": "Passive: Brand\n Increases spell damage dealt to player controlled targets by 9%.",
+        "descriptionZh": "被动：烙印\n对玩家控制目标造成的技能伤害提升9%。"
+      }
+    }
+  ],
+  "note": "Includes normalization/interpolation improvements. Same-day differences do not establish a new gameplay patch."
+}
