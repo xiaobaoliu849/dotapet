@@ -1,3 +1,5 @@
+import { recordedAudio } from '../learning/audioAssets.js';
+import { createLearningAudio } from './learning-audio.js';
 import { filterLessons } from '../learning/model.js';
 import { localDay, STUDY_DEFAULTS } from '../learning/study.js';
 const api = window.learningAPI;
@@ -9,6 +11,7 @@ const translations = {
   heading: '玩懂刀塔，开口说英语。', intro: '每天一点刀塔英语，桌面小伙伴一直陪着你。', 'total-label': '条双语课程', 'saved-label': '个收藏词条', 'due-label': '条待复习', 'accuracy-label': '答题正确率',
   browse: '探索课程', saved: '我的词本', quiz: '练习测验', 'search-label': '查找课程', 'kind-label': '学习主题', 'direction-label': '练习方向', next: '下一题 →', more: '加载更多',
   'study-heading': '每日学习小课', 'study-help': '先复习到期的错题和旧词，再学习新词。', 'size-label': '每轮课程数量', 'scope-label': '练习词库', 'start-session': '开始学习 →', 'practice-saved': '练习我的收藏词条 →', 'summary-heading': '本轮学习完成', 'mistakes-heading': '需要再看看的词条', 'new-session': '安排下一轮 →',
+  'audio-source': '音频使用你的双语词典中已生成的 AI 录音，按原速播放。历史录音可能与当前课程文字不同；缺少录音的词条会明确标注。',
   'sources-heading': '让知识保持更新', freshness: '技能说明是有日期的数据快照。数值和机制请以官方更新日志为准。', refresh: '从 Valve 更新课程', patches: '官方更新日志 ↗',
 };
 if (chinese) {
@@ -20,6 +23,7 @@ if (chinese) {
   $('search').placeholder = '搜索英文 / 中文 / 英雄名…';
 }
 let catalog, progress = {}, study = { preferences: STUDY_DEFAULTS, active: null, history: [] }, mode = 'browse', limit = 24;
+let audioManifest = { entries: {} };
 let pendingAnswer = false, starting = false, feedbackIndex = null;
 const node = (tag, value, className) => { const element = document.createElement(tag); element.textContent = value; if (className) element.className = className; return element; };
 const due = r => !progress[r.id]?.due || progress[r.id].due <= Date.now();
@@ -37,13 +41,32 @@ async function persist(id, action, value) {
   if (!response.ok) throw new Error(response.error);
   progress = response.progress; stats();
 }
-function speak(value) {
-  if (!window.speechSynthesis) { $('message').textContent = text('Speech is unavailable on this computer.', '本机暂不支持朗读。'); return; }
-  speechSynthesis.cancel(); const utterance = new SpeechSynthesisUtterance(value); utterance.lang = 'en-US'; utterance.rate = .85;
-  utterance.onerror = () => { $('message').textContent = text('Pronunciation unavailable. Check installed English voices.', '无法朗读，请检查系统英文语音包。'); };
-  speechSynthesis.speak(utterance);
+const player = createLearningAudio({ onChange: ({ id, status }) => {
+  for (const button of document.querySelectorAll('[data-audio-id]')) {
+    if (button.dataset.audioId !== id) continue;
+    const active = status === 'loading' || status === 'playing';
+    button.setAttribute('aria-pressed', String(active));
+    button.textContent = active ? text('■ Stop recording', '■ 停止播放') : button.dataset.audioLabel;
+    button.dataset.audioState = status;
+  }
+  $('audio-status').hidden = status !== 'error';
+  $('audio-status').textContent = status === 'error' ? text('The recording could not be played. Please try again.', '录音播放失败，请重试。') : '';
+} });
+function audioButton(lesson) {
+  const entry = recordedAudio(audioManifest, lesson);
+  const label = !entry ? text('No recording yet', '暂无录音') : entry.content === 'biography' ? text('▶ Hero story', '▶ 英雄故事') : entry.content === 'expression' ? text('▶ Play expression', '▶ 播放表达') : text('▶ AI recording', '▶ AI 录音');
+  const button = node('button', label);
+  button.className = 'recording-button'; button.disabled = !entry;
+  if (entry) {
+    button.dataset.audioId = lesson.id; button.dataset.audioLabel = label;
+    button.setAttribute('aria-pressed', 'false');
+    button.title = text('Your AI recording from the bilingual library. Archive wording may differ from current descriptions.', '来自双语词典的 AI 录音，历史内容可能与当前课程文字不同。');
+    button.onclick = () => player.toggle(lesson.id, new URL('assets/learning-audio/' + entry.file, location.href).href);
+  }
+  return button;
 }
 function render() {
+  player.stop();
   stats();
   for (const id of ['browse', 'saved', 'quiz']) $(id).setAttribute('aria-pressed', String(mode === id));
   $('library').hidden = mode === 'quiz'; $('study-setup').hidden = mode !== 'quiz';
@@ -64,9 +87,8 @@ function render() {
     const translation = node('details', '', 'translation');
     translation.append(node('summary', text('Chinese explanation', '中文说明')), node('p', lesson.descriptionZh || lesson.zh, 'description'));
     card.append(translation);
-    const actions = node('div', '', 'actions'), listen = node('button', text('▶ Listen', '▶ 听发音')), save = node('button', progress[lesson.id]?.saved ? text('★ Saved', '★ 已收藏') : text('☆ Save word', '☆ 收藏'));
+    const actions = node('div', '', 'actions'), listen = audioButton(lesson), save = node('button', progress[lesson.id]?.saved ? text('★ Saved', '★ 已收藏') : text('☆ Save word', '☆ 收藏'));
     save.setAttribute('aria-pressed', String(Boolean(progress[lesson.id]?.saved)));
-    listen.onclick = () => speak(lesson.en);
     save.onclick = async () => { save.disabled = true; try { await persist(lesson.id, 'saved', !progress[lesson.id]?.saved); render(); } catch (error) { $('message').textContent = error.message; save.disabled = false; } };
     actions.append(listen, save); card.append(actions); $('lessons').append(card);
   }
@@ -98,7 +120,7 @@ function renderStudy() {
   $('session-progress').max = active.items.length; $('session-progress').value = active.answers.length;
   $('quiz-context').textContent = labels[item.lesson.kind] + ' · ' + (item.lesson.parent || '');
   $('question').textContent = item.question.prompt;
-  $('answers').replaceChildren(); $('result').textContent = ''; $('quiz-explanation').textContent = '';
+  $('answers').replaceChildren(); $('quiz-audio').replaceChildren(); $('result').textContent = ''; $('quiz-explanation').textContent = '';
   $('next').hidden = !showFeedback;
   $('next').textContent = active.completedAt ? text('See session summary →', '查看学习总结 →') : text('Next question →', '下一题 →');
   for (const option of item.question.options) {
@@ -121,9 +143,11 @@ function renderStudy() {
   if (showFeedback) {
     $('result').textContent = showFeedback.correct ? text('Correct! Scheduled for a later review.', '答对了！已安排后续复习。') : text('Answer: ', '正确答案：') + item.question.answer;
     $('quiz-explanation').textContent = item.lesson.descriptionEn + '\n' + item.lesson.descriptionZh;
+    $('quiz-audio').append(audioButton(item.lesson));
   }
 }
 function renderSummary(active) {
+  player.stop();
   $('session-summary').hidden = false;
   const correct = active.answers.filter(answer => answer.correct).length;
   $('summary-score').textContent = text('You answered ', '本轮答对 ') + correct + ' / ' + active.items.length + text(' correctly.', ' 道题。');
@@ -135,9 +159,8 @@ function renderSummary(active) {
     const item = active.items.find(item => item.lesson.id === answer.id);
     const card = node('article', '', 'review-word');
     card.append(node('strong', item.lesson.en + ' · ' + item.lesson.zh));
-    const actions = node('div', '', 'actions'), listen = node('button', text('▶ Listen', '▶ 听发音'));
+    const actions = node('div', '', 'actions'), listen = audioButton(item.lesson);
     const save = node('button', progress[answer.id]?.saved ? text('★ Saved', '★ 已收藏') : text('☆ Save word', '☆ 收藏'));
-    listen.onclick = () => speak(item.lesson.en);
     save.onclick = async () => {
       save.disabled = true;
       try { await persist(answer.id, 'saved', !progress[answer.id]?.saved); renderSummary(active); }
@@ -147,6 +170,7 @@ function renderSummary(active) {
   }
 }
 function enterPractice(scope) {
+  player.stop();
   mode = 'quiz'; feedbackIndex = null;
   const options = study.active?.options || study.preferences;
   $('session-size').value = options.size; $('session-scope').value = study.active && !study.active.completedAt ? options.scope : scope || options.scope;
@@ -164,6 +188,7 @@ function focusStudy() {
 }
 async function beginSession() {
   if (starting) return;
+  player.stop();
   starting = true; $('start-session').disabled = true; $('new-session').disabled = true;
   try {
     const response = await api.startSession({ size: Number($('session-size').value), scope: $('session-scope').value,
@@ -175,15 +200,15 @@ async function beginSession() {
   finally { starting = false; $('start-session').disabled = false; $('new-session').disabled = false; }
 }
 for (const id of ['browse', 'saved', 'quiz']) $(id).onclick = () => {
-  window.speechSynthesis?.cancel();
+  player.stop();
   if (id === 'quiz') enterPractice(); else { mode = id; limit = 24; render(); }
 };
-for (const id of ['search', 'kind', 'direction']) $(id).addEventListener(id === 'search' ? 'input' : 'change', () => { limit = 24; render(); });
+for (const id of ['search', 'kind', 'direction']) $(id).addEventListener(id === 'search' ? 'input' : 'change', () => { player.stop(); limit = 24; render(); });
 $('practice-saved').onclick = () => { enterPractice('saved'); };
 $('start-session').onclick = beginSession;
 $('new-session').onclick = beginSession;
 $('more').onclick = () => { limit += 24; render(); };
-$('next').onclick = () => { feedbackIndex = null; render(); focusStudy(); };
+$('next').onclick = () => { player.stop(); feedbackIndex = null; render(); focusStudy(); };
 $('patches').onclick = async () => { const response = await api.sources(); if (!response.ok) $('update-status').textContent = response.error; };
 $('refresh').onclick = async () => {
   $('refresh').disabled = true; $('update-status').textContent = text('Fetching bilingual lessons from Valve. This can take a few minutes…', '正在从 Valve 获取双语课程，可能需要几分钟…');
@@ -195,8 +220,9 @@ $('refresh').onclick = async () => {
   finally { $('refresh').disabled = false; }
 };
 api.onProgress(({ done, total }) => { $('update-status').textContent = text(`Updating ${done}/${total} heroes and items…`, `更新英雄与物品 ${done}/${total}…`); });
-api.onHidden(() => window.speechSynthesis?.cancel());
+api.onHidden(() => player.stop());
+window.addEventListener('pagehide', () => player.stop());
 try {
   const response = await api.load(); if (!response.ok) throw new Error(response.error);
-  catalog = response.catalog; receive(response); $('session-size').value = study.preferences.size; $('session-scope').value = study.preferences.scope; render();
+  catalog = response.catalog; audioManifest = response.audio; receive(response); $('session-size').value = study.preferences.size; $('session-scope').value = study.preferences.scope; render();
 } catch (error) { $('message').textContent = error.message; for (const button of document.querySelectorAll('button')) button.disabled = true; }

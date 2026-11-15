@@ -76,6 +76,12 @@ export async function runLearningSmoke({ controlCenter, nativeImage, outputDirec
   fs.writeFileSync(path.join(outputDirectory, 'learning-summary-narrow.png'), (await captureHub(controlCenter, nativeImage)).toPNG());
   controlCenter.window.setSize(1060, 820);
   await page.executeJavaScript("document.getElementById('browse').click()");
+  const { runLearningAudioSmoke } = await import('./learningAudioSmoke.js');
+  await runLearningAudioSmoke(page);
+  await navigateHub(controlCenter, 'services');
+  if (!await page.executeJavaScript('window.__learningSmokeAudio.paused')) throw new Error('Audio continued after leaving learning');
+  await navigateHub(controlCenter, 'learning');
+  await page.executeJavaScript("document.getElementById('search').value=''; document.getElementById('kind').value='all'; document.getElementById('search').dispatchEvent(new Event('input')); window.scrollTo(0,0)");
   if (mainWindow.isDestroyed()) throw new Error('Learning page closed desktop companion');
   fs.writeFileSync(path.join(outputDirectory, 'learning-wide.png'), (await captureHub(controlCenter, nativeImage)).toPNG());
   controlCenter.window.setSize(620, 730);

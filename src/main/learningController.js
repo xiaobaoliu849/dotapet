@@ -14,6 +14,7 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
   const stateFile = path.join(dataDirectory, 'learning-state.json');
   const read = (file, fallback) => { try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch { return fallback; } };
   const bundled = read(path.join(rendererDirectory, '../learning/catalog.json'), null);
+  const audio = read(path.join(rendererDirectory, '../learning/audio-manifest.json'), { entries: {}, missing: [] });
   const cached = read(catalogFile, null);
   let catalog = cached?.schema === 1 && Array.isArray(cached.lessons)
     && Date.parse(cached.fetchedAt) > Date.parse(bundled.fetchedAt) ? cached : bundled;
@@ -32,7 +33,7 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
     if (!trusted(event)) return { ok: false, error: 'Untrusted learning page' };
     try { return { ok: true, ...await fn(...args) }; } catch (error) { return { ok: false, error: error.message }; }
   };
-  ipcMain.handle('learning:load', respond(() => ({ catalog, ...snapshot() })));
+  ipcMain.handle('learning:load', respond(() => ({ catalog, audio, ...snapshot() })));
   ipcMain.handle('learning:progress', respond((id, action, value) => {
     if (!catalog.lessons.some(r => r.id === id)) throw new Error('Unknown lesson');
     let next;
