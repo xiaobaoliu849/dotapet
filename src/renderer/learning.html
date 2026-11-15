@@ -11,11 +11,15 @@
 <main>
   <header><p class="eyebrow">DOTAPAD ACADEMY</p><h1 id="heading">Learn the game. Speak the language.</h1><p id="intro">A little Dota, a little English. Your desktop companion stays with you.</p></header>
   <section class="stats" aria-label="Learning progress"><div><strong id="total">—</strong><span id="total-label">bilingual lessons</span></div><div><strong id="saved-count">0</strong><span id="saved-label">saved words</span></div><div><strong id="due-count">0</strong><span id="due-label">ready to review</span></div><div><strong id="accuracy">—</strong><span id="accuracy-label">quiz accuracy</span></div></section>
-  <nav class="tabs" aria-label="Learning mode"><button id="heroes-tab" aria-pressed="true">Heroes</button><button id="browse" aria-pressed="false">Explore</button><button id="saved" aria-pressed="false">My words</button><button id="quiz" aria-pressed="false">Practice</button></nav>
+  <nav class="tabs" aria-label="Learning mode"><button id="heroes-tab" aria-pressed="true">Heroes</button><button id="phrases-tab" aria-pressed="false">Spoken Phrases</button><button id="browse" aria-pressed="false">Explore</button><button id="saved" aria-pressed="false">My words</button><button id="quiz" aria-pressed="false">Practice</button></nav>
   <div class="tools"><label><span id="search-label">Find a lesson</span><input id="search" type="search" placeholder="Search English or Chinese…" maxlength="120"></label><label><span id="kind-label">Topic</span><select id="kind"><option value="all">All topics</option><option value="hero">Heroes</option><option value="ability">Hero abilities</option><option value="item">Items</option><option value="phrase">Team expressions</option></select></label><label><span id="direction-label">Practice direction</span><select id="direction" translate="no"><option value="en">English → 中文</option><option value="zh">中文 → English</option></select></label></div>
   <p id="message" role="status" aria-live="polite"></p>
   <p id="audio-status" class="audio-status" role="status" aria-live="polite" hidden></p>
   <button id="practice-saved" hidden>Practice my saved words →</button>
+  <section id="spoken-browser" hidden aria-label="Spoken Dota 2 phrases">
+    <div id="spoken-filters" class="attr-filters" role="group" aria-label="Match situations"></div>
+    <div id="spoken-list" class="spoken-list" translate="no"></div>
+  </section>
   <section id="hero-browser" aria-label="Heroes by attribute">
     <div id="attr-filters" class="attr-filters" role="group" aria-label="Hero attributes"></div>
     <div id="hero-categories" class="hero-categories" translate="no"></div>

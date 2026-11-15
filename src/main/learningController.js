@@ -4,6 +4,7 @@ import { pathToFileURL } from 'node:url';
 import { randomUUID } from 'node:crypto';
 import { isTrustedSettingsSender } from './aiSettingsIpc.js';
 import { recordAnswer } from '../learning/model.js';
+import { SPOKEN_PHRASES } from '../learning/spokenPhrases.js';
 import { fetchCatalog } from '../learning/update.js';
 import { planStudy, studyOptions, studySummary, STUDY_DEFAULTS } from '../learning/study.js';
 import { diffCatalog } from '../learning/contentAudit.js';
@@ -53,7 +54,8 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
   };
   ipcMain.handle('learning:load', respond(() => ({ catalog, heroMeta, audio, audioBaseline, ...snapshot() })));
   ipcMain.handle('learning:progress', respond((id, action, value) => {
-    if (!catalog.lessons.some(r => r.id === id)) throw new Error('Unknown lesson');
+    const known = catalog.lessons.some(r => r.id === id) || SPOKEN_PHRASES.some(p => p.id === id);
+    if (!known) throw new Error('Unknown lesson');
     let next;
     if (action === 'saved' && typeof value === 'boolean') next = { ...state.progress[id], saved: value };
     else throw new Error('Invalid learning action');

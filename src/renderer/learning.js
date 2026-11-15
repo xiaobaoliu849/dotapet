@@ -2,6 +2,7 @@ import { recordedAudio } from '../learning/audioAssets.js';
 import { audioFreshness } from '../learning/contentAudit.js';
 import { createLearningAudio } from './learning-audio.js';
 import { filterLessons } from '../learning/model.js';
+import { SPOKEN_CATEGORIES, SPOKEN_PHRASES } from '../learning/spokenPhrases.js';
 import { localDay, STUDY_DEFAULTS } from '../learning/study.js';
 const api = window.learningAPI;
 const $ = id => document.getElementById(id);
@@ -10,7 +11,7 @@ const text = (en, zh) => chinese ? zh : en;
 const labels = { hero: text('Hero', '英雄'), ability: text('Hero ability', '英雄技能'), item: text('Item', '物品'), phrase: text('Team expression', '团队表达') };
 const translations = {
   heading: '玩懂刀塔，开口说英语。', intro: '每天一点刀塔英语，桌面小伙伴一直陪着你。', 'total-label': '条双语课程', 'saved-label': '个收藏词条', 'due-label': '条待复习', 'accuracy-label': '答题正确率',
-  'heroes-tab': '英雄图鉴', browse: '探索课程', saved: '我的词本', quiz: '练习测验', 'search-label': '查找课程', 'kind-label': '学习主题', 'direction-label': '练习方向', next: '下一题 →', more: '加载更多',
+  'heroes-tab': '英雄图鉴', 'phrases-tab': '实战口语', browse: '探索课程', saved: '我的词本', quiz: '练习测验', 'search-label': '查找课程', 'kind-label': '学习主题', 'direction-label': '练习方向', next: '下一题 →', more: '加载更多',
   'hero-back': '← 返回四属性英雄墙', 'hero-abilities-heading': '英雄技能（中英双语对照）',
   'study-heading': '每日学习小课', 'study-help': '先复习到期的错题和旧词，再学习新词。', 'size-label': '每轮课程数量', 'scope-label': '练习词库', 'start-session': '开始学习 →', 'practice-saved': '练习我的收藏词条 →', 'summary-heading': '本轮学习完成', 'mistakes-heading': '需要再看看的词条', 'new-session': '安排下一轮 →',
   'audio-source': '音频使用你的双语词典中已生成的 AI 录音，按原速播放。历史录音可能与当前课程文字不同；缺少录音的词条会明确标注。',
@@ -25,7 +26,7 @@ if (chinese) {
   $('search').placeholder = '搜索英文 / 中文 / 英雄名…';
 }
 let catalog, heroMeta = {}, progress = {}, study = { preferences: STUDY_DEFAULTS, active: null, history: [] }, mode = 'heroes', limit = 24;
-let selectedHeroId = null, attrFilter = 'all';
+let selectedHeroId = null, attrFilter = 'all', spokenFilter = 'all';
 let audioManifest = { entries: {} };
 let audioBaseline = { entries: {} };
 let pendingAnswer = false, starting = false, feedbackIndex = null;
@@ -189,10 +190,59 @@ function renderHeroDetail(hero) {
     list.append(card);
   }
 }
+function renderSpokenBrowser() {
+  const query = $('search').value.trim().toLocaleLowerCase();
+  const matching = SPOKEN_PHRASES.filter(p => {
+    if (spokenFilter !== 'all' && p.category !== spokenFilter) return false;
+    if (!query) return true;
+    return [p.en, p.zh, p.alt, p.tip].some(s => (s || '').toLocaleLowerCase().includes(query));
+  });
+  $('message').textContent = matching.length
+    ? text(`${matching.length} natural in-game callouts · Say these on mic with native teammates.`, `共 ${matching.length} 条实战口语 · 遇到对应局势直接照着说或一键复制。`)
+    : text('No matching spoken phrases found.', '未找到匹配的实战口语。');
+  const filters = $('spoken-filters');
+  filters.replaceChildren();
+  const allBtn = node('button', text(`All (${SPOKEN_PHRASES.length})`, `全部场景 (${SPOKEN_PHRASES.length})`), 'attr-pill');
+  allBtn.setAttribute('aria-pressed', String(spokenFilter === 'all'));
+  allBtn.onclick = () => { spokenFilter = 'all'; render(); };
+  filters.append(allBtn);
+  for (const cat of SPOKEN_CATEGORIES) {
+    const count = SPOKEN_PHRASES.filter(p => p.category === cat.key).length;
+    const btn = node('button', `${cat.icon} ${text(cat.en, cat.zh)} (${count})`, 'attr-pill');
+    btn.setAttribute('aria-pressed', String(spokenFilter === cat.key));
+    btn.onclick = () => { spokenFilter = cat.key; render(); };
+    filters.append(btn);
+  }
+  const list = $('spoken-list');
+  list.replaceChildren();
+  for (const phrase of matching) {
+    const cat = SPOKEN_CATEGORIES.find(c => c.key === phrase.category);
+    const card = node('article', '', 'lesson spoken-card');
+    card.append(node('span', `${cat?.icon || ''} ${text(cat?.en || '', cat?.zh || '')}`, 'topic'));
+    card.append(node('p', phrase.zh, 'spoken-zh-intent'));
+    card.append(node('h3', phrase.en, 'spoken-en-callout'));
+    if (phrase.alt) card.append(node('p', text(`Quick version: ${phrase.alt}`, `简短口语版：${phrase.alt}`), 'spoken-alt'));
+    if (phrase.tip) card.append(node('p', phrase.tip, 'spoken-tip'));
+    const actions = node('div', '', 'actions');
+    const copyBtn = node('button', text('📋 Copy English', '📋 复制英文'));
+    copyBtn.onclick = async () => {
+      try {
+        await navigator.clipboard.writeText(phrase.en);
+        copyBtn.textContent = text('✓ Copied', '✓ 已复制');
+        setTimeout(() => { copyBtn.textContent = text('📋 Copy English', '📋 复制英文'); }, 1500);
+      } catch {
+        copyBtn.textContent = text('Copy failed', '复制失败');
+      }
+    };
+    actions.append(copyBtn, saveButton(phrase, render));
+    card.append(actions);
+    list.append(card);
+  }
+}
 function render() {
   player.stop();
   stats();
-  for (const [id, m] of [['heroes-tab', 'heroes'], ['browse', 'browse'], ['saved', 'saved'], ['quiz', 'quiz']]) {
+  for (const [id, m] of [['heroes-tab', 'heroes'], ['phrases-tab', 'phrases'], ['browse', 'browse'], ['saved', 'saved'], ['quiz', 'quiz']]) {
     $(id).setAttribute('aria-pressed', String(mode === m));
   }
   const selectedHero = mode === 'heroes' && selectedHeroId
@@ -200,14 +250,15 @@ function render() {
     : null;
   $('hero-browser').hidden = mode !== 'heroes' || Boolean(selectedHero);
   $('hero-detail').hidden = !selectedHero;
-  $('library').hidden = mode === 'quiz' || mode === 'heroes';
+  $('spoken-browser').hidden = mode !== 'phrases';
+  $('library').hidden = mode === 'quiz' || mode === 'heroes' || mode === 'phrases';
   $('study-setup').hidden = mode !== 'quiz';
   $('practice-saved').hidden = mode !== 'saved';
   $('practice').hidden = true; $('session-summary').hidden = true;
   const kindLabel = $('kind').closest('label');
   const dirLabel = $('direction').closest('label');
-  if (kindLabel) kindLabel.hidden = mode === 'heroes';
-  if (dirLabel) dirLabel.hidden = mode === 'heroes';
+  if (kindLabel) kindLabel.hidden = mode === 'heroes' || mode === 'phrases';
+  if (dirLabel) dirLabel.hidden = mode === 'heroes' || mode === 'phrases';
   const active = mode === 'quiz' && study.active && !study.active.completedAt;
   for (const id of ['search', 'kind', 'direction', 'session-size', 'session-scope']) $(id).disabled = Boolean(active);
   if (mode === 'quiz') { $('message').textContent = ''; renderStudy(); return; }
@@ -216,6 +267,7 @@ function render() {
     else renderHeroBrowser();
     return;
   }
+  if (mode === 'phrases') { renderSpokenBrowser(); return; }
   const rows = selection();
   $('message').textContent = rows.length ? text(`${rows.length} lessons · Read, listen, then save a word to practice.`, `${rows.length} 条课程 · 阅读、听发音、收藏后练习。`) : text('No lessons found. Try another topic or save some words.', '暂无课程，请更换筛选条件或先收藏词条。');
   $('lessons').replaceChildren();
@@ -339,7 +391,7 @@ async function beginSession() {
   } catch (error) { $('study-status').textContent = error.message; }
   finally { starting = false; $('start-session').disabled = false; $('new-session').disabled = false; }
 }
-for (const [id, m] of [['heroes-tab', 'heroes'], ['browse', 'browse'], ['saved', 'saved'], ['quiz', 'quiz']]) $(id).onclick = () => {
+for (const [id, m] of [['heroes-tab', 'heroes'], ['phrases-tab', 'phrases'], ['browse', 'browse'], ['saved', 'saved'], ['quiz', 'quiz']]) $(id).onclick = () => {
   player.stop();
   if (m === 'quiz') enterPractice(); else { if (m === 'heroes' && mode === 'heroes') selectedHeroId = null; mode = m; limit = 24; render(); }
 };

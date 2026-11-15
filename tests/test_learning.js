@@ -57,6 +57,7 @@ test('learning IPC rejects foreign frames and persists progress across controlle
   assert.ok(loaded.heroMeta && typeof loaded.heroMeta === 'object');
   const attrs = new Set(Object.values(loaded.heroMeta).map(h => h.attribute));
   assert.deepEqual([...attrs].sort(), ['agi', 'int', 'str', 'uni']);
+  assert.equal((await handlers.get('learning:progress')(trusted, 'spoken:smoke-triangle', 'saved', true)).ok, true);
 });
 
 test('updater joins live-shaped feeds and records unnamed internal item omissions', async () => {
