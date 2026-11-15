@@ -58,3 +58,19 @@ Add original expression explanations and examples, typed/cloze questions and a p
 - Reviewed the screenshots and improved focus/scrolling after the first visual check; final verification and preview artifacts accompany this iteration.
 
 User instructions: [Daily practice guide](DOTAPAD_DAILY_PRACTICE.md). Publication continues on `codex/dotapad-bilingual-learning`, with separate planner, workspace and documentation commits. No installer release or default-branch merge is included.
+
+## 2026-11-15 — Reuse the existing AI-generated MP3 library
+
+- The user reported unnatural pronunciation. The first implementation used the Windows system voice at 0.85 speed; it did not reuse the existing bilingual project's recordings.
+- Inspected `D:\Projects\dota-2-bilingual-lexicon\public\audio`, the original audio button, generation scripts and the public audio version configuration.
+- Imported **1,146 matching MP3 recordings**: 127 hero biographies, 734 ability recordings, 244 items and 41 expressions. All imported files match the source SHA-256 hashes exactly.
+- Bundled audio occupies **148,686,048 bytes** (about 142 MiB). Files are copied unchanged and played at normal speed, without an AI key, network request or automatic system-voice fallback.
+- Mapped recordings by stable lesson ID, hero context and canonical/legacy filenames. The manifest records 164 item lessons without a matching recording; the UI marks them **No recording yet**. Renamed lessons do not silently inherit an old recording by ID.
+- Added recording controls to the lesson library, quiz answer explanations and the mistake summary. Clicking again stops playback. Switching pages, filtering, advancing a question and closing the document release playback.
+- Hero recordings are explicitly labelled **Hero story**; recordings are not presented as name-only pronunciation. The page identifies archived audio wording that may differ from current game descriptions.
+- Added playback tests for normal speed, toggling, completion, errors, pending-play cancellation and imported-asset integrity. Full automated suite: **257 passed, 0 failed**. English interface check passed.
+- The desktop smoke checks actual MP3 metadata for all four lesson kinds and exercises a visible ability's MP3 play/stop and navigation behavior with audio muted.
+- Built an unpacked Windows preview under `release/learning-audio-preview/win-unpacked`. Verified all 1,146 MP3 files and the audio manifest are included in `app.asar`.
+- Full source and packaged-preview desktop smoke tests both passed, including actual muted MP3 playback from source files and from `app.asar`, normal speed, stop toggling and stopping when leaving the learning page.
+
+Maintenance details and limitations: [AI audio library](DOTAPAD_AUDIO.md).

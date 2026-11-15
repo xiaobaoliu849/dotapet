@@ -24,6 +24,8 @@ Each submitted answer saves automatically. You may switch pages, close Settings 
 
 After the final answer, choose **See session summary / 查看学习总结**. The summary shows your score and the words you missed, with pronunciation and bookmark controls. Correct answers return after 1, 3, 7, 14 or 30 days according to your review level. Mistakes become due after one minute and can appear in a subsequent session.
 
+Audio now plays the existing AI-generated MP3s from the bilingual library at their original speed. Hero buttons play biographies; ability and item buttons play recorded explanations. Recordings may use older wording than the current lesson text. Items without a recording are marked explicitly. See [the audio library notes](DOTAPAD_AUDIO.md).
+
 The Practice panel counts completed sessions and answers for today using your computer's local date. It retains the latest 180 completed-session summaries. Individual word progress and the active session remain saved separately within the same state file.
 
 ## 中文说明
