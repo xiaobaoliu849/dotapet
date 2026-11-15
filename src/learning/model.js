@@ -4,11 +4,25 @@ export function cleanText(value = '') {
 }
 
 export function describe(record) {
-  const values = new Map((record.special_values || []).map(v => [v.name, v.values_float || []]));
+  const values = new Map((record.special_values || []).map(v => [v.name.toLowerCase(), v.values_float || []]));
+  const fields = { abilitycastrange: 'cast_ranges', abilityduration: 'durations', abilitychanneltime: 'channel_times', abilitycooldown: 'cooldowns', abilitymanacost: 'mana_costs', abilitydamage: 'damages' };
   return cleanText(record.desc_loc).replace(/%([\w]+)%/g, (token, key) => {
-    const numbers = values.get(key.replace(/^bonus_/, ''));
+    key = key.toLowerCase();
+    const numbers = values.get(key) || values.get(key.replace(/^bonus_/, '')) || record[fields[key]];
     return numbers?.length ? [...new Set(numbers)].join(' / ') : token;
-  });
+  }).replace(/%%/g, '%');
+}
+
+/** Preserve balance facts separately: not every cooldown or numeric tweak appears in prose. */
+export function balanceFacts(record) {
+  const facts = {};
+  for (const key of ['cooldowns', 'mana_costs', 'cast_ranges', 'damages', 'channel_times', 'durations', 'item_cost']) {
+    if (record[key] !== undefined) facts[key] = record[key];
+  }
+  facts.special_values = (record.special_values || []).map(value => ({ name: value.name,
+    values: value.values_float || [], shard: value.values_shard || [], scepter: value.values_scepter || [] }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+  return facts;
 }
 
 export function pairRecords(english, chinese, kind, parent = '') {
@@ -17,7 +31,8 @@ export function pairRecords(english, chinese, kind, parent = '') {
     const cn = translations.get(record.id);
     if (!cn?.name_loc || !record.name_loc) throw new Error(`Missing bilingual pair: ${kind}:${record.id}`);
     return [{ id: `${kind}:${record.id}`, kind, parent, en: cleanText(record.name_loc), zh: cleanText(cn.name_loc),
-      descriptionEn: describe(record), descriptionZh: describe(cn) }];
+      descriptionEn: describe(record), descriptionZh: describe(cn),
+      ...(kind === 'hero' ? { biographyEn: cleanText(record.bio_loc), biographyZh: cleanText(cn.bio_loc) } : { mechanics: balanceFacts(record) }) }];
   });
 }
 
