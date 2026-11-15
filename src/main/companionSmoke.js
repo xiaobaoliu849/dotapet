@@ -215,6 +215,8 @@ export async function runCompanionSmoke({
     fs.writeFileSync(output.replace(/\.png$/, '-translation.png'), (await capture()).toPNG());
     await page.executeJavaScript("if(!document.getElementById('translate-secret')) throw new Error('DeepSeek translation did not ask for its key'); document.querySelector('#translator-options [data-provider=qwen]').click(); window.scrollTo(0,0)");
   }
+  const { runLearningSmoke } = await import('./learningSmoke.js');
+  await runLearningSmoke({ controlCenter, nativeImage: electron.nativeImage, outputDirectory: app.getPath('userData'), mainWindow });
   const { runConversationSmoke } = await import('./conversationSmoke.js');
   const { voiceClient, voiceConnection } = setupVoiceService();
   const { runVoiceReconnectSmoke } = await import('./voiceReconnectSmoke.js');

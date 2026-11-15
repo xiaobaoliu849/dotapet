@@ -1,3 +1,4 @@
+import { createLearningController } from './learningController.js';
 import electron from 'electron';
 const { app, BrowserWindow, ipcMain, clipboard, Tray, Menu, nativeImage, screen, powerMonitor, safeStorage, dialog, session, shell, globalShortcut, desktopCapturer } = electron;
 import path from 'path';
@@ -1781,6 +1782,7 @@ if (app?.whenReady) {  app.whenReady().then(() => {
       onHide: contents => contents.send('settings:hidden') });
     // The same editor as the F6 panel, drawn in the settings center's light style.
     controlCenter.register('phrases', { file: 'phrases.html', query: { embedded: '1' }, preload: '../preload/phrases.js', background: '#f6f7f2' });
+    createLearningController({ electron, hub: controlCenter, rendererDirectory: path.join(__dirname, '../renderer'), dataDirectory: app.getPath('userData') });
     createWindow();
     // Before the voice service: its first persona already includes the user's custom one.
     customizationController = createCustomizationController({ electron, rendererDirectory: path.join(__dirname, '../renderer'),
