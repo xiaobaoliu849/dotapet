@@ -2190,6 +2190,25 @@ function setupEventListeners() {
     copyText(elements.hudMeaning.textContent);
   });
 
+  const copyOriginalFromHud = () => {
+    const raw = (elements.hudOriginal?.textContent || '').trim();
+    if (!raw) return;
+    const cleaned = raw.startsWith('"') && raw.endsWith('"') && raw.length >= 2 ? raw.slice(1, -1) : raw;
+    copyText(cleaned);
+    elements.hudOriginal.classList.add('is-copied');
+    clearTimeout(elements.hudOriginal._copyTimer);
+    elements.hudOriginal._copyTimer = setTimeout(() => {
+      elements.hudOriginal?.classList.remove('is-copied');
+    }, 1200);
+  };
+  elements.hudOriginal?.addEventListener('click', copyOriginalFromHud);
+  elements.hudOriginal?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      copyOriginalFromHud();
+    }
+  });
+
   // Real-time Transcript Panel Controls
   elements.btnTranscript?.addEventListener('click', () => {
     if (!elements.transcriptPanel) return;
