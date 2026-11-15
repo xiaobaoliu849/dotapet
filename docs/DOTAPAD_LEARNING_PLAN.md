@@ -52,7 +52,7 @@ Developer refresh: `npm run learning:update`. This updates the bundled snapshot 
 
 - Explain recurring ability language: “within range,” “per second,” “on hit,” “dispel,” “channel,” “root,” “silence,” “pierce debuff immunity,” and “cooldown.”
 - Add original bilingual example sentences and usage notes, clearly separated from Valve's mechanics descriptions.
-- Introduce guided beginner lessons and short daily sessions. Add saved-only practice and configurable session length.
+- Implemented on November 15, 2026: short daily sessions with 5/10 lessons, saved-only practice, due-mistake priority, automatic resume and completion summaries. Guided beginner lessons remain future work.
 - Add cloze questions and typed answers with accepted synonyms, punctuation normalization and Chinese variants.
 - Add pronunciation pace and voice preferences; verify English system-voice support across supported Windows versions.
 - Include innate abilities, facets, talents, Shard and Scepter changes as separate lesson types. The initial catalog focuses on the abilities returned in the normal ability list and item descriptions.
@@ -79,6 +79,7 @@ Developer refresh: `npm run learning:update`. This updates the bundled snapshot 
 | --- | --- |
 | `src/learning/catalog.json` | Bundled, dated bilingual snapshot |
 | `src/learning/model.js` | Text normalization, localization pairing, search, quizzes and review intervals |
+| `src/learning/study.js` | Validated session options, due-review ordering, bounded queues and local-day summaries |
 | `src/learning/update.js` | Official feed fetching, validation and normalization |
 | `src/main/learningController.js` | Trusted IPC, catalog cache, progress writes and external patch link |
 | `src/preload/learning.js` | Narrow bridge for learning actions |
@@ -87,7 +88,9 @@ Developer refresh: `npm run learning:update`. This updates the bundled snapshot 
 | `tests/test_learning.js` | Curriculum, review, localization, persistence and IPC tests |
 | `src/main/learningSmoke.js` | Real Electron search, bookmark, quiz and layout verification |
 
-Progress: `learning-progress.json` in `userData`, keyed by lesson ID with `saved`, `box`, `attempts`, `correct` and `due`. Cached catalog: `learning-catalog.json` in the same directory. Use synchronous atomic writes for small progress updates; catalog network work stays asynchronous. Learning IPC accepts only the exact top-level learning document and only known actions and lesson IDs. It exposes no filesystem paths or renderer-controlled external URLs. The renderer has no network access, no Node integration and a restrictive CSP.
+Current learning state: `learning-state.json` in `userData`, with stable-ID progress, study preferences, the current session and the last 180 completed-session summaries. Existing `learning-progress.json` records are migrated automatically on the first state write; the old file is left in place. Each answer updates progress, session position and completion history in one atomic write. A retried answer cannot count twice. Session questions retain a snapshot of their lessons so a catalog refresh cannot change a session already in progress.
+
+Cached catalog: `learning-catalog.json` in the same directory. Use synchronous atomic writes for small progress updates; catalog network work stays asynchronous. Learning IPC accepts only the exact top-level learning document and only known actions and lesson IDs. It exposes no filesystem paths or renderer-controlled external URLs. The renderer has no network access, no Node integration and a restrictive CSP.
 
 ## Acceptance and validation
 
