@@ -1,0 +1,90 @@
+{
+  "schema": 1,
+  "model": "faster-whisper-small",
+  "modelRevision": "536b0662742c02347bc0e980a01041f333bce120",
+  "fasterWhisperVersion": "1.1.0",
+  "device": "cpu/int8",
+  "advisoryOnly": true,
+  "entries": [
+    {
+      "id": "ability:5048",
+      "name": "Sacred Arrow",
+      "file": "ability-5048.mp3",
+      "transcript": "Sacred Arrow. Fires a long-range arrow with deadly precision, which stuns and damages the first enemy unit it strikes. The stun starts at 0.01 seconds. Its maximum duration is 2.3, 3.2, 4.1, or 5 seconds, at ability levels 1 through 4, respectively. Up to 180 bonus damage is added, based on the distance the arrow travels to its target. It instantly kills the first non-ancient creep that it hits.",
+      "audioSha256": "b517195c26ade05d9bbaa2a9293bebf094b141066ff73eb9881d5855f0b17faa",
+      "expectedNumbers": {
+        "0.01": 1,
+        "2.3": 1,
+        "3.2": 1,
+        "4.1": 1,
+        "5": 1,
+        "1": 1,
+        "4": 1,
+        "180": 1
+      },
+      "recognizedNumbers": {
+        "0.01": 1,
+        "2.3": 1,
+        "3.2": 1,
+        "4.1": 1,
+        "5": 1,
+        "1": 1,
+        "4": 1,
+        "180": 1
+      },
+      "numberCountsMatch": true,
+      "missingCriticalNumberChecks": [],
+      "normalizedWordSimilarity": 1.0,
+      "status": "asr-check-passed",
+      "note": "Automatic recognition can mishear names or numbers. Listening approval remains false."
+    },
+    {
+      "id": "item:121",
+      "name": "Bloodstone",
+      "file": "item-121.mp3",
+      "transcript": "Bloodstone. Its active ability, Bloodpacked, increases Bloodstone's Spell Lifesteal to 60% for 5 seconds. Its passive, Spell Weakness Aura, causes enemy units within 1200 range to take 10% more damage from spells.",
+      "audioSha256": "58e999e4b9f9ced5a27649a6b94cae796314d0adfe279263da6f2f1188fdf9da",
+      "expectedNumbers": {
+        "60": 1,
+        "5": 1,
+        "1200": 1,
+        "10": 1
+      },
+      "recognizedNumbers": {
+        "60": 1,
+        "5": 1,
+        "1200": 1,
+        "10": 1
+      },
+      "numberCountsMatch": true,
+      "missingCriticalNumberChecks": [],
+      "normalizedWordSimilarity": 0.971,
+      "status": "asr-check-passed",
+      "note": "Automatic recognition can mishear names or numbers. Listening approval remains false."
+    },
+    {
+      "id": "item:121",
+      "name": "Bloodstone",
+      "file": "item-121-plus10.mp3",
+      "transcript": "Bloodstone. Its active ability, Bloodpact, increases Bloodstone's Spell Lifesteal to 60% for 5 seconds. Its passive, Spell Weakness Aura, causes enemy units within 1200 range to take 10% more damage from spells.",
+      "audioSha256": "ea41ca555e1d5dde1258a8c16a15c61c6104edde5aa24b4dfe3c252f97fb8486",
+      "expectedNumbers": {
+        "60": 1,
+        "5": 1,
+        "1200": 1,
+        "10": 1
+      },
+      "recognizedNumbers": {
+        "60": 1,
+        "5": 1,
+        "1200": 1,
+        "10": 1
+      },
+      "numberCountsMatch": true,
+      "missingCriticalNumberChecks": [],
+      "normalizedWordSimilarity": 1.0,
+      "status": "asr-check-passed",
+      "note": "Automatic recognition can mishear names or numbers. Listening approval remains false."
+    }
+  ]
+}
