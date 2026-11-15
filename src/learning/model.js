@@ -25,13 +25,20 @@ export function balanceFacts(record) {
   return facts;
 }
 
+export function itemImageUrl(record) {
+  const slug = String(record?.name || '').trim().replace(/^item_/, '');
+  return slug ? `https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/${slug}.png` : '';
+}
+
 export function pairRecords(english, chinese, kind, parent = '') {
   const translations = new Map(chinese.map(r => [r.id, r]));
   return english.flatMap(record => {
     const cn = translations.get(record.id);
     if (!cn?.name_loc || !record.name_loc) throw new Error(`Missing bilingual pair: ${kind}:${record.id}`);
+    const imageUrl = kind === 'item' ? itemImageUrl(record) : '';
     return [{ id: `${kind}:${record.id}`, kind, parent, en: cleanText(record.name_loc), zh: cleanText(cn.name_loc),
       descriptionEn: describe(record), descriptionZh: describe(cn),
+      ...(imageUrl ? { imageUrl } : {}),
       ...(kind === 'hero' ? { biographyEn: cleanText(record.bio_loc), biographyZh: cleanText(cn.bio_loc) } : { mechanics: balanceFacts(record) }) }];
   });
 }
