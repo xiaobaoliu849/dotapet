@@ -13,8 +13,9 @@ const text = (en, zh) => chinese ? zh : en;
 const labels = { hero: text('Hero', '英雄'), ability: text('Hero ability', '英雄技能'), item: text('Item', '物品'), phrase: text('Team expression', '团队表达') };
 const translations = {
   heading: '玩懂刀塔，开口说英语。', intro: '每天一点刀塔英语，桌面小伙伴一直陪着你。', 'total-label': '条双语课程', 'saved-label': '个收藏词条', 'due-label': '条待复习', 'accuracy-label': '答题正确率',
-  'heroes-tab': '英雄图鉴', 'phrases-tab': '实战口语', browse: '探索课程', saved: '我的词本', quiz: '练习测验', 'search-label': '查找课程', 'kind-label': '学习主题', 'direction-label': '练习方向', next: '下一题 →', more: '加载更多',
+  'heroes-tab': '英雄图鉴', 'items-tab': '物品图鉴', 'phrases-tab': '实战口语', browse: '探索课程', saved: '我的词本', quiz: '练习测验', 'search-label': '查找课程', 'kind-label': '学习主题', 'direction-label': '练习方向', next: '下一题 →', more: '加载更多',
   'hero-back': '← 返回四属性英雄墙', 'hero-abilities-heading': '英雄技能（中英双语对照）',
+  'voice-bar-hint': '实时对话与双语字幕已同步显示在桌面伙伴「实时对话转写」面板中。',
   'study-heading': '每日学习小课', 'study-help': '先复习到期的错题和旧词，再学习新词。', 'size-label': '每轮课程数量', 'scope-label': '练习词库', 'start-session': '开始学习 →', 'practice-saved': '练习我的收藏词条 →', 'summary-heading': '本轮学习完成', 'mistakes-heading': '需要再看看的词条', 'new-session': '安排下一轮 →',
   'audio-source': '音频使用你的双语词典中已生成的 AI 录音，按原速播放。历史录音可能与当前课程文字不同；缺少录音的词条会明确标注。',
   'sources-heading': '让知识保持更新', freshness: '技能说明是有日期的数据快照。数值和机制请以官方更新日志为准。', refresh: '从 Valve 更新课程', patches: '官方更新日志 ↗',
@@ -28,7 +29,7 @@ if (chinese) {
   $('search').placeholder = '搜索英文 / 中文 / 英雄名…';
 }
 let catalog, heroMeta = {}, progress = {}, study = { preferences: STUDY_DEFAULTS, active: null, history: [] }, mode = 'heroes', limit = 24;
-let selectedHeroId = null, attrFilter = 'all', spokenFilter = 'all';
+let selectedHeroId = null, attrFilter = 'all', itemFilter = 'all', spokenFilter = 'all';
 let audioManifest = { entries: {} };
 let audioBaseline = { entries: {} };
 let pendingAnswer = false, starting = false, feedbackIndex = null;
@@ -60,6 +61,18 @@ function heroAvatarNode(hero, large = false) {
 const node = (tag, value, className) => { const element = document.createElement(tag); element.textContent = value; if (className) element.className = className; return element; };
 const due = r => !progress[r.id]?.due || progress[r.id].due <= Date.now();
 function selection() { return filterLessons(catalog.lessons, { kind: $('kind').value, search: $('search').value, saved: mode === 'saved', progress }); }
+function syncMasteryActive() {
+  const strip = $('mastery-strip');
+  if (!strip) return;
+  for (const card of strip.querySelectorAll('.mastery-card')) {
+    const key = card.dataset.masteryKey;
+    const isActive = (key === 'hero' && mode === 'heroes')
+      || (key === 'item' && mode === 'items')
+      || (key === 'phrase' && mode === 'phrases')
+      || (key === 'ability' && mode === 'browse' && $('kind').value === 'ability');
+    card.setAttribute('aria-pressed', String(isActive));
+  }
+}
 function stats() {
   $('total').textContent = catalog.lessons.length.toLocaleString();
   $('saved-count').textContent = catalog.lessons.filter(r => progress[r.id]?.saved).length;
@@ -73,6 +86,7 @@ function stats() {
     for (const item of summarizeMastery(catalog.lessons, progress)) {
       const card = node('button', '', 'mastery-card');
       card.type = 'button';
+      card.dataset.masteryKey = item.key;
       const top = node('div', '', 'mastery-card-top');
       top.append(node('span', `${item.icon} ${text(item.en, item.zh)}`, 'mastery-title'), node('span', `${item.practiced}/${item.total}`, 'mastery-count'));
       const bar = node('div', '', 'mastery-bar');
@@ -84,12 +98,14 @@ function stats() {
       card.onclick = () => {
         player.stop();
         if (item.key === 'hero') { mode = 'heroes'; selectedHeroId = null; }
+        else if (item.key === 'item') { mode = 'items'; }
         else if (item.key === 'phrase') { mode = 'phrases'; }
         else { mode = 'browse'; $('kind').value = item.key; limit = 24; }
         render();
       };
       strip.append(card);
     }
+    syncMasteryActive();
   }
 }
 async function persist(id, action, value) {
@@ -301,10 +317,78 @@ function renderSpokenBrowser() {
     list.append(card);
   }
 }
+function isActiveItem(item) {
+  const cds = item.mechanics?.cooldowns?.some(n => n > 0);
+  const manas = item.mechanics?.mana_costs?.some(n => n > 0);
+  const desc = `${item.descriptionEn || ''} ${item.descriptionZh || ''}`;
+  return Boolean(cds || manas || /\bActive:|主动[:：]/i.test(desc));
+}
+function buildLessonCard(lesson, onUpdated) {
+  const card = node('article', '', 'lesson');
+  const topicWrap = node('div', '', '');
+  topicWrap.append(node('span', labels[lesson.kind], 'topic'));
+  if (lesson.kind === 'item' && lesson.mechanics?.item_cost) {
+    topicWrap.append(node('span', `🪙 ${lesson.mechanics.item_cost}g`, 'item-cost-pill'));
+  }
+  card.append(topicWrap);
+  if (lesson.parent) card.append(node('p', lesson.parent, 'parent'));
+  card.append(node('h2', lesson.en), node('p', lesson.zh, 'zh'));
+  const cds = lesson.mechanics?.cooldowns?.filter(n => n > 0);
+  const manas = lesson.mechanics?.mana_costs?.filter(n => n > 0);
+  if (cds?.length || manas?.length) {
+    const pills = node('div', '', 'ability-pills');
+    if (cds?.length) pills.append(node('span', `CD: ${[...new Set(cds)].join(' / ')}s`, 'mech-pill'));
+    if (manas?.length) pills.append(node('span', `Mana: ${[...new Set(manas)].join(' / ')}`, 'mech-pill'));
+    card.append(pills);
+  }
+  if (lesson.descriptionEn) card.append(node('p', lesson.descriptionEn, 'description'));
+  const translation = node('details', '', 'translation');
+  translation.append(node('summary', text('Chinese explanation', '中文说明')), node('p', lesson.descriptionZh || lesson.zh, 'description'));
+  card.append(translation);
+  const actions = node('div', '', 'actions');
+  actions.append(audioButton(lesson), saveButton(lesson, onUpdated));
+  card.append(actions);
+  return card;
+}
+function renderItemBrowser() {
+  const query = $('search').value.trim().toLocaleLowerCase();
+  const allItems = catalog.lessons.filter(l => l.kind === 'item');
+  const matching = allItems.filter(item => {
+    const cost = item.mechanics?.item_cost || 0;
+    if (itemFilter === 'active' && !isActiveItem(item)) return false;
+    if (itemFilter === 'early' && (cost <= 0 || cost >= 2000)) return false;
+    if (itemFilter === 'core' && cost < 2000) return false;
+    if (!query) return true;
+    return [item.en, item.zh, item.descriptionEn, item.descriptionZh].some(s => (s || '').toLocaleLowerCase().includes(query));
+  });
+  $('message').textContent = matching.length
+    ? text(`${matching.length} items · Read bilingual descriptions, listen to recordings, or save to your wordbook.`, `共 ${matching.length} 件物品 · 查看双语说明、听发音或收藏到词本。`)
+    : text('No matching items found.', '未找到匹配的物品，请更换搜索词或筛选条件。');
+  const filters = $('item-filters');
+  filters.replaceChildren();
+  const itemCats = [
+    { key: 'all', label: text(`All (${allItems.length})`, `全部物品 (${allItems.length})`) },
+    { key: 'active', label: text('⚡ Active Items', '⚡ 主动技能物品') },
+    { key: 'early', label: text('🌱 Early (<2000g)', '🌱 基础/过渡 (<2000g)') },
+    { key: 'core', label: text('👑 Core (≥2000g)', '👑 核心大件 (≥2000g)') },
+  ];
+  for (const cat of itemCats) {
+    const btn = node('button', cat.label, 'attr-pill');
+    btn.setAttribute('aria-pressed', String(itemFilter === cat.key));
+    btn.onclick = () => { itemFilter = cat.key; limit = 24; render(); };
+    filters.append(btn);
+  }
+  const list = $('item-list');
+  list.replaceChildren();
+  for (const item of matching.slice(0, limit)) {
+    list.append(buildLessonCard(item, () => { stats(); renderItemBrowser(); }));
+  }
+  $('more').hidden = matching.length <= limit;
+}
 function render() {
   player.stop();
-  stats();
-  for (const [id, m] of [['heroes-tab', 'heroes'], ['phrases-tab', 'phrases'], ['browse', 'browse'], ['saved', 'saved'], ['quiz', 'quiz']]) {
+  syncMasteryActive();
+  for (const [id, m] of [['heroes-tab', 'heroes'], ['items-tab', 'items'], ['phrases-tab', 'phrases'], ['browse', 'browse'], ['saved', 'saved'], ['quiz', 'quiz']]) {
     $(id).setAttribute('aria-pressed', String(mode === m));
   }
   const selectedHero = mode === 'heroes' && selectedHeroId
@@ -312,42 +396,41 @@ function render() {
     : null;
   $('hero-browser').hidden = mode !== 'heroes' || Boolean(selectedHero);
   $('hero-detail').hidden = !selectedHero;
+  $('item-browser').hidden = mode !== 'items';
   $('spoken-browser').hidden = mode !== 'phrases';
-  $('library').hidden = mode === 'quiz' || mode === 'heroes' || mode === 'phrases';
-  $('study-setup').hidden = mode !== 'quiz';
+  $('library').hidden = mode !== 'browse' && mode !== 'saved';
+  const quizCompleted = mode === 'quiz' && Boolean(study.active?.completedAt) && !(feedbackIndex !== null && study.active.answers[feedbackIndex]);
+  $('study-setup').hidden = mode !== 'quiz' || quizCompleted;
   $('practice-saved').hidden = mode !== 'saved';
   $('practice').hidden = true; $('session-summary').hidden = true;
+  const tools = $('tools');
   const kindLabel = $('kind').closest('label');
   const dirLabel = $('direction').closest('label');
-  if (kindLabel) kindLabel.hidden = mode === 'heroes' || mode === 'phrases';
-  if (dirLabel) dirLabel.hidden = mode === 'heroes' || mode === 'phrases';
-  const active = mode === 'quiz' && study.active && !study.active.completedAt;
-  for (const id of ['search', 'kind', 'direction', 'session-size', 'session-scope']) $(id).disabled = Boolean(active);
-  if (mode === 'quiz') { $('message').textContent = ''; renderStudy(); return; }
+  const activeQuiz = mode === 'quiz' && study.active && !study.active.completedAt;
+  const hideTools = mode === 'quiz' && Boolean(study.active);
+  if (tools) {
+    tools.hidden = hideTools;
+    tools.dataset.layout = (mode === 'heroes' || mode === 'items' || mode === 'phrases') ? 'search-only'
+      : (mode === 'browse' || mode === 'saved') ? 'search-kind'
+      : 'quiz';
+  }
+  if (kindLabel) kindLabel.hidden = mode === 'heroes' || mode === 'items' || mode === 'phrases';
+  if (dirLabel) dirLabel.hidden = mode !== 'quiz';
+  for (const id of ['search', 'kind', 'direction', 'session-size', 'session-scope']) $(id).disabled = Boolean(activeQuiz);
+  if (mode === 'quiz') { $('message').textContent = ''; $('more').hidden = true; renderStudy(); return; }
   if (mode === 'heroes') {
+    $('more').hidden = true;
     if (selectedHero) renderHeroDetail(selectedHero);
     else renderHeroBrowser();
     return;
   }
-  if (mode === 'phrases') { renderSpokenBrowser(); return; }
+  if (mode === 'items') { renderItemBrowser(); return; }
+  if (mode === 'phrases') { $('more').hidden = true; renderSpokenBrowser(); return; }
   const rows = selection();
   $('message').textContent = rows.length ? text(`${rows.length} lessons · Read, listen, then save a word to practice.`, `${rows.length} 条课程 · 阅读、听发音、收藏后练习。`) : text('No lessons found. Try another topic or save some words.', '暂无课程，请更换筛选条件或先收藏词条。');
   $('lessons').replaceChildren();
   for (const lesson of rows.slice(0, limit)) {
-    const card = node('article', '', 'lesson');
-    const topicText = lesson.kind === 'item' && lesson.mechanics?.item_cost
-      ? `${labels[lesson.kind]} · 🪙 ${lesson.mechanics.item_cost}g`
-      : labels[lesson.kind];
-    card.append(node('span', topicText, 'topic'));
-    if (lesson.parent) card.append(node('p', lesson.parent, 'parent'));
-    card.append(node('h2', lesson.en), node('p', lesson.zh, 'zh'));
-    if (lesson.descriptionEn) card.append(node('p', lesson.descriptionEn, 'description'));
-    const translation = node('details', '', 'translation');
-    translation.append(node('summary', text('Chinese explanation', '中文说明')), node('p', lesson.descriptionZh || lesson.zh, 'description'));
-    card.append(translation);
-    const actions = node('div', '', 'actions');
-    actions.append(audioButton(lesson), saveButton(lesson, render));
-    card.append(actions); $('lessons').append(card);
+    $('lessons').append(buildLessonCard(lesson, () => { stats(); render(); }));
   }
   $('more').hidden = rows.length <= limit;
 }
@@ -456,9 +539,15 @@ async function beginSession() {
   } catch (error) { $('study-status').textContent = error.message; }
   finally { starting = false; $('start-session').disabled = false; $('new-session').disabled = false; }
 }
-for (const [id, m] of [['heroes-tab', 'heroes'], ['phrases-tab', 'phrases'], ['browse', 'browse'], ['saved', 'saved'], ['quiz', 'quiz']]) $(id).onclick = () => {
+for (const [id, m] of [['heroes-tab', 'heroes'], ['items-tab', 'items'], ['phrases-tab', 'phrases'], ['browse', 'browse'], ['saved', 'saved'], ['quiz', 'quiz']]) $(id).onclick = () => {
   player.stop();
-  if (m === 'quiz') enterPractice(); else { if (m === 'heroes' && mode === 'heroes') selectedHeroId = null; mode = m; limit = 24; render(); }
+  if (m === 'quiz') enterPractice();
+  else {
+    if (m === 'heroes' && mode === 'heroes') selectedHeroId = null;
+    if (m === 'saved' && mode !== 'saved') $('kind').value = 'all';
+    if (m === 'browse' && mode !== 'browse') $('kind').value = 'all';
+    mode = m; limit = 24; render();
+  }
 };
 $('hero-back').onclick = () => { player.stop(); selectedHeroId = null; render(); };
 for (const id of ['search', 'kind', 'direction']) $(id).addEventListener(id === 'search' ? 'input' : 'change', () => { player.stop(); if (id === 'search') selectedHeroId = null; limit = 24; render(); });
@@ -477,55 +566,45 @@ $('refresh').onclick = async () => {
   } catch (error) { $('update-status').textContent = text('Update failed; offline lessons remain available. ', '更新失败，仍可使用离线课程。') + error.message; }
   finally { $('refresh').disabled = false; }
 };
-let voiceBarLines = [], voiceDraft = '';
-function renderVoiceTranscript() {
-  const box = $('voice-bar-transcript');
-  if (!box) return;
-  box.replaceChildren();
-  const entries = voiceDraft ? [...voiceBarLines, { who: text('Coach', '教练'), text: voiceDraft }] : voiceBarLines;
-  for (const item of entries.slice(-4)) {
-    const p = node('p', '', 'voice-line');
-    p.append(node('strong', `${item.who}: `), document.createTextNode(item.text));
-    box.append(p);
-  }
+function setVoiceBarActive(active) {
+  $('voice-bar-stop').hidden = !active;
+  $('voice-bar-dismiss').hidden = active;
 }
 function startVoiceBar(topic) {
-  voiceBarLines = []; voiceDraft = '';
   $('voice-practice-bar').hidden = false;
   $('voice-bar-topic').textContent = `🎙️ ${topic}`;
   $('voice-bar-status').textContent = text('Connecting…', '正在连接语音…');
   $('voice-bar-stop').textContent = text('■ Stop Voice', '■ 停止语音');
-  renderVoiceTranscript();
+  setVoiceBarActive(true);
   $('voice-practice-bar').scrollIntoView({ block: 'nearest' });
 }
 $('voice-bar-stop').onclick = async () => {
   await api.stopVoice?.();
   $('voice-bar-status').textContent = text('Stopped', '已停止');
+  setVoiceBarActive(false);
+};
+$('voice-bar-dismiss').onclick = () => {
+  $('voice-practice-bar').hidden = true;
 };
 api.onVoiceStatus?.((data) => {
   if ($('voice-practice-bar').hidden && data?.status === 'disconnected') return;
   $('voice-practice-bar').hidden = false;
   const map = {
-    connecting: text('Connecting…', '正在连接…'),
+    connecting: text('Connecting…', '正在连接语音…'),
     connected: text('Listening… Speak English now', '已连接 · 请开口说英语'),
     speaking: text('Coach speaking…', '教练正在回复…'),
     disconnected: text('Disconnected', '已断开'),
     error: data?.error || text('Voice error', '语音出错'),
   };
   $('voice-bar-status').textContent = map[data?.status] || data?.provider || data?.status || '';
+  setVoiceBarActive(!['disconnected', 'error'].includes(data?.status));
 });
-api.onVoiceEvent?.(({ channel, data }) => {
-  if (channel === 'voice:user-final' && data?.text) {
-    voiceBarLines.push({ who: text('You', '你'), text: data.text });
-    renderVoiceTranscript();
-  } else if (channel === 'voice:text-delta' && data?.delta) {
-    voiceDraft += data.delta;
-    renderVoiceTranscript();
+api.onVoiceEvent?.(({ channel }) => {
+  if ($('voice-practice-bar').hidden) return;
+  if (channel === 'voice:text-delta') {
+    $('voice-bar-status').textContent = text('Coach speaking…', '教练正在回复…');
   } else if (channel === 'voice:complete') {
-    const finalText = data?.text || voiceDraft;
-    if (finalText) voiceBarLines.push({ who: text('Coach', '教练'), text: finalText });
-    voiceDraft = '';
-    renderVoiceTranscript();
+    $('voice-bar-status').textContent = text('Listening… Speak English now', '已连接 · 请开口说英语');
   }
 });
 api.onProgress(({ done, total }) => { $('update-status').textContent = text(`Updating ${done}/${total} heroes and items…`, `更新英雄与物品 ${done}/${total}…`); });
