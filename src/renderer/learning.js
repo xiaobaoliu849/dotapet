@@ -66,7 +66,15 @@ function itemIconNode(item) {
   img.alt = item.en;
   img.loading = 'lazy';
   img.className = 'item-icon';
-  img.onerror = () => { wrap.remove(); };
+  let retriedMirror = false;
+  img.onerror = () => {
+    if (!retriedMirror && img.src.includes('cdn.cloudflare.steamstatic.com')) {
+      retriedMirror = true;
+      img.src = img.src.replace('cdn.cloudflare.steamstatic.com', 'cdn.steamstatic.com');
+      return;
+    }
+    wrap.remove();
+  };
   wrap.append(img);
   return wrap;
 }

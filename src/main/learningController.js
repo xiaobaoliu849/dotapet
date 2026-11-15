@@ -16,6 +16,19 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
   const stateFile = path.join(dataDirectory, 'learning-state.json');
   const read = (file, fallback) => { try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch { return fallback; } };
   const bundled = read(path.join(rendererDirectory, '../learning/catalog.json'), null);
+  const bundledImages = new Map(
+    (bundled?.lessons || [])
+      .filter(lesson => lesson?.id && lesson?.imageUrl)
+      .map(lesson => [lesson.id, lesson.imageUrl]),
+  );
+  const withBundledImages = data => (!data?.lessons ? data : {
+    ...data,
+    lessons: data.lessons.map(lesson => (
+      lesson?.imageUrl || !bundledImages.has(lesson?.id)
+        ? lesson
+        : { ...lesson, imageUrl: bundledImages.get(lesson.id) }
+    )),
+  });
   const heroConfig = read(path.join(rendererDirectory, '../../heroes.config.json'), { heroes: {} });
   const heroMeta = Object.fromEntries(
     Object.values(heroConfig.heroes || {})
@@ -36,8 +49,10 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
   const baseline = read(path.join(rendererDirectory, '../learning/audio-baseline.json'), { entries: {} });
   const audioBaseline = { entries: Object.fromEntries(Object.entries(baseline.entries).map(([id, entry]) => [id, { candidateSpeech: entry.candidateSpeech, evidence: entry.evidence }])) };
   const cached = read(catalogFile, null);
-  let catalog = cached?.schema === 1 && Array.isArray(cached.lessons)
-    && Date.parse(cached.fetchedAt) > Date.parse(bundled.fetchedAt) ? cached : bundled;
+  let catalog = withBundledImages(
+    cached?.schema === 1 && Array.isArray(cached.lessons)
+      && Date.parse(cached.fetchedAt) > Date.parse(bundled.fetchedAt) ? cached : bundled,
+  );
   let legacyProgress = read(progressFile, {});
   if (!legacyProgress || typeof legacyProgress !== 'object' || Array.isArray(legacyProgress)) legacyProgress = {};
   const saved = read(stateFile, null);
@@ -106,7 +121,7 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
     if (updating) throw new Error('An update is already running');
     updating = true;
     try {
-      const fresh = await refreshCatalog({ onProgress: state => { const contents = hub.contents('learning'); if (contents) contents.send('learning:update-progress', state); } });
+      const fresh = withBundledImages(await refreshCatalog({ onProgress: state => { const contents = hub.contents('learning'); if (contents) contents.send('learning:update-progress', state); } }));
       fresh.lessons.push(...catalog.lessons.filter(r => r.kind === 'phrase'));
       const changes = diffCatalog(catalog, fresh);
       write(path.join(dataDirectory, 'learning-catalog.previous.json'), catalog);
