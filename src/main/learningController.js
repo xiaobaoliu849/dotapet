@@ -15,6 +15,21 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
   const stateFile = path.join(dataDirectory, 'learning-state.json');
   const read = (file, fallback) => { try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch { return fallback; } };
   const bundled = read(path.join(rendererDirectory, '../learning/catalog.json'), null);
+  const heroConfig = read(path.join(rendererDirectory, '../../heroes.config.json'), { heroes: {} });
+  const heroMeta = Object.fromEntries(
+    Object.values(heroConfig.heroes || {})
+      .filter(h => h?.nameEn)
+      .map(h => [
+        h.nameEn.toLowerCase(),
+        {
+          slug: h.id,
+          attribute: (h.attribute === 'all' || h.attribute === 'uni') ? 'uni' : (h.attribute || 'str'),
+          complexity: h.complexity || 1,
+          attackType: h.attackType || '',
+          themeColor: h.themeColor || '',
+        },
+      ]),
+  );
   const audio = read(path.join(rendererDirectory, '../learning/audio-manifest.json'), { entries: {}, missing: [] });
   const baseline = read(path.join(rendererDirectory, '../learning/audio-baseline.json'), { entries: {} });
   const audioBaseline = { entries: Object.fromEntries(Object.entries(baseline.entries).map(([id, entry]) => [id, { candidateSpeech: entry.candidateSpeech, evidence: entry.evidence }])) };
@@ -36,7 +51,7 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
     if (!trusted(event)) return { ok: false, error: 'Untrusted learning page' };
     try { return { ok: true, ...await fn(...args) }; } catch (error) { return { ok: false, error: error.message }; }
   };
-  ipcMain.handle('learning:load', respond(() => ({ catalog, audio, audioBaseline, ...snapshot() })));
+  ipcMain.handle('learning:load', respond(() => ({ catalog, heroMeta, audio, audioBaseline, ...snapshot() })));
   ipcMain.handle('learning:progress', respond((id, action, value) => {
     if (!catalog.lessons.some(r => r.id === id)) throw new Error('Unknown lesson');
     let next;

@@ -10,7 +10,8 @@ const text = (en, zh) => chinese ? zh : en;
 const labels = { hero: text('Hero', '英雄'), ability: text('Hero ability', '英雄技能'), item: text('Item', '物品'), phrase: text('Team expression', '团队表达') };
 const translations = {
   heading: '玩懂刀塔，开口说英语。', intro: '每天一点刀塔英语，桌面小伙伴一直陪着你。', 'total-label': '条双语课程', 'saved-label': '个收藏词条', 'due-label': '条待复习', 'accuracy-label': '答题正确率',
-  browse: '探索课程', saved: '我的词本', quiz: '练习测验', 'search-label': '查找课程', 'kind-label': '学习主题', 'direction-label': '练习方向', next: '下一题 →', more: '加载更多',
+  'heroes-tab': '英雄图鉴', browse: '探索课程', saved: '我的词本', quiz: '练习测验', 'search-label': '查找课程', 'kind-label': '学习主题', 'direction-label': '练习方向', next: '下一题 →', more: '加载更多',
+  'hero-back': '← 返回四属性英雄墙', 'hero-abilities-heading': '英雄技能（中英双语对照）',
   'study-heading': '每日学习小课', 'study-help': '先复习到期的错题和旧词，再学习新词。', 'size-label': '每轮课程数量', 'scope-label': '练习词库', 'start-session': '开始学习 →', 'practice-saved': '练习我的收藏词条 →', 'summary-heading': '本轮学习完成', 'mistakes-heading': '需要再看看的词条', 'new-session': '安排下一轮 →',
   'audio-source': '音频使用你的双语词典中已生成的 AI 录音，按原速播放。历史录音可能与当前课程文字不同；缺少录音的词条会明确标注。',
   'sources-heading': '让知识保持更新', freshness: '技能说明是有日期的数据快照。数值和机制请以官方更新日志为准。', refresh: '从 Valve 更新课程', patches: '官方更新日志 ↗',
@@ -23,10 +24,20 @@ if (chinese) {
   [...$('session-scope').options].forEach((option, index) => { option.textContent = ['符合筛选的全部课程', '仅收藏词条'][index]; });
   $('search').placeholder = '搜索英文 / 中文 / 英雄名…';
 }
-let catalog, progress = {}, study = { preferences: STUDY_DEFAULTS, active: null, history: [] }, mode = 'browse', limit = 24;
+let catalog, heroMeta = {}, progress = {}, study = { preferences: STUDY_DEFAULTS, active: null, history: [] }, mode = 'heroes', limit = 24;
+let selectedHeroId = null, attrFilter = 'all';
 let audioManifest = { entries: {} };
 let audioBaseline = { entries: {} };
 let pendingAnswer = false, starting = false, feedbackIndex = null;
+const ATTR_GROUPS = [
+  { key: 'uni', en: 'Universal', zh: '全才', icon: '🟡' },
+  { key: 'int', en: 'Intelligence', zh: '智力', icon: '🔵' },
+  { key: 'str', en: 'Strength', zh: '力量', icon: '🔴' },
+  { key: 'agi', en: 'Agility', zh: '敏捷', icon: '🟢' },
+];
+const heroAttr = lesson => heroMeta[lesson.en.toLowerCase()]?.attribute || 'str';
+const heroInitials = en => en.split(/[\s-]+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('');
+const heroAbilities = hero => catalog.lessons.filter(l => l.kind === 'ability' && l.parent === `${hero.en} · ${hero.zh}`);
 const node = (tag, value, className) => { const element = document.createElement(tag); element.textContent = value; if (className) element.className = className; return element; };
 const due = r => !progress[r.id]?.due || progress[r.id].due <= Date.now();
 function selection() { return filterLessons(catalog.lessons, { kind: $('kind').value, search: $('search').value, saved: mode === 'saved', progress }); }
@@ -70,16 +81,141 @@ function audioButton(lesson) {
   }
   return button;
 }
+function saveButton(lesson, onUpdated) {
+  const save = node('button', progress[lesson.id]?.saved ? text('★ Saved', '★ 已收藏') : text('☆ Save word', '☆ 收藏'));
+  save.setAttribute('aria-pressed', String(Boolean(progress[lesson.id]?.saved)));
+  save.onclick = async event => {
+    event?.stopPropagation?.();
+    save.disabled = true;
+    try { await persist(lesson.id, 'saved', !progress[lesson.id]?.saved); onUpdated(); }
+    catch (error) { $('message').textContent = error.message; save.disabled = false; }
+  };
+  return save;
+}
+function renderHeroBrowser() {
+  const query = $('search').value.trim().toLocaleLowerCase();
+  const allHeroes = catalog.lessons.filter(l => l.kind === 'hero');
+  const matching = allHeroes.filter(h => {
+    if (attrFilter !== 'all' && heroAttr(h) !== attrFilter) return false;
+    if (!query) return true;
+    return [h.en, h.zh, h.descriptionEn, h.descriptionZh].some(s => (s || '').toLocaleLowerCase().includes(query))
+      || heroAbilities(h).some(a => [a.en, a.zh].some(s => (s || '').toLocaleLowerCase().includes(query)));
+  });
+  $('message').textContent = matching.length
+    ? text(`${matching.length} heroes across 4 attributes · Click any hero to view bilingual abilities.`, `共 ${matching.length} 位英雄 · 点击任意英雄查看中英双语技能与发音。`)
+    : text('No matching heroes found.', '未找到匹配的英雄，请更换搜索词。');
+  const filters = $('attr-filters');
+  filters.replaceChildren();
+  const allBtn = node('button', text(`All (${allHeroes.length})`, `全部 (${allHeroes.length})`), 'attr-pill');
+  allBtn.setAttribute('aria-pressed', String(attrFilter === 'all'));
+  allBtn.onclick = () => { attrFilter = 'all'; render(); };
+  filters.append(allBtn);
+  for (const group of ATTR_GROUPS) {
+    const count = allHeroes.filter(h => heroAttr(h) === group.key).length;
+    const btn = node('button', `${group.icon} ${text(group.en, group.zh)} (${count})`, `attr-pill attr-${group.key}`);
+    btn.setAttribute('aria-pressed', String(attrFilter === group.key));
+    btn.onclick = () => { attrFilter = group.key; render(); };
+    filters.append(btn);
+  }
+  const container = $('hero-categories');
+  container.replaceChildren();
+  for (const group of ATTR_GROUPS) {
+    const groupHeroes = matching.filter(h => heroAttr(h) === group.key);
+    if (!groupHeroes.length) continue;
+    const section = node('section', '', 'hero-category-section');
+    const head = node('div', '', 'hero-category-head');
+    head.append(node('h2', `${group.icon} ${group.en} · ${group.zh}`), node('span', `${groupHeroes.length}`, 'hero-category-count'));
+    const grid = node('div', '', 'hero-grid');
+    for (const hero of groupHeroes) {
+      const abilitiesCount = heroAbilities(hero).length;
+      const tile = node('button', '', `hero-tile attr-${group.key}`);
+      tile.type = 'button';
+      const crest = node('span', heroInitials(hero.en), `hero-crest attr-${group.key}`);
+      const info = node('span', '', 'hero-tile-info');
+      info.append(node('strong', hero.en), node('span', hero.zh, 'hero-tile-zh'), node('span', text(`${abilitiesCount} abilities`, `${abilitiesCount} 个技能`), 'hero-tile-meta'));
+      tile.append(crest, info);
+      if (progress[hero.id]?.saved) tile.append(node('span', '★', 'hero-tile-saved'));
+      tile.onclick = () => { selectedHeroId = hero.id; render(); $('hero-detail').scrollIntoView({ block: 'start' }); };
+      grid.append(tile);
+    }
+    section.append(head, grid);
+    container.append(section);
+  }
+}
+function renderHeroDetail(hero) {
+  const attrKey = heroAttr(hero);
+  const group = ATTR_GROUPS.find(g => g.key === attrKey) || ATTR_GROUPS[2];
+  const abilities = heroAbilities(hero);
+  $('message').textContent = text(`${hero.en} (${hero.zh}) · ${abilities.length} bilingual abilities`, `${hero.zh} (${hero.en}) · 共 ${abilities.length} 个双语技能`);
+  const header = $('hero-detail-header');
+  header.replaceChildren();
+  const topRow = node('div', '', 'hero-detail-top');
+  const crest = node('div', heroInitials(hero.en), `hero-crest hero-crest-lg attr-${attrKey}`);
+  const titleWrap = node('div', '', 'hero-detail-title');
+  titleWrap.append(node('span', `${group.icon} ${group.en} · ${group.zh}`, `topic attr-badge-${attrKey}`), node('h2', `${hero.en} · ${hero.zh}`));
+  topRow.append(crest, titleWrap);
+  header.append(topRow);
+  if (hero.descriptionEn) header.append(node('p', hero.descriptionEn, 'description'));
+  if (hero.descriptionZh) header.append(node('p', hero.descriptionZh, 'description zh-block'));
+  if (hero.biographyEn || hero.biographyZh) {
+    const bio = node('details', '', 'translation');
+    bio.append(node('summary', text('Hero Lore / 英雄背景故事', '英雄背景故事 / Hero Lore')));
+    if (hero.biographyEn) bio.append(node('p', hero.biographyEn, 'description'));
+    if (hero.biographyZh) bio.append(node('p', hero.biographyZh, 'description zh-block'));
+    header.append(bio);
+  }
+  const heroActions = node('div', '', 'actions');
+  heroActions.append(audioButton(hero), saveButton(hero, render));
+  header.append(heroActions);
+
+  const list = $('hero-abilities');
+  list.replaceChildren();
+  for (const ability of abilities) {
+    const card = node('article', '', 'lesson ability-bilingual-card');
+    const cardHead = node('div', '', 'ability-card-head');
+    cardHead.append(node('h4', ability.en), node('span', ability.zh, 'ability-zh-name'));
+    const pills = node('div', '', 'ability-pills');
+    const cds = ability.mechanics?.cooldowns?.filter(n => n > 0);
+    const manas = ability.mechanics?.mana_costs?.filter(n => n > 0);
+    if (cds?.length) pills.append(node('span', `CD: ${[...new Set(cds)].join(' / ')}s`, 'mech-pill'));
+    if (manas?.length) pills.append(node('span', `Mana: ${[...new Set(manas)].join(' / ')}`, 'mech-pill'));
+    card.append(cardHead);
+    if (pills.childElementCount) card.append(pills);
+    if (ability.descriptionEn) card.append(node('p', ability.descriptionEn, 'description'));
+    if (ability.descriptionZh) card.append(node('p', ability.descriptionZh, 'description zh-block'));
+    const actions = node('div', '', 'actions');
+    actions.append(audioButton(ability), saveButton(ability, render));
+    card.append(actions);
+    list.append(card);
+  }
+}
 function render() {
   player.stop();
   stats();
-  for (const id of ['browse', 'saved', 'quiz']) $(id).setAttribute('aria-pressed', String(mode === id));
-  $('library').hidden = mode === 'quiz'; $('study-setup').hidden = mode !== 'quiz';
+  for (const [id, m] of [['heroes-tab', 'heroes'], ['browse', 'browse'], ['saved', 'saved'], ['quiz', 'quiz']]) {
+    $(id).setAttribute('aria-pressed', String(mode === m));
+  }
+  const selectedHero = mode === 'heroes' && selectedHeroId
+    ? catalog.lessons.find(l => l.kind === 'hero' && l.id === selectedHeroId)
+    : null;
+  $('hero-browser').hidden = mode !== 'heroes' || Boolean(selectedHero);
+  $('hero-detail').hidden = !selectedHero;
+  $('library').hidden = mode === 'quiz' || mode === 'heroes';
+  $('study-setup').hidden = mode !== 'quiz';
   $('practice-saved').hidden = mode !== 'saved';
   $('practice').hidden = true; $('session-summary').hidden = true;
+  const kindLabel = $('kind').closest('label');
+  const dirLabel = $('direction').closest('label');
+  if (kindLabel) kindLabel.hidden = mode === 'heroes';
+  if (dirLabel) dirLabel.hidden = mode === 'heroes';
   const active = mode === 'quiz' && study.active && !study.active.completedAt;
   for (const id of ['search', 'kind', 'direction', 'session-size', 'session-scope']) $(id).disabled = Boolean(active);
   if (mode === 'quiz') { $('message').textContent = ''; renderStudy(); return; }
+  if (mode === 'heroes') {
+    if (selectedHero) renderHeroDetail(selectedHero);
+    else renderHeroBrowser();
+    return;
+  }
   const rows = selection();
   $('message').textContent = rows.length ? text(`${rows.length} lessons · Read, listen, then save a word to practice.`, `${rows.length} 条课程 · 阅读、听发音、收藏后练习。`) : text('No lessons found. Try another topic or save some words.', '暂无课程，请更换筛选条件或先收藏词条。');
   $('lessons').replaceChildren();
@@ -92,10 +228,9 @@ function render() {
     const translation = node('details', '', 'translation');
     translation.append(node('summary', text('Chinese explanation', '中文说明')), node('p', lesson.descriptionZh || lesson.zh, 'description'));
     card.append(translation);
-    const actions = node('div', '', 'actions'), listen = audioButton(lesson), save = node('button', progress[lesson.id]?.saved ? text('★ Saved', '★ 已收藏') : text('☆ Save word', '☆ 收藏'));
-    save.setAttribute('aria-pressed', String(Boolean(progress[lesson.id]?.saved)));
-    save.onclick = async () => { save.disabled = true; try { await persist(lesson.id, 'saved', !progress[lesson.id]?.saved); render(); } catch (error) { $('message').textContent = error.message; save.disabled = false; } };
-    actions.append(listen, save); card.append(actions); $('lessons').append(card);
+    const actions = node('div', '', 'actions');
+    actions.append(audioButton(lesson), saveButton(lesson, render));
+    card.append(actions); $('lessons').append(card);
   }
   $('more').hidden = rows.length <= limit;
 }
@@ -204,11 +339,12 @@ async function beginSession() {
   } catch (error) { $('study-status').textContent = error.message; }
   finally { starting = false; $('start-session').disabled = false; $('new-session').disabled = false; }
 }
-for (const id of ['browse', 'saved', 'quiz']) $(id).onclick = () => {
+for (const [id, m] of [['heroes-tab', 'heroes'], ['browse', 'browse'], ['saved', 'saved'], ['quiz', 'quiz']]) $(id).onclick = () => {
   player.stop();
-  if (id === 'quiz') enterPractice(); else { mode = id; limit = 24; render(); }
+  if (m === 'quiz') enterPractice(); else { if (m === 'heroes' && mode === 'heroes') selectedHeroId = null; mode = m; limit = 24; render(); }
 };
-for (const id of ['search', 'kind', 'direction']) $(id).addEventListener(id === 'search' ? 'input' : 'change', () => { player.stop(); limit = 24; render(); });
+$('hero-back').onclick = () => { player.stop(); selectedHeroId = null; render(); };
+for (const id of ['search', 'kind', 'direction']) $(id).addEventListener(id === 'search' ? 'input' : 'change', () => { player.stop(); if (id === 'search') selectedHeroId = null; limit = 24; render(); });
 $('practice-saved').onclick = () => { enterPractice('saved'); };
 $('start-session').onclick = beginSession;
 $('new-session').onclick = beginSession;
@@ -229,5 +365,5 @@ api.onHidden(() => player.stop());
 window.addEventListener('pagehide', () => player.stop());
 try {
   const response = await api.load(); if (!response.ok) throw new Error(response.error);
-  catalog = response.catalog; audioManifest = response.audio; audioBaseline = response.audioBaseline; receive(response); $('session-size').value = study.preferences.size; $('session-scope').value = study.preferences.scope; render();
+  catalog = response.catalog; heroMeta = response.heroMeta || {}; audioManifest = response.audio; audioBaseline = response.audioBaseline; receive(response); $('session-size').value = study.preferences.size; $('session-scope').value = study.preferences.scope; render();
 } catch (error) { $('message').textContent = error.message; for (const button of document.querySelectorAll('button')) button.disabled = true; }
