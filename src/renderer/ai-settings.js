@@ -40,7 +40,7 @@ const simpleVoices = {
   doubao: ['zh_female_xiaohe_jupiter_bigtts', 'zh_female_vv_jupiter_bigtts', 'zh_male_yunzhou_jupiter_bigtts'],
   google: ['Puck', 'Kore', 'Aoede'],
   moss: [
-    '29ab8244-1319-40d4-b508-2b58bb5e2d81', // Amber · 原生英语
+    'ad8f9ced-3276-42f1-a2ca-a686c7d5e01d', // Chenlin · 原生英语
     '42161c92-b6ad-4d12-a51e-48506ecfad82', // 豆包 · 原生中文
   ],
 };
@@ -51,13 +51,13 @@ const voiceNames = {
   Puck: 'Puck · 活泼男声',
   Kore: 'Kore · 干练女声',
   Aoede: 'Aoede · 轻快女声',
-  '29ab8244-1319-40d4-b508-2b58bb5e2d81': 'Amber · 原生英语',
+  'ad8f9ced-3276-42f1-a2ca-a686c7d5e01d': 'Chenlin · 原生英语',
   '42161c92-b6ad-4d12-a51e-48506ecfad82': '豆包 · 原生中文',
   '6c3152b1-1d4f-4e49-ade3-09f447712fec': '暖暖 · 温柔中文',
   '6cc93520-3207-4f7a-bca9-2d560b9c306b': '沐沐 · 自然男声',
+  '29ab8244-1319-40d4-b508-2b58bb5e2d81': 'Amber · 原生英语',
   '0f2815fb-0d4c-4cee-ac8c-0bb916af7b28': '女7 · 美式英语',
   'b4b5f9c4-2829-4cfd-96f2-7fddaf8450bb': '自定义2 · 英语女声',
-  'ad8f9ced-3276-42f1-a2ca-a686c7d5e01d': 'Chenlin · 英语女声',
   default: '默认中文音色',
   zh_female_xiaohe_jupiter_bigtts: '小何 · 甜美台腔',
   zh_female_vv_jupiter_bigtts: 'VV · 活泼女声',

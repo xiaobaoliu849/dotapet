@@ -144,13 +144,13 @@ test('MOSS-Live supports native Chinese and UK English voices and mid-session vo
     assert.equal(firstChange?.voice_name, DEFAULT_MOSS_CHINESE_VOICE);
     assert.ok(firstUpdate.session.instructions.includes('原生中文口音要求'));
 
-    // Switch mid-session to Amber (Native UK British English)
-    const amberUkId = '29ab8244-1319-40d4-b508-2b58bb5e2d81';
-    engine.setMossAccent(amberUkId);
+    // Switch mid-session to Chenlin (Native UK British English)
+    const chenlinUkId = 'ad8f9ced-3276-42f1-a2ca-a686c7d5e01d';
+    engine.setMossAccent(chenlinUkId);
     await waitFor(() => conn.jsonMessages.filter(m => m.action === 'session.update').length === 2);
     const secondChange = conn.jsonMessages.filter(m => m.action === 'change_voice')[1];
     const secondUpdate = conn.jsonMessages.filter(m => m.action === 'session.update')[1];
-    assert.equal(secondChange?.voice_name, amberUkId);
+    assert.equal(secondChange?.voice_name, chenlinUkId);
     assert.ok(secondUpdate.session.instructions.includes('native UK English accent'));
   } finally {
     engine.disconnect();
@@ -264,8 +264,8 @@ test('AISettingsStore and engineOptions support MOSS-Live voice UUIDs', () => {
 
     assert.throws(() => store.save({ provider: 'moss', voice: 'not-a-moss-voice' }), /请选择支持的音色/);
 
-    // Verify legacy 'en' / '0f2815fb-0d4c-4cee-ac8c-0bb916af7b28' voice values in existing ai-settings.json migrate cleanly on load
-    for (const legacyVoice of ['en', '0f2815fb-0d4c-4cee-ac8c-0bb916af7b28']) {
+    // Verify legacy 'en' / '0f2815fb-0d4c-4cee-ac8c-0bb916af7b28' / '29ab8244-1319-40d4-b508-2b58bb5e2d81' voice values migrate cleanly to Chenlin
+    for (const legacyVoice of ['en', '0f2815fb-0d4c-4cee-ac8c-0bb916af7b28', '29ab8244-1319-40d4-b508-2b58bb5e2d81']) {
       const rawVault = JSON.parse(fs.readFileSync(filePath, 'utf8'));
       rawVault.providers.moss.voice = legacyVoice;
       fs.writeFileSync(filePath, JSON.stringify(rawVault));

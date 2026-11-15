@@ -87,7 +87,7 @@ export class AISettingsStore {
       if (parsed.version !== 1 || !parsed.providers || typeof parsed.providers !== 'object' || Array.isArray(parsed.providers)) throw new Error('invalid settings');
       providerDefinition(parsed.selectedProvider);
       if (!['qwen', 'deepseek'].includes(parsed.translationProvider)) throw new Error('invalid translator');
-      if (parsed.providers.moss?.voice === 'en' || parsed.providers.moss?.voice === '0f2815fb-0d4c-4cee-ac8c-0bb916af7b28') {
+      if (['en', '0f2815fb-0d4c-4cee-ac8c-0bb916af7b28', '29ab8244-1319-40d4-b508-2b58bb5e2d81'].includes(parsed.providers.moss?.voice)) {
         parsed.providers.moss.voice = DEFAULT_MOSS_ENGLISH_VOICE;
       } else if (parsed.providers.moss?.voice === 'zh') {
         parsed.providers.moss.voice = DEFAULT_MOSS_CHINESE_VOICE;
