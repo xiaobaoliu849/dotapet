@@ -83,3 +83,9 @@
 .voice-bar-hint{margin:6px 0 0;font-size:11px;line-height:1.4;color:#586d53}
 footer{margin-bottom:76px}
 .item-cost-pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:#fef6df;color:#8a6116;border:1px solid #ebd79a;margin-left:8px;vertical-align:middle}
+.item-card-head{display:flex;align-items:center;gap:12px;margin:10px 0 14px}
+.item-card-title{min-width:0}
+.item-card-head h2{margin:0 0 4px}
+.item-card-head .zh{margin:0}
+.item-icon-wrap{flex-shrink:0;width:60px;height:44px;border-radius:8px;overflow:hidden;background:#dce4d2;border:1px solid #c9d4bd}
+.item-icon{width:100%;height:100%;object-fit:cover;display:block}

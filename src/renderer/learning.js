@@ -58,6 +58,18 @@ function heroAvatarNode(hero, large = false) {
   wrap.append(img);
   return wrap;
 }
+function itemIconNode(item) {
+  if (!item?.imageUrl) return null;
+  const wrap = node('span', '', 'item-icon-wrap');
+  const img = document.createElement('img');
+  img.src = item.imageUrl;
+  img.alt = item.en;
+  img.loading = 'lazy';
+  img.className = 'item-icon';
+  img.onerror = () => { wrap.remove(); };
+  wrap.append(img);
+  return wrap;
+}
 const node = (tag, value, className) => { const element = document.createElement(tag); element.textContent = value; if (className) element.className = className; return element; };
 const due = r => !progress[r.id]?.due || progress[r.id].due <= Date.now();
 function selection() { return filterLessons(catalog.lessons, { kind: $('kind').value, search: $('search').value, saved: mode === 'saved', progress }); }
@@ -332,7 +344,16 @@ function buildLessonCard(lesson, onUpdated) {
   }
   card.append(topicWrap);
   if (lesson.parent) card.append(node('p', lesson.parent, 'parent'));
-  card.append(node('h2', lesson.en), node('p', lesson.zh, 'zh'));
+  const icon = lesson.kind === 'item' ? itemIconNode(lesson) : null;
+  if (icon) {
+    const head = node('div', '', 'item-card-head');
+    const titleWrap = node('div', '', 'item-card-title');
+    titleWrap.append(node('h2', lesson.en), node('p', lesson.zh, 'zh'));
+    head.append(icon, titleWrap);
+    card.append(head);
+  } else {
+    card.append(node('h2', lesson.en), node('p', lesson.zh, 'zh'));
+  }
   const cds = lesson.mechanics?.cooldowns?.filter(n => n > 0);
   const manas = lesson.mechanics?.mana_costs?.filter(n => n > 0);
   if (cds?.length || manas?.length) {
