@@ -1,6 +1,7 @@
 /** Who the companion is: the system prompt for each character, and the voice that fits the language. */
 import { personalizeConversationPrompt } from '../conversationPreferences.js';
 import { FREE_CHAT_HERO_IDS, FEMALE_VOICES } from './constants.js';
+import { normalizeMossAccent } from './moss.js';
 
 /** Mixed into CloudVoiceEngine; `this` is the engine. */
 export class PersonaPrompts {
@@ -9,7 +10,13 @@ export class PersonaPrompts {
   }
 
   isEnglishPromptMode(mode) {
-    return (mode === 'en') || (mode === 'auto' && (this.provider === 'cartesia' || this.provider === 'cloud-stream'));
+    if (mode === 'en') return true;
+    if (mode === 'zh') return false;
+    if (this.provider === 'cartesia' || this.provider === 'cloud-stream') return true;
+    if (this.provider === 'moss' || this.provider === 'moss-live') {
+      return normalizeMossAccent(this.mossVoice || this.mossAccent || this.voice) !== 'zh';
+    }
+    return false;
   }
 
   isFreeChatPersona() {

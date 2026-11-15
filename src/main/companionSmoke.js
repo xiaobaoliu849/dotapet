@@ -37,7 +37,7 @@ export async function runCompanionSmoke({
   })()`);
   await settingsPage().executeJavaScript(`(async () => {
     for (let i=0; i<100 && document.getElementById('provider').disabled; i++) await new Promise(resolve=>setTimeout(resolve,40));
-    if(document.querySelectorAll('.provider-option').length !== 4) throw new Error('First launch did not show all four services');
+    if(document.querySelectorAll('.provider-option').length !== 5) throw new Error('First launch did not show all five services');
     if(!document.getElementById('translate-card') || document.getElementById('translate-secret')) throw new Error('First launch should share the Qwen key with translation');
     if(document.getElementById('advanced').open) throw new Error('First launch opened advanced controls');
     const skip=document.getElementById('skip').getBoundingClientRect(), primary=document.getElementById('connect').getBoundingClientRect();
@@ -63,8 +63,8 @@ export async function runCompanionSmoke({
     await waitFor(() => !get('provider').disabled);
     const change = (id, value) => { get(id).value = value; get(id).dispatchEvent(new Event('change')); };
     const type = (id, value) => { get(id).value = value; get(id).dispatchEvent(new Event('input')); };
-    if (get('provider').options.length !== 4 || !window.electronAPI) throw new Error('Four-provider voice setup missing');
-    if (document.querySelectorAll('.provider-option').length !== 4 || get('voice').options.length !== 3) throw new Error('Simple provider or voice choices missing');
+    if (get('provider').options.length !== 5 || !window.electronAPI) throw new Error('Five-provider voice setup missing');
+    if (document.querySelectorAll('.provider-option').length !== 5 || get('voice').options.length !== 3) throw new Error('Simple provider or voice choices missing');
     change('provider', 'qwen');
     if (document.querySelectorAll('#translator-options button').length !== 2 || get('translate-secret')) throw new Error('Translation should reuse the Qwen key without a second box');
     change('provider', 'doubao');
@@ -103,7 +103,7 @@ export async function runCompanionSmoke({
     if (document.documentElement.scrollWidth > viewport) throw new Error('Settings page overflows horizontally');
     const primary = get('connect').getBoundingClientRect();
     if (primary.bottom > innerHeight) throw new Error('Primary setup action requires scrolling');
-    return { providerCount: state.settings.providers.length, visibleVoiceProviders: 4, directFirstSetup: true, encryptedStorage: state.settings.encryptionAvailable };
+    return { providerCount: state.settings.providers.length, visibleVoiceProviders: 5, directFirstSetup: true, encryptedStorage: state.settings.encryptionAvailable };
   })()`);
   // The microphone check and help now live in settings; the old guide window is gone.
   const onboarding = await page.executeJavaScript(`(async () => {

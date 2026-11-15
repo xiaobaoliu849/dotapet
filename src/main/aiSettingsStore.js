@@ -5,6 +5,8 @@ import {
   DEFAULT_DASHSCOPE_REALTIME_MODEL, DEFAULT_DASHSCOPE_REALTIME_VOICE,
   DEFAULT_DOUBAO_DUPLEX_DIALOG_MODEL, DEFAULT_DOUBAO_REALTIME_VOICE, DOUBAO_REALTIME_VOICES,
   DEFAULT_GOOGLE_REALTIME_MODEL, DEFAULT_GOOGLE_LIVE_TRANSLATE_MODEL, GOOGLE_REALTIME_VOICES,
+  DEFAULT_MOSS_REALTIME_MODEL, DEFAULT_MOSS_REALTIME_VOICE, DEFAULT_MOSS_ENGLISH_VOICE,
+  DEFAULT_MOSS_CHINESE_VOICE, MOSS_REALTIME_VOICES,
   DEFAULT_CARTESIA_MODEL, DEFAULT_CARTESIA_VOICE, QWEN_OMNI_38_REALTIME_VOICES,
 } from '../services/cloudVoiceEngine.js';
 
@@ -13,6 +15,7 @@ export const AI_PROVIDERS = [
   { id: 'doubao', label: '火山豆包 / Doubao', model: DEFAULT_DOUBAO_DUPLEX_DIALOG_MODEL, voice: DEFAULT_DOUBAO_REALTIME_VOICE, voices: DOUBAO_REALTIME_VOICES, fields: [{ id: 'apiKey', label: '豆包实时语音 API Key' }, { id: 'websearchKey', label: '豆包联网搜索 API Key（可选）', optional: true }] },
   { id: 'google', label: 'Google 实时对话 / Gemini Live', model: DEFAULT_GOOGLE_REALTIME_MODEL, voice: 'Puck', voices: GOOGLE_REALTIME_VOICES, fields: [{ id: 'apiKey', label: 'Google API Key' }] },
   { id: 'google-translate', label: 'Google 实时翻译 / Live Translate', model: DEFAULT_GOOGLE_LIVE_TRANSLATE_MODEL, voice: '', voices: [], fields: [{ id: 'apiKey', label: 'Google API Key' }] },
+  { id: 'moss', label: 'MOSS-Live 全双工语音 (MOSI)', model: DEFAULT_MOSS_REALTIME_MODEL, voice: DEFAULT_MOSS_REALTIME_VOICE, voices: MOSS_REALTIME_VOICES, fields: [{ id: 'apiKey', label: 'MOSS API Key' }] },
   { id: 'cartesia', label: 'Cartesia + DeepSeek 英语对练', model: DEFAULT_CARTESIA_MODEL, voice: DEFAULT_CARTESIA_VOICE, voices: [], fields: [{ id: 'apiKey', label: 'Cartesia API Key' }, { id: 'llmApiKey', label: 'DeepSeek API Key（对话必需）' }] },
   { id: 'deepseek', label: 'DeepSeek 文字 / 截图翻译', model: 'deepseek-flash', voice: '', voices: [], fields: [{ id: 'apiKey', label: 'DeepSeek API Key' }], textOnly: true },
 ];
@@ -84,6 +87,11 @@ export class AISettingsStore {
       if (parsed.version !== 1 || !parsed.providers || typeof parsed.providers !== 'object' || Array.isArray(parsed.providers)) throw new Error('invalid settings');
       providerDefinition(parsed.selectedProvider);
       if (!['qwen', 'deepseek'].includes(parsed.translationProvider)) throw new Error('invalid translator');
+      if (parsed.providers.moss?.voice === 'en') {
+        parsed.providers.moss.voice = DEFAULT_MOSS_ENGLISH_VOICE;
+      } else if (parsed.providers.moss?.voice === 'zh') {
+        parsed.providers.moss.voice = DEFAULT_MOSS_CHINESE_VOICE;
+      }
       for (const [id, saved] of Object.entries(parsed.providers)) validateProfile(id, saved);
       parsed.conversation = normalizeConversationPreferences(parsed.conversation);
       this.data = parsed;

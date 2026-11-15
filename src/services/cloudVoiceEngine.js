@@ -3,6 +3,7 @@ import EventEmitter from 'events';
 import { normalizeConversationPreferences, conversationGreeting } from './conversationPreferences.js';
 import {
   DEFAULT_DOUBAO_DUPLEX_DIALOG_MODEL, DEFAULT_DOUBAO_REALTIME_VOICE, DEFAULT_GOOGLE_REALTIME_VOICE,
+  DEFAULT_MOSS_REALTIME_MODEL, DEFAULT_MOSS_REALTIME_VOICE, DEFAULT_MOSS_REALTIME_ACCENT,
   PROVIDER_FAMILIES, RESTART_TIMEOUT_MS, loadEnv,
 } from './voice/constants.js';
 import { audioBuffer, detectPrimaryLanguage, mixin } from './voice/shared.js';
@@ -11,6 +12,7 @@ import { CartesiaProvider } from './voice/cartesia.js';
 import { DoubaoProvider } from './voice/doubao.js';
 import { QwenProvider } from './voice/qwen.js';
 import { GoogleLiveProvider } from './voice/googleLive.js';
+import { MossProvider, normalizeMossAccent, resolveMossVoice } from './voice/moss.js';
 
 export {
   DEFAULT_DOUBAO_DUPLEX_ENDPOINT, DEFAULT_DOUBAO_DUPLEX_DIALOG_MODEL,
@@ -22,6 +24,10 @@ export {
   DEFAULT_CARTESIA_VOICE, DEFAULT_CARTESIA_MODEL, GOOGLE_LIVE_WS_URL,
   DEFAULT_GOOGLE_REALTIME_MODEL, DEFAULT_GOOGLE_LIVE_TRANSLATE_MODEL,
   DEFAULT_GOOGLE_REALTIME_VOICE, GOOGLE_REALTIME_VOICES, GOOGLE_LIVE_TRANSLATE_IDLE_MS,
+  DEFAULT_MOSS_REALTIME_WS_URL, DEFAULT_MOSS_REALTIME_MODEL,
+  MOSS_INPUT_SAMPLE_RATE, MOSS_OUTPUT_SAMPLE_RATE, MOSS_INPUT_FRAME_BYTES,
+  DEFAULT_MOSS_ENGLISH_VOICE, DEFAULT_MOSS_CHINESE_VOICE, DEFAULT_MOSS_REALTIME_VOICE,
+  MOSS_VOICE_CATALOG, MOSS_REALTIME_VOICES, MOSS_REALTIME_ACCENTS, DEFAULT_MOSS_REALTIME_ACCENT,
   RESTART_TIMEOUT_MS, GOOGLE_CLIENT_VAD_SILENCE_MS, GOOGLE_CLIENT_VAD_RMS_THRESHOLD, CLOUD_KEYS,
   loadEnv, configureCloudKeys,
 } from './voice/constants.js';
@@ -59,6 +65,12 @@ export class CloudVoiceEngine extends EventEmitter {
     this.autoVoice = options.autoVoice !== false;
     this.googleModel = options.googleModel || null;
     this.googleTranslateModel = options.googleTranslateModel || null;
+    this.mossModel = options.mossModel || DEFAULT_MOSS_REALTIME_MODEL;
+    const initialMossVoice = options.mossVoice || options.mossAccent
+      || (PROVIDER_FAMILIES[this.provider] === 'moss' ? options.voice : null)
+      || DEFAULT_MOSS_REALTIME_VOICE;
+    this.mossVoice = resolveMossVoice(initialMossVoice).voiceId;
+    this.mossAccent = normalizeMossAccent(initialMossVoice);
     this.suppressOutput = false;
     this.activeTurnId = null;
     this.userAcc = '';
@@ -138,13 +150,14 @@ export class CloudVoiceEngine extends EventEmitter {
     this.qwenInterimByItem = {};
     this.qwenSuppressedResponseIds = new Set();
     this.resetGoogleLiveState();
+    this.resetMossState();
   }
 
   setHero(heroConfig) {
     this.currentHero = heroConfig;
     console.log(`[CloudVoiceEngine] Injected Hero Persona: ${heroConfig?.nameZh} (${heroConfig?.id})`);
     if (this.isConnected) {
-      if (this.providerFamily() === 'qwen') {
+      if (this.providerFamily() === 'qwen' || this.providerFamily() === 'moss') {
         this.sendSessionUpdate();
       } else if (['google', 'doubao', 'cartesia'].includes(this.providerFamily())) {
         // Chat sessions bake systemInstruction / instructions into setup or handshake,
@@ -204,6 +217,19 @@ export class CloudVoiceEngine extends EventEmitter {
     if (this.provider === 'google-translate' && (this.isConnected || this.isConnecting)) this.restartSession();
   }
 
+  setMossAccent(voiceOrAccent) {
+    const resolved = resolveMossVoice(voiceOrAccent);
+    const voiceChanged = resolved.voiceId !== this.mossVoice;
+    const accentChanged = resolved.lang !== this.mossAccent;
+    if (!voiceChanged && !accentChanged) return;
+    this.mossVoice = resolved.voiceId;
+    this.mossAccent = resolved.lang;
+    console.log(`[CloudVoiceEngine] MOSS-Live voice/accent set to: ${resolved.voiceId} (${resolved.accent})`);
+    if (this.providerFamily() === 'moss' && this.isConnected) {
+      this.sendMossSessionUpdate({ includeVoice: voiceChanged });
+    }
+  }
+
   connect() {
     loadEnv();
     const family = this.providerFamily();
@@ -211,6 +237,7 @@ export class CloudVoiceEngine extends EventEmitter {
     else if (family === 'doubao') this.connectDoubaoRealtime();
     else if (family === 'qwen') this.connectQwenRealtime();
     else if (family === 'google') this.connectGoogleLive();
+    else if (family === 'moss') this.connectMossRealtime();
     else this.emit('status', { status: 'error', error: '不支持的实时语音服务商。', providerId: this.provider });
   }
 
@@ -219,6 +246,7 @@ export class CloudVoiceEngine extends EventEmitter {
     if (!this.isConnected && !(this.isConnecting && family === 'qwen')) return;
     if (family === 'doubao') this.sendDoubaoSessionCreate();
     else if (family === 'qwen') this.sendQwenSessionUpdate();
+    else if (family === 'moss') this.sendMossSessionUpdate();
   }
 
   /**
@@ -243,6 +271,7 @@ export class CloudVoiceEngine extends EventEmitter {
     if (!this.isConnected) return;
     const family = this.providerFamily();
     if (family === 'cartesia') return this.sendCartesiaAudio(chunk);
+    if (family === 'moss') return this.sendMossAudio(chunk);
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
     const base64Audio = typeof chunk === 'string' ? chunk : audioBuffer(chunk)?.toString('base64') || '';
     if (!base64Audio) return;
@@ -264,7 +293,7 @@ export class CloudVoiceEngine extends EventEmitter {
 
   /** An opening assistant turn, with no fabricated user transcript. */
   async startConversationGreeting() {
-    if (!this.isConnected || this.provider === 'google-translate') return false;
+    if (!this.isConnected || this.provider === 'google-translate' || this.providerFamily() === 'moss') return false;
     const family = this.providerFamily();
     const english = family === 'cartesia';
     const greeting = conversationGreeting(this.conversationPreferences, english ? 'en' : this.conversationLanguage);
@@ -322,6 +351,14 @@ export class CloudVoiceEngine extends EventEmitter {
         status: 'error',
         error: '谷歌实时翻译 (Live Translate) 仅支持实时语音输入，不支持文本输入。',
         provider: '谷歌 Gemini Live',
+      });
+      return;
+    }
+    if (family === 'moss') {
+      this.emit('status', {
+        status: 'error',
+        error: 'MOSS-Live 仅支持实时语音输入，请直接说话继续对话。',
+        provider: 'MOSS-Live 全双工语音',
       });
       return;
     }
@@ -392,6 +429,7 @@ export class CloudVoiceEngine extends EventEmitter {
     }
 
     this.closeCartesia();
+    this.closeMoss();
 
     // Doubao, Qwen and Google share this.ws.
     if (this.ws) {
@@ -408,4 +446,4 @@ export class CloudVoiceEngine extends EventEmitter {
 }
 
 // Provider and persona methods live in ./voice/; they run as the engine's own.
-mixin(CloudVoiceEngine.prototype, PersonaPrompts, CartesiaProvider, DoubaoProvider, QwenProvider, GoogleLiveProvider);
+mixin(CloudVoiceEngine.prototype, PersonaPrompts, CartesiaProvider, DoubaoProvider, QwenProvider, GoogleLiveProvider, MossProvider);

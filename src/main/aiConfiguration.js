@@ -21,6 +21,7 @@ export function applyAIConfiguration(store) {
   const deepseek = profile('deepseek');
   const cartesia = profile('cartesia');
   const doubao = profile('doubao');
+  const moss = profile('moss');
   const region = qwen.region === 'singapore' ? 'ap-southeast-1' : 'cn-beijing';
   const wsHost = qwen.workspaceId ? `${qwen.workspaceId}.${region}.maas.aliyuncs.com`
     : qwen.region === 'singapore' ? 'dashscope-intl.aliyuncs.com' : 'dashscope.aliyuncs.com';
@@ -29,6 +30,7 @@ export function applyAIConfiguration(store) {
     cartesia_llm_key: cartesia.llmApiKey, cartesia_voice_id: cartesia.voice, cartesia_model: cartesia.model,
     doubao_api_key: doubao.apiKey,
     doubao_websearch_key: doubao.websearchKey,
+    moss_api_key: moss.apiKey,
     dashscope_ws_url: `wss://${wsHost}/api-ws/v1/realtime`,
     dashscope_base_url: qwenTextBaseUrl(qwen),
     translation_model: 'qwen-flash',
@@ -41,6 +43,9 @@ export function engineOptions(store, provider) {
   return { provider, apiKey: profile.apiKey, model: profile.model, voice: profile.voice,
     conversationPreferences: normalizeConversationPreferences(store.data.conversation),
     doubaoVoice: profile.voice, googleVoice: profile.voice,
+    mossVoice: provider === 'moss' ? profile.voice : undefined,
+    mossAccent: provider === 'moss' ? profile.voice : undefined,
+    mossModel: provider === 'moss' ? profile.model : undefined,
     googleModel: provider === 'google' ? profile.model : undefined,
     googleTranslateModel: provider === 'google-translate' ? profile.model : undefined,
     autoReconnect: false, autoVoice: false };

@@ -21,6 +21,7 @@ export function aiKeyPage(provider) {
     ['doubao', 'https://console.volcengine.com/speech/new/setting/apikeys'],
     ['google', 'https://aistudio.google.com/apikey'],
     ['google-translate', 'https://aistudio.google.com/apikey'],
+    ['moss', 'https://platform.moss.cn'],
     ['cartesia', 'https://play.cartesia.ai/keys'],
     ['deepseek', 'https://platform.deepseek.com/api_keys'],
   ]);
