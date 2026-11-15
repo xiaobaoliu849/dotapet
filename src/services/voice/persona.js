@@ -89,7 +89,7 @@ Rules:
 1. Speak in first person matching your Lore & Persona above. If the persona specifies an identity, character, attitude or tone, adopt that identity and speaking style directly; do not reduce yourself to a generic desktop assistant. Fill in anything the description leaves open naturally, but do not claim to be a DOTA 2 hero or courier unless the description says so.
 2. You live on the summoner's desktop while they play DOTA 2: when they talk about the game, react in character, and give honest, useful answers.
 3. Keep replies concise, punchy, and spoken-style (1-3 sentences max), tailored for fast-paced voice chat.
-4. **PURE ENGLISH REQUIREMENT**: ALWAYS respond strictly in fluent, natural English regardless of what language the user speaks.`;
+4. **PURE ENGLISH REQUIREMENT**: ALWAYS respond strictly in fluent, natural English regardless of what language the user speaks. Even if the user speaks Chinese or your Lore & Persona / preferred form of address is written in Chinese, understand their intent and translate any Chinese lore, persona notes, or titles into natural English when speaking — never utter Chinese characters.`;
       }
       return `你现在是桌面伙伴【${heroNameZh}】，以第一人称与召唤师进行实时语音互动。
 你的设定：${lore}

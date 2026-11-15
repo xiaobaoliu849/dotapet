@@ -61,6 +61,10 @@ export function createVoiceMicrophone({
 
       const bufferSize = 4096;
       state.scriptProcessor = state.audioContext.createScriptProcessor(bufferSize, 1, 1);
+      // Hangover window (ms) after the user genuinely speaks above the barge-in threshold
+      // while the assistant is playing, so natural inter-word dips are not clipped.
+      const BARGE_IN_HANGOVER_MS = 600;
+      let lastBargeInSpeechAt = 0;
 
       state.scriptProcessor.onaudioprocess = (e) => {
         if (!state.isMicActive) return;
@@ -78,12 +82,20 @@ export function createVoiceMicrophone({
         // Dynamic speech thresholding: raise threshold when companion is speaking to resist speaker bleed
         const isAssistantActive = isReplyPlaying();
         const speechThreshold = isAssistantActive ? 0.06 : 0.025;
+        const now = Date.now();
         if (rms > speechThreshold) {
+          if (isAssistantActive) lastBargeInSpeechAt = now;
           setAppState('listening', '正在说话...');
         }
 
         if (api) {
-          api.sendAudioChunk(pcm16.buffer);
+          // While the companion's reply is playing out of the speakers, gate sub-threshold
+          // microphone audio to zeroed silence so speaker bleed cannot trigger false
+          // server-side VAD barge-in or self-transcription on full-duplex providers (MOSS-Live).
+          const suppressSpeakerBleed = isAssistantActive
+            && rms <= speechThreshold
+            && (now - lastBargeInSpeechAt > BARGE_IN_HANGOVER_MS);
+          api.sendAudioChunk(suppressSpeakerBleed ? new ArrayBuffer(pcm16.byteLength) : pcm16.buffer);
         }
       };
 

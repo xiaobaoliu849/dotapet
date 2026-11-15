@@ -569,6 +569,8 @@ export class PetStateMachine {
    */
   onPetHeadHover() {
     if (!this.isPetMode || this.isDragging || this.isFeeding || this.isFetching || this.isSpecial) return;
+    // Do not overwrite active voice session states ('think' / 'speak') with hover-petting or idle resets.
+    if (this.currentState === 'think' || this.currentState === 'speak') return;
 
     this.pettingMoves++;
     if (this.pettingMoves > 3) {

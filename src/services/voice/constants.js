@@ -102,7 +102,7 @@ export const DEFAULT_MOSS_REALTIME_MODEL = 'moss-live-1.0';
 export const MOSS_INPUT_SAMPLE_RATE = 16000;
 export const MOSS_OUTPUT_SAMPLE_RATE = 48000;
 export const MOSS_INPUT_FRAME_BYTES = 640; // 20 ms of 16 kHz mono S16LE
-export const MOSS_PLAYBACK_LEAD_SECONDS = 0.15;
+export const MOSS_PLAYBACK_LEAD_SECONDS = 0.04;
 
 // Curated Native English & Native Chinese voices from MOSS Voice Library:
 // Passed via `{"action": "change_voice", "voice_name": "<id>"}` after `session_attached`.

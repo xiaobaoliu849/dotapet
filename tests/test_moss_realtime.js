@@ -208,17 +208,20 @@ test('MOSS-Live streams 48kHz binary audio, acks playback chunks, and suppresses
     const chunkAck = conn.jsonMessages.find(m => m.action === 'playback.chunk.completed');
     assert.deepEqual(chunkAck, { action: 'playback.chunk.completed', chunk_id: 'c1', run_id: 'r1', turn_id: 't1' });
 
-    // Turn 2: barge-in stops r2 and drops trailing binary frames
+    // Turn 2: barge-in stops r2, drops trailing binary frames, but preserves spoken transcript arriving after stop
     conn.ws.send(JSON.stringify({ action: 'response.audio.started', data: { run_id: 'r2', turn_id: 't2' } }));
     conn.ws.send(JSON.stringify({ action: 'response.audio.context', data: { chunk_id: 'c2', run_id: 'r2', turn_id: 't2' } }));
     conn.ws.send(Buffer.alloc(1920, 8));
-    conn.ws.send(JSON.stringify({ action: 'response.audio.stop', data: { run_id: 'r2', turn_id: 't2' } }));
+    conn.ws.send(JSON.stringify({ action: 'response.audio.stop', data: { run_id: 'r2', turn_id: 't2', reason: 'barge-in' } }));
+    conn.ws.send(JSON.stringify({ action: 'output.transcript.updated', data: { run_id: 'r2', turn_id: 't2', text: 'Just saying hello, Your Majesty!' } }));
+    conn.ws.send(JSON.stringify({ action: 'response.interrupted', data: { run_id: 'r2', turn_id: 't2', reason: 'barge-in', text: 'Just saying hello, Your Majesty!' } }));
     conn.ws.send(JSON.stringify({ action: 'response.audio.context', data: { chunk_id: 'c3', run_id: 'r2', turn_id: 't2' } }));
     conn.ws.send(Buffer.alloc(1920, 9)); // residue after stop — must be dropped
     conn.ws.send(JSON.stringify({ action: 'response.ended', data: { run_id: 'r2', turn_id: 't2', status: 'aborted' } }));
 
     await waitFor(() => conn.jsonMessages.some(m => m.action === 'playback.stopped'));
     assert.equal(events.filter(e => e[0] === 'interrupted').length, 1);
+    assert.ok(events.some(e => e[0] === 'agent_text_delta' && e[2] === 'Just saying hello, Your Majesty!'));
     assert.equal(events.filter(e => e[0] === 'agent_audio_chunk').length, 2); // c1 and c2 only, c3 dropped
     assert.equal(events.filter(e => e[0] === 'agent_complete').length, 1); // r2 did not complete
   } finally {

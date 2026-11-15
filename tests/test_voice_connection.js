@@ -187,3 +187,51 @@ test('a plain reconnect or an error still closes the microphone', () => {
     assert.equal(r.state.voiceConnected, false);
   }
 });
+
+test('speaker bleed below barge-in threshold is gated to silence while assistant reply is playing', async () => {
+  let playing = true;
+  const sentChunks = [];
+  let processorNode = null;
+  const state = { microphoneGeneration: 0, voiceDisconnectGeneration: 0, voiceConnected: false };
+  const microphone = createVoiceMicrophone({
+    state,
+    mediaDevices: { getUserMedia: async () => ({ getTracks: () => [{ stop() {} }] }) },
+    api: {
+      ensureVoiceConnected: async () => ({ ok: true }),
+      sendAudioChunk: (buf) => sentChunks.push(new Int16Array(buf)),
+      commitVoiceUtterance() {},
+    },
+    elements: { pttLabel: {}, btnPttMic: { classList: { add() {}, remove() {} } } },
+    AudioContextClass: class {
+      createMediaStreamSource() { return { connect() {} }; }
+      createScriptProcessor() {
+        processorNode = { connect() {}, onaudioprocess: null };
+        return processorNode;
+      }
+      createGain() { return { gain: { value: 1 }, connect() {} }; }
+      close() { return Promise.resolve(); }
+    },
+    isReplyPlaying: () => playing,
+    setAppState() {},
+    showToast() {},
+    showTranscriptPanel() {},
+  });
+
+  await microphone.start();
+  assert.ok(processorNode?.onaudioprocess);
+
+  // 1. Sub-threshold speaker bleed (amplitude 0.03 < 0.06) while reply is playing -> gated to all zeros
+  const bleedFrame = new Float32Array(64).fill(0.03);
+  processorNode.onaudioprocess({ inputBuffer: { getChannelData: () => bleedFrame } });
+  assert.equal(sentChunks.length, 1);
+  assert.equal(sentChunks[0].every((sample) => sample === 0), true);
+
+  // 2. Genuine user barge-in (amplitude 0.15 > 0.06) while reply is playing -> passes real PCM samples
+  const speechFrame = new Float32Array(64).fill(0.15);
+  processorNode.onaudioprocess({ inputBuffer: { getChannelData: () => speechFrame } });
+  assert.equal(sentChunks.length, 2);
+  assert.equal(sentChunks[1].some((sample) => sample !== 0), true);
+
+  playing = false;
+  microphone.stop();
+});

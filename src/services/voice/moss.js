@@ -67,6 +67,7 @@ export class MossPlaybackClock {
     this._queue = [];
     this._doneRuns = new Set();
     this._runTurns = new Map();
+    this._playedMsByRun = new Map();
     this._timer = null;
     this._disposed = false;
   }
@@ -96,17 +97,20 @@ export class MossPlaybackClock {
   }
 
   stop(runId = '', turnId = '') {
-    let playedMs = 0;
+    let playedMs = runId ? (this._playedMsByRun.get(runId) || 0) : 0;
     if (this._queue.length) {
       const head = this._queue[0];
-      playedMs = Math.round(Math.max(0, Math.min(this._clock(), head.end) - head.start) * 1000);
+      playedMs += Math.round(Math.max(0, Math.min(this._clock(), head.end) - head.start) * 1000);
     }
     this._queue = [];
     if (this._timer) {
       clearTimeout(this._timer);
       this._timer = null;
     }
-    if (runId) this._doneRuns.delete(runId);
+    if (runId) {
+      this._doneRuns.delete(runId);
+      this._playedMsByRun.delete(runId);
+    }
     this._sendJson({
       action: 'playback.stopped',
       run_id: runId,
@@ -120,6 +124,7 @@ export class MossPlaybackClock {
     for (const runId of this._doneRuns) {
       const turnId = this._runTurns.get(runId) || '';
       this._runTurns.delete(runId);
+      this._playedMsByRun.delete(runId);
       this._sendJson({
         action: 'playback.completed',
         run_id: runId,
@@ -145,6 +150,11 @@ export class MossPlaybackClock {
       if (this._disposed) return;
       const head = this._queue.shift();
       if (head) {
+        const rId = head.ctx?.run_id;
+        if (rId) {
+          const chunkMs = Math.round(Math.max(0, head.end - head.start) * 1000);
+          this._playedMsByRun.set(rId, (this._playedMsByRun.get(rId) || 0) + chunkMs);
+        }
         this._sendJson({ action: 'playback.chunk.completed', ...head.ctx });
       }
       this._schedule();
@@ -161,6 +171,7 @@ export class MossPlaybackClock {
     this._queue = [];
     this._doneRuns.clear();
     this._runTurns.clear();
+    this._playedMsByRun.clear();
   }
 }
 
@@ -311,14 +322,28 @@ export class MossProvider {
     });
   }
 
-  _mossInterrupt() {
+  _emitMossTranscript(rawText) {
+    const text = String(rawText || '');
+    if (!text || text === this.mossAiText) return;
+    const novel = text.startsWith(this.mossAiText) ? text.slice(this.mossAiText.length) : text;
+    this.mossAiText = text;
+    this.aiAcc = text;
+    if (novel) {
+      this.activeTurnId = this.activeTurnId || generateEventId('mturn');
+      this.emit('agent_text_delta', { delta: novel, fullText: text, turnId: this.activeTurnId });
+    }
+  }
+
+  _mossInterrupt({ preserveText = false } = {}) {
     if (!this.mossSpeaking && !this.ttsActive) return;
     this.mossSpeaking = false;
     this.mossAudioStarted = false;
     this.ttsActive = false;
     if (this.mossRunId) this.mossStoppedRuns.add(this.mossRunId);
-    this.mossAiText = '';
-    this.aiAcc = '';
+    if (!preserveText) {
+      this.mossAiText = '';
+      this.aiAcc = '';
+    }
     this.turnHadAudio = false;
     this.emit('interrupted', { interrupted: true });
   }
@@ -445,15 +470,10 @@ export class MossProvider {
     }
 
     if (action === 'output.transcript.updated' || action === 'output.transcript.done') {
-      if (runId && this.mossStoppedRuns.has(runId)) return;
-      const text = String(data.text || '');
-      if (!text || text === this.mossAiText) return;
-      const novel = text.startsWith(this.mossAiText) ? text.slice(this.mossAiText.length) : text;
-      this.mossAiText = text;
-      this.aiAcc = text;
-      if (novel) {
-        this.emit('agent_text_delta', { delta: novel, fullText: text, turnId: this.activeTurnId });
-      }
+      // Even if `response.audio.stop` arrived first on a barge-in, MOSS-Live sends the
+      // final spoken transcript snapshot right after `response.audio.stop`. Emit any
+      // novel text so interrupted replies are still visible in the transcript panel.
+      this._emitMossTranscript(data.text);
       return;
     }
 
@@ -463,12 +483,15 @@ export class MossProvider {
     }
 
     if (action === 'response.audio.stop') {
+      if (runId) this.mossStoppedRuns.add(runId);
       this.mossPlaybackClock?.stop(runId, turnId);
-      this._mossInterrupt();
+      if (data.text) this._emitMossTranscript(data.text);
+      this._mossInterrupt({ preserveText: true });
       return;
     }
 
     if (action === 'response.interrupted') {
+      if (data.text) this._emitMossTranscript(data.text);
       this._mossInterrupt();
       return;
     }
