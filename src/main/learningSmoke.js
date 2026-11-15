@@ -7,8 +7,10 @@ export async function runLearningSmoke({ controlCenter, nativeImage, outputDirec
   const page = controlCenter.contents('learning'); await pageLoaded(page);
   await page.executeJavaScript(`(async () => {
     const byId = id => document.getElementById(id);
-    for (let i=0;i<100 && !document.querySelector('.lesson');i++) await new Promise(r=>setTimeout(r,30));
-    if (!document.querySelector('.lesson')) throw new Error('Learning page did not render: '+byId('message').textContent);
+    for (let i=0;i<100 && !document.querySelector('.hero-tile');i++) await new Promise(r=>setTimeout(r,30));
+    if (!document.querySelector('.hero-tile')) throw new Error('Learning page did not render: '+byId('message').textContent);
+    byId('browse').click();
+    if (!document.querySelector('.lesson')) throw new Error('Learning browse tab did not render: '+byId('message').textContent);
     byId('search').value = 'blink'; byId('search').dispatchEvent(new Event('input'));
     if (!document.querySelector('.lesson h2').textContent.toLowerCase().includes('blink')) throw new Error('Learning search failed');
     document.querySelector('.actions button:last-child').click();
@@ -48,7 +50,7 @@ export async function runLearningSmoke({ controlCenter, nativeImage, outputDirec
   page.reload(); await pageLoaded(page);
   await page.executeJavaScript(`(async () => {
     const byId=id=>document.getElementById(id);
-    for(let i=0;i<100 && !document.querySelector('.lesson');i++) await new Promise(r=>setTimeout(r,20));
+    for(let i=0;i<100 && !document.querySelector('.hero-tile');i++) await new Promise(r=>setTimeout(r,20));
     byId('quiz').click();
     const loaded=await window.learningAPI.load();
     if(loaded.study.active.answers.length!==1 || document.querySelectorAll('#answers button').length!==4) throw new Error('Daily session did not resume after reload');
