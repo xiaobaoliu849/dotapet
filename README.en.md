@@ -17,6 +17,9 @@ DOTA 2 desktop companions · AI voice chat · Bilingual phrases · Text & screen
 
 </div>
 
+**New in source: Dota English learning.** Open Settings → Dota English for offline bilingual hero, ability, item and team-expression lessons, pronunciation, saved words and spaced-review quizzes. Refresh the dated catalog from Valve inside the page. The desktop companion stays available. See [the implementation plan](docs/DOTAPAD_LEARNING_PLAN.md) and [progress log](docs/DOTAPAD_LEARNING_PROGRESS.md).
+
+
 <br>
 
 Keep a hero or courier on your desktop, chat with it, and make it your own. In DOTA 2, reach for bilingual quick phrases or translate a screenshot of team chat into Chinese. Desktop companionship works without configuring an AI provider.
