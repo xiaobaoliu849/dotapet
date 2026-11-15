@@ -43,6 +43,7 @@ export function engineOptions(store, provider) {
   return { provider, apiKey: profile.apiKey, model: profile.model, voice: profile.voice,
     conversationPreferences: normalizeConversationPreferences(store.data.conversation),
     doubaoVoice: profile.voice, googleVoice: profile.voice,
+    mossVoice: provider === 'moss' ? profile.voice : undefined,
     mossAccent: provider === 'moss' ? profile.voice : undefined,
     mossModel: provider === 'moss' ? profile.model : undefined,
     googleModel: provider === 'google' ? profile.model : undefined,

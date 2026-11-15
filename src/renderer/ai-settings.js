@@ -35,8 +35,51 @@ const providerNames = { qwen: '阿里千问', doubao: '豆包', google: 'Gemini'
 const providerDescriptions = { qwen: ['千', '语音 + 翻译 · 推荐'], doubao: ['豆', '自然的中文对话'], google: ['✦', '多语言 · 语音翻译'], moss: ['M', '全双工 · 原生英/中口音'], cartesia: ['C', '英语口语对练'], deepseek: ['D', '文字 / 截图翻译'] };
 const keyNames = { 'qwen.apiKey': '阿里百炼 API Key', 'doubao.apiKey': '火山引擎 API Key', 'doubao.websearchKey': '豆包联网搜索 Key（可选）', google: 'Google API Key', 'moss.apiKey': 'MOSS API Key', 'cartesia.apiKey': 'Cartesia API Key', deepseek: 'DeepSeek API Key' };
 const keyPages = { 'qwen.apiKey': 'qwen', 'doubao.apiKey': 'doubao', google: 'google', 'moss.apiKey': 'moss', 'cartesia.apiKey': 'cartesia', deepseek: 'deepseek' };
-const simpleVoices = { qwen: ['Tina', 'Raymond', 'Jennifer'], doubao: ['zh_female_xiaohe_jupiter_bigtts', 'zh_female_vv_jupiter_bigtts', 'zh_male_yunzhou_jupiter_bigtts'], google: ['Puck', 'Kore', 'Aoede'], moss: ['en', 'zh'] };
-const voiceNames = { Tina: 'Tina · 温和女声', Raymond: 'Raymond · 沉稳男声', Jennifer: 'Jennifer · 英语女声', Puck: 'Puck · 活泼男声', Kore: 'Kore · 干练女声', Aoede: 'Aoede · 轻快女声', en: 'Native English · 原生英语口音', zh: 'Native Chinese · 原生中文口音', zh_female_xiaohe_jupiter_bigtts: '小何 · 甜美台腔', zh_female_vv_jupiter_bigtts: 'VV · 活泼女声', zh_male_yunzhou_jupiter_bigtts: '云舟 · 沉稳男声', zh_male_xiaotian_jupiter_bigtts: '小天 · 清爽男声', en_male_tim_uranus_bigtts: 'Tim · 美式英语', en_female_dacey_uranus_bigtts: 'Dacey · 美式英语', en_female_stokie_uranus_bigtts: 'Stokie · 美式英语' };
+const simpleVoices = {
+  qwen: ['Tina', 'Raymond', 'Jennifer'],
+  doubao: ['zh_female_xiaohe_jupiter_bigtts', 'zh_female_vv_jupiter_bigtts', 'zh_male_yunzhou_jupiter_bigtts'],
+  google: ['Puck', 'Kore', 'Aoede'],
+  moss: [
+    '0f2815fb-0d4c-4cee-ac8c-0bb916af7b28', // 女7 · Native US 美式英语
+    'b4b5f9c4-2829-4cfd-96f2-7fddaf8450bb', // 自定义2 · Native US 美音游戏活力女声
+    '29ab8244-1319-40d4-b508-2b58bb5e2d81', // Amber · Native UK 英式专业女声
+    'ad8f9ced-3276-42f1-a2ca-a686c7d5e01d', // Chenlin · Native UK 英式教育女声
+    '42161c92-b6ad-4d12-a51e-48506ecfad82', // 豆包 · Native CN 中文温柔女声
+    '6c3152b1-1d4f-4e49-ade3-09f447712fec', // Nuannuan · 暖暖 中文温柔女声
+  ],
+};
+const voiceNames = {
+  Tina: 'Tina · 温和女声',
+  Raymond: 'Raymond · 沉稳男声',
+  Jennifer: 'Jennifer · 英语女声',
+  Puck: 'Puck · 活泼男声',
+  Kore: 'Kore · 干练女声',
+  Aoede: 'Aoede · 轻快女声',
+  '0f2815fb-0d4c-4cee-ac8c-0bb916af7b28': '女7 · Native US 美式英语女声',
+  'b4b5f9c4-2829-4cfd-96f2-7fddaf8450bb': '自定义2 · Native US 美音游戏女声',
+  '29ab8244-1319-40d4-b508-2b58bb5e2d81': 'Amber · Native UK 英式专业女声',
+  'ad8f9ced-3276-42f1-a2ca-a686c7d5e01d': 'Chenlin · Native UK 英式教育女声',
+  '2792e95d-357f-4064-aee7-2bb514aa0d06': '女6 · Native US 美式英语女声',
+  'c4f93733-9d7f-43cf-997f-e080347022e4': '女5 · Native US 美式英语女声',
+  '38264a7d-63d1-4f6b-b2e7-7035d480bb65': '女4 · Native US 美式英语女声',
+  '42161c92-b6ad-4d12-a51e-48506ecfad82': '豆包 · Native CN 中文温柔女声',
+  '6c3152b1-1d4f-4e49-ade3-09f447712fec': 'Nuannuan · 暖暖 中文温柔女声',
+  'ddfec779-cdf6-47d2-bcde-222865e2e834': '女主-顾 · Native CN 清凉微凉女声',
+  '7ea0bc93-fbeb-44fe-9702-7aa2024199a3': '测试2 · Native CN 动漫甜美女声',
+  'b8943b5a-478b-4281-9186-dfb6db79bc7a': '珀绎 · Native CN 北京口音磁性女声',
+  '7ad63513-bdce-40d0-9d66-94dbdef7073b': '瑶族 · Native CN 四川口音轻快女声',
+  'db47bbad-32eb-4e08-b615-f6244a2a9e7a': '女2 · Native CN 中文播客女声',
+  '58e3dd68-a528-4519-8f88-a616b9448b68': 'yisa2 · Native CN 中文播客女声',
+  '6cc93520-3207-4f7a-bca9-2d560b9c306b': 'Mumu · 沐沐 中文自然男声',
+  default: 'Default · 默认原生中文音色',
+  zh_female_xiaohe_jupiter_bigtts: '小何 · 甜美台腔',
+  zh_female_vv_jupiter_bigtts: 'VV · 活泼女声',
+  zh_male_yunzhou_jupiter_bigtts: '云舟 · 沉稳男声',
+  zh_male_xiaotian_jupiter_bigtts: '小天 · 清爽男声',
+  en_male_tim_uranus_bigtts: 'Tim · 美式英语',
+  en_female_dacey_uranus_bigtts: 'Dacey · 美式英语',
+  en_female_stokie_uranus_bigtts: 'Stokie · 美式英语',
+};
 
 function feedback(message, kind = '', target = 'feedback') { byId(target).textContent = message; byId(target).dataset.kind = kind; }
 function providerById(id) { return settings?.providers.find(item => item.id === id); }

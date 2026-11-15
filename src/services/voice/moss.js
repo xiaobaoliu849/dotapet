@@ -4,8 +4,9 @@
  *
  * Wire protocol (`wss://api.mosi.cn/v1/realtime?model=moss-live-1.0`):
  * - Auth: `Authorization: Bearer <api_key>` on the WebSocket handshake.
- * - Handshake: `attach_session` → `session_attached` → `session.update` →
- *   `session.updated` → `mic_state` (`enabled: true`).
+ * - Handshake: `attach_session` → `session_attached` → (optional `change_voice`
+ *   → `voice_changed`) → `session.update` → `session.updated` → `mic_state`
+ *   (`enabled: true`).
  * - Upstream audio: raw binary 16 kHz mono S16LE PCM in 640-byte (20 ms) frames.
  * - Downstream audio: `response.audio.context` JSON paired 1:1 with the next
  *   binary 48 kHz mono S16LE PCM frame.
@@ -19,7 +20,10 @@ import WebSocket from 'ws';
 import {
   DEFAULT_MOSS_REALTIME_WS_URL,
   DEFAULT_MOSS_REALTIME_MODEL,
-  DEFAULT_MOSS_REALTIME_ACCENT,
+  DEFAULT_MOSS_REALTIME_VOICE,
+  DEFAULT_MOSS_ENGLISH_VOICE,
+  DEFAULT_MOSS_CHINESE_VOICE,
+  MOSS_VOICE_CATALOG,
   MOSS_OUTPUT_SAMPLE_RATE,
   MOSS_INPUT_FRAME_BYTES,
   MOSS_PLAYBACK_LEAD_SECONDS,
@@ -28,8 +32,31 @@ import {
 } from './constants.js';
 import { audioBuffer, generateEventId } from './shared.js';
 
-export function normalizeMossAccent(accent) {
-  return String(accent || '').trim().toLowerCase() === 'zh' ? 'zh' : 'en';
+/**
+ * Resolves a voice ID or legacy shorthand ('en' / 'zh') into a canonical MOSS
+ * voice_name and its language/accent metadata.
+ */
+export function resolveMossVoice(voiceOrAccent) {
+  const raw = String(voiceOrAccent || '').trim();
+  if (!raw || raw.toLowerCase() === 'en' || raw.toLowerCase() === 'en-us') {
+    return { voiceId: DEFAULT_MOSS_ENGLISH_VOICE, ...MOSS_VOICE_CATALOG[DEFAULT_MOSS_ENGLISH_VOICE] };
+  }
+  if (raw.toLowerCase() === 'en-gb' || raw.toLowerCase() === 'uk') {
+    const ukId = '29ab8244-1319-40d4-b508-2b58bb5e2d81'; // Amber
+    return { voiceId: ukId, ...MOSS_VOICE_CATALOG[ukId] };
+  }
+  if (raw.toLowerCase() === 'zh' || raw.toLowerCase() === 'zh-cn') {
+    return { voiceId: DEFAULT_MOSS_CHINESE_VOICE, ...MOSS_VOICE_CATALOG[DEFAULT_MOSS_CHINESE_VOICE] };
+  }
+  if (MOSS_VOICE_CATALOG[raw]) {
+    return { voiceId: raw, ...MOSS_VOICE_CATALOG[raw] };
+  }
+  // Custom voice UUID supplied by user: default to English unless explicitly marked
+  return { voiceId: raw, lang: 'en', accent: 'en-US', label: raw };
+}
+
+export function normalizeMossAccent(voiceOrAccent) {
+  return resolveMossVoice(voiceOrAccent).lang;
 }
 
 /**
@@ -158,12 +185,21 @@ export class MossProvider {
     this.mossInputPending = Buffer.alloc(0);
   }
 
+  getResolvedMossVoice() {
+    return resolveMossVoice(this.mossVoice || this.mossAccent || this.voice || DEFAULT_MOSS_REALTIME_VOICE);
+  }
+
   buildMossSessionConfig() {
-    const accent = normalizeMossAccent(this.mossAccent || this.voice || DEFAULT_MOSS_REALTIME_ACCENT);
-    const basePrompt = this.getHeroSystemPrompt(accent);
-    const accentRule = accent === 'zh'
-      ? '【原生中文口音要求】请全程使用地道、流畅的原生中文普通话（Native Chinese accent）进行实时语音对话，发音自然清晰，贴近母语者日常口语节奏。'
-      : 'Native English Accent Requirement: Speak strictly in natural, idiomatic English with a native English accent (authentic native pronunciation, cadence, and phrasing).';
+    const resolved = this.getResolvedMossVoice();
+    const basePrompt = this.getHeroSystemPrompt(resolved.lang);
+    let accentRule;
+    if (resolved.lang === 'zh') {
+      accentRule = '【原生中文口音要求】请全程使用地道、流畅的原生中文（Native Chinese accent）进行实时语音对话，发音自然清晰，贴近母语者日常口语节奏。';
+    } else if (resolved.accent === 'en-GB') {
+      accentRule = 'Native English Accent Requirement: Speak strictly in natural, idiomatic British English with an authentic native UK English accent, cadence, and phrasing.';
+    } else {
+      accentRule = 'Native English Accent Requirement: Speak strictly in natural, idiomatic American English with an authentic native US English accent, cadence, and phrasing.';
+    }
     const instructions = `${basePrompt}\n\n${accentRule}`;
     const personaName = this.currentHero?.nameEn || this.currentHero?.nameZh || 'DotaPet';
     return {
@@ -330,10 +366,20 @@ export class MossProvider {
     const runId = String(data.run_id || '');
     const turnId = String(data.turn_id || '');
 
-    // Handshake events
+    // Handshake: attach_session → session_attached → (change_voice → voice_changed) → session.update → session.updated → mic_state
     if (action === 'session_attached' && !this.mossHandshakeDone) {
       this.mossSessionId = String(data.session_id || '');
       this.sessionId = this.mossSessionId;
+      const { voiceId } = this.getResolvedMossVoice();
+      if (voiceId && voiceId !== 'default') {
+        sendJson({ action: 'change_voice', voice_name: voiceId });
+      } else {
+        sendJson({ action: 'session.update', session: this.buildMossSessionConfig() });
+      }
+      return;
+    }
+
+    if (action === 'voice_changed' && !this.mossHandshakeDone) {
       sendJson({ action: 'session.update', session: this.buildMossSessionConfig() });
       return;
     }
@@ -484,9 +530,15 @@ export class MossProvider {
     }
   }
 
-  sendMossSessionUpdate() {
+  sendMossSessionUpdate({ includeVoice = false } = {}) {
     if (!this.isConnected || !this.ws || this.ws.readyState !== WebSocket.OPEN) return;
     try {
+      if (includeVoice) {
+        const { voiceId } = this.getResolvedMossVoice();
+        if (voiceId && voiceId !== 'default') {
+          this.ws.send(JSON.stringify({ action: 'change_voice', voice_name: voiceId }));
+        }
+      }
       this.ws.send(JSON.stringify({
         action: 'session.update',
         session: this.buildMossSessionConfig(),

@@ -9,6 +9,8 @@ import {
   CLOUD_KEYS,
   configureCloudKeys,
   DEFAULT_MOSS_REALTIME_MODEL,
+  DEFAULT_MOSS_ENGLISH_VOICE,
+  DEFAULT_MOSS_CHINESE_VOICE,
   MOSS_INPUT_FRAME_BYTES,
   MOSS_OUTPUT_SAMPLE_RATE,
 } from '../src/services/cloudVoiceEngine.js';
@@ -39,6 +41,8 @@ function startMockMossServer() {
         conn.jsonMessages.push(msg);
         if (msg.action === 'attach_session') {
           ws.send(JSON.stringify({ action: 'session_attached', data: { session_id: 'moss-sess-1' } }));
+        } else if (msg.action === 'change_voice') {
+          ws.send(JSON.stringify({ action: 'voice_changed', data: { voice_name: msg.voice_name } }));
         } else if (msg.action === 'session.update') {
           ws.send(JSON.stringify({ action: 'session.updated', data: {} }));
         }
@@ -68,7 +72,7 @@ function waitFor(predicate, timeoutMs = 2000) {
   });
 }
 
-test('MOSS-Live connects with Bearer auth, defaults to native English accent, and frames 640B audio', async () => {
+test('MOSS-Live connects with Bearer auth, sends change_voice for native US English voice, and frames 640B audio', async () => {
   const server = await startMockMossServer();
   const prevUrl = CLOUD_KEYS.moss_ws_url;
   configureCloudKeys({ moss_ws_url: server.wsUrl });
@@ -95,10 +99,12 @@ test('MOSS-Live connects with Bearer auth, defaults to native English accent, an
     assert.equal(conn.headers.authorization, 'Bearer moss-test-key');
 
     const attach = conn.jsonMessages.find(m => m.action === 'attach_session');
+    const changeVoice = conn.jsonMessages.find(m => m.action === 'change_voice');
     const update = conn.jsonMessages.find(m => m.action === 'session.update');
     const mic = conn.jsonMessages.find(m => m.action === 'mic_state');
     assert.ok(attach);
-    assert.ok(update?.session?.instructions.includes('Native English Accent Requirement'));
+    assert.equal(changeVoice?.voice_name, DEFAULT_MOSS_ENGLISH_VOICE);
+    assert.ok(update?.session?.instructions.includes('native US English accent'));
     assert.equal(mic?.enabled, true);
 
     // Send 1000 bytes -> 1 frame of 640 bytes, 360 bytes buffered; then +300 bytes -> 2nd 640-byte frame.
@@ -114,7 +120,7 @@ test('MOSS-Live connects with Bearer auth, defaults to native English accent, an
   }
 });
 
-test('MOSS-Live supports native Chinese accent and mid-session accent switching', async () => {
+test('MOSS-Live supports native Chinese and UK English voices and mid-session voice switching', async () => {
   const server = await startMockMossServer();
   const prevUrl = CLOUD_KEYS.moss_ws_url;
   configureCloudKeys({ moss_ws_url: server.wsUrl });
@@ -122,7 +128,7 @@ test('MOSS-Live supports native Chinese accent and mid-session accent switching'
   const engine = new CloudVoiceEngine({
     provider: 'moss',
     apiKey: 'moss-test-key',
-    mossAccent: 'zh',
+    mossVoice: DEFAULT_MOSS_CHINESE_VOICE,
     autoReconnect: false,
   });
 
@@ -132,14 +138,19 @@ test('MOSS-Live supports native Chinese accent and mid-session accent switching'
     await readyPromise;
 
     const conn = server.connections[0];
+    const firstChange = conn.jsonMessages.find(m => m.action === 'change_voice');
     const firstUpdate = conn.jsonMessages.find(m => m.action === 'session.update');
+    assert.equal(firstChange?.voice_name, DEFAULT_MOSS_CHINESE_VOICE);
     assert.ok(firstUpdate.session.instructions.includes('原生中文口音要求'));
 
-    // Switch mid-session to native English accent
-    engine.setMossAccent('en');
+    // Switch mid-session to Amber (Native UK British English)
+    const amberUkId = '29ab8244-1319-40d4-b508-2b58bb5e2d81';
+    engine.setMossAccent(amberUkId);
     await waitFor(() => conn.jsonMessages.filter(m => m.action === 'session.update').length === 2);
+    const secondChange = conn.jsonMessages.filter(m => m.action === 'change_voice')[1];
     const secondUpdate = conn.jsonMessages.filter(m => m.action === 'session.update')[1];
-    assert.ok(secondUpdate.session.instructions.includes('Native English Accent Requirement'));
+    assert.equal(secondChange?.voice_name, amberUkId);
+    assert.ok(secondUpdate.session.instructions.includes('native UK English accent'));
   } finally {
     engine.disconnect();
     configureCloudKeys({ moss_ws_url: prevUrl });
@@ -227,7 +238,7 @@ test('MossPlaybackClock reports played_audio_ms on stop', () => {
   assert.deepEqual(sent, [{ action: 'playback.stopped', run_id: 'r1', turn_id: 't1', played_audio_ms: 250 }]);
 });
 
-test('AISettingsStore and engineOptions support MOSS-Live with en/zh accents', () => {
+test('AISettingsStore and engineOptions support MOSS-Live voice UUIDs', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dotapet-moss-'));
   const filePath = path.join(dir, 'ai-settings.json');
   const safeStorage = {
@@ -240,17 +251,17 @@ test('AISettingsStore and engineOptions support MOSS-Live with en/zh accents', (
     store.save({
       provider: 'moss',
       model: 'moss-live-1.0',
-      voice: 'zh',
+      voice: DEFAULT_MOSS_CHINESE_VOICE,
       secrets: { apiKey: 'moss-secret-123' },
     });
     const opts = engineOptions(store, 'moss');
     assert.equal(opts.provider, 'moss');
     assert.equal(opts.apiKey, 'moss-secret-123');
-    assert.equal(opts.mossAccent, 'zh');
+    assert.equal(opts.mossVoice, DEFAULT_MOSS_CHINESE_VOICE);
     assert.equal(opts.mossModel, 'moss-live-1.0');
     assert.equal(aiKeyPage('moss'), 'https://platform.moss.cn');
 
-    assert.throws(() => store.save({ provider: 'moss', voice: 'fr' }), /请选择支持的音色/);
+    assert.throws(() => store.save({ provider: 'moss', voice: 'not-a-moss-voice' }), /请选择支持的音色/);
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

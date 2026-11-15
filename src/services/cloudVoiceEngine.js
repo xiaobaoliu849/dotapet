@@ -3,7 +3,7 @@ import EventEmitter from 'events';
 import { normalizeConversationPreferences, conversationGreeting } from './conversationPreferences.js';
 import {
   DEFAULT_DOUBAO_DUPLEX_DIALOG_MODEL, DEFAULT_DOUBAO_REALTIME_VOICE, DEFAULT_GOOGLE_REALTIME_VOICE,
-  DEFAULT_MOSS_REALTIME_MODEL, DEFAULT_MOSS_REALTIME_ACCENT,
+  DEFAULT_MOSS_REALTIME_MODEL, DEFAULT_MOSS_REALTIME_VOICE, DEFAULT_MOSS_REALTIME_ACCENT,
   PROVIDER_FAMILIES, RESTART_TIMEOUT_MS, loadEnv,
 } from './voice/constants.js';
 import { audioBuffer, detectPrimaryLanguage, mixin } from './voice/shared.js';
@@ -12,7 +12,7 @@ import { CartesiaProvider } from './voice/cartesia.js';
 import { DoubaoProvider } from './voice/doubao.js';
 import { QwenProvider } from './voice/qwen.js';
 import { GoogleLiveProvider } from './voice/googleLive.js';
-import { MossProvider, normalizeMossAccent } from './voice/moss.js';
+import { MossProvider, normalizeMossAccent, resolveMossVoice } from './voice/moss.js';
 
 export {
   DEFAULT_DOUBAO_DUPLEX_ENDPOINT, DEFAULT_DOUBAO_DUPLEX_DIALOG_MODEL,
@@ -26,7 +26,8 @@ export {
   DEFAULT_GOOGLE_REALTIME_VOICE, GOOGLE_REALTIME_VOICES, GOOGLE_LIVE_TRANSLATE_IDLE_MS,
   DEFAULT_MOSS_REALTIME_WS_URL, DEFAULT_MOSS_REALTIME_MODEL,
   MOSS_INPUT_SAMPLE_RATE, MOSS_OUTPUT_SAMPLE_RATE, MOSS_INPUT_FRAME_BYTES,
-  MOSS_REALTIME_ACCENTS, DEFAULT_MOSS_REALTIME_ACCENT,
+  DEFAULT_MOSS_ENGLISH_VOICE, DEFAULT_MOSS_CHINESE_VOICE, DEFAULT_MOSS_REALTIME_VOICE,
+  MOSS_VOICE_CATALOG, MOSS_REALTIME_VOICES, MOSS_REALTIME_ACCENTS, DEFAULT_MOSS_REALTIME_ACCENT,
   RESTART_TIMEOUT_MS, GOOGLE_CLIENT_VAD_SILENCE_MS, GOOGLE_CLIENT_VAD_RMS_THRESHOLD, CLOUD_KEYS,
   loadEnv, configureCloudKeys,
 } from './voice/constants.js';
@@ -65,9 +66,11 @@ export class CloudVoiceEngine extends EventEmitter {
     this.googleModel = options.googleModel || null;
     this.googleTranslateModel = options.googleTranslateModel || null;
     this.mossModel = options.mossModel || DEFAULT_MOSS_REALTIME_MODEL;
-    this.mossAccent = normalizeMossAccent(
-      options.mossAccent || (PROVIDER_FAMILIES[this.provider] === 'moss' ? options.voice : null) || DEFAULT_MOSS_REALTIME_ACCENT
-    );
+    const initialMossVoice = options.mossVoice || options.mossAccent
+      || (PROVIDER_FAMILIES[this.provider] === 'moss' ? options.voice : null)
+      || DEFAULT_MOSS_REALTIME_VOICE;
+    this.mossVoice = resolveMossVoice(initialMossVoice).voiceId;
+    this.mossAccent = normalizeMossAccent(initialMossVoice);
     this.suppressOutput = false;
     this.activeTurnId = null;
     this.userAcc = '';
@@ -214,13 +217,16 @@ export class CloudVoiceEngine extends EventEmitter {
     if (this.provider === 'google-translate' && (this.isConnected || this.isConnecting)) this.restartSession();
   }
 
-  setMossAccent(accent) {
-    const next = normalizeMossAccent(accent);
-    if (next === this.mossAccent) return;
-    this.mossAccent = next;
-    console.log(`[CloudVoiceEngine] MOSS-Live accent set to: ${next}`);
+  setMossAccent(voiceOrAccent) {
+    const resolved = resolveMossVoice(voiceOrAccent);
+    const voiceChanged = resolved.voiceId !== this.mossVoice;
+    const accentChanged = resolved.lang !== this.mossAccent;
+    if (!voiceChanged && !accentChanged) return;
+    this.mossVoice = resolved.voiceId;
+    this.mossAccent = resolved.lang;
+    console.log(`[CloudVoiceEngine] MOSS-Live voice/accent set to: ${resolved.voiceId} (${resolved.accent})`);
     if (this.providerFamily() === 'moss' && this.isConnected) {
-      this.sendSessionUpdate();
+      this.sendMossSessionUpdate({ includeVoice: voiceChanged });
     }
   }
 
