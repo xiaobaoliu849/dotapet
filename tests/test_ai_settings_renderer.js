@@ -93,10 +93,10 @@ test('failed personalization saves keep the draft; pending saves disable both pr
   assert.equal(ui.nodes.get('custom-instructions').value, '简短一点');
 });
 
-test('one page shows four voice providers and a translation card without cloud calls', async () => {
+test('one page shows five voice providers and a translation card without cloud calls', async () => {
   const ui = await renderer();
-  assert.deepEqual(ui.nodes.get('provider').children.map(item => item.value), ['qwen', 'doubao', 'google', 'cartesia']);
-  assert.equal(ui.nodes.get('provider-options').children.length, 4);
+  assert.deepEqual(ui.nodes.get('provider').children.map(item => item.value), ['qwen', 'doubao', 'google', 'moss', 'cartesia']);
+  assert.equal(ui.nodes.get('provider-options').children.length, 5);
   assert.deepEqual(ui.nodes.get('translator-options').children.map(item => item.dataset.provider), ['qwen', 'deepseek']);
   assert.equal(ui.calls.connect + ui.calls.test + ui.calls.save, 0);
   assert.equal(ui.nodes.get('voice').children.length, 3);

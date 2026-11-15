@@ -9,7 +9,13 @@ export class PersonaPrompts {
   }
 
   isEnglishPromptMode(mode) {
-    return (mode === 'en') || (mode === 'auto' && (this.provider === 'cartesia' || this.provider === 'cloud-stream'));
+    if (mode === 'en') return true;
+    if (mode === 'zh') return false;
+    if (this.provider === 'cartesia' || this.provider === 'cloud-stream') return true;
+    if (this.provider === 'moss' || this.provider === 'moss-live') {
+      return (this.mossAccent || this.voice || 'en') !== 'zh';
+    }
+    return false;
   }
 
   isFreeChatPersona() {

@@ -30,13 +30,13 @@ function speakLocal(text) {
     window.speechSynthesis.speak(utterance);
   } catch { /* a silent confirmation still leaves the text feedback */ }
 }
-const voiceProviders = ['qwen', 'doubao', 'google', 'cartesia'];
-const providerNames = { qwen: '阿里千问', doubao: '豆包', google: 'Gemini', cartesia: 'Cartesia', deepseek: 'DeepSeek' };
-const providerDescriptions = { qwen: ['千', '语音 + 翻译 · 推荐'], doubao: ['豆', '自然的中文对话'], google: ['✦', '多语言 · 语音翻译'], cartesia: ['C', '英语口语对练'], deepseek: ['D', '文字 / 截图翻译'] };
-const keyNames = { 'qwen.apiKey': '阿里百炼 API Key', 'doubao.apiKey': '火山引擎 API Key', 'doubao.websearchKey': '豆包联网搜索 Key（可选）', google: 'Google API Key', 'cartesia.apiKey': 'Cartesia API Key', deepseek: 'DeepSeek API Key' };
-const keyPages = { 'qwen.apiKey': 'qwen', 'doubao.apiKey': 'doubao', google: 'google', 'cartesia.apiKey': 'cartesia', deepseek: 'deepseek' };
-const simpleVoices = { qwen: ['Tina', 'Raymond', 'Jennifer'], doubao: ['zh_female_xiaohe_jupiter_bigtts', 'zh_female_vv_jupiter_bigtts', 'zh_male_yunzhou_jupiter_bigtts'], google: ['Puck', 'Kore', 'Aoede'] };
-const voiceNames = { Tina: 'Tina · 温和女声', Raymond: 'Raymond · 沉稳男声', Jennifer: 'Jennifer · 英语女声', Puck: 'Puck · 活泼男声', Kore: 'Kore · 干练女声', Aoede: 'Aoede · 轻快女声', zh_female_xiaohe_jupiter_bigtts: '小何 · 甜美台腔', zh_female_vv_jupiter_bigtts: 'VV · 活泼女声', zh_male_yunzhou_jupiter_bigtts: '云舟 · 沉稳男声', zh_male_xiaotian_jupiter_bigtts: '小天 · 清爽男声', en_male_tim_uranus_bigtts: 'Tim · 美式英语', en_female_dacey_uranus_bigtts: 'Dacey · 美式英语', en_female_stokie_uranus_bigtts: 'Stokie · 美式英语' };
+const voiceProviders = ['qwen', 'doubao', 'google', 'moss', 'cartesia'];
+const providerNames = { qwen: '阿里千问', doubao: '豆包', google: 'Gemini', moss: 'MOSS-Live', cartesia: 'Cartesia', deepseek: 'DeepSeek' };
+const providerDescriptions = { qwen: ['千', '语音 + 翻译 · 推荐'], doubao: ['豆', '自然的中文对话'], google: ['✦', '多语言 · 语音翻译'], moss: ['M', '全双工 · 原生英/中口音'], cartesia: ['C', '英语口语对练'], deepseek: ['D', '文字 / 截图翻译'] };
+const keyNames = { 'qwen.apiKey': '阿里百炼 API Key', 'doubao.apiKey': '火山引擎 API Key', 'doubao.websearchKey': '豆包联网搜索 Key（可选）', google: 'Google API Key', 'moss.apiKey': 'MOSS API Key', 'cartesia.apiKey': 'Cartesia API Key', deepseek: 'DeepSeek API Key' };
+const keyPages = { 'qwen.apiKey': 'qwen', 'doubao.apiKey': 'doubao', google: 'google', 'moss.apiKey': 'moss', 'cartesia.apiKey': 'cartesia', deepseek: 'deepseek' };
+const simpleVoices = { qwen: ['Tina', 'Raymond', 'Jennifer'], doubao: ['zh_female_xiaohe_jupiter_bigtts', 'zh_female_vv_jupiter_bigtts', 'zh_male_yunzhou_jupiter_bigtts'], google: ['Puck', 'Kore', 'Aoede'], moss: ['en', 'zh'] };
+const voiceNames = { Tina: 'Tina · 温和女声', Raymond: 'Raymond · 沉稳男声', Jennifer: 'Jennifer · 英语女声', Puck: 'Puck · 活泼男声', Kore: 'Kore · 干练女声', Aoede: 'Aoede · 轻快女声', en: 'Native English · 原生英语口音', zh: 'Native Chinese · 原生中文口音', zh_female_xiaohe_jupiter_bigtts: '小何 · 甜美台腔', zh_female_vv_jupiter_bigtts: 'VV · 活泼女声', zh_male_yunzhou_jupiter_bigtts: '云舟 · 沉稳男声', zh_male_xiaotian_jupiter_bigtts: '小天 · 清爽男声', en_male_tim_uranus_bigtts: 'Tim · 美式英语', en_female_dacey_uranus_bigtts: 'Dacey · 美式英语', en_female_stokie_uranus_bigtts: 'Stokie · 美式英语' };
 
 function feedback(message, kind = '', target = 'feedback') { byId(target).textContent = message; byId(target).dataset.kind = kind; }
 function providerById(id) { return settings?.providers.find(item => item.id === id); }
@@ -154,6 +154,7 @@ function renderProfile() {
   }
   byId('provider-help').textContent = item.id === 'qwen' ? '一个阿里百炼密钥，语音聊天和翻译都能用。'
     : item.id === 'doubao' ? '使用火山引擎「端到端实时语音」的 API Key，默认声音是小何。'
+    : item.id === 'moss' ? '在 platform.moss.cn 获取 API Key，支持原生英语与原生中文口音的全双工实时对话。'
     : item.id === 'cartesia' ? 'Cartesia 负责声音，DeepSeek 负责对话；这个 DeepSeek 密钥也能用来翻译。'
     : item.id === 'google-translate' ? '实时语音翻译：你说中文，它用外语说出来。与 Gemini 聊天共用同一个密钥。'
     : 'Google AI Studio 的 API Key，Gemini 聊天和实时语音翻译共用；需具备相应网络条件。';

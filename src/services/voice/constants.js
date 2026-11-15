@@ -93,12 +93,26 @@ export const GOOGLE_REALTIME_VOICES = [
 // Live Translate turns close on 2s of downstream silence, mirroring VoiceSpirit's
 // inactivity monitor (complete_live_translate_turn_if_needed force branch).
 export const GOOGLE_LIVE_TRANSLATE_IDLE_MS = 2000;
+
+// MOSS-Live (MOSI) Full-Duplex Realtime Constants (ported from VoiceSpirit
+// realtime_moss_provider.py + realtime_constants.py).
+// Docs: platform.moss.cn/en/docs/reference/moss-live
+export const DEFAULT_MOSS_REALTIME_WS_URL = 'wss://api.mosi.cn/v1/realtime';
+export const DEFAULT_MOSS_REALTIME_MODEL = 'moss-live-1.0';
+export const MOSS_INPUT_SAMPLE_RATE = 16000;
+export const MOSS_OUTPUT_SAMPLE_RATE = 48000;
+export const MOSS_INPUT_FRAME_BYTES = 640; // 20 ms of 16 kHz mono S16LE
+export const MOSS_PLAYBACK_LEAD_SECONDS = 0.15;
+export const MOSS_REALTIME_ACCENTS = ['en', 'zh'];
+export const DEFAULT_MOSS_REALTIME_ACCENT = 'en';
+
 // Every provider id the engine accepts, legacy aliases included, by the module that runs it.
 export const PROVIDER_FAMILIES = Object.freeze({
   cartesia: 'cartesia', 'cloud-stream': 'cartesia', 'cartesia-deepseek': 'cartesia',
   doubao: 'doubao',
   qwen: 'qwen', dashscope: 'qwen', 'dashscope-ws': 'qwen',
   google: 'google', 'google-translate': 'google',
+  moss: 'moss', 'moss-live': 'moss',
 });
 
 // A session restarted to apply a new persona or language must be back by then, or the call ends.
@@ -131,6 +145,8 @@ export const CLOUD_KEYS = {
   doubao_ws_url: DEFAULT_DOUBAO_DUPLEX_ENDPOINT,
   google_ws_url: '',
   google_proxy: '',
+  moss_api_key: '',
+  moss_ws_url: '',
 };
 
 // Credentials are supplied by the companion's encrypted store in the main process.

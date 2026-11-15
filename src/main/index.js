@@ -361,6 +361,7 @@ export const VOICE_PROVIDERS = [
   { id: 'cartesia', label: 'Cartesia 纯英对练 (English Voice)' },
   { id: 'google', label: '谷歌 Gemini Live (多语言实时对话)' },
   { id: 'google-translate', label: '谷歌实时翻译 (Live Translate)' },
+  { id: 'moss', label: 'MOSS-Live 全双工语音 (MOSI)' },
 ];
 
 // No provider dials out on its own: cloud voice connects ONLY when the user
@@ -998,6 +999,7 @@ function updateTrayMenu() {
     qwen: '阿里千问 (中英双语)',
     google: '谷歌 Gemini Live',
     'google-translate': `谷歌实时翻译 (译入${translateTargetLanguageLabel(translateTargetLanguage)})`,
+    moss: 'MOSS-Live 全双工语音',
     'cloud-stream': 'Cartesia (纯英对练)',
   };
 
@@ -1050,6 +1052,14 @@ function updateTrayMenu() {
       checked: currentVoiceProvider === 'google-translate',
       click: () => {
         setVoiceProvider('google-translate');
+      },
+    },
+    {
+      label: '● MOSS-Live 全双工语音 (MOSI · 原生英/中口音)',
+      type: 'radio',
+      checked: currentVoiceProvider === 'moss',
+      click: () => {
+        setVoiceProvider('moss');
       },
     },
     {
