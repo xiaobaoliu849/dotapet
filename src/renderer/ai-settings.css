@@ -118,7 +118,7 @@ footer { position: fixed; bottom: 0; left: 0; right: 0; z-index: 4; display: fle
 .lock-note { margin-right: auto; }
 @keyframes turn { to { transform: rotate(360deg); } }
 @media (max-width: 720px) { main { padding: 18px 22px 92px; } footer { padding-inline: 22px; } .provider-options { gap: 8px; } .provider-option { padding: 12px 10px 10px; } .provider-name { gap: 6px; font-size: 14px; } .provider-mark { width: 22px; height: 22px; } .voice-choice { width: 180px; } .card { padding: 18px; } .secret-fields.two-keys { grid-template-columns: 1fr; } }
-@media (max-width: 620px) { .provider-options { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .provider-options { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 /* Inside the settings center the page is at least 556px wide; this is for zoomed text. */
 @media (max-width: 540px) { main { padding: 16px 16px 112px; } footer { padding-inline: 16px; } .pet-greeting { display: none; } .provider-options { grid-template-columns: repeat(2, minmax(0, 1fr)); } .credential-row { flex-direction: column; gap: 14px; } .secret-fields, .voice-choice { width: 100%; } .section-caption, .summary-hint, .lock-note { display: none; } .field-grid { grid-template-columns: 1fr; } button.primary { width: 100%; } }
 @media (max-height: 740px) { .welcome { margin-bottom: 8px; } .pet-greeting { height: 80px; width: 96px; } .welcome-pet { width: 88px; height: 88px; } .pet-halo { width: 70px; height: 70px; } .card { padding-block: 16px; } .provider-option { min-height: 70px; padding-block: 10px; } }

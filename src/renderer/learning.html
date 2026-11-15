@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" data-settings-theme="green">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <script src="i18n.js"></script><title>DotaPad · Learn</title>
+  <link rel="stylesheet" href="settings-theme.css"><link rel="stylesheet" href="learning.css">
+  <script src="learning.js" type="module"></script>
+</head>
+<body>
+<main>
+  <header><p class="eyebrow">DOTAPAD ACADEMY</p><h1 id="heading">Learn the game. Speak the language.</h1><p id="intro">A little Dota, a little English. Your desktop companion stays with you.</p></header>
+  <section class="stats" aria-label="Learning progress"><div><strong id="total">—</strong><span id="total-label">bilingual lessons</span></div><div><strong id="saved-count">0</strong><span id="saved-label">saved words</span></div><div><strong id="due-count">0</strong><span id="due-label">ready to review</span></div><div><strong id="accuracy">—</strong><span id="accuracy-label">quiz accuracy</span></div></section>
+  <nav class="tabs" aria-label="Learning mode"><button id="browse" aria-pressed="true">Explore</button><button id="saved" aria-pressed="false">My words</button><button id="quiz" aria-pressed="false">Practice</button></nav>
+  <div class="tools"><label><span id="search-label">Find a lesson</span><input id="search" type="search" placeholder="Search English or Chinese…" maxlength="120"></label><label><span id="kind-label">Topic</span><select id="kind"><option value="all">All topics</option><option value="hero">Heroes</option><option value="ability">Hero abilities</option><option value="item">Items</option><option value="phrase">Team expressions</option></select></label><label><span id="direction-label">Practice direction</span><select id="direction" translate="no"><option value="en">English → 中文</option><option value="zh">中文 → English</option></select></label></div>
+  <p id="message" role="status" aria-live="polite"></p>
+  <section id="practice" class="practice" hidden aria-label="Quiz"><p id="quiz-counter"></p><p id="quiz-context" translate="no"></p><h2 id="question" translate="no"></h2><div id="answers" translate="no"></div><p id="result" role="status" aria-live="polite"></p><p id="quiz-explanation" translate="no"></p><button id="next">Next question →</button></section>
+  <section id="library" aria-label="Bilingual lessons"><div id="lessons" class="lessons" translate="no"></div><button id="more" hidden>Load more</button></section>
+  <footer><h2 id="sources-heading">Keep your knowledge current</h2><p id="source" translate="no"></p><p id="freshness">Descriptions are a dated snapshot. Check official patch notes before relying on balance values.</p><div class="source-actions"><button id="refresh">Refresh from Valve</button><button id="patches">Official patch notes ↗</button></div><p id="update-status" role="status" aria-live="polite"></p></footer>
+</main>
+</body></html>
