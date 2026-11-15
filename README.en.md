@@ -19,6 +19,8 @@ DOTA 2 desktop companions · AI voice chat · Bilingual phrases · Text & screen
 
 **New in source: Dota English learning.** Open Settings → Dota English for offline bilingual hero, ability, item and team-expression lessons, pronunciation, saved words and spaced-review quizzes. Refresh the dated catalog from Valve inside the page. The desktop companion stays available. See [the implementation plan](docs/DOTAPAD_LEARNING_PLAN.md) and [progress log](docs/DOTAPAD_LEARNING_PROGRESS.md).
 
+Daily practice now includes 5/10-lesson sessions, saved-only quizzes, automatic resume and mistake summaries. See the [daily practice guide](docs/DOTAPAD_DAILY_PRACTICE.md).
+
 
 <br>
 

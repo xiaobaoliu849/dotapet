@@ -2,7 +2,7 @@
 <html lang="en" data-settings-theme="green">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <script src="i18n.js"></script><title>DotaPad · Learn</title>
   <link rel="stylesheet" href="settings-theme.css"><link rel="stylesheet" href="learning.css">
   <script src="learning.js" type="module"></script>
@@ -14,8 +14,17 @@
   <nav class="tabs" aria-label="Learning mode"><button id="browse" aria-pressed="true">Explore</button><button id="saved" aria-pressed="false">My words</button><button id="quiz" aria-pressed="false">Practice</button></nav>
   <div class="tools"><label><span id="search-label">Find a lesson</span><input id="search" type="search" placeholder="Search English or Chinese…" maxlength="120"></label><label><span id="kind-label">Topic</span><select id="kind"><option value="all">All topics</option><option value="hero">Heroes</option><option value="ability">Hero abilities</option><option value="item">Items</option><option value="phrase">Team expressions</option></select></label><label><span id="direction-label">Practice direction</span><select id="direction" translate="no"><option value="en">English → 中文</option><option value="zh">中文 → English</option></select></label></div>
   <p id="message" role="status" aria-live="polite"></p>
-  <section id="practice" class="practice" hidden aria-label="Quiz"><p id="quiz-counter"></p><p id="quiz-context" translate="no"></p><h2 id="question" translate="no"></h2><div id="answers" translate="no"></div><p id="result" role="status" aria-live="polite"></p><p id="quiz-explanation" translate="no"></p><button id="next">Next question →</button></section>
+  <p id="audio-status" class="audio-status" role="status" aria-live="polite" hidden></p>
+  <button id="practice-saved" hidden>Practice my saved words →</button>
+  <section id="study-setup" class="study-setup" hidden aria-labelledby="study-heading">
+    <h2 id="study-heading">Your daily practice</h2><p id="study-help">Start with due mistakes and reviews, then learn something new.</p>
+    <p id="today" role="status"></p>
+    <div class="study-options"><label><span id="size-label">Session length</span><select id="session-size"><option value="5">5 lessons</option><option value="10">10 lessons</option></select></label><label><span id="scope-label">Word collection</span><select id="session-scope"><option value="all">All matching lessons</option><option value="saved">Saved words only</option></select></label><button id="start-session">Start session →</button></div>
+    <p id="study-status" role="status" aria-live="polite"></p>
+  </section>
+  <section id="practice" class="practice" hidden aria-label="Quiz"><p id="quiz-counter"></p><progress id="session-progress" value="0" max="5" aria-label="Session progress"></progress><p id="quiz-context" translate="no"></p><h2 id="question" translate="no"></h2><div id="answers" translate="no"></div><p id="result" role="status" aria-live="polite"></p><p id="quiz-explanation" translate="no"></p><div id="quiz-audio" class="actions" translate="no"></div><button id="next">Next question →</button></section>
+  <section id="session-summary" class="practice" hidden aria-labelledby="summary-heading"><h2 id="summary-heading">Session complete</h2><p id="summary-score" role="status"></p><p id="summary-tip"></p><h3 id="mistakes-heading">Words to revisit</h3><div id="session-mistakes" translate="no"></div><button id="new-session">Plan another session →</button></section>
   <section id="library" aria-label="Bilingual lessons"><div id="lessons" class="lessons" translate="no"></div><button id="more" hidden>Load more</button></section>
-  <footer><h2 id="sources-heading">Keep your knowledge current</h2><p id="source" translate="no"></p><p id="freshness">Descriptions are a dated snapshot. Check official patch notes before relying on balance values.</p><div class="source-actions"><button id="refresh">Refresh from Valve</button><button id="patches">Official patch notes ↗</button></div><p id="update-status" role="status" aria-live="polite"></p></footer>
+  <footer><h2 id="sources-heading">Keep your knowledge current</h2><p id="source" translate="no"></p><p id="freshness">Descriptions are a dated snapshot. Check official patch notes before relying on balance values.</p><p id="audio-source">Audio uses your bilingual library's AI recordings at their original speed. Archive recordings can differ from current lesson text. Missing recordings are marked explicitly.</p><div class="source-actions"><button id="refresh">Refresh from Valve</button><button id="patches">Official patch notes ↗</button></div><p id="update-status" role="status" aria-live="polite"></p></footer>
 </main>
 </body></html>

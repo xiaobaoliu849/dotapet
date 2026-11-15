@@ -1,0 +1,254 @@
+{
+  "schema": 1,
+  "model": "faster-whisper-base",
+  "modelRevision": "ebe41f70d5b6dfa9166e2c581c45c9c0cfc57b66",
+  "fasterWhisperVersion": "1.1.0",
+  "device": "cpu/int8",
+  "advisoryOnly": true,
+  "entries": [
+    {
+      "id": "ability:1447",
+      "name": "Persecutor",
+      "file": "ability-1447.mp3",
+      "transcript": "Persecutor. Attach slow enemies based on how much mana they are missing. The slow starts at 60% mana, and reaches its maximum at 0 mana. It has no effect if the enemy is above 60% mana.",
+      "audioSha256": "4ca08af4fe208ac34ecd6f61179810c152d221320e3a8eb0c9f82161aaeb855d",
+      "expectedNumbers": {
+        "60": 2,
+        "0": 1
+      },
+      "recognizedNumbers": {
+        "60": 2,
+        "0": 1
+      },
+      "numberCountsMatch": true,
+      "missingCriticalNumberChecks": [],
+      "normalizedWordSimilarity": 0.974,
+      "status": "asr-check-passed",
+      "note": "Automatic recognition can mishear names or numbers. Listening approval remains false."
+    },
+    {
+      "id": "ability:5022",
+      "name": "Marksmanship",
+      "file": "ability-5022.mp3",
+      "transcript": "Marksmanship. Drow's experiences in battle grant her a chance to launch arrows with incredible accuracy and effectiveness. Pierce us through the enemy's defenses, ignoring their base armor. This ability is disabled if there is an enemy hero within 300 range.",
+      "audioSha256": "a036db933ddd65c70dd0fc4d3740a23d902cc5ef4e106531c0f6e74df0cfce5e",
+      "expectedNumbers": {
+        "300": 1
+      },
+      "recognizedNumbers": {
+        "300": 1
+      },
+      "numberCountsMatch": true,
+      "missingCriticalNumberChecks": [],
+      "normalizedWordSimilarity": 0.964,
+      "status": "asr-check-passed",
+      "note": "Automatic recognition can mishear names or numbers. Listening approval remains false."
+    },
+    {
+      "id": "ability:5062",
+      "name": "Necromastery",
+      "file": "ability-5062.mp3",
+      "transcript": "Necromastery. Shadowfiend steals the soul from units he kills, gaining one bonus damage per soul. Hero kills grant 4 souls. On death, he releases 30% of them from bondage.",
+      "audioSha256": "7ecc4513cca1ce1ef205ce5cf5ee06add1e00615779a3f65e3979fd197c304bf",
+      "expectedNumbers": {
+        "1": 1,
+        "4": 1,
+        "30": 1
+      },
+      "recognizedNumbers": {
+        "1": 1,
+        "4": 1,
+        "30": 1
+      },
+      "numberCountsMatch": true,
+      "missingCriticalNumberChecks": [],
+      "normalizedWordSimilarity": 0.951,
+      "status": "asr-check-passed",
+      "note": "Automatic recognition can mishear names or numbers. Listening approval remains false."
+    },
+    {
+      "id": "item:1097",
+      "name": "Disperser",
+      "file": "item-1097.mp3",
+      "transcript": "Disperser, Active, Suppress. Disbells both the wearer and the target. Enemy targets are slowed for 4 seconds. Allied targets gain bonus movement speed and 40% slow resistance for 4 seconds. The caster always receives the ally benefit on cast. The movement speed reduction and increase both starred at 100% and gradually decreased to 0% over the buff duration. Dispel type, basic dispel. Passive, mana break. Each attack burns 40 mana from the target, and deals 1 physical damage per mana burned. Illusions do not burn mana.",
+      "audioSha256": "77d40248009d1db2c82fe02ca61d63c5816b2c9c336246708e43d48fa5d226c8",
+      "expectedNumbers": {
+        "4": 2,
+        "40": 2,
+        "100": 1,
+        "0": 1,
+        "1": 1
+      },
+      "recognizedNumbers": {
+        "4": 2,
+        "40": 2,
+        "100": 1,
+        "0": 1,
+        "1": 1
+      },
+      "numberCountsMatch": true,
+      "missingCriticalNumberChecks": [],
+      "normalizedWordSimilarity": 0.961,
+      "status": "asr-check-passed",
+      "note": "Automatic recognition can mishear names or numbers. Listening approval remains false."
+    },
+    {
+      "id": "item:119",
+      "name": "Shiva's Guard",
+      "file": "item-119.mp3",
+      "transcript": "Shiva's Guard. Active, Arctic Blast. Emits a freezing way that deals 225 magical damage to enemies and reduces their movement speed by 40% for 4 seconds. Radius, 825. Passive, freezing aura. Reduces the attack speed of all enemies by 40. aura Radius, 1200.",
+      "audioSha256": "25c800911aa9f05b6dd336ceeb8f5b30866073778cf6540adb2b22f57e862e5e",
+      "expectedNumbers": {
+        "225": 1,
+        "40": 2,
+        "4": 1,
+        "825": 1,
+        "1200": 1
+      },
+      "recognizedNumbers": {
+        "225": 1,
+        "40": 2,
+        "4": 1,
+        "825": 1,
+        "1200": 1
+      },
+      "numberCountsMatch": true,
+      "missingCriticalNumberChecks": [],
+      "normalizedWordSimilarity": 0.978,
+      "status": "asr-check-passed",
+      "note": "Automatic recognition can mishear names or numbers. Listening approval remains false."
+    },
+    {
+      "id": "item:147",
+      "name": "Manta Style",
+      "file": "item-147.mp3",
+      "transcript": "Manta Style Active, Mirror Image Creates two images of your hero that last 18 seconds. Malei images deal 33% damage, while ranged images deal 25%. Illusions take 300% damage. Dispel type, basic dispel.",
+      "audioSha256": "deed28d87ff24a7c523c32575682f851c569ea9994efad1c91a79e8bc71cc9a6",
+      "expectedNumbers": {
+        "2": 1,
+        "18": 1,
+        "33": 1,
+        "25": 1,
+        "300": 1
+      },
+      "recognizedNumbers": {
+        "2": 1,
+        "18": 1,
+        "33": 1,
+        "25": 1,
+        "300": 1
+      },
+      "numberCountsMatch": true,
+      "missingCriticalNumberChecks": [],
+      "normalizedWordSimilarity": 0.972,
+      "status": "asr-check-passed",
+      "note": "Automatic recognition can mishear names or numbers. Listening approval remains false."
+    },
+    {
+      "id": "item:147",
+      "name": "Manta Style",
+      "file": "item-147-plus10.mp3",
+      "transcript": "Manta Style. Active, Mirror Image. Creates two images of your hero that last 18 seconds. Malay images deal 33% damage, while ranged images deal 25%. Illusions take 300% damage. Dispel type, basic dispel.",
+      "audioSha256": "66a3636df7780c632952f3805279b97126d31c0ec493dbb01ac1783fb9efe05d",
+      "expectedNumbers": {
+        "2": 1,
+        "18": 1,
+        "33": 1,
+        "25": 1,
+        "300": 1
+      },
+      "recognizedNumbers": {
+        "2": 1,
+        "18": 1,
+        "33": 1,
+        "25": 1,
+        "300": 1
+      },
+      "numberCountsMatch": true,
+      "missingCriticalNumberChecks": [],
+      "normalizedWordSimilarity": 0.972,
+      "status": "asr-check-passed",
+      "note": "Automatic recognition can mishear names or numbers. Listening approval remains false."
+    },
+    {
+      "id": "ability:5048",
+      "name": "Sacred Arrow",
+      "file": "ability-5048.mp3",
+      "transcript": "Sacred Arrow Fire's a long-range arrow with deadly precision, which stuns and damages the first enemy unit at strikes. The stun starts at 0.01 seconds. Its maximum duration is 2.3, 3.2, 4.1, or 5 seconds, at ability levels 1 through 4, respectively. Up to 180 bonus damage is added, based on the distance the arrow travels to its target. It instantly kills the first non-engine creep that it hits.",
+      "audioSha256": "b517195c26ade05d9bbaa2a9293bebf094b141066ff73eb9881d5855f0b17faa",
+      "expectedNumbers": {
+        "0.01": 1,
+        "2.3": 1,
+        "3.2": 1,
+        "4.1": 1,
+        "5": 1,
+        "1": 1,
+        "4": 1,
+        "180": 1
+      },
+      "recognizedNumbers": {
+        "0.01": 1,
+        "2.3": 1,
+        "3.2": 1,
+        "4.1": 1,
+        "5": 1,
+        "1": 1,
+        "4": 1,
+        "180": 1
+      },
+      "numberCountsMatch": true,
+      "missingCriticalNumberChecks": [],
+      "normalizedWordSimilarity": 0.951,
+      "status": "asr-check-passed",
+      "note": "Automatic recognition can mishear names or numbers. Listening approval remains false."
+    },
+    {
+      "id": "item:121",
+      "name": "Bloodstone",
+      "file": "item-121.mp3",
+      "transcript": "Bloodstone. Its active ability, Bloodpacked, increases Bloodstone's spell lifesteal to 60% for 5 seconds. Its passive, spell weakness aura, causes enemy units within 1200 range to take 10% more damage from spells.",
+      "audioSha256": "58e999e4b9f9ced5a27649a6b94cae796314d0adfe279263da6f2f1188fdf9da",
+      "expectedNumbers": {
+        "60": 1,
+        "5": 1,
+        "1200": 1,
+        "10": 1
+      },
+      "recognizedNumbers": {
+        "60": 1,
+        "5": 1,
+        "1200": 1,
+        "10": 1
+      },
+      "numberCountsMatch": true,
+      "missingCriticalNumberChecks": [],
+      "normalizedWordSimilarity": 0.971,
+      "status": "asr-check-passed",
+      "note": "Automatic recognition can mishear names or numbers. Listening approval remains false."
+    },
+    {
+      "id": "item:121",
+      "name": "Bloodstone",
+      "file": "item-121-plus10.mp3",
+      "transcript": "Bloodstone. Its active ability, Bloodpact, increases Bloodstone's spell lifesteal to 60% for 5 seconds. Its passive, spell weakness aura, causes enemy units within 1200 range to take 10% more damage from spells.",
+      "audioSha256": "ea41ca555e1d5dde1258a8c16a15c61c6104edde5aa24b4dfe3c252f97fb8486",
+      "expectedNumbers": {
+        "60": 1,
+        "5": 1,
+        "1200": 1,
+        "10": 1
+      },
+      "recognizedNumbers": {
+        "60": 1,
+        "5": 1,
+        "1200": 1,
+        "10": 1
+      },
+      "numberCountsMatch": true,
+      "missingCriticalNumberChecks": [],
+      "normalizedWordSimilarity": 1.0,
+      "status": "asr-check-passed",
+      "note": "Automatic recognition can mishear names or numbers. Listening approval remains false."
+    }
+  ]
+}

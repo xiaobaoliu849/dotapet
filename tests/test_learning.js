@@ -50,10 +50,10 @@ test('learning IPC rejects foreign frames and persists progress across controlle
   assert.equal((await handlers.get('learning:load')({ sender: contents, senderFrame: { url: frame.url } })).ok, false);
   assert.equal((await handlers.get('learning:progress')(trusted, 'bogus', 'saved', true)).ok, false);
   assert.equal((await handlers.get('learning:progress')(trusted, id, 'saved', true)).ok, true);
-  await handlers.get('learning:progress')(trusted, id, 'answer', false);
+  assert.equal((await handlers.get('learning:progress')(trusted, id, 'answer', false)).ok, false, 'session answers use validated session IPC');
   createLearningController(options);
   const loaded = await handlers.get('learning:load')(trusted);
-  assert.equal(loaded.progress[id].saved, true); assert.equal(loaded.progress[id].attempts, 1);
+  assert.equal(loaded.progress[id].saved, true);
 });
 
 test('updater joins live-shaped feeds and records unnamed internal item omissions', async () => {

@@ -24,7 +24,7 @@ The core learning loop is **explore → read English → reveal Chinese → list
 3. Bundle a normalized catalog with stable numeric hero, ability and item IDs and stable phrase IDs.
 4. Search English, Chinese, descriptions and parent hero names. Filter by subject.
 5. Display English first, Chinese names beside it, and Chinese descriptions behind a disclosure.
-6. Offer English pronunciation through system speech synthesis and cancel playback on page switches.
+6. Play the author's bundled AI-generated MP3 recordings from the bilingual lexicon at their original speed, with stop controls and automatic stop on navigation. Hero recordings are biographies; ability/item recordings include explanations. Mark missing recordings and label archive wording clearly.
 7. Save lessons to a personal wordbook and persist quiz progress under Electron `userData`.
 8. Offer multiple-choice recognition in both language directions, with distinct distractors from the same topic.
 9. Schedule successful answers after 1, 3, 7, 14 and 30 days; failures become due after one minute. A practice session avoids repeating a card; start a new session to review newly due mistakes.
@@ -52,9 +52,9 @@ Developer refresh: `npm run learning:update`. This updates the bundled snapshot 
 
 - Explain recurring ability language: “within range,” “per second,” “on hit,” “dispel,” “channel,” “root,” “silence,” “pierce debuff immunity,” and “cooldown.”
 - Add original bilingual example sentences and usage notes, clearly separated from Valve's mechanics descriptions.
-- Introduce guided beginner lessons and short daily sessions. Add saved-only practice and configurable session length.
+- Implemented on November 15, 2026: short daily sessions with 5/10 lessons, saved-only practice, due-mistake priority, automatic resume and completion summaries. Guided beginner lessons remain future work.
 - Add cloze questions and typed answers with accepted synonyms, punctuation normalization and Chinese variants.
-- Add pronunciation pace and voice preferences; verify English system-voice support across supported Windows versions.
+- Add optional playback speed controls and regenerate stale or missing recordings from verified source text. The initial Windows system-voice playback has been replaced with the author's MP3 library.
 - Include innate abilities, facets, talents, Shard and Scepter changes as separate lesson types. The initial catalog focuses on the abilities returned in the normal ability list and item descriptions.
 
 ### Phase 4 — Patch learning (next iteration)
@@ -79,15 +79,22 @@ Developer refresh: `npm run learning:update`. This updates the bundled snapshot 
 | --- | --- |
 | `src/learning/catalog.json` | Bundled, dated bilingual snapshot |
 | `src/learning/model.js` | Text normalization, localization pairing, search, quizzes and review intervals |
+| `src/learning/study.js` | Validated session options, due-review ordering, bounded queues and local-day summaries |
+| `src/learning/audio-manifest.json` | Stable lesson-ID mapping and missing-recording inventory |
+| `src/renderer/assets/learning-audio/` | Original imported MP3 files bundled for offline use |
+| `src/renderer/learning-audio.js` | Single-track MP3 playback, stop and playback-error handling |
 | `src/learning/update.js` | Official feed fetching, validation and normalization |
 | `src/main/learningController.js` | Trusted IPC, catalog cache, progress writes and external patch link |
 | `src/preload/learning.js` | Narrow bridge for learning actions |
 | `src/renderer/learning.*` | Responsive learning UI |
 | `scripts/update-learning.mjs` | Maintainer snapshot refresh |
+| `scripts/import-learning-audio.mjs` | Import matching MP3 files from the bilingual project's public audio directory |
 | `tests/test_learning.js` | Curriculum, review, localization, persistence and IPC tests |
 | `src/main/learningSmoke.js` | Real Electron search, bookmark, quiz and layout verification |
 
-Progress: `learning-progress.json` in `userData`, keyed by lesson ID with `saved`, `box`, `attempts`, `correct` and `due`. Cached catalog: `learning-catalog.json` in the same directory. Use synchronous atomic writes for small progress updates; catalog network work stays asynchronous. Learning IPC accepts only the exact top-level learning document and only known actions and lesson IDs. It exposes no filesystem paths or renderer-controlled external URLs. The renderer has no network access, no Node integration and a restrictive CSP.
+Current learning state: `learning-state.json` in `userData`, with stable-ID progress, study preferences, the current session and the last 180 completed-session summaries. Existing `learning-progress.json` records are migrated automatically on the first state write; the old file is left in place. Each answer updates progress, session position and completion history in one atomic write. A retried answer cannot count twice. Session questions retain a snapshot of their lessons so a catalog refresh cannot change a session already in progress.
+
+Cached catalog: `learning-catalog.json` in the same directory. Use synchronous atomic writes for small progress updates; catalog network work stays asynchronous. Learning IPC accepts only the exact top-level learning document and only known actions and lesson IDs. It exposes no filesystem paths or renderer-controlled external URLs. The renderer has no network access, no Node integration and a restrictive CSP.
 
 ## Acceptance and validation
 
