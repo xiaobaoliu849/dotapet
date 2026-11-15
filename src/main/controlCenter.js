@@ -9,7 +9,7 @@ export const HUB_TOP = 40;
 export const SIDEBAR_SLIDE_MS = 200;
 /** Pages drawn by the shell itself; every other page is an isolated view. */
 export const NATIVE_PAGES = ['help'];
-export const PAGE_ORDER = ['services', 'appearance', 'phrases', 'help', 'update'];
+export const PAGE_ORDER = ['services', 'learning', 'appearance', 'phrases', 'help', 'update'];
 
 /**
  * Main owns the geometry so the sidebar and the page view never disagree.

@@ -31,8 +31,8 @@ export async function runPhrasesSmoke({ controlCenter, openPanel, getCopiedText,
   const services = controlCenter.contents('services');
   services.focus();
   services.sendInputEvent({ type: 'keyDown', keyCode: 'Tab', modifiers: ['control'] });
-  for (let i = 0; i < 50 && controlCenter.active !== 'appearance'; i++) await new Promise(r => setTimeout(r, 20));
-  if (controlCenter.active !== 'appearance') throw new Error('Ctrl+Tab did not switch settings pages');
+  for (let i = 0; i < 50 && controlCenter.active !== 'learning'; i++) await new Promise(r => setTimeout(r, 20));
+  if (controlCenter.active !== 'learning') throw new Error('Ctrl+Tab did not switch settings pages');
 
   await navigateHub(controlCenter, 'phrases');
   const page = controlCenter.contents('phrases');
