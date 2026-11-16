@@ -18,6 +18,43 @@ function fixture(t, extra = {}) {
   return { dataDirectory, reload, call, handlers, event };
 }
 
+test('guided starter lessons persist learning checkpoints before recall and count retries once', async t => {
+  const f = fixture(t);
+  const started = await f.call('start-session', { scope: 'starter-lane', direction: 'zh' });
+  assert.equal(started.ok, true);
+  const active = started.study.active;
+  assert.equal(active.guideIndex, 0); assert.equal(active.items.length, 5);
+  const [first, second] = active.items;
+  assert.equal((await f.call('answer-session', active.id, first.lesson.id, first.question.answer)).ok, false);
+  assert.equal((await f.call('advance-guide', active.id, second.lesson.id)).ok, false);
+  assert.equal((await f.call('advance-guide', 'foreign-session', first.lesson.id)).ok, false);
+  assert.equal((await f.call('advance-guide', active.id, first.lesson.id)).study.active.guideIndex, 1);
+  assert.equal((await f.call('advance-guide', active.id, first.lesson.id)).study.active.guideIndex, 1);
+  f.reload();
+  const loaded = await f.call('load');
+  assert.equal(loaded.study.active.guideIndex, 1);
+  assert.equal(loaded.progress[first.lesson.id], undefined, 'reading does not count as a correct answer');
+  assert.equal((await f.call('start-session', { scope: 'starter-team' })).study.active.id, active.id);
+  for (const item of active.items.slice(1)) assert.equal((await f.call('advance-guide', active.id, item.lesson.id)).ok, true);
+  f.reload();
+  assert.equal((await f.call('load')).study.active.guideIndex, 5);
+  for (const item of active.items) assert.equal((await f.call('answer-session', active.id, item.lesson.id, item.question.answer)).ok, true);
+  const finished = await f.call('load');
+  assert.ok(finished.study.active.completedAt);
+  assert.equal(finished.study.history[0].correct, 5);
+  assert.equal(finished.study.history[0].scope, 'starter-lane');
+  assert.equal((await f.call('start-session', { scope: 'starter-lane' })).empty, true, 'future reviews remain scheduled');
+});
+
+test('failed guided checkpoint writes keep the learning cursor and reject foreign callers', async t => {
+  const f = fixture(t), started = await f.call('start-session', { scope: 'starter-team' });
+  const active = started.study.active, id = active.items[0].lesson.id;
+  assert.equal((await f.handlers.get('learning:advance-guide')({ sender: {}, senderFrame: f.event.senderFrame }, active.id, id)).ok, false);
+  fs.mkdirSync(path.join(f.dataDirectory, 'learning-state.json.tmp'));
+  assert.equal((await f.call('advance-guide', active.id, id)).ok, false);
+  assert.equal((await f.call('load')).study.active.guideIndex, 0);
+});
+
 test('saved spoken callouts can be practiced, answered and resumed through the same session IPC', async t => {
   const f = fixture(t), id = 'spoken:smoke-triangle';
   assert.equal((await f.call('progress', id, 'saved', true)).ok, true);

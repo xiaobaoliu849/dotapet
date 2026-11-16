@@ -8,6 +8,7 @@ import { SPOKEN_PHRASES, learningCollection } from '../learning/spokenPhrases.js
 import { fetchCatalog } from '../learning/update.js';
 import { planStudy, studyOptions, studySummary, STUDY_DEFAULTS } from '../learning/study.js';
 import { diffCatalog } from '../learning/contentAudit.js';
+import { starterUnit, starterAvailability, isLearningStep } from '../learning/starterPath.js';
 
 export function createLearningController({ electron, hub, rendererDirectory, dataDirectory, refreshCatalog = fetchCatalog, onPracticeVoice = null, onStopVoice = null }) {
   const { ipcMain, shell } = electron;
@@ -47,6 +48,7 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
   );
   const audio = read(path.join(rendererDirectory, '../learning/audio-manifest.json'), { entries: {}, missing: [] });
   const itemImages = read(path.join(rendererDirectory, '../learning/item-images.json'), { entries: {}, missing: [] });
+  const starterEvidence = read(path.join(rendererDirectory, '../learning/starter-shop-evidence.json'), { entries: {} });
   const baseline = read(path.join(rendererDirectory, '../learning/audio-baseline.json'), { entries: {} });
   const audioBaseline = { entries: Object.fromEntries(Object.entries(baseline.entries).map(([id, entry]) => [id, { candidateSpeech: entry.candidateSpeech, evidence: entry.evidence }])) };
   const cached = read(catalogFile, null);
@@ -70,7 +72,7 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
     if (!trusted(event)) return { ok: false, error: 'Untrusted learning page' };
     try { return { ok: true, ...await fn(...args) }; } catch (error) { return { ok: false, error: error.message }; }
   };
-  ipcMain.handle('learning:load', respond(() => ({ catalog: lessonCatalog(), heroMeta, itemImages, audio, audioBaseline, ...snapshot() })));
+  ipcMain.handle('learning:load', respond(() => ({ catalog: lessonCatalog(), heroMeta, itemImages, starterEvidence, audio, audioBaseline, ...snapshot() })));
   ipcMain.handle('learning:progress', respond((id, action, value) => {
     const known = catalog.lessons.some(r => r.id === id) || SPOKEN_PHRASES.some(p => p.id === id);
     if (!known) throw new Error('Unknown lesson');
@@ -83,15 +85,29 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
   ipcMain.handle('learning:start-session', respond(options => {
     const preferences = studyOptions(options);
     if (state.active && !state.active.completedAt) return snapshot();
+    const unit = starterUnit(preferences.scope);
+    if (unit && !unit.lessonIds.every(id => catalog.lessons.some(lesson => lesson.id === id && starterAvailability(starterEvidence, id, lesson)))) {
+      throw new Error('This starter lesson needs verified shop data before it can be started.');
+    }
     const planned = planStudy(learningCollection(catalog.lessons), state.progress, preferences);
     if (!planned.items.length) return { ...snapshot(), empty: true };
-    const active = { id: randomUUID(), startedAt: Date.now(), options: planned.options, items: planned.items, answers: [] };
+    const active = { id: randomUUID(), startedAt: Date.now(), options: planned.options, items: planned.items, answers: [], ...(unit ? { guideIndex: 0 } : {}) };
     commit({ ...state, preferences, active });
+    return snapshot();
+  }));
+  ipcMain.handle('learning:advance-guide', respond((sessionId, lessonId) => {
+    const active = state.active;
+    if (!active || active.id !== sessionId || !Number.isInteger(active.guideIndex)) throw new Error('No matching guided lesson');
+    const index = active.items.findIndex(item => item.lesson.id === lessonId);
+    if (index >= 0 && index < active.guideIndex) return snapshot();
+    if (!isLearningStep(active) || index !== active.guideIndex) throw new Error('Invalid learning step');
+    commit({ ...state, active: { ...active, guideIndex: active.guideIndex + 1 } });
     return snapshot();
   }));
   ipcMain.handle('learning:answer-session', respond((sessionId, lessonId, choice) => {
     const active = state.active;
     if (!active || active.id !== sessionId) throw new Error('This study session is no longer active');
+    if (isLearningStep(active)) throw new Error('Complete the learning cards before starting recall.');
     // Retried IPC messages must not count a successful disk write twice.
     if (active.answers.some(answer => answer.id === lessonId)) return snapshot();
     const item = active.items[active.answers.length];
