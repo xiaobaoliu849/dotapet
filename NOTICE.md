@@ -9,3 +9,5 @@ Electron、ws 和构建工具是第三方组件，各自的许可证随 npm 依�
 刀塔英语学堂中的英雄、技能和物品名称及说明来自 Valve 的 Dota 2 官方双语数据源（https://www.dota2.com/datafeed/），相关游戏文字、角色和商标权利属于 Valve。项目 MIT 许可仅适用于本项目自己的代码，不重新许可 Valve 的游戏内容。团队交流短语沿用作者本机的 Dota 2 Bilingual Lexicon 项目。课程保留获取时间；未由官方核验的版本号不会被推断。此项目非 Valve 官方产品。
 
 学习页面的 MP3 来自作者在 Dota 2 Bilingual Lexicon 项目中生成的 AI 录音，不是 Valve 官方游戏配音。录音按原始文件导入，不重新生成或变速。历史录音中的游戏说明可能与最新版本文字不同。
+
+学习页面内置的物品 PNG 图片来自 Valve 的 Steam CDN（https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/），用于离线识图学习。每张图片的来源及 SHA256 保存在 `src/learning/item-images.json`。图片及相关游戏内容权利属于 Valve，不适用本项目的 MIT 代码许可。

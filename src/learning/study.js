@@ -2,6 +2,16 @@ import { filterLessons, makeQuestion } from './model.js';
 
 export const STUDY_DEFAULTS = { size: 5, scope: 'all', kind: 'all', search: '', direction: 'en' };
 
+export function reviewCounts(lessons, progress, now = Date.now()) {
+  let reviews = 0, unseen = 0;
+  for (const lesson of lessons) {
+    const record = progress[lesson.id];
+    if (!record?.attempts) unseen++;
+    else if (!record.due || record.due <= now) reviews++;
+  }
+  return { reviews, unseen };
+}
+
 export function studyOptions(value = {}) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Invalid study options');
   const options = { ...STUDY_DEFAULTS, ...value };

@@ -43,7 +43,7 @@ export async function fetchCatalog({ fetcher = fetch, onProgress = () => {} } = 
         output[index] = hero ? [
           ...pairRecords([{ ...a, desc_loc: a.hype_loc }], [{ ...b, desc_loc: b.hype_loc }], 'hero'),
           ...pairRecords(a.abilities || [], b.abilities || [], 'ability', `${a.name_loc} · ${b.name_loc}`),
-        ] : pairRecords([a], [b], 'item');
+        ] : pairRecords([{ ...a, name: task.name }], [b], 'item');
         onProgress({ done: ++done, total: tasks.length });
       }
     } catch (error) { failed = true; throw error; }

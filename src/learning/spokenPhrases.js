@@ -1,3 +1,15 @@
+/** Include spoken callouts in the same saved-word and review collection as catalog lessons. */
+export function learningCollection(lessons) {
+  const entries = new Map(lessons.map(lesson => [lesson.id, lesson]));
+  for (const phrase of SPOKEN_PHRASES) {
+    if (entries.has(phrase.id)) continue;
+    const category = SPOKEN_CATEGORIES.find(row => row.key === phrase.category);
+    entries.set(phrase.id, { ...phrase, kind: 'phrase', parent: `${category.en} · ${category.zh}`,
+      descriptionEn: [phrase.alt, phrase.tip].filter(Boolean).join('\n'), descriptionZh: phrase.zh });
+  }
+  return [...entries.values()];
+}
+
 export const SPOKEN_CATEGORIES = [
   { key: 'laning', en: 'Laning & Harass', zh: '对线与拉扯', icon: '⚔️' },
   { key: 'gank', en: 'Ganks & Vision', zh: '开雾抓人与视野', icon: '🌫️' },

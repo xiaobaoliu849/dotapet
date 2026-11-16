@@ -4,13 +4,76 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { filterLessons, recordAnswer, makeQuestion, pairRecords, describe } from '../src/learning/model.js';
+import { filterLessons, recordAnswer, makeQuestion, pairRecords, describe, itemImageUrl } from '../src/learning/model.js';
 import { summarizeMastery } from '../src/learning/mastery.js';
 import { buildHeroPracticePersona, buildPhrasePracticePersona } from '../src/learning/voicePractice.js';
 import { createLearningController } from '../src/main/learningController.js';
 import { fetchCatalog } from '../src/learning/update.js';
+import { createHash } from 'node:crypto';
+import { itemImageSources } from '../src/learning/itemImages.js';
+import { itemCoaching } from '../src/learning/itemCoaching.js';
+import { reviewCounts } from '../src/learning/study.js';
+import { learningCollection } from '../src/learning/spokenPhrases.js';
 
 const catalog = JSON.parse(fs.readFileSync(new URL('../src/learning/catalog.json', import.meta.url)));
+test('every catalog item has a bundled PNG with a verified signature and content hash', () => {
+  const manifest = JSON.parse(fs.readFileSync(new URL('../src/learning/item-images.json', import.meta.url)));
+  assert.deepEqual(manifest.missing, []);
+  for (const item of catalog.lessons.filter(row => row.kind === 'item')) {
+    const entry = manifest.entries[item.id];
+    assert.ok(entry, item.id);
+    assert.match(entry.file, /^\d+\.png$/);
+    const png = fs.readFileSync(new URL('../src/renderer/assets/learning-items/' + entry.file, import.meta.url));
+    assert.equal(png.subarray(0, 8).toString('hex'), '89504e470d0a1a0a', item.id);
+    assert.ok(png.readUInt32BE(16) > 0 && png.readUInt32BE(20) > 0);
+    assert.equal(createHash('sha256').update(png).digest('hex'), entry.sha256, item.id);
+    assert.equal(itemImageSources(item, manifest)[0], 'assets/learning-items/' + entry.file);
+  }
+});
+
+test('item images preserve identity across refresh, reject unsafe paths and support new official slugs', () => {
+  const item = { id: 'item:1', kind: 'item', en: 'Blink Dagger' };
+  const manifest = { entries: { 'item:1': { file: '1.png', name: 'Blink Dagger', slug: 'blink' } } };
+  assert.deepEqual(itemImageSources(item, manifest), ['assets/learning-items/1.png']);
+  assert.deepEqual(itemImageSources({ ...item, en: 'Renamed item' }, manifest), []);
+  assert.deepEqual(itemImageSources({ ...item, internalName: 'item_different' }, manifest), ['https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/different.png', 'https://cdn.steamstatic.com/apps/dota2/images/dota_react/items/different.png']);
+  assert.deepEqual(itemImageSources({ ...item, internalName: 'item_../../escape' }, { entries: {} }), []);
+  manifest.entries['item:1'].file = '../escape.png';
+  assert.deepEqual(itemImageSources(item, manifest), []);
+  const pair = pairRecords([{ id: 1, name: 'item_blink', name_loc: 'Blink Dagger' }], [{ id: 1, name_loc: '闪烁匕首' }], 'item')[0];
+  assert.equal(pair.internalName, 'item_blink');
+  assert.equal(itemImageUrl({ name: 'item_../../escape' }), '');
+  assert.equal(itemImageUrl({ name: 123 }), '');
+  const urls = ['https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/blink.png', 'https://cdn.steamstatic.com/apps/dota2/images/dota_react/items/blink.png'];
+  manifest.entries['item:1'].file = '1.png';
+  for (const imageUrl of urls) assert.deepEqual(itemImageSources({ ...item, imageUrl }, manifest), ['assets/learning-items/1.png', ...urls]);
+  assert.deepEqual(itemImageSources({ ...item, en: 'Unknown', imageUrl: 'https://untrusted.example/blink.png' }, manifest), []);
+});
+
+test('item aliases work in both library search and session search; coaching avoids invented balance values', () => {
+  for (const [search, name] of [['bkb', 'Black King Bar'], ['tp', 'Town Portal Scroll'], ['跳刀', 'Blink Dagger'], ['羊刀', 'Scythe of Vyse']]) {
+    assert.ok(filterLessons(catalog.lessons, { kind: 'item', search }).some(row => row.en === name), search);
+  }
+  const bkb = catalog.lessons.find(row => row.en === 'Black King Bar');
+  assert.match(itemCoaching(bkb).en, /cooldown/);
+  const neutral = { kind: 'item', en: 'Test Artifact', zh: '测试宝物', descriptionEn: 'Deals damage and applies a dispel.' };
+  assert.equal(itemCoaching(neutral).en, 'I have Test Artifact.');
+  assert.deepEqual(itemCoaching(neutral).vocabulary.map(row => row.en), ['dispel', 'damage']);
+});
+
+test('review counts separate unseen and saved-only words from previously studied words', () => {
+  const lessons = ['unseen', 'saved', 'due', 'future'].map(id => ({ id }));
+  assert.deepEqual(reviewCounts(lessons, { saved: { saved: true }, due: { attempts: 1, due: 50 }, future: { attempts: 1, due: 200 } }, 100), { reviews: 1, unseen: 2 });
+});
+
+test('spoken phrases share the wordbook and mastery counts without duplicate entries', () => {
+  const collection = learningCollection(catalog.lessons);
+  const phrase = collection.find(row => row.id === 'spoken:smoke-triangle');
+  assert.equal(phrase.kind, 'phrase');
+  assert.ok(filterLessons(collection, { saved: true, progress: { [phrase.id]: { saved: true } } }).includes(phrase));
+  assert.equal(learningCollection(collection).length, collection.length);
+  assert.equal(summarizeMastery(collection, {}).find(row => row.key === 'phrase').total, collection.filter(row => row.kind === 'phrase').length);
+});
 test('catalog has unique stable IDs, bilingual lessons and all four subjects', () => {
   assert.ok(catalog.lessons.length > 900);
   assert.equal(new Set(catalog.lessons.map(r => r.id)).size, catalog.lessons.length);

@@ -15,7 +15,7 @@ export function summarizeMastery(lessons = [], progress = {}) {
   for (const phrase of SPOKEN_PHRASES) groups.phrase.push(phrase.id);
 
   return MASTERY_PILLARS.map((pillar) => {
-    const ids = groups[pillar.key] || [];
+    const ids = [...new Set(groups[pillar.key] || [])];
     let practiced = 0;
     let mastered = 0;
     let saved = 0;

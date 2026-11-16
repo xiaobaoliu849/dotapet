@@ -18,6 +18,35 @@ function fixture(t, extra = {}) {
   return { dataDirectory, reload, call, handlers, event };
 }
 
+test('saved spoken callouts can be practiced, answered and resumed through the same session IPC', async t => {
+  const f = fixture(t), id = 'spoken:smoke-triangle';
+  assert.equal((await f.call('progress', id, 'saved', true)).ok, true);
+  const loaded = await f.call('load');
+  assert.ok(loaded.catalog.lessons.some(row => row.id === id));
+  const started = await f.call('start-session', { size: 5, kind: 'phrase', scope: 'saved', direction: 'zh' });
+  assert.deepEqual(started.study.active.items.map(item => item.lesson.id), [id]);
+  const active = started.study.active, item = active.items[0];
+  assert.equal((await f.call('answer-session', active.id, id, item.question.answer)).ok, true);
+  f.reload();
+  const saved = await f.call('load');
+  assert.equal(saved.progress[id].correct, 1);
+  assert.equal(saved.progress[id].saved, true);
+});
+
+test('older cached catalogs retain bundled image metadata and the shared spoken collection', async t => {
+  const f = fixture(t), before = await f.call('load');
+  const item = before.catalog.lessons.find(row => row.id === 'item:1');
+  const { imageUrl, internalName, ...legacyItem } = item;
+  fs.writeFileSync(path.join(f.dataDirectory, 'learning-catalog.json'), JSON.stringify({
+    schema: 1, fetchedAt: '2099-01-01T00:00:00.000Z', lessons: [legacyItem],
+  }));
+  f.reload();
+  const loaded = await f.call('load');
+  assert.equal(loaded.catalog.lessons.find(row => row.id === item.id).imageUrl, imageUrl);
+  assert.equal(loaded.itemImages.entries[item.id].file, '1.png');
+  assert.ok(loaded.catalog.lessons.some(row => row.id === 'spoken:smoke-triangle'));
+});
+
 test('sessions persist answers, resume after reload, reject out-of-order answers and count retries once', async t => {
   const f = fixture(t);
   let response = await f.call('start-session', { size: 5, kind: 'hero' });

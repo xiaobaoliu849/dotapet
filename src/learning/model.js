@@ -1,3 +1,6 @@
+import { itemAliases } from './itemCoaching.js';
+import { ITEM_IMAGE_BASE, itemImageSlug } from './itemImages.js';
+
 export function cleanText(value = '') {
   return String(value).replace(/<br\s*\/?\s*>|<\/h\d>/gi, '\n').replace(/<[^>]*>/g, '')
     .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').trim();
@@ -26,8 +29,8 @@ export function balanceFacts(record) {
 }
 
 export function itemImageUrl(record) {
-  const slug = String(record?.name || '').trim().replace(/^item_/, '');
-  return slug ? `https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/${slug}.png` : '';
+  const slug = itemImageSlug(record?.name || '');
+  return slug ? `${ITEM_IMAGE_BASE}${slug}.png` : '';
 }
 
 export function pairRecords(english, chinese, kind, parent = '') {
@@ -39,6 +42,7 @@ export function pairRecords(english, chinese, kind, parent = '') {
     return [{ id: `${kind}:${record.id}`, kind, parent, en: cleanText(record.name_loc), zh: cleanText(cn.name_loc),
       descriptionEn: describe(record), descriptionZh: describe(cn),
       ...(imageUrl ? { imageUrl } : {}),
+      ...(kind === 'item' && record.name ? { internalName: record.name } : {}),
       ...(kind === 'hero' ? { biographyEn: cleanText(record.bio_loc), biographyZh: cleanText(cn.bio_loc) } : { mechanics: balanceFacts(record) }) }];
   });
 }
@@ -46,7 +50,8 @@ export function pairRecords(english, chinese, kind, parent = '') {
 export function filterLessons(lessons, { kind = 'all', search = '', saved = false, progress = {} } = {}) {
   const query = search.trim().toLocaleLowerCase();
   return lessons.filter(r => (kind === 'all' || r.kind === kind) && (!saved || progress[r.id]?.saved)
-    && [r.en, r.zh, r.parent, r.descriptionEn, r.descriptionZh].some(s => s.toLocaleLowerCase().includes(query)));
+    && [r.en, r.zh, r.parent, r.descriptionEn, r.descriptionZh, ...(r.kind === 'item' ? itemAliases(r) : [])]
+      .some(s => (s || '').toLocaleLowerCase().includes(query)));
 }
 
 export function recordAnswer(previous = {}, correct, now = Date.now()) {

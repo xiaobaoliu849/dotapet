@@ -4,7 +4,7 @@ import { pathToFileURL } from 'node:url';
 import { randomUUID } from 'node:crypto';
 import { isTrustedSettingsSender } from './aiSettingsIpc.js';
 import { recordAnswer } from '../learning/model.js';
-import { SPOKEN_PHRASES } from '../learning/spokenPhrases.js';
+import { SPOKEN_PHRASES, learningCollection } from '../learning/spokenPhrases.js';
 import { fetchCatalog } from '../learning/update.js';
 import { planStudy, studyOptions, studySummary, STUDY_DEFAULTS } from '../learning/study.js';
 import { diffCatalog } from '../learning/contentAudit.js';
@@ -46,6 +46,7 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
       ]),
   );
   const audio = read(path.join(rendererDirectory, '../learning/audio-manifest.json'), { entries: {}, missing: [] });
+  const itemImages = read(path.join(rendererDirectory, '../learning/item-images.json'), { entries: {}, missing: [] });
   const baseline = read(path.join(rendererDirectory, '../learning/audio-baseline.json'), { entries: {} });
   const audioBaseline = { entries: Object.fromEntries(Object.entries(baseline.entries).map(([id, entry]) => [id, { candidateSpeech: entry.candidateSpeech, evidence: entry.evidence }])) };
   const cached = read(catalogFile, null);
@@ -62,13 +63,14 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
   // Progress, session cursor and completion history commit together, including migration from the old progress file.
   const commit = next => { write(stateFile, next); state = next; };
   const snapshot = () => ({ progress: state.progress, study: { preferences: state.preferences, active: state.active, history: state.history } });
+  const lessonCatalog = () => ({ ...catalog, lessons: learningCollection(catalog.lessons) });
   const url = pathToFileURL(path.join(rendererDirectory, 'learning.html')).href;
   const trusted = event => isTrustedSettingsSender(event, hub.contents('learning'), url);
   const respond = fn => async (event, ...args) => {
     if (!trusted(event)) return { ok: false, error: 'Untrusted learning page' };
     try { return { ok: true, ...await fn(...args) }; } catch (error) { return { ok: false, error: error.message }; }
   };
-  ipcMain.handle('learning:load', respond(() => ({ catalog, heroMeta, audio, audioBaseline, ...snapshot() })));
+  ipcMain.handle('learning:load', respond(() => ({ catalog: lessonCatalog(), heroMeta, itemImages, audio, audioBaseline, ...snapshot() })));
   ipcMain.handle('learning:progress', respond((id, action, value) => {
     const known = catalog.lessons.some(r => r.id === id) || SPOKEN_PHRASES.some(p => p.id === id);
     if (!known) throw new Error('Unknown lesson');
@@ -81,7 +83,7 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
   ipcMain.handle('learning:start-session', respond(options => {
     const preferences = studyOptions(options);
     if (state.active && !state.active.completedAt) return snapshot();
-    const planned = planStudy(catalog.lessons, state.progress, preferences);
+    const planned = planStudy(learningCollection(catalog.lessons), state.progress, preferences);
     if (!planned.items.length) return { ...snapshot(), empty: true };
     const active = { id: randomUUID(), startedAt: Date.now(), options: planned.options, items: planned.items, answers: [] };
     commit({ ...state, preferences, active });
@@ -127,7 +129,7 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
       write(path.join(dataDirectory, 'learning-catalog.previous.json'), catalog);
       write(path.join(dataDirectory, 'learning-catalog-changes.json'), changes);
       write(catalogFile, fresh); catalog = fresh;
-      return { catalog, changes };
+      return { catalog: lessonCatalog(), changes };
     } finally { updating = false; }
   }));
   hub.register('learning', { file: 'learning.html', preload: '../preload/learning.js', background: '#f6f7f2',
