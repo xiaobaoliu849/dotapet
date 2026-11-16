@@ -2,6 +2,8 @@
 
 ## Start a session
 
+For a quick start, open Heroes, Items or another collection and choose **Practice 5 lessons**. It uses the current topic/search, or continues your existing unfinished session. Item lessons now combine offline artwork, common nicknames, a bilingual match sentence and vocabulary hints. Try “BKB”, “TP”, “跳刀” or “羊刀” in search.
+
 1. Run the source build with `npm start` and open Settings with **Alt+S**.
 2. Select **Dota English / 刀塔英语学堂** in the sidebar.
 3. Open **Practice / 练习测验**.
@@ -27,6 +29,10 @@ After the final answer, choose **See session summary / 查看学习总结**. The
 Audio now plays the existing AI-generated MP3s from the bilingual library at their original speed. Hero buttons play biographies; ability and item buttons play recorded explanations. Recordings may use older wording than the current lesson text. Items without a recording are marked explicitly. See [the audio library notes](DOTAPAD_AUDIO.md).
 
 The Practice panel counts completed sessions and answers for today using your computer's local date. It retains the latest 180 completed-session summaries. Individual word progress and the active session remain saved separately within the same state file.
+
+After a summary, **Plan another session** opens the controls so you can change the topic, direction or session length before starting. Saved spoken callouts also appear in My words and saved-only practice. “Ready to review” counts previously studied words; new lessons are shown separately.
+
+See the [usability review and implementation plan](DOTAPAD_INTUITIVE_LEARNING_PLAN.md) for findings, source locations and remaining priorities.
 
 ## 中文说明
 

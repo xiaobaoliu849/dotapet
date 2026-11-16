@@ -107,3 +107,13 @@ Recommendation and review workflow: [Content update policy](DOTAPAD_CONTENT_UPDA
 - Added offline checks for source/script/audio hashes, successful media validation, ASR number checks and unchanged original app assets. Final automated suite: **267 tests passed, 0 failed**. All ten samples passed complete decoding and ASR numeric-occurrence checks; subjective listening approval remains pending.
 
 The original regeneration queue remains an audit candidate report. Source-reviewed audition execution is tracked separately in `docs/audio-samples/batch-plan.json` and the batch manifest. The auditions are not installed as current lesson audio yet.
+
+## 2026-11-16 — Visual item learning and practice usability
+
+- Located and reviewed the reference project at `D:\Projects\dota-2-bilingual-lexicon` and the earlier scraper at `D:\DOTA2Scraper`.
+- Bundled and decoded all 408 item PNGs for offline cards and quiz pictures, with per-image sources/hashes and readable failure placeholders.
+- Added bilingual match sentences, vocabulary hints, common item aliases and a contextual five-lesson entry point.
+- Fixed hidden item pagination, unseen words counted as overdue, saved spoken phrases omitted from wordbooks/quizzes, duplicate mastery totals and next-session controls hidden behind completed summaries.
+- Kept the dated lesson descriptions and archived audio. Current-shop availability and reviewed short pronunciation clips remain separate follow-up work.
+- Validation after integration with the latest GitHub changes: 288 automated tests passed; full Electron desktop smoke passed. Legacy cached image URLs and CDN mirrors remain supported, and upstream item-image tests now run in the default suite. All 408 local image files decoded successfully in Chromium.
+- Findings, completed steps, screenshots and remaining priorities: [Intuitive learning plan](DOTAPAD_INTUITIVE_LEARNING_PLAN.md).
