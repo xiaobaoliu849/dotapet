@@ -1,5 +1,13 @@
 # Daily Dota English practice / 每日刀塔英语练习
 
+## Start here: ten familiar items
+
+The learning page now opens on **Start here / 从这里开始**. Choose **Stay in lane** or **See and move together**, each covering five item names. View each picture, read the short bilingual meaning, and say the match sentence aloud. Then recall the English names in a quiz restricted to that unit.
+
+Both learning-card position and quiz answers save automatically. Reading a card does not count as a correct answer. After finishing a unit, the main action chooses the next unit with words ready; words with future review dates remain scheduled. The units teach English, not a recommended purchase order. Their shop-source check date is displayed on the page.
+
+The [tracked roadmap](DOTAPAD_INTUITIVE_LEARNING_PLAN.md#tracked-roadmap) records completed work and the next phase: short name and match-sentence recordings.
+
 ## Start a session
 
 For a quick start, open Heroes, Items or another collection and choose **Practice 5 lessons**. It uses the current topic/search, or continues your existing unfinished session. Item lessons now combine offline artwork, common nicknames, a bilingual match sentence and vocabulary hints. Try “BKB”, “TP”, “跳刀” or “羊刀” in search.

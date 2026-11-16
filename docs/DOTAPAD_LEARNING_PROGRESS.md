@@ -117,3 +117,12 @@ The original regeneration queue remains an audit candidate report. Source-review
 - Kept the dated lesson descriptions and archived audio. Current-shop availability and reviewed short pronunciation clips remain separate follow-up work.
 - Validation after integration with the latest GitHub changes: 288 automated tests passed; full Electron desktop smoke passed. Legacy cached image URLs and CDN mirrors remain supported, and upstream item-image tests now run in the default suite. All 408 local image files decoded successfully in Chromium.
 - Findings, completed steps, screenshots and remaining priorities: [Intuitive learning plan](DOTAPAD_INTUITIVE_LEARNING_PLAN.md).
+
+## 2026-11-16 — Phase 2: guided beginner path
+
+- Converted the plan into a tracked five-phase roadmap with explicit status, acceptance criteria and checklists. Phases 1 and 2 are complete; phase 3 (short pronunciation and match-sentence recordings) is next.
+- Verified ten beginner item identities against official Chinese shop categories and Valve's item list. Stored dated source URLs, response hashes and the explicit limitation that no running-game-client check was performed.
+- Added two ordered five-item units on a default Start here page. Each item receives a picture, bilingual name, short meaning and match sentence before an English recall quiz restricted to that unit.
+- Saved learning-card checkpoints separately from quiz attempts. Validated learning-step order, retries, foreign callers and failed writes; learning cards resume after reload without inflating accuracy.
+- Preserved review dates and bookmarks. The main action routes to the next ready unit rather than repeating a unit whose reviews are scheduled for later.
+- Validation: 292 automated tests, full Electron desktop checks and English/Russian/Ukrainian settings checks passed, including local images, learned-card recovery, quizzes, next-unit routing and narrow layout. Screenshots and the next task list are linked from the roadmap. Changes are separated into curriculum, saved learning checkpoints, interface and documentation commits.

@@ -6,6 +6,50 @@ Reviewed and implemented on November 16, 2026.
 
 Make an unfamiliar English item name connect to something the player already recognizes: its picture, Chinese name, common nickname and a short sentence they can say in a match. Follow that with a small, resumable recall session.
 
+## Tracked roadmap
+
+Work proceeds one phase at a time. Each phase ends with a usable result, relevant automated and desktop checks, and an update here with completed tasks and evidence. Later phases stay pending until their own completion criteria are met.
+
+| Phase | Status | Deliverable | Completion criteria |
+|---|---|---|---|
+| 1. Reliable visual learning | Complete, pushed | Offline item images, aliases, wordbooks and practice navigation | 408 images decode; tests and desktop checks pass |
+| 2. Guided beginner path | Complete | Two small lessons covering ten familiar shop items; learn before recall | Dated shop-source evidence; explicit learning step; focused quizzes; pause/resume; no unrelated items; responsive UI |
+| 3. Short pronunciation and speaking | Next; not started | Separate buttons for a name and a useful match sentence | Exact scripts recorded; clips decode; pronunciation reviewed; archive audio remains clearly labeled |
+| 4. Active English recall | Pending | Picture-first recall and typed English answers | Accepted aliases, clear feedback, saved progress and tested keyboard use |
+| 5. Expand and refine | Pending | More scenarios and reviewed bilingual explanation segments | Consistent content review and a usability pass through the complete beginner flow |
+
+### Phase 2 checklist
+
+- [x] Verify the ten selected items against a dated official shop source; record limitations.
+- [x] Create two ordered five-item units with a clear practical purpose.
+- [x] Show each picture, English/Chinese name, short meaning and match sentence before testing.
+- [x] Keep the quiz restricted to the selected unit; preserve due-review scheduling.
+- [x] Resume an unfinished learning or quiz step without losing saved words.
+- [x] Verify with focused tests and real Electron screenshots; record the result here.
+
+Phase 2 is an English-learning sequence, not a recommended in-game purchase order. Full current-shop classification of all 408 reference entries remains separate from verifying this starter subset.
+
+### Phase 2 result — November 16, 2026
+
+- The default **Start here** page offers **Stay in lane** (Tango, Healing Salve, Magic Stick, Boots of Speed, Town Portal Scroll) and **See and move together** (Observer Ward, Sentry Ward, Dust of Appearance, Smoke of Deceit, Blink Dagger).
+- Item identities were matched in both the official Chinese shop-category list and Valve's item feed. The dated [source evidence](../src/learning/starter-shop-evidence.json) records source URLs and response hashes. This is website-listing evidence; no game-client verification is claimed. Recheck with `npm run learning:check-starter-shop`.
+- Five compact learning cards precede English recall. Each card combines a local picture, bilingual name/meaning, match sentence and bookmark. The server rejects quiz answers before the learning cards are complete.
+- Reading checkpoints save independently from quiz accuracy. Reopening the page resumes the next unread card. Quiz answers still use the existing atomic session/progress save and spaced-review dates.
+- The next action advances to the next unit with words ready to learn/review. Neither the current unit nor its distractors draw unrelated words from the full catalog. Future reviews stay scheduled.
+- **Validation:** 292 automated tests passed. Full Electron checks passed, including ten starter pictures, learn-before-recall, card bookmarks, reload recovery, focused English quizzes, next-unit routing and narrow layout. Relevant focused tests were rerun after adding item-identity guards.
+- Changes are grouped into separate curriculum/evidence, saved learning checkpoints, guided interface, and roadmap/documentation commits. English, Russian and Ukrainian settings checks also passed.
+- Previews: [starter units](images/learning-starter.png), [learning card](images/learning-guide.png), [narrow units](images/learning-starter-narrow.png).
+
+### Phase 3 task list — next
+
+1. Freeze the ten starter names and ten match-sentence scripts with source/script hashes.
+2. Prepare **20 separate short English clips**: one name clip and one sentence clip per item. Keep the existing long archive recordings separate.
+3. Decode every clip, check duration/silence and compare recognized speech against the exact script. Record review status explicitly; automated checks do not certify subjective pronunciation quality.
+4. Add **Hear the name** and **Hear the sentence** controls to learning cards, with one-at-a-time playback, clear stop/error states and keyboard labels.
+5. Verify offline playback, navigation stopping audio, saved-step recovery and narrow layout; update this roadmap with the completed evidence.
+
+After phase 3, phase 4 adds an English typing/picture-first exercise with accepted item aliases and a clear transition from recognition to recall. Phase 5 expands the same reviewed pattern to more match situations.
+
 ## Local sources inspected
 
 - `D:\Projects\dota-2-bilingual-lexicon`: the reference bilingual application. Its public official item export has 236 records; its item catalog provides Steam image URLs. DotaPet already imports its AI recordings. Reference files were read only.
@@ -38,7 +82,7 @@ Run `npm run learning:import-images -- "D:/Projects/dota-2-bilingual-lexicon"` w
 
 ## Follow-up priorities
 
-1. **Current-shop curation:** the official feed includes historical/internal items. Verified artwork does not prove an item is currently obtainable. Add an independently verified current-shop subset before presenting a “starter build” curriculum; keep the full dated reference available.
+1. **Broader current-shop curation:** phase 2 verifies the ten-item starter subset using two official sources. Classification of the other reference entries remains pending; verified artwork alone does not establish current availability.
 2. **Short pronunciation clips:** existing buttons play long archived explanations or biographies. Add separately reviewed name/callout clips and optional sentence playback. The current archived audio warnings remain relevant; image verification does not certify audio transcripts.
 3. **Production practice:** introduce a typed English answer or a picture-first recall mode after recognition practice. Current quizzes still test name translation; saying the answer aloud is voluntary and is not automatically graded.
 4. **More editorial coverage:** extend the curated callouts/aliases and annotate short English/Chinese explanation segments after language review. Avoid splitting machine-generated descriptions into apparently aligned sentences without checking their meaning.
