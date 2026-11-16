@@ -52,7 +52,7 @@ export async function runLearningSmoke({ controlCenter, nativeImage, outputDirec
   page.reload(); await pageLoaded(page);
   await page.executeJavaScript(`(async () => {
     const byId=id=>document.getElementById(id);
-    for(let i=0;i<100 && !document.querySelector('.hero-tile');i++) await new Promise(r=>setTimeout(r,20));
+    for(let i=0;i<100 && byId('total').textContent==='—';i++) await new Promise(r=>setTimeout(r,20));
     byId('quiz').click();
     const loaded=await window.learningAPI.load();
     if(loaded.study.active.answers.length!==1 || document.querySelectorAll('#answers button').length!==4) throw new Error('Daily session did not resume after reload');
@@ -93,5 +93,7 @@ export async function runLearningSmoke({ controlCenter, nativeImage, outputDirec
   if (await page.executeJavaScript('document.documentElement.scrollWidth > document.documentElement.clientWidth')) throw new Error('Learning page overflows narrow window');
   fs.writeFileSync(path.join(outputDirectory, 'learning-narrow.png'), (await captureHub(controlCenter, nativeImage)).toPNG());
   controlCenter.window.setSize(1060, 820);
+  const { runStarterPathSmoke } = await import('./starterPathSmoke.js');
+  await runStarterPathSmoke({ page, controlCenter, nativeImage, outputDirectory });
   console.log('[Learning] PASS: search, saved-only practice, daily session, reload recovery, mistakes, history, desktop companion, responsive layout');
 }

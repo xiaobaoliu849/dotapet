@@ -8,6 +8,7 @@ import { summarizeMastery } from '../learning/mastery.js';
 import { SPOKEN_CATEGORIES, SPOKEN_PHRASES } from '../learning/spokenPhrases.js';
 import { buildHeroPracticePersona, buildPhrasePracticePersona } from '../learning/voicePractice.js';
 import { localDay, reviewCounts, STUDY_DEFAULTS } from '../learning/study.js';
+import { STARTER_UNITS, STARTER_ITEMS, starterUnit, starterAvailability, isLearningStep } from '../learning/starterPath.js';
 const api = window.learningAPI;
 const $ = id => document.getElementById(id);
 const chinese = window.dotapetI18n?.language === 'zh';
@@ -19,6 +20,8 @@ const translations = {
   'hero-back': '← 返回四属性英雄墙', 'hero-abilities-heading': '英雄技能（中英双语对照）',
   'path-heading': '看图认物 → 读懂英文 → 开口说 → 回忆巩固', 'path-help': '先认图片、读英文，再大声说一句实战表达，最后用五道题巩固记忆。',
   'quick-practice': '练习 5 条课程 →', 'recall-help': '先大声说出答案，再选择。物品图片可以帮助你回忆。',
+  'starter-tab': '从这里开始', 'starter-heading': '先学会十个常见物品名', 'starter-help': '每次学五个词。先看图、读含义、说一句实战表达，再回忆英文。这是英语学习顺序，不是游戏出装顺序。',
+  'guide-heading': '先认识，再回忆', 'guide-help': '看图，读懂含义，再大声说出实战表达。准备好后点击下一步。学习卡本身不计答题正确率。', 'guide-next': '下一张学习卡 →',
   'voice-bar-hint': '实时对话与双语字幕已同步显示在桌面伙伴「实时对话转写」面板中。',
   'study-heading': '每日学习小课', 'study-help': '先复习到期的错题和旧词，再学习新词。', 'size-label': '每轮课程数量', 'scope-label': '练习词库', 'start-session': '开始学习 →', 'practice-saved': '练习我的收藏词条 →', 'summary-heading': '本轮学习完成', 'mistakes-heading': '需要再看看的词条', 'new-session': '安排下一轮 →',
   'audio-source': '音频使用你的双语词典中已生成的 AI 录音，按原速播放。历史录音可能与当前课程文字不同；缺少录音的词条会明确标注。',
@@ -29,15 +32,16 @@ if (chinese) {
   const names = ['全部主题', '英雄', '英雄技能', '物品', '团队表达'];
   [...$('kind').options].forEach((option, index) => { option.textContent = names[index]; });
   [...$('session-size').options].forEach(option => { option.textContent = option.value + ' 条课程'; });
-  [...$('session-scope').options].forEach((option, index) => { option.textContent = ['符合筛选的全部课程', '仅收藏词条'][index]; });
+  [...$('session-scope').options].forEach((option, index) => { option.textContent = ['符合筛选的全部课程', '仅收藏词条', '入门：对线补给', '入门：视野与行动'][index]; });
   $('search').placeholder = '搜索英文 / 中文 / 英雄名…';
 }
-let catalog, heroMeta = {}, progress = {}, study = { preferences: STUDY_DEFAULTS, active: null, history: [] }, mode = 'heroes', limit = 24;
+let catalog, heroMeta = {}, progress = {}, study = { preferences: STUDY_DEFAULTS, active: null, history: [] }, mode = 'starter', limit = 24;
 let selectedHeroId = null, attrFilter = 'all', itemFilter = 'all', spokenFilter = 'all';
 let audioManifest = { entries: {} };
 let itemImages = { entries: {} };
+let starterEvidence = { entries: {} };
 let audioBaseline = { entries: {} };
-let pendingAnswer = false, starting = false, feedbackIndex = null, planning = false;
+let pendingAnswer = false, starting = false, feedbackIndex = null, planning = false, advancing = false;
 const ATTR_GROUPS = [
   { key: 'uni', en: 'Universal', zh: '全才', icon: '🟡' },
   { key: 'int', en: 'Intelligence', zh: '智力', icon: '🔵' },
@@ -83,7 +87,7 @@ function stats() {
   const counts = reviewCounts(catalog.lessons, progress);
   $('due-count').textContent = counts.reviews;
   $('path-status').textContent = text(`${counts.reviews} reviews due · ${counts.unseen} new lessons to explore`, `${counts.reviews} 条旧词待复习 · ${counts.unseen} 条新课程可探索`);
-  $('quick-practice').textContent = study.active && !study.active.completedAt ? text('Continue my session →', '继续上次练习 →') : text('Practice 5 lessons →', '练习 5 条课程 →');
+  quickLabel();
   const records = Object.values(progress), attempts = records.reduce((n, r) => n + (r.attempts || 0), 0);
   $('accuracy').textContent = attempts ? Math.round(records.reduce((n, r) => n + (r.correct || 0), 0) / attempts * 100) + '%' : '—';
   $('source').textContent = `${catalog.sourceLabel} · ${new Date(catalog.fetchedAt).toLocaleString()} · ${catalog.patch || text('Patch number unverified', '未核验版本号')}`;
@@ -363,6 +367,73 @@ function itemCoachNode(lesson) {
   }
   return coach;
 }
+function nextStarterUnit() {
+  return STARTER_UNITS.find(unit => unit.lessonIds.every(id => catalog.lessons.some(lesson => lesson.id === id && starterAvailability(starterEvidence, id, lesson)))
+    && unit.lessonIds.some(id => catalog.lessons.some(lesson => lesson.id === id) && (!progress[id]?.due || progress[id].due <= Date.now())));
+}
+function quickLabel() {
+  const running = study.active && !study.active.completedAt;
+  const next = mode === 'starter' ? nextStarterUnit() : null;
+  $('quick-practice').disabled = starting || (mode === 'starter' && !running && !next);
+  $('quick-practice').textContent = study.active && !study.active.completedAt
+    ? text('Continue my session →', '继续上次练习 →')
+    : mode === 'starter' ? next === STARTER_UNITS[0] ? text('Start first lesson →', '开始第一课 →') : next ? text('Start next lesson →', '开始下一课 →') : text('Reviews scheduled', '已安排后续复习')
+      : text('Practice 5 lessons →', '练习 5 条课程 →');
+}
+function renderStarter() {
+  const container = $('starter-units'); container.replaceChildren();
+  $('starter-status').textContent = '';
+  $('starter-source').textContent = starterEvidence.checkedAt
+    ? text('Starter items checked against official shop listings: ', '入门物品已对照官方商店列表核验：') + new Date(starterEvidence.checkedAt).toLocaleDateString()
+    : text('Shop-source verification is unavailable.', '商店来源核验暂不可用。');
+  for (const unit of STARTER_UNITS) {
+    const rows = unit.lessonIds.map(id => catalog.lessons.find(lesson => lesson.id === id)).filter(Boolean);
+    const verified = rows.length === unit.lessonIds.length && rows.every(lesson => starterAvailability(starterEvidence, lesson.id, lesson));
+    const practiced = rows.filter(lesson => progress[lesson.id]?.attempts).length;
+    const ready = rows.filter(lesson => !progress[lesson.id]?.due || progress[lesson.id].due <= Date.now()).length;
+    const running = study.active && !study.active.completedAt;
+    const sameUnit = running && study.active.options.scope === unit.id;
+    const card = node('article', '', 'starter-unit');
+    card.append(node('h3', text(unit.en, unit.zh)), node('p', text(unit.goalEn, unit.goalZh), 'starter-goal'));
+    const pictures = node('div', '', 'starter-pictures'); pictures.setAttribute('translate', 'no');
+    for (const lesson of rows) {
+      const picture = node('div', '', 'starter-preview');
+      picture.append(itemImageNode(lesson), node('strong', lesson.en), node('span', lesson.zh)); pictures.append(picture);
+    }
+    card.append(pictures, node('p', text(`${practiced}/5 practiced · Learn the names, then recall in English.`, `${practiced}/5 条已练习 · 先认识，再回忆英文。`), 'starter-progress'));
+    const button = node('button', sameUnit ? text('Continue lesson →', '继续本课 →')
+      : !verified ? text('Verification needed', '需要来源核验') : !ready ? text('Reviews scheduled', '已安排后续复习')
+      : practiced ? text('Review this lesson →', '复习本课 →') : text('Learn these 5 names →', '学习这 5 个词 →'));
+    button.dataset.starterUnit = unit.id;
+    button.disabled = Boolean(starting || !verified || (!sameUnit && (running || !ready)));
+    button.onclick = () => startStarterUnit(unit);
+    card.append(button); container.append(card);
+  }
+  if (study.active && !study.active.completedAt) $('starter-status').textContent = text('An unfinished session is saved. Continue it before starting another lesson.', '你有一轮未完成的学习。请先继续这一轮，再开始其他课程。');
+}
+async function startStarterUnit(unit) {
+  if (starting) return;
+  if (study.active && !study.active.completedAt) { enterPractice(); return; }
+  enterPractice(unit.id);
+  $('session-scope').value = unit.id; $('session-size').value = '5'; $('kind').value = 'item'; $('search').value = ''; $('direction').value = 'zh';
+  await beginSession();
+}
+function renderGuide(active) {
+  const index = active.guideIndex, lesson = active.items[index].lesson;
+  const brief = STARTER_ITEMS[lesson.id];
+  $('study-setup').hidden = true; $('guided-lesson').hidden = false;
+  $('guide-counter').textContent = text(`Learn ${index + 1} / ${active.items.length} · Recall comes next`, `认识第 ${index + 1} / ${active.items.length} 个词 · 随后回忆英文`);
+  $('guide-progress').value = index; $('guide-progress').max = active.items.length;
+  const card = node('article', '', 'guided-card');
+  const heading = node('div', '', 'lesson-heading');
+  const title = node('div', '', 'lesson-title'); title.append(node('h3', lesson.en), node('p', lesson.zh, 'zh'));
+  heading.append(itemImageNode(lesson), title);
+  card.append(heading, node('p', brief.en, 'guide-meaning'), node('p', brief.zh, 'guide-translation'), itemCoachNode(lesson));
+  const actions = node('div', '', 'actions'); actions.append(audioButton(lesson), saveButton(lesson, render)); card.append(actions);
+  $('guide-card').replaceChildren(card);
+  $('guide-next').disabled = advancing;
+  $('guide-next').textContent = index === active.items.length - 1 ? text('Ready: recall in English →', '准备好了，回忆英文 →') : text('Next learning card →', '下一张学习卡 →');
+}
 function buildLessonCard(lesson, onUpdated) {
   const card = node('article', '', 'lesson');
   card.dataset.lessonId = lesson.id;
@@ -435,8 +506,10 @@ function renderItemBrowser() {
 }
 function render() {
   player.stop();
+  document.querySelector('main').dataset.mode = mode;
+  quickLabel();
   syncMasteryActive();
-  for (const [id, m] of [['heroes-tab', 'heroes'], ['items-tab', 'items'], ['phrases-tab', 'phrases'], ['browse', 'browse'], ['saved', 'saved'], ['quiz', 'quiz']]) {
+  for (const [id, m] of [['starter-tab', 'starter'], ['heroes-tab', 'heroes'], ['items-tab', 'items'], ['phrases-tab', 'phrases'], ['browse', 'browse'], ['saved', 'saved'], ['quiz', 'quiz']]) {
     $(id).setAttribute('aria-pressed', String(mode === m));
   }
   const selectedHero = mode === 'heroes' && selectedHeroId
@@ -446,19 +519,20 @@ function render() {
   $('hero-detail').hidden = !selectedHero;
   $('item-browser').hidden = mode !== 'items';
   $('spoken-browser').hidden = mode !== 'phrases';
+  $('starter-browser').hidden = mode !== 'starter';
   // The pagination control is shared by Explore and Items; keep it outside either hidden panel.
   $('library').hidden = mode !== 'browse' && mode !== 'saved';
   const quizCompleted = mode === 'quiz' && !planning && Boolean(study.active?.completedAt) && !(feedbackIndex !== null && study.active.answers[feedbackIndex]);
   $('study-setup').hidden = mode !== 'quiz' || quizCompleted;
   $('practice-saved').hidden = mode !== 'saved';
-  $('practice').hidden = true; $('session-summary').hidden = true;
+  $('practice').hidden = true; $('session-summary').hidden = true; $('guided-lesson').hidden = true;
   const tools = $('tools');
   const kindLabel = $('kind').closest('label');
   const dirLabel = $('direction').closest('label');
   const activeQuiz = mode === 'quiz' && study.active && !study.active.completedAt;
   const hideTools = mode === 'quiz' && Boolean(study.active) && !planning;
   if (tools) {
-    tools.hidden = hideTools;
+    tools.hidden = hideTools || mode === 'starter';
     tools.dataset.layout = (mode === 'heroes' || mode === 'items' || mode === 'phrases') ? 'search-only'
       : (mode === 'browse' || mode === 'saved') ? 'search-kind'
       : 'quiz';
@@ -466,6 +540,7 @@ function render() {
   if (kindLabel) kindLabel.hidden = mode === 'heroes' || mode === 'items' || mode === 'phrases';
   if (dirLabel) dirLabel.hidden = mode !== 'quiz';
   for (const id of ['search', 'kind', 'direction', 'session-size', 'session-scope']) $(id).disabled = Boolean(activeQuiz);
+  if (mode === 'starter') { $('message').textContent = ''; $('more').hidden = true; renderStarter(); return; }
   if (mode === 'quiz') { $('message').textContent = ''; $('more').hidden = true; renderStudy(); return; }
   if (mode === 'heroes') {
     $('more').hidden = true;
@@ -499,6 +574,7 @@ function renderStudy() {
   const running = active && !active.completedAt;
   $('start-session').hidden = Boolean(running || (active?.completedAt && !planning));
   if (!active || planning) return;
+  if (isLearningStep(active)) { renderGuide(active); return; }
   const showFeedback = feedbackIndex !== null && active.answers[feedbackIndex];
   if (active.completedAt && !showFeedback) { renderSummary(active); return; }
   const index = showFeedback ? feedbackIndex : active.answers.length;
@@ -577,7 +653,7 @@ function enterPractice(scope) {
   focusStudy();
 }
 function focusStudy() {
-  const heading = !$('practice').hidden ? $('question') : !$('session-summary').hidden ? $('summary-heading') : $('study-heading');
+  const heading = !$('guided-lesson').hidden ? $('guide-heading') : !$('practice').hidden ? $('question') : !$('session-summary').hidden ? $('summary-heading') : $('study-heading');
   heading.tabIndex = -1;
   heading.focus({ preventScroll: true });
   heading.closest('section').scrollIntoView({ block: 'start' });
@@ -591,12 +667,17 @@ async function beginSession() {
       kind: $('kind').value, search: $('search').value, direction: $('direction').value });
     receive(response); feedbackIndex = null;
     if (!response.empty) planning = false;
+    if (!response.empty && study.active) {
+      const options = study.active.options;
+      $('kind').value = options.kind; $('search').value = options.search; $('direction').value = options.direction;
+      $('session-size').value = options.size; $('session-scope').value = options.scope;
+    }
     $('study-status').textContent = response.empty ? text('No words are ready in this collection. Save some words, change topic, or return when reviews are due.', '此词库暂无到期课程。请先收藏词条、更换主题，或到复习时间再来。') : text('Your session is saved automatically. You can finish it later.', '本轮进度自动保存，可以稍后继续。');
     if (mode === 'quiz') { render(); focusStudy(); }
   } catch (error) { $('study-status').textContent = error.message; }
-  finally { starting = false; $('start-session').disabled = false; $('new-session').disabled = false; }
+  finally { starting = false; $('start-session').disabled = false; $('new-session').disabled = false; quickLabel(); }
 }
-for (const [id, m] of [['heroes-tab', 'heroes'], ['items-tab', 'items'], ['phrases-tab', 'phrases'], ['browse', 'browse'], ['saved', 'saved'], ['quiz', 'quiz']]) $(id).onclick = () => {
+for (const [id, m] of [['starter-tab', 'starter'], ['heroes-tab', 'heroes'], ['items-tab', 'items'], ['phrases-tab', 'phrases'], ['browse', 'browse'], ['saved', 'saved'], ['quiz', 'quiz']]) $(id).onclick = () => {
   player.stop();
   if (m === 'quiz') enterPractice();
   else {
@@ -610,6 +691,12 @@ $('hero-back').onclick = () => { player.stop(); selectedHeroId = null; render();
 for (const id of ['search', 'kind', 'direction']) $(id).addEventListener(id === 'search' ? 'input' : 'change', () => { player.stop(); if (id === 'search') selectedHeroId = null; limit = 24; render(); });
 $('practice-saved').onclick = () => { enterPractice('saved'); };
 $('quick-practice').onclick = async () => {
+  if (mode === 'starter') {
+    const unit = nextStarterUnit();
+    if (study.active && !study.active.completedAt) enterPractice();
+    else if (unit) await startStarterUnit(unit);
+    return;
+  }
   const running = study.active && !study.active.completedAt;
   const kind = ({ heroes: 'hero', items: 'item', phrases: 'phrase' })[mode] || $('kind').value;
   const scope = mode === 'saved' ? 'saved' : 'all';
@@ -619,6 +706,16 @@ $('quick-practice').onclick = async () => {
   await beginSession();
 };
 $('start-session').onclick = beginSession;
+$('guide-next').onclick = async () => {
+  const active = study.active;
+  if (advancing || !isLearningStep(active)) return;
+  advancing = true; $('guide-next').disabled = true; $('guide-status').textContent = ''; player.stop();
+  try {
+    receive(await api.advanceGuide(active.id, active.items[active.guideIndex].lesson.id));
+    if (mode === 'quiz') { render(); focusStudy(); }
+  } catch (error) { $('guide-status').textContent = error.message; }
+  finally { advancing = false; $('guide-next').disabled = false; }
+};
 $('new-session').onclick = () => { planning = true; feedbackIndex = null; render(); focusStudy(); };
 $('more').onclick = () => { limit += 24; render(); };
 $('next').onclick = () => { player.stop(); feedbackIndex = null; render(); focusStudy(); };
@@ -681,5 +778,5 @@ api.onHidden(() => player.stop());
 window.addEventListener('pagehide', () => player.stop());
 try {
   const response = await api.load(); if (!response.ok) throw new Error(response.error);
-  catalog = response.catalog; heroMeta = response.heroMeta || {}; itemImages = response.itemImages || { entries: {} }; audioManifest = response.audio; audioBaseline = response.audioBaseline; receive(response); $('session-size').value = study.preferences.size; $('session-scope').value = study.preferences.scope; render();
+  catalog = response.catalog; heroMeta = response.heroMeta || {}; itemImages = response.itemImages || { entries: {} }; starterEvidence = response.starterEvidence || { entries: {} }; audioManifest = response.audio; audioBaseline = response.audioBaseline; receive(response); $('session-size').value = study.preferences.size; $('session-scope').value = study.preferences.scope; render();
 } catch (error) { $('message').textContent = error.message; for (const button of document.querySelectorAll('button')) button.disabled = true; }
