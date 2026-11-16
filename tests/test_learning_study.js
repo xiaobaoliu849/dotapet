@@ -1,8 +1,45 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { planStudy, studyOptions, localDay, studySummary } from '../src/learning/study.js';
+import fs from 'node:fs';
+import { STARTER_UNITS, STARTER_ITEMS, starterAvailability } from '../src/learning/starterPath.js';
 
 const lessons = Array.from({ length: 20 }, (_, index) => ({ id: `hero:${index}`, kind: 'hero', en: `Hero ${index}`, zh: `英雄 ${index}`, parent: '', descriptionEn: '', descriptionZh: '' }));
+
+test('starter units have ten distinct catalog items with dated, independent official shop evidence', () => {
+  const catalog = JSON.parse(fs.readFileSync(new URL('../src/learning/catalog.json', import.meta.url)));
+  const evidence = JSON.parse(fs.readFileSync(new URL('../src/learning/starter-shop-evidence.json', import.meta.url)));
+  const ids = STARTER_UNITS.flatMap(unit => unit.lessonIds);
+  assert.equal(ids.length, 10); assert.equal(new Set(ids).size, 10);
+  assert.ok(Number.isFinite(Date.parse(evidence.checkedAt)));
+  assert.equal(evidence.gameClientChecked, false);
+  assert.deepEqual(evidence.sources.map(source => new URL(source.url).hostname).sort(), ['www.dota2.com', 'www.dota2.com.cn']);
+  for (const source of evidence.sources) assert.match(source.sha256, /^[a-f0-9]{64}$/);
+  for (const id of ids) {
+    assert.ok(catalog.lessons.some(lesson => lesson.id === id && lesson.kind === 'item'));
+    assert.ok(STARTER_ITEMS[id].en && STARTER_ITEMS[id].zh);
+    assert.equal(starterAvailability(evidence, id), true, id);
+    const lesson = catalog.lessons.find(row => row.id === id);
+    assert.equal(starterAvailability(evidence, id, lesson), true);
+    assert.equal(starterAvailability(evidence, id, { ...lesson, en: 'Renamed item' }), false);
+    assert.equal(starterAvailability(evidence, id, { ...lesson, internalName: 'item_other' }), false);
+  }
+  assert.equal(starterAvailability({ entries: { [ids[0]]: { internalName: 'wrong', shopListed: true, valveListed: true } } }, ids[0]), false);
+});
+
+test('starter sessions teach an ordered unit and restrict distractors without pulling future reviews forward', () => {
+  const catalog = JSON.parse(fs.readFileSync(new URL('../src/learning/catalog.json', import.meta.url)));
+  const unit = STARTER_UNITS[0], options = { scope: unit.id, direction: 'zh', size: 10, kind: 'hero', search: 'unrelated' };
+  const planned = planStudy(catalog.lessons, {}, options, 1000, () => 0.5);
+  assert.deepEqual(planned.items.map(item => item.lesson.id), unit.lessonIds);
+  assert.equal(planned.options.kind, 'item'); assert.equal(planned.options.search, ''); assert.equal(planned.options.size, 5);
+  const names = planned.items.map(item => item.lesson.en);
+  for (const item of planned.items) assert.ok(item.question.options.every(option => names.includes(option)));
+  const progress = { [unit.lessonIds[0]]: { attempts: 1, due: 2000 }, [unit.lessonIds[3]]: { attempts: 1, box: 0, due: 1 } };
+  const review = planStudy(catalog.lessons, progress, { scope: unit.id }, 1000, () => 0.5);
+  assert.equal(review.items[0].lesson.id, unit.lessonIds[3]);
+  assert.ok(!review.items.some(item => item.lesson.id === unit.lessonIds[0]));
+});
 
 test('study plans bound length and prioritize due mistakes, overdue reviews, then unseen words', () => {
   const progress = { 'hero:0': { attempts: 1, box: 0, due: 2000 }, 'hero:1': { attempts: 1, box: 1, due: 100 },

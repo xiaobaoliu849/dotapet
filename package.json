@@ -30,6 +30,7 @@
     "learning:import-audio": "node scripts/import-learning-audio.mjs",
     "learning:import-images": "node scripts/import-learning-images.mjs",
     "learning:verify-images": "node scripts/import-learning-images.mjs --verify",
+    "learning:check-starter-shop": "node scripts/check-starter-shop.mjs",
     "learning:audit": "node scripts/audit-learning-content.mjs",
     "learning:import-baseline": "node scripts/import-learning-baseline.mjs",
     "learning:samples:prepare": "node scripts/prepare-learning-audio-samples.mjs",

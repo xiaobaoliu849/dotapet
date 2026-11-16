@@ -9,6 +9,8 @@ const cues = {
   'Sentry Ward': { aliases: ['sentry', '真眼'], en: 'Put a sentry here, please.', zh: '请在这里放个真眼。' },
   'Tango': { aliases: ['吃树'], en: 'Can you share a Tango with me?', zh: '能分我一个吃树吗？' },
   'Healing Salve': { aliases: ['salve', '大药'], en: 'I have a salve for you.', zh: '我有个大药可以给你用。' },
+  'Magic Stick': { aliases: ['stick', '小魔棒'], en: 'My stick has charges. I can stay in lane.', zh: '我的魔棒有能量，还能继续对线。' },
+  'Boots of Speed': { aliases: ['boots', '鞋', '草鞋'], en: 'I need boots so I can move faster.', zh: '我需要出鞋，提高移速。' },
   'Aegis of the Immortal': { aliases: ['aegis', '不朽盾', '盾'], en: 'Let our carry take the Aegis.', zh: '让我们的一号位拿盾。' },
   'Divine Rapier': { aliases: ['rapier', '圣剑'], en: 'Protect our carry. They have a Rapier.', zh: '保护我们的一号位，他有圣剑。' },
   'Scythe of Vyse': { aliases: ['hex', '羊刀'], en: 'My Hex is ready. We can catch them.', zh: '我的羊刀好了，可以抓他们。' },

@@ -1,0 +1,108 @@
+{
+  "schema": 1,
+  "checkedAt": "2026-11-16T02:58:28.645Z",
+  "sources": [
+    {
+      "url": "https://www.dota2.com.cn/itemscategory/json",
+      "sha256": "a3107d10b256c779ce8af19a38950a17a1ca3e70722499f176d4ef040d5f53ca"
+    },
+    {
+      "url": "https://www.dota2.com/datafeed/itemlist?language=english",
+      "sha256": "829f67446e6a88acd1e4deedabd59090546130dda7bd319fbca13808c7cf99d9"
+    }
+  ],
+  "limitation": "Listed in official shop categories and Valve feed at this time. Not independently checked in the running game client; source listings can lag gameplay updates.",
+  "gameClientChecked": false,
+  "entries": {
+    "item:44": {
+      "internalName": "item_tango",
+      "en": "Tango",
+      "zh": "树之祭祀",
+      "category": "basic",
+      "shopListed": true,
+      "valveListed": true,
+      "shopCost": 90
+    },
+    "item:39": {
+      "internalName": "item_flask",
+      "en": "Healing Salve",
+      "zh": "治疗药膏",
+      "category": "basic",
+      "shopListed": true,
+      "valveListed": true,
+      "shopCost": 100
+    },
+    "item:34": {
+      "internalName": "item_magic_stick",
+      "en": "Magic Stick",
+      "zh": "魔棒",
+      "category": "basic",
+      "shopListed": true,
+      "valveListed": true,
+      "shopCost": 200
+    },
+    "item:29": {
+      "internalName": "item_boots",
+      "en": "Boots of Speed",
+      "zh": "速度之靴",
+      "category": "basic",
+      "shopListed": true,
+      "valveListed": true,
+      "shopCost": 500
+    },
+    "item:46": {
+      "internalName": "item_tpscroll",
+      "en": "Town Portal Scroll",
+      "zh": "回城卷轴",
+      "category": "basic",
+      "shopListed": true,
+      "valveListed": true,
+      "shopCost": 100
+    },
+    "item:42": {
+      "internalName": "item_ward_observer",
+      "en": "Observer Ward",
+      "zh": "侦查守卫",
+      "category": "basic",
+      "shopListed": true,
+      "valveListed": true,
+      "shopCost": 0
+    },
+    "item:43": {
+      "internalName": "item_ward_sentry",
+      "en": "Sentry Ward",
+      "zh": "岗哨守卫",
+      "category": "basic",
+      "shopListed": true,
+      "valveListed": true,
+      "shopCost": 50
+    },
+    "item:40": {
+      "internalName": "item_dust",
+      "en": "Dust of Appearance",
+      "zh": "显影之尘",
+      "category": "basic",
+      "shopListed": true,
+      "valveListed": true,
+      "shopCost": 80
+    },
+    "item:188": {
+      "internalName": "item_smoke_of_deceit",
+      "en": "Smoke of Deceit",
+      "zh": "诡计之雾",
+      "category": "basic",
+      "shopListed": true,
+      "valveListed": true,
+      "shopCost": 50
+    },
+    "item:1": {
+      "internalName": "item_blink",
+      "en": "Blink Dagger",
+      "zh": "闪烁匕首",
+      "category": "basic",
+      "shopListed": true,
+      "valveListed": true,
+      "shopCost": 2250
+    }
+  }
+}
