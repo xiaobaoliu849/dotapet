@@ -12,6 +12,10 @@
   <header><p class="eyebrow">DOTAPAD ACADEMY</p><h1 id="heading">Learn the game. Speak the language.</h1><p id="intro">A little Dota, a little English. Your desktop companion stays with you.</p></header>
   <section class="stats" aria-label="Learning progress"><div><strong id="total">—</strong><span id="total-label">bilingual lessons</span></div><div><strong id="saved-count">0</strong><span id="saved-label">saved words</span></div><div><strong id="due-count">0</strong><span id="due-label">ready to review</span></div><div><strong id="accuracy">—</strong><span id="accuracy-label">quiz accuracy</span></div></section>
   <section id="mastery-strip" class="mastery-strip" aria-label="Mastery by category"></section>
+  <section class="learning-path" aria-labelledby="path-heading">
+    <div><h2 id="path-heading">See it. Read it. Say it. Recall it.</h2><p id="path-help">Recognize the picture, read the English, say the match phrase aloud, then try five questions.</p><p id="path-status" role="status"></p></div>
+    <button id="quick-practice" type="button">Practice 5 lessons →</button>
+  </section>
   <nav class="tabs" aria-label="Learning mode"><button id="heroes-tab" aria-pressed="true">Heroes</button><button id="items-tab" aria-pressed="false">Items</button><button id="phrases-tab" aria-pressed="false">Spoken Phrases</button><button id="browse" aria-pressed="false">Explore</button><button id="saved" aria-pressed="false">My words</button><button id="quiz" aria-pressed="false">Practice</button></nav>
   <div id="tools" class="tools"><label><span id="search-label">Find a lesson</span><input id="search" type="search" placeholder="Search English or Chinese…" maxlength="120"></label><label><span id="kind-label">Topic</span><select id="kind"><option value="all">All topics</option><option value="hero">Heroes</option><option value="ability">Hero abilities</option><option value="item">Items</option><option value="phrase">Team expressions</option></select></label><label><span id="direction-label">Practice direction</span><select id="direction" translate="no"><option value="en">English → 中文</option><option value="zh">中文 → English</option></select></label></div>
   <p id="message" role="status" aria-live="polite"></p>
@@ -46,7 +50,7 @@
   <section id="hero-detail" class="hero-detail" hidden aria-label="Hero bilingual abilities">
     <button id="hero-back" class="hero-back-btn" type="button">← Back to Heroes</button>
     <div id="hero-detail-header" class="hero-detail-header" translate="no"></div>
-    <h3 id="hero-abilities-heading" class="hero-abilities-heading">Abilities (English &amp; Chinese)</h3>
+    <h3 id="hero-abilities-heading" class="hero-abilities-heading">Abilities (bilingual)</h3>
     <div id="hero-abilities" class="hero-abilities" translate="no"></div>
   </section>
   <section id="study-setup" class="study-setup" hidden aria-labelledby="study-heading">
@@ -55,9 +59,10 @@
     <div class="study-options"><label><span id="size-label">Session length</span><select id="session-size"><option value="5">5 lessons</option><option value="10">10 lessons</option></select></label><label><span id="scope-label">Word collection</span><select id="session-scope"><option value="all">All matching lessons</option><option value="saved">Saved words only</option></select></label><button id="start-session">Start session →</button></div>
     <p id="study-status" role="status" aria-live="polite"></p>
   </section>
-  <section id="practice" class="practice" hidden aria-label="Quiz"><p id="quiz-counter"></p><progress id="session-progress" value="0" max="5" aria-label="Session progress"></progress><p id="quiz-context" translate="no"></p><h2 id="question" translate="no"></h2><div id="answers" translate="no"></div><p id="result" role="status" aria-live="polite"></p><p id="quiz-explanation" translate="no"></p><div id="quiz-audio" class="actions" translate="no"></div><button id="next">Next question →</button></section>
+  <section id="practice" class="practice" hidden aria-label="Quiz"><p id="quiz-counter"></p><progress id="session-progress" value="0" max="5" aria-label="Session progress"></progress><p id="quiz-context" translate="no"></p><div id="quiz-picture"></div><h2 id="question" translate="no"></h2><p id="recall-help">Say your answer aloud before choosing. The picture is your memory cue.</p><div id="answers" translate="no"></div><p id="result" role="status" aria-live="polite"></p><p id="quiz-explanation" translate="no"></p><div id="quiz-audio" class="actions" translate="no"></div><button id="next">Next question →</button></section>
   <section id="session-summary" class="practice" hidden aria-labelledby="summary-heading"><h2 id="summary-heading">Session complete</h2><p id="summary-score" role="status"></p><p id="summary-tip"></p><h3 id="mistakes-heading">Words to revisit</h3><div id="session-mistakes" translate="no"></div><button id="new-session">Plan another session →</button></section>
-  <section id="library" aria-label="Bilingual lessons"><div id="lessons" class="lessons" translate="no"></div><button id="more" hidden>Load more</button></section>
+  <section id="library" aria-label="Bilingual lessons"><div id="lessons" class="lessons" translate="no"></div></section>
+  <button id="more" hidden>Load more</button>
   <footer><h2 id="sources-heading">Keep your knowledge current</h2><p id="source" translate="no"></p><p id="freshness">Descriptions are a dated snapshot. Check official patch notes before relying on balance values.</p><p id="audio-source">Audio uses your bilingual library's AI recordings at their original speed. Archive recordings can differ from current lesson text. Missing recordings are marked explicitly.</p><div class="source-actions"><button id="refresh">Refresh from Valve</button><button id="patches">Official patch notes ↗</button></div><p id="update-status" role="status" aria-live="polite"></p></footer>
 </main>
 </body></html>

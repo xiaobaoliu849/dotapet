@@ -2,10 +2,12 @@ import { recordedAudio } from '../learning/audioAssets.js';
 import { audioFreshness } from '../learning/contentAudit.js';
 import { createLearningAudio } from './learning-audio.js';
 import { filterLessons } from '../learning/model.js';
+import { itemImageSources } from '../learning/itemImages.js';
+import { itemCoaching } from '../learning/itemCoaching.js';
 import { summarizeMastery } from '../learning/mastery.js';
 import { SPOKEN_CATEGORIES, SPOKEN_PHRASES } from '../learning/spokenPhrases.js';
 import { buildHeroPracticePersona, buildPhrasePracticePersona } from '../learning/voicePractice.js';
-import { localDay, STUDY_DEFAULTS } from '../learning/study.js';
+import { localDay, reviewCounts, STUDY_DEFAULTS } from '../learning/study.js';
 const api = window.learningAPI;
 const $ = id => document.getElementById(id);
 const chinese = window.dotapetI18n?.language === 'zh';
@@ -15,6 +17,8 @@ const translations = {
   heading: '玩懂刀塔，开口说英语。', intro: '每天一点刀塔英语，桌面小伙伴一直陪着你。', 'total-label': '条双语课程', 'saved-label': '个收藏词条', 'due-label': '条待复习', 'accuracy-label': '答题正确率',
   'heroes-tab': '英雄图鉴', 'items-tab': '物品图鉴', 'phrases-tab': '实战口语', browse: '探索课程', saved: '我的词本', quiz: '练习测验', 'search-label': '查找课程', 'kind-label': '学习主题', 'direction-label': '练习方向', next: '下一题 →', more: '加载更多',
   'hero-back': '← 返回四属性英雄墙', 'hero-abilities-heading': '英雄技能（中英双语对照）',
+  'path-heading': '看图认物 → 读懂英文 → 开口说 → 回忆巩固', 'path-help': '先认图片、读英文，再大声说一句实战表达，最后用五道题巩固记忆。',
+  'quick-practice': '练习 5 条课程 →', 'recall-help': '先大声说出答案，再选择。物品图片可以帮助你回忆。',
   'voice-bar-hint': '实时对话与双语字幕已同步显示在桌面伙伴「实时对话转写」面板中。',
   'study-heading': '每日学习小课', 'study-help': '先复习到期的错题和旧词，再学习新词。', 'size-label': '每轮课程数量', 'scope-label': '练习词库', 'start-session': '开始学习 →', 'practice-saved': '练习我的收藏词条 →', 'summary-heading': '本轮学习完成', 'mistakes-heading': '需要再看看的词条', 'new-session': '安排下一轮 →',
   'audio-source': '音频使用你的双语词典中已生成的 AI 录音，按原速播放。历史录音可能与当前课程文字不同；缺少录音的词条会明确标注。',
@@ -31,8 +35,9 @@ if (chinese) {
 let catalog, heroMeta = {}, progress = {}, study = { preferences: STUDY_DEFAULTS, active: null, history: [] }, mode = 'heroes', limit = 24;
 let selectedHeroId = null, attrFilter = 'all', itemFilter = 'all', spokenFilter = 'all';
 let audioManifest = { entries: {} };
+let itemImages = { entries: {} };
 let audioBaseline = { entries: {} };
-let pendingAnswer = false, starting = false, feedbackIndex = null;
+let pendingAnswer = false, starting = false, feedbackIndex = null, planning = false;
 const ATTR_GROUPS = [
   { key: 'uni', en: 'Universal', zh: '全才', icon: '🟡' },
   { key: 'int', en: 'Intelligence', zh: '智力', icon: '🔵' },
@@ -58,28 +63,7 @@ function heroAvatarNode(hero, large = false) {
   wrap.append(img);
   return wrap;
 }
-function itemIconNode(item) {
-  if (!item?.imageUrl) return null;
-  const wrap = node('span', '', 'item-icon-wrap');
-  const img = document.createElement('img');
-  img.src = item.imageUrl;
-  img.alt = item.en;
-  img.loading = 'lazy';
-  img.className = 'item-icon';
-  let retriedMirror = false;
-  img.onerror = () => {
-    if (!retriedMirror && img.src.includes('cdn.cloudflare.steamstatic.com')) {
-      retriedMirror = true;
-      img.src = img.src.replace('cdn.cloudflare.steamstatic.com', 'cdn.steamstatic.com');
-      return;
-    }
-    wrap.remove();
-  };
-  wrap.append(img);
-  return wrap;
-}
 const node = (tag, value, className) => { const element = document.createElement(tag); element.textContent = value; if (className) element.className = className; return element; };
-const due = r => !progress[r.id]?.due || progress[r.id].due <= Date.now();
 function selection() { return filterLessons(catalog.lessons, { kind: $('kind').value, search: $('search').value, saved: mode === 'saved', progress }); }
 function syncMasteryActive() {
   const strip = $('mastery-strip');
@@ -96,7 +80,10 @@ function syncMasteryActive() {
 function stats() {
   $('total').textContent = catalog.lessons.length.toLocaleString();
   $('saved-count').textContent = catalog.lessons.filter(r => progress[r.id]?.saved).length;
-  $('due-count').textContent = catalog.lessons.filter(due).length;
+  const counts = reviewCounts(catalog.lessons, progress);
+  $('due-count').textContent = counts.reviews;
+  $('path-status').textContent = text(`${counts.reviews} reviews due · ${counts.unseen} new lessons to explore`, `${counts.reviews} 条旧词待复习 · ${counts.unseen} 条新课程可探索`);
+  $('quick-practice').textContent = study.active && !study.active.completedAt ? text('Continue my session →', '继续上次练习 →') : text('Practice 5 lessons →', '练习 5 条课程 →');
   const records = Object.values(progress), attempts = records.reduce((n, r) => n + (r.attempts || 0), 0);
   $('accuracy').textContent = attempts ? Math.round(records.reduce((n, r) => n + (r.correct || 0), 0) / attempts * 100) + '%' : '—';
   $('source').textContent = `${catalog.sourceLabel} · ${new Date(catalog.fetchedAt).toLocaleString()} · ${catalog.patch || text('Patch number unverified', '未核验版本号')}`;
@@ -343,8 +330,42 @@ function isActiveItem(item) {
   const desc = `${item.descriptionEn || ''} ${item.descriptionZh || ''}`;
   return Boolean(cds || manas || /\bActive:|主动[:：]/i.test(desc));
 }
+function itemImageNode(lesson, recall = false) {
+  const wrap = node('span', '', 'item-picture');
+  const fallback = node('span', text('Image unavailable', '暂无图片'), 'item-picture-fallback');
+  wrap.dataset.imageState = 'loading';
+  const sources = itemImageSources(lesson, itemImages);
+  if (!sources.length) { wrap.append(fallback); wrap.dataset.imageState = 'unavailable'; return wrap; }
+  const image = document.createElement('img');
+  image.alt = recall ? text('Item picture — recall its name', '物品图片——回忆它的名称') : `${lesson.en} · ${lesson.zh}`;
+  image.width = 88; image.height = 64;
+  image.loading = recall ? 'eager' : 'lazy'; image.decoding = 'async';
+  let index = 0;
+  image.onload = () => { wrap.dataset.imageState = 'loaded'; };
+  image.onerror = () => {
+    if (++index < sources.length) { image.src = sources[index]; return; }
+    wrap.replaceChildren(fallback); wrap.dataset.imageState = 'unavailable';
+  };
+  image.src = sources[0];
+  wrap.append(image);
+  return wrap;
+}
+function itemCoachNode(lesson) {
+  const cue = itemCoaching(lesson);
+  const coach = node('section', '', 'item-coach');
+  coach.append(node('h3', text('Say it in a match', '实战这样说')),
+    node('p', cue.en, 'match-english'), node('p', cue.zh, 'match-chinese'));
+  if (cue.vocabulary.length) {
+    const words = node('div', '', 'vocabulary-hints');
+    words.setAttribute('aria-label', text('Words in this explanation', '说明中的词汇'));
+    for (const word of cue.vocabulary) words.append(node('span', `${word.en} · ${word.zh}`, 'vocabulary-hint'));
+    coach.append(words);
+  }
+  return coach;
+}
 function buildLessonCard(lesson, onUpdated) {
   const card = node('article', '', 'lesson');
+  card.dataset.lessonId = lesson.id;
   const topicWrap = node('div', '', '');
   topicWrap.append(node('span', labels[lesson.kind], 'topic'));
   if (lesson.kind === 'item' && lesson.mechanics?.item_cost) {
@@ -352,15 +373,15 @@ function buildLessonCard(lesson, onUpdated) {
   }
   card.append(topicWrap);
   if (lesson.parent) card.append(node('p', lesson.parent, 'parent'));
-  const icon = lesson.kind === 'item' ? itemIconNode(lesson) : null;
-  if (icon) {
-    const head = node('div', '', 'item-card-head');
-    const titleWrap = node('div', '', 'item-card-title');
-    titleWrap.append(node('h2', lesson.en), node('p', lesson.zh, 'zh'));
-    head.append(icon, titleWrap);
-    card.append(head);
-  } else {
-    card.append(node('h2', lesson.en), node('p', lesson.zh, 'zh'));
+  const title = node('div', '', 'lesson-title');
+  title.append(node('h2', lesson.en), node('p', lesson.zh, 'zh'));
+  const heading = node('div', '', 'lesson-heading');
+  if (lesson.kind === 'item') heading.append(itemImageNode(lesson));
+  heading.append(title); card.append(heading);
+  if (lesson.kind === 'item') {
+    const cue = itemCoaching(lesson);
+    if (cue.aliases.length) card.append(node('p', text('Also called: ', '常用叫法：') + cue.aliases.join(' · '), 'item-aliases'));
+    card.append(itemCoachNode(lesson));
   }
   const cds = lesson.mechanics?.cooldowns?.filter(n => n > 0);
   const manas = lesson.mechanics?.mana_costs?.filter(n => n > 0);
@@ -380,15 +401,13 @@ function buildLessonCard(lesson, onUpdated) {
   return card;
 }
 function renderItemBrowser() {
-  const query = $('search').value.trim().toLocaleLowerCase();
   const allItems = catalog.lessons.filter(l => l.kind === 'item');
-  const matching = allItems.filter(item => {
+  const matching = filterLessons(allItems, { search: $('search').value }).filter(item => {
     const cost = item.mechanics?.item_cost || 0;
     if (itemFilter === 'active' && !isActiveItem(item)) return false;
     if (itemFilter === 'early' && (cost <= 0 || cost >= 2000)) return false;
     if (itemFilter === 'core' && cost < 2000) return false;
-    if (!query) return true;
-    return [item.en, item.zh, item.descriptionEn, item.descriptionZh].some(s => (s || '').toLocaleLowerCase().includes(query));
+    return true;
   });
   $('message').textContent = matching.length
     ? text(`${matching.length} items · Read bilingual descriptions, listen to recordings, or save to your wordbook.`, `共 ${matching.length} 件物品 · 查看双语说明、听发音或收藏到词本。`)
@@ -427,8 +446,9 @@ function render() {
   $('hero-detail').hidden = !selectedHero;
   $('item-browser').hidden = mode !== 'items';
   $('spoken-browser').hidden = mode !== 'phrases';
+  // The pagination control is shared by Explore and Items; keep it outside either hidden panel.
   $('library').hidden = mode !== 'browse' && mode !== 'saved';
-  const quizCompleted = mode === 'quiz' && Boolean(study.active?.completedAt) && !(feedbackIndex !== null && study.active.answers[feedbackIndex]);
+  const quizCompleted = mode === 'quiz' && !planning && Boolean(study.active?.completedAt) && !(feedbackIndex !== null && study.active.answers[feedbackIndex]);
   $('study-setup').hidden = mode !== 'quiz' || quizCompleted;
   $('practice-saved').hidden = mode !== 'saved';
   $('practice').hidden = true; $('session-summary').hidden = true;
@@ -436,7 +456,7 @@ function render() {
   const kindLabel = $('kind').closest('label');
   const dirLabel = $('direction').closest('label');
   const activeQuiz = mode === 'quiz' && study.active && !study.active.completedAt;
-  const hideTools = mode === 'quiz' && Boolean(study.active);
+  const hideTools = mode === 'quiz' && Boolean(study.active) && !planning;
   if (tools) {
     tools.hidden = hideTools;
     tools.dataset.layout = (mode === 'heroes' || mode === 'items' || mode === 'phrases') ? 'search-only'
@@ -477,8 +497,8 @@ function renderStudy() {
   today();
   const active = study.active;
   const running = active && !active.completedAt;
-  $('start-session').hidden = Boolean(running || active?.completedAt);
-  if (!active) return;
+  $('start-session').hidden = Boolean(running || (active?.completedAt && !planning));
+  if (!active || planning) return;
   const showFeedback = feedbackIndex !== null && active.answers[feedbackIndex];
   if (active.completedAt && !showFeedback) { renderSummary(active); return; }
   const index = showFeedback ? feedbackIndex : active.answers.length;
@@ -489,6 +509,11 @@ function renderStudy() {
   $('session-progress').max = active.items.length; $('session-progress').value = active.answers.length;
   $('quiz-context').textContent = labels[item.lesson.kind] + ' · ' + (item.lesson.parent || '');
   $('question').textContent = item.question.prompt;
+  $('quiz-picture').replaceChildren();
+  if (item.lesson.kind === 'item') $('quiz-picture').append(itemImageNode(item.lesson, true));
+  $('recall-help').textContent = item.lesson.kind === 'item'
+    ? text('Say your answer aloud before choosing. The picture is your memory cue.', '先大声说出答案，再选择。物品图片可以帮助你回忆。')
+    : text('Try saying your answer aloud before choosing.', '先尝试大声说出答案，再选择。');
   $('answers').replaceChildren(); $('quiz-audio').replaceChildren(); $('result').textContent = ''; $('quiz-explanation').textContent = '';
   $('next').hidden = !showFeedback;
   $('next').textContent = active.completedAt ? text('See session summary →', '查看学习总结 →') : text('Next question →', '下一题 →');
@@ -511,7 +536,8 @@ function renderStudy() {
   }
   if (showFeedback) {
     $('result').textContent = showFeedback.correct ? text('Correct! Scheduled for a later review.', '答对了！已安排后续复习。') : text('Answer: ', '正确答案：') + item.question.answer;
-    $('quiz-explanation').textContent = item.lesson.descriptionEn + '\n' + item.lesson.descriptionZh;
+    const cue = itemCoaching(item.lesson);
+    $('quiz-explanation').textContent = (cue ? cue.en + '\n' + cue.zh + '\n\n' : '') + item.lesson.descriptionEn + '\n' + item.lesson.descriptionZh;
     $('quiz-audio').append(audioButton(item.lesson));
   }
 }
@@ -541,6 +567,7 @@ function renderSummary(active) {
 function enterPractice(scope) {
   player.stop();
   mode = 'quiz'; feedbackIndex = null;
+  planning = Boolean(scope && study.active?.completedAt);
   const options = study.active?.options || study.preferences;
   $('session-size').value = options.size; $('session-scope').value = study.active && !study.active.completedAt ? options.scope : scope || options.scope;
   if (study.active && !study.active.completedAt) {
@@ -563,6 +590,7 @@ async function beginSession() {
     const response = await api.startSession({ size: Number($('session-size').value), scope: $('session-scope').value,
       kind: $('kind').value, search: $('search').value, direction: $('direction').value });
     receive(response); feedbackIndex = null;
+    if (!response.empty) planning = false;
     $('study-status').textContent = response.empty ? text('No words are ready in this collection. Save some words, change topic, or return when reviews are due.', '此词库暂无到期课程。请先收藏词条、更换主题，或到复习时间再来。') : text('Your session is saved automatically. You can finish it later.', '本轮进度自动保存，可以稍后继续。');
     if (mode === 'quiz') { render(); focusStudy(); }
   } catch (error) { $('study-status').textContent = error.message; }
@@ -581,8 +609,17 @@ for (const [id, m] of [['heroes-tab', 'heroes'], ['items-tab', 'items'], ['phras
 $('hero-back').onclick = () => { player.stop(); selectedHeroId = null; render(); };
 for (const id of ['search', 'kind', 'direction']) $(id).addEventListener(id === 'search' ? 'input' : 'change', () => { player.stop(); if (id === 'search') selectedHeroId = null; limit = 24; render(); });
 $('practice-saved').onclick = () => { enterPractice('saved'); };
+$('quick-practice').onclick = async () => {
+  const running = study.active && !study.active.completedAt;
+  const kind = ({ heroes: 'hero', items: 'item', phrases: 'phrase' })[mode] || $('kind').value;
+  const scope = mode === 'saved' ? 'saved' : 'all';
+  enterPractice(scope);
+  if (running) return;
+  $('kind').value = kind; $('session-size').value = '5'; $('session-scope').value = scope;
+  await beginSession();
+};
 $('start-session').onclick = beginSession;
-$('new-session').onclick = beginSession;
+$('new-session').onclick = () => { planning = true; feedbackIndex = null; render(); focusStudy(); };
 $('more').onclick = () => { limit += 24; render(); };
 $('next').onclick = () => { player.stop(); feedbackIndex = null; render(); focusStudy(); };
 $('patches').onclick = async () => { const response = await api.sources(); if (!response.ok) $('update-status').textContent = response.error; };
@@ -590,7 +627,7 @@ $('refresh').onclick = async () => {
   $('refresh').disabled = true; $('update-status').textContent = text('Fetching bilingual lessons from Valve. This can take a few minutes…', '正在从 Valve 获取双语课程，可能需要几分钟…');
   try {
     const response = await api.update(); if (!response.ok) throw new Error(response.error);
-    catalog = response.catalog; render();
+    catalog = response.catalog; stats(); render();
     $('update-status').textContent = text('Catalog updated. Your learning progress is preserved.', '课程已更新，学习进度已保留。');
   } catch (error) { $('update-status').textContent = text('Update failed; offline lessons remain available. ', '更新失败，仍可使用离线课程。') + error.message; }
   finally { $('refresh').disabled = false; }
@@ -644,5 +681,5 @@ api.onHidden(() => player.stop());
 window.addEventListener('pagehide', () => player.stop());
 try {
   const response = await api.load(); if (!response.ok) throw new Error(response.error);
-  catalog = response.catalog; heroMeta = response.heroMeta || {}; audioManifest = response.audio; audioBaseline = response.audioBaseline; receive(response); $('session-size').value = study.preferences.size; $('session-scope').value = study.preferences.scope; render();
+  catalog = response.catalog; heroMeta = response.heroMeta || {}; itemImages = response.itemImages || { entries: {} }; audioManifest = response.audio; audioBaseline = response.audioBaseline; receive(response); $('session-size').value = study.preferences.size; $('session-scope').value = study.preferences.scope; render();
 } catch (error) { $('message').textContent = error.message; for (const button of document.querySelectorAll('button')) button.disabled = true; }

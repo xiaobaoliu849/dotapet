@@ -5,18 +5,18 @@ import { navigateHub, pageLoaded, captureHub } from './controlCenterSmoke.js';
 export async function runLearningSmoke({ controlCenter, nativeImage, outputDirectory, mainWindow }) {
   await navigateHub(controlCenter, 'learning');
   const page = controlCenter.contents('learning'); await pageLoaded(page);
+  const { runLearningImagesSmoke } = await import('./learningImagesSmoke.js');
+  await runLearningImagesSmoke({ page, controlCenter, nativeImage, outputDirectory });
   await page.executeJavaScript(`(async () => {
     const byId = id => document.getElementById(id);
-    for (let i=0;i<100 && !document.querySelector('.hero-tile');i++) await new Promise(r=>setTimeout(r,30));
-    if (!document.querySelector('.hero-tile')) throw new Error('Learning page did not render: '+byId('message').textContent);
-    byId('browse').click();
-    if (!document.querySelector('.lesson')) throw new Error('Learning browse tab did not render: '+byId('message').textContent);
+    for (let i=0;i<100 && !document.querySelector('#lessons .lesson');i++) await new Promise(r=>setTimeout(r,30));
+    if (!document.querySelector('#lessons .lesson')) throw new Error('Learning page did not render: '+byId('message').textContent);
     byId('search').value = 'blink'; byId('search').dispatchEvent(new Event('input'));
-    if (!document.querySelector('.lesson h2').textContent.toLowerCase().includes('blink')) throw new Error('Learning search failed');
-    document.querySelector('.actions button:last-child').click();
+    if (!document.querySelector('#lessons .lesson h2').textContent.toLowerCase().includes('blink')) throw new Error('Learning search failed');
+    document.querySelector('#lessons .actions button:last-child').click();
     for(let i=0;i<100;i++) { if(Number(byId('saved-count').textContent)>0) break; await new Promise(r=>setTimeout(r,20)); }
     if (!Number(byId('saved-count').textContent)) throw new Error('Bookmark did not persist');
-    byId('saved').click(); if (!document.querySelector('.lesson')) throw new Error('Saved library empty');
+    byId('saved').click(); if (!document.querySelector('#lessons .lesson')) throw new Error('Saved library empty');
     byId('search').value=''; byId('search').dispatchEvent(new Event('input'));
     byId('practice-saved').click();
     if(byId('session-scope').value!=='saved') throw new Error('Saved practice scope was lost');
@@ -34,6 +34,8 @@ export async function runLearningSmoke({ controlCenter, nativeImage, outputDirec
     if(byId('session-summary').hidden || !saved.study.active.completedAt) throw new Error('Session did not finish');
     byId('session-scope').value='all'; byId('session-size').value='5'; byId('kind').value='hero';
     byId('new-session').click();
+    if (byId('study-setup').hidden || byId('tools').hidden || byId('start-session').hidden) throw new Error('Next-session planning controls are inaccessible');
+    byId('start-session').click();
     for(let i=0;i<100;i++) {
       const state=await window.learningAPI.load();
       if(state.study.active.id!==active.id && document.querySelector('#answers button')) break;
@@ -68,7 +70,7 @@ export async function runLearningSmoke({ controlCenter, nativeImage, outputDirec
     }
     if(byId('session-summary').hidden || document.querySelectorAll('#session-mistakes .review-word').length!==1) throw new Error('Mistake summary failed');
     const final=await window.learningAPI.load();
-    if(final.study.history.length!==2 || final.study.history[1].correct!==4) throw new Error('Daily history failed');
+    if(final.study.history.length!==3 || final.study.history[2].correct!==4) throw new Error('Daily history failed');
   })()`);
   fs.writeFileSync(path.join(outputDirectory, 'learning-summary.png'), (await captureHub(controlCenter, nativeImage)).toPNG());
   controlCenter.window.setSize(620, 730);

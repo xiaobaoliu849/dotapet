@@ -83,9 +83,14 @@
 .voice-bar-hint{margin:6px 0 0;font-size:11px;line-height:1.4;color:#586d53}
 footer{margin-bottom:76px}
 .item-cost-pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:#fef6df;color:#8a6116;border:1px solid #ebd79a;margin-left:8px;vertical-align:middle}
-.item-card-head{display:flex;align-items:center;gap:12px;margin:10px 0 14px}
-.item-card-title{min-width:0}
-.item-card-head h2{margin:0 0 4px}
-.item-card-head .zh{margin:0}
-.item-icon-wrap{flex-shrink:0;width:60px;height:44px;border-radius:8px;overflow:hidden;background:#dce4d2;border:1px solid #c9d4bd}
-.item-icon{width:100%;height:100%;object-fit:cover;display:block}
+.learning-path{display:flex;align-items:center;justify-content:space-between;gap:18px;background:#edf3e6;border:1px solid #d4dfc8;border-radius:16px;padding:18px 20px;margin-bottom:22px}
+.learning-path h2{font-size:17px;margin:0 0 8px}.learning-path p{font-size:12px;line-height:1.6;color:#607253;margin:4px 0}
+.learning-path button{background:#416338;color:#fff;font-weight:600;flex-shrink:0}.learning-path button:hover{background:#33502d}
+.lesson-heading{display:flex;align-items:center;gap:14px;margin:14px 0}.lesson-title{min-width:0}.lesson-title h2{margin:0 0 5px}.lesson-title .zh{margin:0}
+.item-picture{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:88px;height:64px;overflow:hidden;border:1px solid #cbd5c2;border-radius:9px;background:#253829}
+.item-picture img{display:block;width:100%;height:100%;object-fit:contain}.item-picture-fallback{font-size:10px;line-height:1.5;color:#e6eddf;padding:6px;text-align:center}
+.item-aliases{font-size:11px;line-height:1.6;color:#64735b;overflow-wrap:anywhere}.item-coach{padding:12px;background:#f2f6ec;border-radius:10px;margin:14px 0}
+.item-coach h3{font-size:10px;letter-spacing:.3px;color:#627452;margin:0 0 8px}.match-english{font-size:15px;line-height:1.5;margin:0 0 6px;font-weight:600;overflow-wrap:anywhere}.match-chinese{font-size:12px;color:#65745b;line-height:1.6;margin:0}
+.vocabulary-hints{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}.vocabulary-hint{font-size:10px;padding:3px 6px;background:#fff;border:1px solid #dbe4d1;border-radius:5px}
+#recall-help{font-size:12px;color:#64745b;line-height:1.6}#quiz-picture:empty{display:none}#quiz-picture{margin-top:12px}
+@media(max-width:650px){.learning-path{align-items:stretch;flex-direction:column;gap:12px}.lesson-heading{gap:10px}.item-picture{width:76px;height:56px}.lesson-title h2{font-size:19px}}
