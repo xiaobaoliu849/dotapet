@@ -1,0 +1,5973 @@
+{
+  "schema": 1,
+  "fetchedAt": "2026-11-19T07:07:41.110Z",
+  "sourceUrl": "https://www.dota2.com/datafeed/itemdata",
+  "count": 365,
+  "withStats": 253,
+  "withLore": 296,
+  "withNotes": 136,
+  "entries": {
+    "item:1": {
+      "en": "Blink Dagger",
+      "notesEn": [
+        "Self-casting will cause you to teleport in the direction of your team's fountain."
+      ],
+      "notesZh": [
+        "快速点击两次会将自己往己方泉水方向传送。"
+      ],
+      "loreEn": "The fabled dagger used by the fastest assassin ever to walk the lands.",
+      "loreZh": "传说中这片大陆上来去如风的刺客使用的匕首。"
+    },
+    "item:600": {
+      "en": "Overwhelming Blink",
+      "stats": [
+        {
+          "value": "+25",
+          "en": "Strength",
+          "zh": "力量"
+        }
+      ],
+      "notesEn": [
+        "Self-casting will cause you to teleport in the direction of your team's fountain."
+      ],
+      "notesZh": [
+        "快速点击两次会将自己往己方泉水方向传送。"
+      ],
+      "loreEn": "A horrifying dagger forged in the chaos maw and nigh untouchable by mortal hands.",
+      "loreZh": "令人生畏的匕首，在混沌之喉中打造，凡人之手几乎无法企及。"
+    },
+    "item:603": {
+      "en": "Swift Blink",
+      "stats": [
+        {
+          "value": "+25",
+          "en": "Agility",
+          "zh": "敏捷"
+        }
+      ],
+      "notesEn": [
+        "Self-casting will cause you to teleport in the direction of your team's fountain."
+      ],
+      "notesZh": [
+        "快速点击两次会将自己往己方泉水方向传送。"
+      ],
+      "loreEn": "A cunning blade able to anticipate and enable its bearer's movements.",
+      "loreZh": "一把聪颖的战刃，可以预见佩戴者的动向并加以实现。"
+    },
+    "item:604": {
+      "en": "Arcane Blink",
+      "stats": [
+        {
+          "value": "+25",
+          "en": "Intelligence",
+          "zh": "智力"
+        }
+      ],
+      "notesEn": [
+        "Self-casting will cause you to teleport in the direction of your team's fountain."
+      ],
+      "notesZh": [
+        "快速点击两次会将自己往己方泉水方向传送。"
+      ],
+      "loreEn": "A revitalizing tool to help bear the weight of arcane expenditure.",
+      "loreZh": "让人精神焕发的工具，可以帮忙分担施展奥术耗费的精力。"
+    },
+    "item:2": {
+      "en": "Blades of Attack",
+      "stats": [
+        {
+          "value": "+9",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ],
+      "loreEn": "The damage of these small, concealable blades should not be underestimated.",
+      "loreZh": "里面藏着的小尖刃不容小觑。"
+    },
+    "item:3": {
+      "en": "Broadsword",
+      "stats": [
+        {
+          "value": "+15",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ],
+      "loreEn": "The classic weapon of choice for knights, this blade is sturdy and reliable for slaying enemies.",
+      "loreZh": "骑士经典的武器选择，这把坚固的利刃用于杀敌相当可靠。"
+    },
+    "item:4": {
+      "en": "Chainmail",
+      "stats": [
+        {
+          "value": "+4",
+          "en": "Armor",
+          "zh": "护甲"
+        }
+      ],
+      "loreEn": "A medium weave of metal chains.",
+      "loreZh": "金属锁链制成的编织甲。"
+    },
+    "item:1847": {
+      "en": "Splintmail",
+      "stats": [
+        {
+          "value": "+7",
+          "en": "Armor",
+          "zh": "护甲"
+        }
+      ]
+    },
+    "item:5": {
+      "en": "Claymore",
+      "stats": [
+        {
+          "value": "+20",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ],
+      "loreEn": "A sword that can cut through armor, it's a commonly chosen first weapon for budding swordsmen.",
+      "loreZh": "一把能劈透铠甲的剑，通常是新晋剑士的首选武器。"
+    },
+    "item:6": {
+      "en": "Helm of Iron Will",
+      "stats": [
+        {
+          "value": "+4",
+          "en": "Armor",
+          "zh": "护甲"
+        },
+        {
+          "value": "+4",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        }
+      ],
+      "loreEn": "The helmet of a legendary warrior who fell in battle.",
+      "loreZh": "一位战死沙场的传奇战士身故时戴着的头盔。"
+    },
+    "item:7": {
+      "en": "Javelin",
+      "loreEn": "A rather typical spear that can sometimes pierce through an enemy's armor when used to attack.",
+      "loreZh": "一把相当有特色的长矛，攻击时偶尔会刺穿敌人的盔甲。"
+    },
+    "item:8": {
+      "en": "Mithril Hammer",
+      "stats": [
+        {
+          "value": "+24",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ],
+      "loreEn": "A hammer forged of pure mithril.",
+      "loreZh": "由纯粹的秘银打造而成的锤子。"
+    },
+    "item:9": {
+      "en": "Platemail",
+      "stats": [
+        {
+          "value": "+10",
+          "en": "Armor",
+          "zh": "护甲"
+        }
+      ],
+      "loreEn": "Thick metal plates that protect the entire upper body. Avoid dropping on feet.",
+      "loreZh": "保护整个上身的厚重金属板。注意别砸到脚。"
+    },
+    "item:10": {
+      "en": "Quarterstaff",
+      "stats": [
+        {
+          "value": "+10",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        },
+        {
+          "value": "+10",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ],
+      "loreEn": "A basic staff that allows you to strike quickly.",
+      "loreZh": "能让你攻击变快的普通棍子。"
+    },
+    "item:11": {
+      "en": "Quelling Blade",
+      "notesEn": [
+        "Effects of multiple quelling blades do not stack."
+      ],
+      "notesZh": [
+        "多个压制之刃效果不会叠加。"
+      ],
+      "loreEn": "The axe of a fallen gnome, it allows you to effectively maneuver the forest.",
+      "loreZh": "堕落地精的斧头，能让你更快的在森林中穿行。"
+    },
+    "item:237": {
+      "en": "Faerie Fire",
+      "stats": [
+        {
+          "value": "+2",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ],
+      "loreEn": "The ethereal flames from the ever-burning ruins of Kindertree ignite across realities.",
+      "loreZh": "虚无的火焰，来自天木熊熊燃烧的遗迹，可以跨越现实燃烧。"
+    },
+    "item:265": {
+      "en": "Infused Raindrops",
+      "stats": [
+        {
+          "value": "+0.6",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "notesEn": [
+        "Uses at most one charge per damage instance."
+      ],
+      "notesZh": [
+        "每次受到伤害时最多使用一点能量。"
+      ],
+      "loreEn": "Elemental protection from magical assaults.",
+      "loreZh": "为魔法突袭提供质朴的防护。"
+    },
+    "item:244": {
+      "en": "Wind Lace",
+      "stats": [
+        {
+          "value": "+15",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        }
+      ],
+      "loreEn": "Hasten to battle on wind-touched heels.",
+      "loreZh": "脚跟经过轻风的吹拂，在战斗中更加轻盈。"
+    },
+    "item:12": {
+      "en": "Ring of Protection",
+      "stats": [
+        {
+          "value": "+2",
+          "en": "Armor",
+          "zh": "护甲"
+        }
+      ],
+      "loreEn": "A glimmering ring that defends its bearer.",
+      "loreZh": "能保护佩戴者的闪光戒指。"
+    },
+    "item:182": {
+      "en": "Stout Shield",
+      "notesEn": [
+        "Multiple sources of damage block do not stack."
+      ],
+      "notesZh": [
+        "多种伤害格挡物品的效果互不叠加。"
+      ],
+      "loreEn": "One man's wine barrel bottom is another man's shield.",
+      "loreZh": "一个人的酒桶底盖，在另一个人手里就成了圆盾。"
+    },
+    "item:247": {
+      "en": "Moon Shard",
+      "stats": [
+        {
+          "value": "+140",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        },
+        {
+          "value": "+400",
+          "en": "Bonus Night Vision",
+          "zh": "额外夜间视野"
+        }
+      ],
+      "loreEn": "Said to be a tear from the lunar goddess Selemene.",
+      "loreZh": "相传这是月之女神赛莉蒙妮流下的一滴眼泪。"
+    },
+    "item:13": {
+      "en": "Gauntlets of Strength",
+      "stats": [
+        {
+          "value": "+3",
+          "en": "Strength",
+          "zh": "力量"
+        }
+      ],
+      "loreEn": "Studded leather gloves that add brute strength.",
+      "loreZh": "带来野兽般力量的钉饰皮革手套。"
+    },
+    "item:14": {
+      "en": "Slippers of Agility",
+      "stats": [
+        {
+          "value": "+3",
+          "en": "Agility",
+          "zh": "敏捷"
+        }
+      ],
+      "loreEn": "Light boots made from spider skin that tingles your senses.",
+      "loreZh": "蜘蛛皮做成的轻便靴子，能让你感觉到刺痛。"
+    },
+    "item:15": {
+      "en": "Mantle of Intelligence",
+      "stats": [
+        {
+          "value": "+3",
+          "en": "Intelligence",
+          "zh": "智力"
+        }
+      ],
+      "loreEn": "A beautiful sapphire mantle worn by generations of queens.",
+      "loreZh": "历代女王都穿过的美丽斗篷，上面镶有蓝宝石。"
+    },
+    "item:16": {
+      "en": "Iron Branch",
+      "stats": [
+        {
+          "value": "+1",
+          "en": "All Attributes",
+          "zh": "全属性"
+        }
+      ],
+      "loreEn": "A seemingly ordinary branch, its ironlike qualities are bestowed upon the bearer.",
+      "loreZh": "一根看起来很普通的树枝，它如铁般坚硬的品质赋予持有者好运。"
+    },
+    "item:17": {
+      "en": "Belt of Strength",
+      "stats": [
+        {
+          "value": "+6",
+          "en": "Strength",
+          "zh": "力量"
+        }
+      ],
+      "loreEn": "A valued accessory for improving vitality.",
+      "loreZh": "提高活力的重要配件。"
+    },
+    "item:18": {
+      "en": "Band of Elvenskin",
+      "stats": [
+        {
+          "value": "+6",
+          "en": "Agility",
+          "zh": "敏捷"
+        }
+      ],
+      "loreEn": "A tensile fabric often used for its light weight and ease of movement.",
+      "loreZh": "轻巧且便于行动的柔韧纺织物。"
+    },
+    "item:19": {
+      "en": "Robe of the Magi",
+      "stats": [
+        {
+          "value": "+6",
+          "en": "Intelligence",
+          "zh": "智力"
+        }
+      ],
+      "loreEn": "This robe corrupts the soul of the user, but provides wisdom in return.",
+      "loreZh": "这个长袍将腐化使用者的灵魂，并以给予智慧作为交换。"
+    },
+    "item:20": {
+      "en": "Circlet",
+      "stats": [
+        {
+          "value": "+2",
+          "en": "All Attributes",
+          "zh": "全属性"
+        }
+      ],
+      "loreEn": "An elegant circlet designed for human princesses.",
+      "loreZh": "为人类公主们设计的雅致头环。"
+    },
+    "item:261": {
+      "en": "Crown",
+      "stats": [
+        {
+          "value": "+4",
+          "en": "All Attributes",
+          "zh": "全属性"
+        }
+      ],
+      "loreEn": "A stately crown created to ensure a well-meaning but ungifted heir could fend off usurpers and govern with a strong hand.",
+      "loreZh": "一顶庄严的王冠，打造的目的是保证善良而无能的继承人可以抵御篡夺者，并以铁腕手段治理国事。"
+    },
+    "item:1122": {
+      "en": "Diadem",
+      "stats": [
+        {
+          "value": "+6",
+          "en": "All Attributes",
+          "zh": "全属性"
+        }
+      ],
+      "loreEn": "A crown that can never be removed.",
+      "loreZh": "一顶永远无法摘下的冠冕。"
+    },
+    "item:21": {
+      "en": "Ogre Axe",
+      "stats": [
+        {
+          "value": "+10",
+          "en": "Strength",
+          "zh": "力量"
+        }
+      ],
+      "loreEn": "You grow stronger just by holding it.",
+      "loreZh": "只要双手握着就会变得强壮。"
+    },
+    "item:22": {
+      "en": "Blade of Alacrity",
+      "stats": [
+        {
+          "value": "+10",
+          "en": "Agility",
+          "zh": "敏捷"
+        }
+      ],
+      "loreEn": "A long blade imbued with time magic.",
+      "loreZh": "一把充满时间魔法的长刃。"
+    },
+    "item:23": {
+      "en": "Staff of Wizardry",
+      "stats": [
+        {
+          "value": "+10",
+          "en": "Intelligence",
+          "zh": "智力"
+        }
+      ],
+      "loreEn": "A staff of magical powers passed down from the eldest mages.",
+      "loreZh": "一个由法师长老代代相传的魔法之杖。"
+    },
+    "item:24": {
+      "en": "Ultimate Orb",
+      "stats": [
+        {
+          "value": "+15",
+          "en": "All Attributes",
+          "zh": "全属性"
+        }
+      ],
+      "loreEn": "A mystical orb containing the essence of life.",
+      "loreZh": "蕴含生命本质的神秘法球。"
+    },
+    "item:25": {
+      "en": "Gloves of Haste",
+      "stats": [
+        {
+          "value": "+20",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        }
+      ],
+      "loreEn": "A pair of magical gloves that seems to render weapons weightless.",
+      "loreZh": "一双似乎能化手中武器为无物的魔法手套。"
+    },
+    "item:485": {
+      "en": "Blitz Knuckles",
+      "stats": [
+        {
+          "value": "+35",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        }
+      ],
+      "loreEn": "An underground arcanist's update of a back-alley classic.",
+      "loreZh": "在地下活动的秘术师对经典非法勾当的再度演绎。"
+    },
+    "item:26": {
+      "en": "Morbid Mask",
+      "stats": [
+        {
+          "value": "+18%",
+          "en": "Lifesteal",
+          "zh": "攻击吸血"
+        }
+      ],
+      "loreEn": "A mask that drains the energy of those caught in its gaze.",
+      "loreZh": "这个面具会吸取被它凝视之人的生命力。"
+    },
+    "item:473": {
+      "en": "Voodoo Mask",
+      "stats": [
+        {
+          "value": "+15%",
+          "en": "Spell Lifesteal",
+          "zh": "技能吸血"
+        }
+      ],
+      "notesEn": [
+        "Does not heal from Pure or Reflected damage."
+      ],
+      "notesZh": [
+        "纯粹伤害或反弹伤害不会进行治疗。"
+      ],
+      "loreEn": "A mask tuned to sip the arcane bindings that pass between caster and foe.",
+      "loreZh": "一副面具，适合从施法者和敌人之间的奥术维系里吸收少许。"
+    },
+    "item:27": {
+      "en": "Ring of Regen",
+      "stats": [
+        {
+          "value": "+1.25",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        }
+      ],
+      "loreEn": "This ring is considered a good luck charm among the Gnomes.",
+      "loreZh": "一些侏儒迷信这个戒指能带来好运气。"
+    },
+    "item:28": {
+      "en": "Sage's Mask",
+      "stats": [
+        {
+          "value": "+0.7",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "loreEn": "A mask commonly used by mages and warlocks for various rituals.",
+      "loreZh": "法师和术士在各类祭祀中常用的面罩。"
+    },
+    "item:29": {
+      "en": "Boots of Speed",
+      "stats": [
+        {
+          "value": "+45",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        }
+      ],
+      "loreEn": "Fleet footwear, increasing movement.",
+      "loreZh": "穿双鞋子，跑的更快。"
+    },
+    "item:30": {
+      "en": "Gem of True Sight",
+      "notesEn": [
+        "Disabled while on a courier."
+      ],
+      "notesZh": [
+        "在信使身上时没有实际效果。"
+      ],
+      "loreEn": "Not one thrall creature of the depths,\nNor spirit bound in drowning's keep,\nNor Maelrawn the Tentacular,\nShall rest till seas, gem comes to sleep.",
+      "loreZh": "只为苍生不受深海的奴役\n只为生魂免去溺灵要塞的灾戾\n只为让麦尔朗恩长眠于海底\n璀璨的宝石终归于沉寂"
+    },
+    "item:1848": {
+      "en": "Shawl",
+      "stats": [
+        {
+          "value": "+10%",
+          "en": "Magic Resistance",
+          "zh": "魔法抗性"
+        }
+      ],
+      "notesEn": [
+        "Stacks multiplicatively with other sources of magic resistance."
+      ],
+      "notesZh": [
+        "能与其他提高魔法抗性的技能叠加。"
+      ]
+    },
+    "item:31": {
+      "en": "Cloak",
+      "stats": [
+        {
+          "value": "+18%",
+          "en": "Magic Resistance",
+          "zh": "魔法抗性"
+        }
+      ],
+      "notesEn": [
+        "Stacks multiplicatively with other sources of magic resistance."
+      ],
+      "notesZh": [
+        "能与其他提高魔法抗性的技能叠加。"
+      ],
+      "loreEn": "A cloak made of a magical material that works to dispel any magic cast on it.",
+      "loreZh": "一顶用魔法材料制成的斗篷，可以驱散一切施加于其上的魔法。"
+    },
+    "item:32": {
+      "en": "Talisman of Evasion",
+      "stats": [
+        {
+          "value": "+15%",
+          "en": "Evasion",
+          "zh": "闪避"
+        }
+      ],
+      "notesEn": [
+        "Stacks diminishingly with other sources of Evasion."
+      ],
+      "notesZh": [
+        "与其他闪避效果为非线性叠加。"
+      ],
+      "loreEn": "A necklace that allows you to anticipate enemy attacks.",
+      "loreZh": "能让你预知到敌人攻击的项链。"
+    },
+    "item:33": {
+      "en": "Cheese",
+      "notesEn": [
+        "Cheese is shareable."
+      ],
+      "notesZh": [
+        "奶酪可以共享。"
+      ],
+      "loreEn": "Made from the milk of a long lost Furbolg vendor, it restores the vitality of those who taste it.",
+      "loreZh": "一个久未谋面的熊怪供应商用奶做的奶酪，能瞬间回复品尝者的活力。"
+    },
+    "item:34": {
+      "en": "Magic Stick",
+      "notesEn": [
+        "Gains charges for spells cast by visible enemies in 1200 range.",
+        "Certain abilities and item abilities will not add charges."
+      ],
+      "notesZh": [
+        "1200范围内的可见敌人使用技能后就会获得点数。",
+        "部分英雄技能和物品技能的施放将不会增加点数。"
+      ],
+      "loreEn": "A simple wand used to channel magic energies, it is favored by apprentice wizards and great warlocks alike.",
+      "loreZh": "一根朴实的魔杖，能够引导魔法能量——巫师学徒和高级术士都对其青睐有加。"
+    },
+    "item:36": {
+      "en": "Magic Wand",
+      "stats": [
+        {
+          "value": "+3",
+          "en": "All Attributes",
+          "zh": "全属性"
+        }
+      ],
+      "notesEn": [
+        "Gains charges for spells cast by visible enemies in 1200 range.",
+        "Certain abilities and item abilities will not add charges."
+      ],
+      "notesZh": [
+        "1200范围内的可见敌人使用技能后就会获得点数。",
+        "部分英雄技能和物品技能的施放将不会增加点数。"
+      ],
+      "loreEn": "A simple wand used to channel magic energies, it is favored by apprentice wizards and great warlocks alike.",
+      "loreZh": "一根朴实的魔杖，能够引导魔法能量——巫师学徒和高级术士都对其青睐有加。"
+    },
+    "item:37": {
+      "en": "Ghost Scepter",
+      "stats": [
+        {
+          "value": "+5",
+          "en": "All Attributes",
+          "zh": "全属性"
+        }
+      ],
+      "notesEn": [
+        "Ends if you become Debuff Immune, and will have no effect if you are already Debuff Immune.",
+        "Shares cooldown with all Ghost Scepter upgrades."
+      ],
+      "notesZh": [
+        "如果在开启期间进入减益免疫状态，幽魂效果将会中止。如果在减益免疫状态下开启权杖将不会拥有幽魂效果。",
+        "和所有幽魂权杖升级物品共享冷却时间。"
+      ],
+      "loreEn": "Imbues the wielder with a ghostly presence, allowing them to evade physical damage.",
+      "loreZh": "赐予使用者幽灵般的姿态，让他们避开物理性的伤害。"
+    },
+    "item:38": {
+      "en": "Clarity",
+      "loreEn": "Clear water that enhances the ability to meditate.",
+      "loreZh": "能增强冥想能力的清水。"
+    },
+    "item:216": {
+      "en": "Enchanted Mango",
+      "stats": [
+        {
+          "value": "+0.4",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        }
+      ],
+      "notesEn": [
+        "Hold Control to use on a nearby allied hero."
+      ],
+      "notesZh": [
+        "按住Ctrl键点击附近友方英雄可以对其使用。"
+      ],
+      "loreEn": "The bittersweet flavors of Jidi Isle are irresistible to amphibians.",
+      "loreZh": "基迪岛上特有的苦甜参半风味让两栖动物无法抗拒。"
+    },
+    "item:4204": {
+      "en": "Healing Lotus",
+      "notesEn": [
+        "Hold Control to use on a nearby allied hero."
+      ],
+      "notesZh": [
+        "按住Ctrl键点击附近友方英雄可以对其使用。"
+      ]
+    },
+    "item:4205": {
+      "en": "Great Healing Lotus",
+      "notesEn": [
+        "Hold Control to use on a nearby allied hero."
+      ],
+      "notesZh": [
+        "按住Ctrl键点击附近友方英雄可以对其使用。"
+      ]
+    },
+    "item:4206": {
+      "en": "Greater Healing Lotus",
+      "notesEn": [
+        "Hold Control to use on a nearby allied hero."
+      ],
+      "notesZh": [
+        "按住Ctrl键点击附近友方英雄可以对其使用。"
+      ]
+    },
+    "item:1123": {
+      "en": "Blood Grenade",
+      "stats": [
+        {
+          "value": "+50",
+          "en": "Health",
+          "zh": "生命值"
+        }
+      ],
+      "loreEn": "Both the hunter and the hunted must pay the blood price.",
+      "loreZh": "猎人和猎物都必须付出血的代价。"
+    },
+    "item:1942": {
+      "en": "Bloodslinger",
+      "stats": [
+        {
+          "value": "+100",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+1.25",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        },
+        {
+          "value": "+8",
+          "en": "Intelligence",
+          "zh": "智力"
+        }
+      ],
+      "notesEn": [
+        "Shares a cooldown with Blood Grenade."
+      ],
+      "notesZh": [
+        "与血腥榴弹共用冷却时间。"
+      ]
+    },
+    "item:1154": {
+      "en": "Block of Cheese",
+      "loreEn": "First there was the Belt of Strength. Then there were the Boots of Travel. Now, at long last, the Block of Cheese.",
+      "loreZh": "一开始有力量腰带。然后有远行鞋。现在，终于有了，奶酪块。"
+    },
+    "item:39": {
+      "en": "Healing Salve",
+      "loreEn": "A magical salve that can quickly mend even the deepest of wounds.",
+      "loreZh": "即使最严重的伤口也能快速治愈的魔法药膏。"
+    },
+    "item:40": {
+      "en": "Dust of Appearance",
+      "notesEn": [
+        "Places a debuff on enemy units in the area that reveals them when they are invisible."
+      ],
+      "notesZh": [
+        "对范围内的敌方单位施加负面状态，他们在隐身状态下依然会显形。"
+      ],
+      "loreEn": "One may hide visage, but never volume.",
+      "loreZh": "容颜易藏，音声难隐。"
+    },
+    "item:41": {
+      "en": "Bottle",
+      "notesEn": [
+        "Bottle is shareable. Stored runes cannot be shared.",
+        "Using a stored Bounty or Water rune fully refills the bottle if the bottle was full when the rune was stored; otherwise, it refills two charges."
+      ],
+      "notesZh": [
+        "魔瓶可以共享。储存的神符无法共享。",
+        "使用储存的赏金或圣水神符后，若储存时魔瓶被灌满时，那么魔瓶还会被灌满；否则将灌至两口。"
+      ],
+      "loreEn": "An old bottle that survived the ages, the contents placed inside become enchanted.",
+      "loreZh": "一个流传至今的古老瓶子，内部空间随着时间的流逝逐渐拥有魔力。"
+    },
+    "item:42": {
+      "en": "Observer Ward",
+      "loreEn": "A form of half-sentient plant, often cultivated by apprentice wizards.",
+      "loreZh": "一种植物形态，只有一半的感知力，一般由巫师学徒培养。"
+    },
+    "item:43": {
+      "en": "Sentry Ward",
+      "loreEn": "A form of plant originally grown in the garden of a fearful king.",
+      "loreZh": "一种植物形态，原种于一位害世国王的花园中。"
+    },
+    "item:218": {
+      "en": "Observer and Sentry Wards",
+      "notesEn": [
+        "Hold Control to give one ward to an allied hero."
+      ],
+      "notesZh": [
+        "按住Ctrl键可以将一个守卫分给友方英雄。"
+      ],
+      "loreEn": "Advancements in stacking efficiency have made wards easier to carry than ever.",
+      "loreZh": "层叠效率的提升让守卫比以往更便于携带。"
+    },
+    "item:44": {
+      "en": "Tango",
+      "loreEn": "Forage to survive on the battlefield.",
+      "loreZh": "战场上的救命稻草。"
+    },
+    "item:241": {
+      "en": "Tango (Shared)",
+      "loreEn": "Om nom nom.",
+      "loreZh": "吧唧吧唧。"
+    },
+    "item:46": {
+      "en": "Town Portal Scroll",
+      "notesEn": [
+        "If multiple heroes teleport to the same location in succession, the channeling time will be increased for each successive hero.",
+        "Teleport can be prevented or canceled by Root abilities."
+      ],
+      "notesZh": [
+        "如果多名英雄在短时间内接连传送至相同地点，那么后续英雄的传送时间都会相应地有所延长。",
+        "传送可以被缠绕类技能阻止或取消。"
+      ],
+      "loreEn": "What a hero truly needs.",
+      "loreZh": "英雄真正需要的东西。"
+    },
+    "item:48": {
+      "en": "Boots of Travel",
+      "stats": [
+        {
+          "value": "+90",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        }
+      ],
+      "loreEn": "Winged boots that grant omnipresence.",
+      "loreZh": "足生双翼，上天入地。"
+    },
+    "item:220": {
+      "en": "Boots of Travel 2",
+      "stats": [
+        {
+          "value": "+110",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        }
+      ],
+      "loreEn": "Winged boots that grant omnipresence.",
+      "loreZh": "足生双翼，上天入地。"
+    },
+    "item:50": {
+      "en": "Phase Boots",
+      "stats": [
+        {
+          "value": "+45",
+          "en": "Move Speed (Ranged Heroes)",
+          "zh": "移动速度（远程英雄）"
+        },
+        {
+          "value": "+55",
+          "en": "Move Speed (Melee Heroes)",
+          "zh": "移动速度（近战英雄）"
+        },
+        {
+          "value": "+15",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+4",
+          "en": "Armor",
+          "zh": "护甲"
+        }
+      ],
+      "loreEn": "Boots that allow the wearer to travel between the ether.",
+      "loreZh": "穿着它的人可以穿越虚空。"
+    },
+    "item:51": {
+      "en": "Demon Edge",
+      "stats": [
+        {
+          "value": "+40",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ],
+      "loreEn": "One of the oldest weapons forged by the Demon-Smith Abzidian, it killed its maker when he tested its edge.",
+      "loreZh": "由恶魔铁匠阿布兹迪安锻造的古老武器之一，一出炉就在试刃时杀死了它的锻造者。"
+    },
+    "item:52": {
+      "en": "Eaglesong",
+      "stats": [
+        {
+          "value": "+25",
+          "en": "Agility",
+          "zh": "敏捷"
+        }
+      ],
+      "loreEn": "Capturing the majestic call of an eagle, this mystical horn brings limitless dexterity to those who hear it.",
+      "loreZh": "这只神秘的号角捕获了雄鹰嘹亮的呼啸，能给予听见这声音的英雄几近无限的敏捷度。"
+    },
+    "item:53": {
+      "en": "Reaver",
+      "stats": [
+        {
+          "value": "+25",
+          "en": "Strength",
+          "zh": "力量"
+        }
+      ],
+      "loreEn": "A massive axe capable of tearing whole mountains down.",
+      "loreZh": "一把开山断岳的强力巨斧。"
+    },
+    "item:54": {
+      "en": "Sacred Relic",
+      "stats": [
+        {
+          "value": "+55",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ],
+      "loreEn": "An ancient weapon that often turns the tides of war.",
+      "loreZh": "一件足以改变战争形势的强力武器。"
+    },
+    "item:55": {
+      "en": "Hyperstone",
+      "stats": [
+        {
+          "value": "+60",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        }
+      ],
+      "loreEn": "A mystical, carved stone that boosts the fervor of the holder.",
+      "loreZh": "一块刻有神秘纹路的石头，能够提升携带者的激情。"
+    },
+    "item:56": {
+      "en": "Ring of Health",
+      "stats": [
+        {
+          "value": "+4.5",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        }
+      ],
+      "loreEn": "A shiny ring found beneath a fat halfling's corpse.",
+      "loreZh": "一枚闪闪发光的指环，在一个胖乎乎的半身人尸体下被人所发现。"
+    },
+    "item:279": {
+      "en": "Ring of Tarrasque",
+      "stats": [
+        {
+          "value": "+12",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        }
+      ],
+      "loreEn": "An ageless ring forged with an otherwise simple blood magic amplified by the presumed source of its key component.",
+      "loreZh": "一枚永恒的戒指，铸造时使用了一种原本非常简单的血魔法，据推断是主要成分的来源加强了功效。"
+    },
+    "item:57": {
+      "en": "Void Stone",
+      "stats": [
+        {
+          "value": "+1.75",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "loreEn": "Jewelry that was once used to channel nether realm magic, this ring pulses with energy.",
+      "loreZh": "一件曾被用来引导冥界魔法的珠宝，这个戒指中跃动着魔力。"
+    },
+    "item:1802": {
+      "en": "Tiara of Selemene",
+      "stats": [
+        {
+          "value": "+5",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "loreEn": "A symbol of favor bestowed upon the high priestess of Selemene.",
+      "loreZh": "恩泽的象征，授予了赛莉蒙妮的女祭司。"
+    },
+    "item:58": {
+      "en": "Mystic Staff",
+      "stats": [
+        {
+          "value": "+25",
+          "en": "Intelligence",
+          "zh": "智力"
+        }
+      ],
+      "loreEn": "Enigmatic staff made of only the most expensive crystals.",
+      "loreZh": "这根谜一般的法杖是由最贵重的水晶做成的。"
+    },
+    "item:59": {
+      "en": "Energy Booster",
+      "stats": [
+        {
+          "value": "+250",
+          "en": "Mana",
+          "zh": "魔法值"
+        }
+      ],
+      "loreEn": "This lapis gemstone is commonly added to the collection of wizards seeking to improve their presence in combat.",
+      "loreZh": "巫师们若想提升战场上的存在感，通常会把这块天青石加入自己的收藏。"
+    },
+    "item:60": {
+      "en": "Point Booster",
+      "stats": [
+        {
+          "value": "+175",
+          "en": "Mana",
+          "zh": "魔法值"
+        },
+        {
+          "value": "+175",
+          "en": "Health",
+          "zh": "生命值"
+        }
+      ],
+      "loreEn": "A perfectly formed amethyst that nourishes body and mind when held.",
+      "loreZh": "一块完美成型的紫水晶，持有时可以滋养身体和心灵。"
+    },
+    "item:61": {
+      "en": "Vitality Booster",
+      "stats": [
+        {
+          "value": "+250",
+          "en": "Health",
+          "zh": "生命值"
+        }
+      ],
+      "loreEn": "A ruby gemstone that has been passed down through generations of warrior kin.",
+      "loreZh": "一块在战士家族中世代相传的红宝石。"
+    },
+    "item:593": {
+      "en": "Fluffy Hat",
+      "stats": [
+        {
+          "value": "+125",
+          "en": "Health",
+          "zh": "生命值"
+        }
+      ],
+      "loreEn": "Fine and functional foppery for the fashion-forward fighter.",
+      "loreZh": "缤纷纨绔绒，纯绚绵绝缎。"
+    },
+    "item:1849": {
+      "en": "Wizard Hat",
+      "stats": [
+        {
+          "value": "+125",
+          "en": "Mana",
+          "zh": "魔法值"
+        }
+      ]
+    },
+    "item:63": {
+      "en": "Power Treads",
+      "stats": [
+        {
+          "value": "+45",
+          "en": "Move Speed (Ranged Heroes)",
+          "zh": "移动速度（远程英雄）"
+        },
+        {
+          "value": "+55",
+          "en": "Move Speed (Melee Heroes)",
+          "zh": "移动速度（近战英雄）"
+        },
+        {
+          "value": "+10",
+          "en": "Selected Attribute",
+          "zh": "所选属性"
+        },
+        {
+          "value": "+25",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        }
+      ],
+      "notesEn": [
+        "Power Treads can be built using a Belt of Strength, Band of Elvenskin, or a Robe of the Magi."
+      ],
+      "notesZh": [
+        "动力鞋可以使用力量腰带、精灵布带或法师长袍合成。"
+      ],
+      "loreEn": "A pair of tough-skinned boots that change to meet the demands of the wearer.",
+      "loreZh": "一双厚实的皮靴，能根据穿着者的需求切换属性。"
+    },
+    "item:1107": {
+      "en": "Phylactery",
+      "stats": [
+        {
+          "value": "+6",
+          "en": "All Attributes",
+          "zh": "全属性"
+        },
+        {
+          "value": "+5.5",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        },
+        {
+          "value": "+2.25",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "loreEn": "An amulet overflowing with powerful magics.",
+      "loreZh": "洋溢着强大魔力的护身符。"
+    },
+    "item:1808": {
+      "en": "Khanda",
+      "stats": [
+        {
+          "value": "+450",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+450",
+          "en": "Mana",
+          "zh": "魔法值"
+        },
+        {
+          "value": "+8",
+          "en": "All Attributes",
+          "zh": "全属性"
+        },
+        {
+          "value": "+7",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        },
+        {
+          "value": "+3",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "notesEn": [
+        "The slow debuff is dispellable.",
+        "The break debuff is not dispellable."
+      ],
+      "notesZh": [
+        "减速的负面效果可以被驱散。",
+        "破坏的负面效果不能被驱散。"
+      ],
+      "loreEn": "A blade sharp enough to slice through magic itself.",
+      "loreZh": "锋利至极的刀刃，足以斩开魔法本身。"
+    },
+    "item:1955": {
+      "en": "Caduceus",
+      "stats": [
+        {
+          "value": "+8",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+8",
+          "en": "Agility",
+          "zh": "敏捷"
+        },
+        {
+          "value": "+20",
+          "en": "Intelligence",
+          "zh": "智力"
+        },
+        {
+          "value": "+175",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+6",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        },
+        {
+          "value": "+3",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "notesEn": [
+        "The enemy and ally halves of Empower Spell run on separate cooldowns of 8s and 8s.",
+        "Force applies Empower Spell to its target whether or not that half's cooldown is ready, and does not put it on cooldown.",
+        "Force doesn't interrupt the target's actions.",
+        "Force has 850 cast range when cast on enemies."
+      ],
+      "notesZh": [
+        "法术强化的敌军和友军效果是相互独立的冷却时间，分别为8秒和8秒。",
+        "原力对其目标施加的法术强化无视对应效果的冷却时间，并且不会使其进入冷却。",
+        "原力不会打断目标的动作。",
+        "原力对敌人施放时施法距离为850。"
+      ]
+    },
+    "item:65": {
+      "en": "Hand of Midas",
+      "stats": [
+        {
+          "value": "+40",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        }
+      ],
+      "notesEn": [
+        "The gold given is unreliable gold (you do not get the normal creep bounty).",
+        "Experience gained by using Transmute is not shared."
+      ],
+      "notesZh": [
+        "获得的金钱属于不可靠金钱（不会得到击杀该单位的正常金钱）。",
+        "使用炼金获得的经验不会与他人共享。"
+      ],
+      "loreEn": "Preserved through unknown magical means, the Hand of Midas is a weapon of greed, sacrificing animals to line the owner's pockets.",
+      "loreZh": "以未知的魔法手段维持着的迈达斯之手，是件贪婪的武器，通过炼化生灵来装满持有者的腰包。"
+    },
+    "item:67": {
+      "en": "Oblivion Staff",
+      "stats": [
+        {
+          "value": "+10",
+          "en": "Intelligence",
+          "zh": "智力"
+        },
+        {
+          "value": "+35",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        },
+        {
+          "value": "+1.25",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "loreEn": "Deceptively hidden as an ordinary staff, it is actually very powerful, much like the Eldritch who originally possessed it.",
+      "loreZh": "让人误以为只是根普通战棍的外表下，其实威力不凡，就像原来拥有它的邪王。"
+    },
+    "item:534": {
+      "en": "Witch Blade",
+      "stats": [
+        {
+          "value": "+40",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        },
+        {
+          "value": "+12",
+          "en": "Intelligence",
+          "zh": "智力"
+        },
+        {
+          "value": "+1.5",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        },
+        {
+          "value": "+5",
+          "en": "Armor",
+          "zh": "护甲"
+        },
+        {
+          "value": "+300",
+          "en": "Projectile Speed",
+          "zh": "弹道速度"
+        }
+      ],
+      "notesEn": [
+        "Illusions do not apply Witch Blade"
+      ],
+      "notesZh": [
+        "幻象不会施加巫师之刃效果"
+      ],
+      "loreEn": "A spiteful blade inadvertently possessed by the soul of its incautious creator.",
+      "loreZh": "一把怨毒的战刃，它鲁莽的创造者不慎将自己的灵魂依附在上面。"
+    },
+    "item:69": {
+      "en": "Perseverance",
+      "stats": [
+        {
+          "value": "+5.5",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        },
+        {
+          "value": "+2.25",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "loreEn": "A gem that grants heart to the bearer.",
+      "loreZh": "给持有者带来勇气的宝石。"
+    },
+    "item:1125": {
+      "en": "Cornucopia",
+      "stats": [
+        {
+          "value": "+5",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        },
+        {
+          "value": "+2",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        },
+        {
+          "value": "+7",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ],
+      "loreEn": "A source of spiritual and physical nourishment.",
+      "loreZh": "滋养精神和身体的源泉。"
+    },
+    "item:71": {
+      "en": "Poor Man's Shield",
+      "notesEn": [
+        "Multiple sources of damage block do not stack."
+      ],
+      "notesZh": [
+        "多种伤害格挡物品的效果互不叠加。"
+      ],
+      "loreEn": "A busted old shield that seems to block more than it should.",
+      "loreZh": "一块破旧的老式盾牌，格挡效果却比想象中要好。"
+    },
+    "item:73": {
+      "en": "Bracer",
+      "stats": [
+        {
+          "value": "+5",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+2",
+          "en": "Agility",
+          "zh": "敏捷"
+        },
+        {
+          "value": "+2",
+          "en": "Intelligence",
+          "zh": "智力"
+        },
+        {
+          "value": "+0.75",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        },
+        {
+          "value": "+50",
+          "en": "Health",
+          "zh": "生命值"
+        }
+      ],
+      "loreEn": "The bracer is a common choice to toughen up defenses and increase longevity.",
+      "loreZh": "护腕是增强防御、延长寿命的常见选择。"
+    },
+    "item:75": {
+      "en": "Wraith Band",
+      "stats": [
+        {
+          "value": "+5",
+          "en": "Agility",
+          "zh": "敏捷"
+        },
+        {
+          "value": "+2",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+2",
+          "en": "Intelligence",
+          "zh": "智力"
+        },
+        {
+          "value": "+10",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        },
+        {
+          "value": "+1.75",
+          "en": "Armor",
+          "zh": "护甲"
+        }
+      ],
+      "loreEn": "A circlet with faint whispers echoing about it.",
+      "loreZh": "总是回响着微弱耳语的圆环。"
+    },
+    "item:77": {
+      "en": "Null Talisman",
+      "stats": [
+        {
+          "value": "+5",
+          "en": "Intelligence",
+          "zh": "智力"
+        },
+        {
+          "value": "+2",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+2",
+          "en": "Agility",
+          "zh": "敏捷"
+        },
+        {
+          "value": "+60",
+          "en": "Mana",
+          "zh": "魔法值"
+        },
+        {
+          "value": "+1",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "loreEn": "A small gemstone attached to several chains.",
+      "loreZh": "由锁链装饰起来的小巧的宝石。"
+    },
+    "item:79": {
+      "en": "Mekansm",
+      "stats": [
+        {
+          "value": "+5",
+          "en": "Armor",
+          "zh": "护甲"
+        }
+      ],
+      "notesEn": [
+        "Restore does not affect units that have been affected by Restore or Guardian Greaves Mend within Mekansm's cooldown.",
+        "Multiple instances of Mekansm Aura do not stack."
+      ],
+      "notesZh": [
+        "梅肯斯姆的冷却时间内回复不能作用于已经被回复或卫士胫甲的修复作用过的单位。",
+        "多个梅肯斯姆光环效果不会叠加。"
+      ],
+      "loreEn": "A glowing jewel formed out of assorted parts that somehow fit together perfectly.",
+      "loreZh": "各种散件不知是怎样完美地组合起来，形成了散发着光芒的珠宝。"
+    },
+    "item:81": {
+      "en": "Vladmir's Offering",
+      "stats": [
+        {
+          "value": "+2",
+          "en": "Armor",
+          "zh": "护甲"
+        },
+        {
+          "value": "+0.75",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "notesEn": [
+        "Lifesteal on attacks against creeps is reduced to 12%."
+      ],
+      "notesZh": [
+        "攻击非英雄单位的吸血效果减少至12%。"
+      ],
+      "loreEn": "An eerie mask that is haunted with the malice of a fallen vampire.",
+      "loreZh": "一副怪异的面具，纠缠着死去吸血鬼的怨念。"
+    },
+    "item:1944": {
+      "en": "Ristul's Devotion",
+      "stats": [
+        {
+          "value": "+8",
+          "en": "Armor",
+          "zh": "护甲"
+        },
+        {
+          "value": "+1",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "notesEn": [
+        "Lifesteal on attacks against creeps is reduced to 12%."
+      ],
+      "notesZh": [
+        "攻击非英雄单位的吸血效果减少至12%。"
+      ]
+    },
+    "item:908": {
+      "en": "Wraith Pact",
+      "stats": [
+        {
+          "value": "+250",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+250",
+          "en": "Mana",
+          "zh": "魔法值"
+        }
+      ]
+    },
+    "item:86": {
+      "en": "Buckler",
+      "stats": [
+        {
+          "value": "+2",
+          "en": "Armor",
+          "zh": "护甲"
+        }
+      ],
+      "loreEn": "A powerful shield that imbues the bearer with the strength of heroes past, it is capable of protecting entire armies in battle.",
+      "loreZh": "一面强大的盾牌赐予携带者过往英雄们的力量，它能在战斗中为整支军队提供保护。"
+    },
+    "item:88": {
+      "en": "Ring of Basilius",
+      "stats": [
+        {
+          "value": "+0.25",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "loreEn": "Ring given as a reward to the greatest mages.",
+      "loreZh": "这枚戒指是最伟大的法师才能获得的嘉奖。"
+    },
+    "item:269": {
+      "en": "Holy Locket",
+      "stats": [
+        {
+          "value": "+7",
+          "en": "All Attributes",
+          "zh": "全属性"
+        }
+      ],
+      "loreEn": "A prized relic long thought lost forever in a failed crusade.",
+      "loreZh": "一件珍贵的圣物，多年以来人们认为在远征失败后已经永远地遗失了。"
+    },
+    "item:90": {
+      "en": "Pipe of Insight",
+      "stats": [
+        {
+          "value": "+14",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        },
+        {
+          "value": "+20%",
+          "en": "Magic Resistance",
+          "zh": "魔法抗性"
+        }
+      ],
+      "notesEn": [
+        "Barrier does not affect units that have been affected by Barrier within Pipe of Insight's cooldown.",
+        "Stacks multiplicatively with other sources of magic resistance."
+      ],
+      "notesZh": [
+        "护盾不会作用于洞察烟斗的冷却时间内已受过护盾作用的单位。",
+        "能与其他提高魔法抗性的技能叠加。"
+      ],
+      "loreEn": "A powerful artifact of mysterious origin, it creates barriers against magical forces.",
+      "loreZh": "一件来源神秘的强大古物，能制造出抵挡法术攻击的护盾。"
+    },
+    "item:92": {
+      "en": "Urn of Shadows",
+      "stats": [
+        {
+          "value": "+1",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        },
+        {
+          "value": "+2",
+          "en": "All Attributes",
+          "zh": "全属性"
+        },
+        {
+          "value": "+2",
+          "en": "Armor",
+          "zh": "护甲"
+        }
+      ],
+      "notesEn": [
+        "Empty urns gain 2 charges.",
+        "If the allied unit is attacked by an enemy hero or Roshan, the effect is lost.",
+        "Does not trigger spell block or spell reflect."
+      ],
+      "notesZh": [
+        "点数为0的灵龛将获得2点能量。",
+        "如果友方单位被敌方英雄或肉山攻击，效果将会消失。",
+        "不会触发法术抵抗或法术反弹。"
+      ],
+      "loreEn": "Contains the ashes of powerful demons.",
+      "loreZh": "内含强大恶魔的骨灰。"
+    },
+    "item:94": {
+      "en": "Headdress",
+      "stats": [
+        {
+          "value": "+0.5",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        }
+      ],
+      "loreEn": "Creates a soothing aura that restores allies in battle.",
+      "loreZh": "创造一个镇痛的光环在战斗中为友军恢复生命。"
+    },
+    "item:96": {
+      "en": "Scythe of Vyse",
+      "stats": [
+        {
+          "value": "+30",
+          "en": "Intelligence",
+          "zh": "智力"
+        },
+        {
+          "value": "+8.5",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "notesEn": [
+        "The target will have a base movement speed of 140, but buffs granting maximum movement speed won't be disabled."
+      ],
+      "notesZh": [
+        "目标的基础移速将降至140，但是若拥有极限移动速度的状态就不会受影响。"
+      ],
+      "loreEn": "The most guarded relic among the cult of Vyse, it is the most coveted weapon among magi.",
+      "loreZh": "维斯教会中守卫最为森严的圣物，也是法师们最为垂涎的武器。"
+    },
+    "item:98": {
+      "en": "Orchid Malevolence",
+      "stats": [
+        {
+          "value": "+35",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        },
+        {
+          "value": "+20",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+2.5",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        },
+        {
+          "value": "+12",
+          "en": "Intelligence",
+          "zh": "智力"
+        }
+      ],
+      "loreEn": "A garnet rod constructed from the essence of a fire demon.",
+      "loreZh": "一颗诞自火焰恶魔精华的榴石。"
+    },
+    "item:250": {
+      "en": "Bloodthorn",
+      "stats": [
+        {
+          "value": "+25",
+          "en": "Intelligence",
+          "zh": "智力"
+        },
+        {
+          "value": "+70",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        },
+        {
+          "value": "+4",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        },
+        {
+          "value": "+20",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ],
+      "loreEn": "A reviled blade that bites deeper with each wriggle of its victim's final throes.",
+      "loreZh": "一把亵渎之刃，受害者临死前的每次挣扎都会使其砍得更深。"
+    },
+    "item:252": {
+      "en": "Echo Sabre",
+      "stats": [
+        {
+          "value": "+20",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+15",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+1.75",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "loreEn": "A deceptively swift blade imbued with resonant magic.",
+      "loreZh": "一把看似迅捷异常的战刃，其中注入了共鸣魔力。"
+    },
+    "item:100": {
+      "en": "Eul's Scepter of Divinity",
+      "stats": [
+        {
+          "value": "+10",
+          "en": "Intelligence",
+          "zh": "智力"
+        },
+        {
+          "value": "+2.5",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        },
+        {
+          "value": "+20",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        }
+      ],
+      "notesEn": [
+        "You cannot cyclone allies.",
+        "Cyclones cast on yourself go through spell immunity.",
+        "Cyclone can dispel some buffs and debuffs.",
+        "Cyclone duration is unaffected by status resistance."
+      ],
+      "notesZh": [
+        "不能对队友使用龙卷风。",
+        "对自己施放龙卷风时无视减益免疫。",
+        "龙卷风可以驱散部分正面和负面状态。",
+        "龙卷风持续时间不受状态抗性影响。"
+      ],
+      "loreEn": "A mysterious scepter passed down through the ages, its disruptive winds can be used for good or evil.",
+      "loreZh": "一支从久远年代流传下来的神秘权杖，能招来破坏性的龙卷风行善或作恶。"
+    },
+    "item:610": {
+      "en": "Wind Waker",
+      "stats": [
+        {
+          "value": "+25",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        },
+        {
+          "value": "+3",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        },
+        {
+          "value": "+35",
+          "en": "Intelligence",
+          "zh": "智力"
+        }
+      ],
+      "notesEn": [
+        "Cyclone can dispel some buffs and debuffs.",
+        "When cast on yourself, the cyclone can be moved anywhere at a speed of 360.",
+        "Cyclone duration is unaffected by status resistance."
+      ],
+      "notesZh": [
+        "龙卷风可以驱散部分正面和负面状态。",
+        "对自身施放时，龙卷风可以任意移动，移动速度为360。",
+        "龙卷风持续时间不受状态抗性影响。"
+      ],
+      "loreEn": "Proof enough to some that unseen forces manipulate the happenings of the material plane.",
+      "loreZh": "对于部分人来说，足以证明看不见的势力操控着现实位面发生的事件。"
+    },
+    "item:232": {
+      "en": "Aether Lens",
+      "stats": [
+        {
+          "value": "+300",
+          "en": "Mana",
+          "zh": "魔法值"
+        },
+        {
+          "value": "+2.5",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        },
+        {
+          "value": "+200",
+          "en": "Cast Range",
+          "zh": "施法距离"
+        }
+      ],
+      "notesEn": [
+        "Cast Range bonuses from Aether Lens and Dagon do not stack."
+      ],
+      "notesZh": [
+        "以太透镜和达贡之神力提供的施法距离加成不会叠加。"
+      ],
+      "loreEn": "Polished with the incantation of his final breath, the gift of a dying mage to his sickly son.",
+      "loreZh": "这件礼物上点缀着行将就木的法师拼着最后一口气说出的咒语，被赠予他体弱多病的儿子。"
+    },
+    "item:102": {
+      "en": "Force Staff",
+      "stats": [
+        {
+          "value": "+10",
+          "en": "Intelligence",
+          "zh": "智力"
+        },
+        {
+          "value": "+175",
+          "en": "Health",
+          "zh": "生命值"
+        }
+      ],
+      "notesEn": [
+        "Force Staff doesn't interrupt the target's actions.",
+        "Will not work on a unit inside Chronosphere, Duel, or Black Hole.",
+        "Force Staff has 850 cast range when cast on enemies."
+      ],
+      "notesZh": [
+        "原力法杖不会打断目标的动作。",
+        "对时间结界，决斗或黑洞内的单位无效。",
+        "原力法杖对敌人施放时施法距离为850。"
+      ],
+      "loreEn": "Allows you to manipulate others, for good or evil.",
+      "loreZh": "让你可以操纵他人，不论出于善或恶。"
+    },
+    "item:263": {
+      "en": "Hurricane Pike",
+      "stats": [
+        {
+          "value": "+15",
+          "en": "Intelligence",
+          "zh": "智力"
+        },
+        {
+          "value": "+200",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+20",
+          "en": "Agility",
+          "zh": "敏捷"
+        },
+        {
+          "value": "+15",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+130",
+          "en": "Attack Range",
+          "zh": "攻击距离"
+        }
+      ],
+      "notesEn": [
+        "Self-cast will use Hurricane Pike on yourself.",
+        "Hurricane Pike doesn't interrupt the target's actions.",
+        "Will not work on a unit inside Chronosphere, Duel, or Black Hole.",
+        "Attack Range bonuses from Dragon Lance and its upgrades do not stack."
+      ],
+      "notesZh": [
+        "对自身施法会对自己使用飓风长戟。",
+        "飓风长戟不会打断目标的动作。",
+        "对时间结界，决斗或黑洞内的单位无效。",
+        "来自魔龙枪和升级物品的攻击距离加成不会叠加。"
+      ],
+      "loreEn": "A legendary pike once held as royal sigil of the ancient wyvern riders.",
+      "loreZh": "一柄传奇战戟，曾是远古飞龙骑士的皇家印记。"
+    },
+    "item:104": {
+      "en": "Dagon",
+      "stats": [
+        {
+          "value": "+6 / +7 / +8 / +9 / +10",
+          "en": "All Attributes",
+          "zh": "全属性"
+        },
+        {
+          "value": "+200 / +210 / +220 / +230 / +240",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+350 / +375 / +400 / +425 / +450",
+          "en": "Mana",
+          "zh": "魔法值"
+        },
+        {
+          "value": "+60 / +90 / +120 / +150 / +180",
+          "en": "Cast Range",
+          "zh": "施法距离"
+        }
+      ],
+      "notesEn": [
+        "Instantly kills illusions.",
+        "Cast Range bonuses from Aether Lens and Dagon do not stack."
+      ],
+      "notesZh": [
+        "立刻消灭幻象。",
+        "以太透镜和达贡之神力提供的施法距离加成不会叠加。"
+      ],
+      "loreEn": "A lesser wand that grows in power the longer it is used, it brings magic to the fingertips of the user.",
+      "loreZh": "越用威力就越大的次级法杖，让持有者的魔法从指尖喷涌而出。"
+    },
+    "item:201": {
+      "en": "Dagon",
+      "stats": [
+        {
+          "value": "+6 / +7 / +8 / +9 / +10",
+          "en": "All Attributes",
+          "zh": "全属性"
+        },
+        {
+          "value": "+200 / +210 / +220 / +230 / +240",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+350 / +375 / +400 / +425 / +450",
+          "en": "Mana",
+          "zh": "魔法值"
+        },
+        {
+          "value": "+60 / +90 / +120 / +150 / +180",
+          "en": "Cast Range",
+          "zh": "施法距离"
+        }
+      ],
+      "notesEn": [
+        "Instantly kills illusions.",
+        "Cast Range bonuses from Aether Lens and Dagon do not stack."
+      ],
+      "notesZh": [
+        "立刻消灭幻象。",
+        "以太透镜和达贡之神力提供的施法距离加成不会叠加。"
+      ],
+      "loreEn": "A lesser wand that grows in power the longer it is used, it brings magic to the fingertips of the user.",
+      "loreZh": "越用威力就越大的次级法杖，让持有者的魔法从指尖喷涌而出。"
+    },
+    "item:202": {
+      "en": "Dagon",
+      "stats": [
+        {
+          "value": "+6 / +7 / +8 / +9 / +10",
+          "en": "All Attributes",
+          "zh": "全属性"
+        },
+        {
+          "value": "+200 / +210 / +220 / +230 / +240",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+350 / +375 / +400 / +425 / +450",
+          "en": "Mana",
+          "zh": "魔法值"
+        },
+        {
+          "value": "+60 / +90 / +120 / +150 / +180",
+          "en": "Cast Range",
+          "zh": "施法距离"
+        }
+      ],
+      "notesEn": [
+        "Instantly kills illusions.",
+        "Cast Range bonuses from Aether Lens and Dagon do not stack."
+      ],
+      "notesZh": [
+        "立刻消灭幻象。",
+        "以太透镜和达贡之神力提供的施法距离加成不会叠加。"
+      ],
+      "loreEn": "A lesser wand that grows in power the longer it is used, it brings magic to the fingertips of the user.",
+      "loreZh": "越用威力就越大的次级法杖，让持有者的魔法从指尖喷涌而出。"
+    },
+    "item:203": {
+      "en": "Dagon",
+      "stats": [
+        {
+          "value": "+6 / +7 / +8 / +9 / +10",
+          "en": "All Attributes",
+          "zh": "全属性"
+        },
+        {
+          "value": "+200 / +210 / +220 / +230 / +240",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+350 / +375 / +400 / +425 / +450",
+          "en": "Mana",
+          "zh": "魔法值"
+        },
+        {
+          "value": "+60 / +90 / +120 / +150 / +180",
+          "en": "Cast Range",
+          "zh": "施法距离"
+        }
+      ],
+      "notesEn": [
+        "Instantly kills illusions.",
+        "Cast Range bonuses from Aether Lens and Dagon do not stack."
+      ],
+      "notesZh": [
+        "立刻消灭幻象。",
+        "以太透镜和达贡之神力提供的施法距离加成不会叠加。"
+      ],
+      "loreEn": "A lesser wand that grows in power the longer it is used, it brings magic to the fingertips of the user.",
+      "loreZh": "越用威力就越大的次级法杖，让持有者的魔法从指尖喷涌而出。"
+    },
+    "item:204": {
+      "en": "Dagon",
+      "stats": [
+        {
+          "value": "+6 / +7 / +8 / +9 / +10",
+          "en": "All Attributes",
+          "zh": "全属性"
+        },
+        {
+          "value": "+200 / +210 / +220 / +230 / +240",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+350 / +375 / +400 / +425 / +450",
+          "en": "Mana",
+          "zh": "魔法值"
+        },
+        {
+          "value": "+60 / +90 / +120 / +150 / +180",
+          "en": "Cast Range",
+          "zh": "施法距离"
+        }
+      ],
+      "notesEn": [
+        "Instantly kills illusions.",
+        "Cast Range bonuses from Aether Lens and Dagon do not stack."
+      ],
+      "notesZh": [
+        "立刻消灭幻象。",
+        "以太透镜和达贡之神力提供的施法距离加成不会叠加。"
+      ],
+      "loreEn": "A lesser wand that grows in power the longer it is used, it brings magic to the fingertips of the user.",
+      "loreZh": "越用威力就越大的次级法杖，让持有者的魔法从指尖喷涌而出。"
+    },
+    "item:106": {
+      "en": "Necronomicon",
+      "stats": [
+        {
+          "value": "+6 / +12 / +18",
+          "en": "Strength",
+          "zh": "力量"
+        }
+      ],
+      "loreEn": "Considered the ultimate in necromancy and demonology, a powerful malefic force is locked within its pages.",
+      "loreZh": "借助亡灵术和恶魔学的终极奥义，强大的邪恶力量被封印在书页之内。"
+    },
+    "item:193": {
+      "en": "Necronomicon",
+      "stats": [
+        {
+          "value": "+6 / +12 / +18",
+          "en": "Strength",
+          "zh": "力量"
+        }
+      ],
+      "loreEn": "Considered the ultimate in necromancy and demonology, a powerful malefic force is locked within its pages.",
+      "loreZh": "被视为亡灵术和恶魔学的终极造诣，书页之内封印的是强大的邪恶力量。"
+    },
+    "item:194": {
+      "en": "Necronomicon",
+      "stats": [
+        {
+          "value": "+6 / +12 / +18",
+          "en": "Strength",
+          "zh": "力量"
+        }
+      ],
+      "loreEn": "Considered the ultimate in necromancy and demonology, a powerful malefic force is locked within its pages.",
+      "loreZh": "被视为亡灵术和恶魔学的终极造诣，书页之内封印的是强大的邪恶力量。"
+    },
+    "item:108": {
+      "en": "Aghanim's Scepter",
+      "stats": [
+        {
+          "value": "+10",
+          "en": "All Attributes",
+          "zh": "全属性"
+        },
+        {
+          "value": "+175",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+175",
+          "en": "Mana",
+          "zh": "魔法值"
+        }
+      ],
+      "loreEn": "The scepter of a wizard with demigod-like powers.",
+      "loreZh": "这把权杖属于拥有半神之力的法师。"
+    },
+    "item:271": {
+      "en": "Aghanim's Blessing",
+      "loreEn": "The scepter of a wizard with demigod-like powers.",
+      "loreZh": "这把权杖属于拥有半神之力的法师。"
+    },
+    "item:727": {
+      "en": "Aghanim's Blessing - Roshan",
+      "loreEn": "The scepter of a wizard with demigod-like powers.",
+      "loreZh": "这把权杖属于拥有半神之力的法师。"
+    },
+    "item:609": {
+      "en": "Aghanim's Shard",
+      "loreEn": "With origins known only to a single wizard, fragments of this impossible crystal are nearly as coveted as the renowned scepter itself.",
+      "loreZh": "这块不可思议的水晶只有一名巫师知晓它的起源，而水晶的碎片几乎与赫赫有名的神杖一样让人梦寐以求。"
+    },
+    "item:725": {
+      "en": "Aghanim's Shard - Consumable",
+      "loreEn": "With origins known only to a single wizard, fragments of this impossible crystal are nearly as coveted as the renowned scepter itself.",
+      "loreZh": "这块不可思议的水晶只有一名巫师知晓它的起源，而水晶的碎片几乎与赫赫有名的神杖一样让人梦寐以求。"
+    },
+    "item:110": {
+      "en": "Refresher Orb",
+      "stats": [
+        {
+          "value": "+14",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        },
+        {
+          "value": "+7",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "loreEn": "A powerful artifact created for wizards.",
+      "loreZh": "一件为巫师量身定做的强力物品。"
+    },
+    "item:112": {
+      "en": "Assault Cuirass",
+      "stats": [
+        {
+          "value": "+30",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        },
+        {
+          "value": "+10",
+          "en": "Armor",
+          "zh": "护甲"
+        }
+      ],
+      "loreEn": "Forged in the depths of the nether reaches, this hellish mail provides an army with increased armor and attack speed.",
+      "loreZh": "在三途川的深处锻造而成，这件地狱盔甲能提高整支军队的护甲和攻击速度。"
+    },
+    "item:114": {
+      "en": "Heart of Tarrasque",
+      "stats": [
+        {
+          "value": "+40",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+1%",
+          "en": "Max Health Regen",
+          "zh": "最大生命值恢复"
+        }
+      ],
+      "notesEn": [
+        "Multiple instances of Behemoth's Blood do not stack."
+      ],
+      "notesZh": [
+        "多个巨兽之血的效果不会叠加。"
+      ],
+      "loreEn": "Preserved heart of an extinct monster, it bolsters the bearer's fortitude.",
+      "loreZh": "保存完好的心脏，来自早已绝种的怪兽，能提升携带者的耐久力。"
+    },
+    "item:116": {
+      "en": "Black King Bar",
+      "stats": [
+        {
+          "value": "+10",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+24",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ],
+      "notesEn": [
+        "Purchasing another Black King Bar will not reset its immunity duration.",
+        "Avatar duration is not affected by increases to buff duration."
+      ],
+      "notesZh": [
+        "再次购买黑皇杖也不会重置天神下凡的持续时间。",
+        "天神下凡的持续时间不会受到增益持续时间增加的影响。"
+      ],
+      "loreEn": "A powerful staff imbued with the strength of giants.",
+      "loreZh": "渗透了巨人之力的强大法杖。"
+    },
+    "item:117": {
+      "en": "Aegis of the Immortal",
+      "notesEn": [
+        "Pronounced as ayy jis."
+      ],
+      "notesZh": [
+        "（英文）读作ayy jis。"
+      ],
+      "loreEn": "The Immortal was said to own a shield that protected him from death itself.",
+      "loreZh": "据说不朽者拥有一面能帮他躲过死亡的盾牌。"
+    },
+    "item:119": {
+      "en": "Shiva's Guard",
+      "stats": [
+        {
+          "value": "+17",
+          "en": "Armor",
+          "zh": "护甲"
+        }
+      ],
+      "notesEn": [
+        "The wave extends at a speed of 400 to a max size of 840.",
+        "The Arctic Blast follows its caster.",
+        "Multiple instances of Freezing Aura do not stack.",
+        "AoE bonuses from multiple Chasm Stones or its upgrades do not stack."
+      ],
+      "notesZh": [
+        "极寒冲击的扩张速度为400，最大半径为840。",
+        "极寒冲击将以施放者为中心。",
+        "多个霜冷光环效果不会叠加。",
+        "多个裂隙之石或升级物品的作用范围加成不会叠加。"
+      ],
+      "loreEn": "Said to have belonged to a goddess, today it retains much of its former power.",
+      "loreZh": "据说曾经属于某位女神，至今仍保持大部分神力。"
+    },
+    "item:121": {
+      "en": "Bloodstone",
+      "stats": [
+        {
+          "value": "+625",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+450",
+          "en": "Mana",
+          "zh": "魔法值"
+        },
+        {
+          "value": "+15",
+          "en": "Intelligence",
+          "zh": "智力"
+        },
+        {
+          "value": "+20%",
+          "en": "Spell Lifesteal",
+          "zh": "技能吸血"
+        }
+      ],
+      "notesEn": [
+        "Spell Weakness Aura does not stack with Veil of Discord's Spell Weakness."
+      ],
+      "notesZh": [
+        "法术虚弱光环不与纷争面纱的法术虚弱叠加。"
+      ],
+      "loreEn": "The Bloodstone's bright ruby color is unmistakable on the battlefield, as the owner seems to have infinite vitality and spirit.",
+      "loreZh": "血精石鲜红的色彩在战场上绝对不会被看错，拥有者似乎有无限的生命力和精力。"
+    },
+    "item:123": {
+      "en": "Linken's Sphere",
+      "stats": [
+        {
+          "value": "+17",
+          "en": "All Attributes",
+          "zh": "全属性"
+        },
+        {
+          "value": "+6.5",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        },
+        {
+          "value": "+4.25",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "notesEn": [
+        "Targeted abilities from neutral items do not trigger Spellblock."
+      ],
+      "notesZh": [
+        "中立物品的指向性技能不会触发法术抵抗。"
+      ],
+      "loreEn": "This magical sphere once protected one of the most famous heroes in history.",
+      "loreZh": "这个有魔力的球体曾经保护了一位历史上最有名的英雄。"
+    },
+    "item:226": {
+      "en": "Lotus Orb",
+      "stats": [
+        {
+          "value": "+10",
+          "en": "Armor",
+          "zh": "护甲"
+        },
+        {
+          "value": "+6.5",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        },
+        {
+          "value": "+4",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        },
+        {
+          "value": "+250",
+          "en": "Mana",
+          "zh": "魔法值"
+        }
+      ],
+      "notesEn": [
+        "Targeted abilities from neutral items do not trigger Echo Shell."
+      ],
+      "notesZh": [
+        "中立物品的指向性技能不会触发回音之壳。"
+      ],
+      "loreEn": "The jewel at its center still reflects a pale image of its creator.",
+      "loreZh": "位居中央的宝石依然能反射出其制造者苍白的景象。"
+    },
+    "item:223": {
+      "en": "Meteor Hammer",
+      "stats": [
+        {
+          "value": "+6",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+6",
+          "en": "Agility",
+          "zh": "敏捷"
+        },
+        {
+          "value": "+22",
+          "en": "Intelligence",
+          "zh": "智力"
+        },
+        {
+          "value": "+6%",
+          "en": "Spell Amplification",
+          "zh": "技能增强"
+        },
+        {
+          "value": "+20%",
+          "en": "Mana Regen Amplification",
+          "zh": "魔法恢复增强"
+        }
+      ],
+      "loreEn": "An enchanted hammer forged of metals discovered in the ruins of a village destroyed by a great star storm.",
+      "loreZh": "一柄带有魔力的战锤，铸造所用的金属发掘自被流星雨摧毁的村庄废墟之内。"
+    },
+    "item:1946": {
+      "en": "Starforge",
+      "stats": [
+        {
+          "value": "+24",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+24",
+          "en": "Agility",
+          "zh": "敏捷"
+        },
+        {
+          "value": "+40",
+          "en": "Intelligence",
+          "zh": "智力"
+        },
+        {
+          "value": "+6%",
+          "en": "Spell Amplification",
+          "zh": "技能增强"
+        },
+        {
+          "value": "+20%",
+          "en": "Mana Regen Amplification",
+          "zh": "魔法恢复增强"
+        }
+      ],
+      "notesEn": [
+        "Celestial Flare triggers from the following disables: Stun, Hex, Hypnosis, Cyclone, Taunt, Fear, Sleep, and Banish."
+      ],
+      "notesZh": [
+        "Celestial Flare triggers from the following disables: Stun, Hex, Hypnosis, Cyclone, Taunt, Fear, Sleep, and Banish."
+      ]
+    },
+    "item:225": {
+      "en": "Nullifier",
+      "stats": [
+        {
+          "value": "+75",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+10",
+          "en": "Armor",
+          "zh": "护甲"
+        }
+      ],
+      "loreEn": "A dangerous weapon pilfered from an inverse dimension.",
+      "loreZh": "危险的武器，盗自一个反维度。"
+    },
+    "item:256": {
+      "en": "Aeon Disk",
+      "stats": [
+        {
+          "value": "+250",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+300",
+          "en": "Mana",
+          "zh": "魔法值"
+        }
+      ],
+      "loreEn": "A powerful artifact long ago smuggled out of the Ivory Incubarium. Or so many believe.",
+      "loreZh": "一件多年以前被偷偷运出象牙孵巢的强力宝物。很多人都相信了这个说法。"
+    },
+    "item:259": {
+      "en": "Kaya",
+      "stats": [
+        {
+          "value": "+16",
+          "en": "Intelligence",
+          "zh": "智力"
+        },
+        {
+          "value": "+6%",
+          "en": "Spell Amplification",
+          "zh": "技能增强"
+        },
+        {
+          "value": "+20%",
+          "en": "Mana Regen Amplification",
+          "zh": "魔法恢复增强"
+        }
+      ],
+      "notesEn": [
+        "Multiple instances of this item do not stack."
+      ],
+      "notesZh": [
+        "多个相同物品不会叠加。"
+      ],
+      "loreEn": "The staff of a renowned sorceress, lost for countless millennia.",
+      "loreZh": "一位闻名遐迩的女巫师手上的法杖，已经失落了上万年。"
+    },
+    "item:369": {
+      "en": "Trident",
+      "stats": [
+        {
+          "value": "+30",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+30",
+          "en": "Agility",
+          "zh": "敏捷"
+        },
+        {
+          "value": "+30",
+          "en": "Intelligence",
+          "zh": "智力"
+        },
+        {
+          "value": "+30%",
+          "en": "Status Resistance",
+          "zh": "状态抗性"
+        },
+        {
+          "value": "+30",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        },
+        {
+          "value": "+10%",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        },
+        {
+          "value": "+30%",
+          "en": "Health Regen and Lifesteal Amp",
+          "zh": "生命恢复和吸血增强"
+        },
+        {
+          "value": "+30%",
+          "en": "Mana Regen Amplification",
+          "zh": "魔法恢复增强"
+        },
+        {
+          "value": "+30%",
+          "en": "Spell Amplification",
+          "zh": "技能增强"
+        },
+        {
+          "value": "+30",
+          "en": "Magic Damage Attack",
+          "zh": "魔法伤害攻击"
+        }
+      ]
+    },
+    "item:260": {
+      "en": "Refresher Shard",
+      "notesEn": [
+        "Refresher Shard is shareable."
+      ],
+      "notesZh": [
+        "刷新球碎片可以共享。"
+      ],
+      "loreEn": "Across an epoch of endless battle, the Immortal's will to triumph never faltered.",
+      "loreZh": "无尽之战时代的前前后后，不朽者的求胜之志始终从未动摇。"
+    },
+    "item:267": {
+      "en": "Spirit Vessel",
+      "stats": [
+        {
+          "value": "+1.75",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        },
+        {
+          "value": "+10",
+          "en": "All Attributes",
+          "zh": "全属性"
+        },
+        {
+          "value": "+2",
+          "en": "Armor",
+          "zh": "护甲"
+        }
+      ],
+      "notesEn": [
+        "Empty vessels gain 2 charges.",
+        "Only the closest Spirit Vessel to the dying hero will gain a charge.",
+        "If the allied unit is attacked by an enemy hero or Roshan, the effect is lost.",
+        "Does not trigger spell block or spell reflect."
+      ],
+      "notesZh": [
+        "点数为0的灵瓮将获得2点能量。",
+        "只有距离阵亡英雄最近的魂之灵瓮才会获得一点能量。",
+        "如果友方单位被敌方英雄或肉山攻击，效果将会消失。",
+        "不会触发法术抵抗或法术反弹。"
+      ],
+      "loreEn": "Forged by a god to entrap the soul of another.",
+      "loreZh": "由一位神铸造，用来俘获同类的灵魂。"
+    },
+    "item:1852": {
+      "en": "Essence Distiller",
+      "stats": [
+        {
+          "value": "+1.5",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        },
+        {
+          "value": "+3",
+          "en": "All Attributes",
+          "zh": "全属性"
+        },
+        {
+          "value": "+6",
+          "en": "Armor",
+          "zh": "护甲"
+        },
+        {
+          "value": "+150",
+          "en": "Mana",
+          "zh": "魔法值"
+        }
+      ],
+      "notesEn": [
+        "Empty distillers gain 2 charges.",
+        "Only the closest Essence Distiller to the dying hero will gain a charge.",
+        "If the allied unit is attacked by an enemy hero or Roshan, the effect is lost.",
+        "Does not trigger spell block or spell reflect.",
+        "While dormant, provides vision in 450 radius. Vision lingers for 0.5s after latching."
+      ],
+      "notesZh": [
+        "点数为0的灵器将获得2点能量。",
+        "只有距离阵亡英雄最近的精之灵器才会获得一点能量。",
+        "如果友方单位被敌方英雄或肉山攻击，效果将会消失。",
+        "不会触发法术抵抗或法术反弹。",
+        "潜伏时提供450范围的视野。附着后视野还会粘滞0.5秒。"
+      ]
+    },
+    "item:125": {
+      "en": "Vanguard",
+      "stats": [
+        {
+          "value": "+250",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+4.5",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        }
+      ],
+      "notesEn": [
+        "Multiple sources of damage block do not stack."
+      ],
+      "notesZh": [
+        "多种伤害格挡物品的效果互不叠加。"
+      ],
+      "loreEn": "A powerful shield that defends its wielder from even the most vicious of attacks.",
+      "loreZh": "能够让持有者躲过最致命攻击的强力盾牌。"
+    },
+    "item:242": {
+      "en": "Crimson Guard",
+      "stats": [
+        {
+          "value": "+250",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+9",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        },
+        {
+          "value": "+5",
+          "en": "Armor",
+          "zh": "护甲"
+        }
+      ],
+      "notesEn": [
+        "Multiple sources of damage block do not stack.",
+        "When the Guard buff is applied to ranged heroes, Guard blocks 25 less damage.",
+        "Guard does not affect units that have been affected by Guard within Crimson Guard's cooldown."
+      ],
+      "notesZh": [
+        "多种伤害格挡效果不会叠加。",
+        "坚盾的加成效果施加给远程英雄时，格挡的伤害减少25点。",
+        "坚盾不会作用于赤红甲的冷却时间内已受过坚盾作用的单位。"
+      ],
+      "loreEn": "A cuirass originally built to protect against the dreaded Year Beast.",
+      "loreZh": "原为抵御可怕的年兽所打造的铠甲。"
+    },
+    "item:127": {
+      "en": "Blade Mail",
+      "stats": [
+        {
+          "value": "+15",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+7",
+          "en": "Armor",
+          "zh": "护甲"
+        }
+      ],
+      "notesEn": [
+        "Damage Return is calculated before any kind of reduction.",
+        "Returned damage type is the same as it was received.",
+        "Damage done by this item is considered reflected damage. Reflected damage does not provide any lifesteal and cannot be reflected."
+      ],
+      "notesZh": [
+        "反弹的均为减免前的伤害。",
+        "反弹伤害的类型与受到时相同。",
+        "这个技能造成的伤害被视为反弹伤害。反弹伤害不提供任何吸血，而且无法反弹。"
+      ],
+      "loreEn": "A razor-sharp coat of mail, it is the choice of selfless martyrs in combat.",
+      "loreZh": "覆盖着尖锐剃刀的盔甲，战斗中可以用来做出不顾自身安危的烈士行为。"
+    },
+    "item:129": {
+      "en": "Soul Booster",
+      "stats": [
+        {
+          "value": "+425",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+425",
+          "en": "Mana",
+          "zh": "魔法值"
+        }
+      ],
+      "loreEn": "Regain lost courage.",
+      "loreZh": "再次鼓起丧失的勇气。"
+    },
+    "item:131": {
+      "en": "Hood of Defiance",
+      "stats": [
+        {
+          "value": "+8.5",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        },
+        {
+          "value": "+18%",
+          "en": "Magic Resistance",
+          "zh": "魔法抗性"
+        }
+      ],
+      "notesEn": [
+        "Stacks multiplicatively with other sources of magic resistance."
+      ],
+      "notesZh": [
+        "能与其他提高魔法抗性的技能叠加。"
+      ],
+      "loreEn": "A furred, magic resistant headpiece that is feared by wizards.",
+      "loreZh": "一件具有魔法抵抗力的皮质头巾，受到巫师们的畏惧。"
+    },
+    "item:692": {
+      "en": "Eternal Shroud",
+      "stats": [
+        {
+          "value": "+20%",
+          "en": "Magic Resistance",
+          "zh": "魔法抗性"
+        },
+        {
+          "value": "+10",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+250",
+          "en": "Health",
+          "zh": "生命值"
+        }
+      ],
+      "loreEn": "A pristine hood that feeds upon strife to empower its owner.",
+      "loreZh": "崭新的兜帽，以斗争为能量加强它的主人。"
+    },
+    "item:1854": {
+      "en": "Consecrated Wraps",
+      "stats": [
+        {
+          "value": "+12%",
+          "en": "Magic Resistance",
+          "zh": "魔法抗性"
+        },
+        {
+          "value": "+5",
+          "en": "All Attributes",
+          "zh": "全属性"
+        },
+        {
+          "value": "+250",
+          "en": "Health",
+          "zh": "生命值"
+        }
+      ],
+      "notesEn": [
+        "Charges cannot be gained for 4s after you take damage from a player-controlled source or Roshan.",
+        "Self-damage and HP Loss damage cannot remove charges.",
+        "Movement speed buff does not stack."
+      ],
+      "notesZh": [
+        "受到来自玩家控制来源或肉山的伤害后4秒内无法获得能量。",
+        "对自身的伤害和生命流失伤害无法移除能量。",
+        "移动速度加成效果不会叠加。"
+      ]
+    },
+    "item:1856": {
+      "en": "Crella's Crozier",
+      "stats": [
+        {
+          "value": "+6",
+          "en": "All Attributes",
+          "zh": "全属性"
+        },
+        {
+          "value": "+450",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+450",
+          "en": "Mana",
+          "zh": "魔法值"
+        }
+      ],
+      "notesEn": [
+        "Ghost form ends if you become Debuff Immune and will have no effect if you are already Debuff Immune.",
+        "Shares cooldown with Ghost Scepter and its upgrades.",
+        "Putrefaction Aura does not redirect Health Restoration from enemy heroes that are at full health."
+      ],
+      "notesZh": [
+        "如果在开启期间进入减益免疫状态，幽魂效果将会中止。如果在减益免疫状态下开启权杖将不会拥有幽魂效果。",
+        "和幽魂权杖以及升级物品共享冷却时间。",
+        "腐化光环不会转移满血敌方英雄的生命回复。"
+      ]
+    },
+    "item:133": {
+      "en": "Divine Rapier",
+      "stats": [
+        {
+          "value": "+100",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ],
+      "notesEn": [
+        "If Divine Rapier is dropped and picked up by an enemy of its original owner, it cannot be dropped again except by death.",
+        "Spell Amplification from multiple Rapiers does not stack."
+      ],
+      "notesZh": [
+        "如果圣剑掉落后被拥有者的敌人拾取，那么只有在敌人死亡后才会再次掉落。",
+        "多个圣剑的技能增强不会叠加。"
+      ],
+      "loreEn": "So powerful, it cannot have a single owner.",
+      "loreZh": "它强横无匹，并不满足于侍奉唯一的主人。"
+    },
+    "item:135": {
+      "en": "Monkey King Bar",
+      "stats": [
+        {
+          "value": "+55",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+50",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        }
+      ],
+      "loreEn": "A powerful staff used by a master warrior.",
+      "loreZh": "一位大师级战士使用的强力棍棒。"
+    },
+    "item:137": {
+      "en": "Radiance",
+      "stats": [
+        {
+          "value": "+55",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+25%",
+          "en": "Evasion",
+          "zh": "闪避"
+        }
+      ],
+      "loreEn": "A divine weapon that causes damage and a bright burning effect that lays waste to nearby enemies.",
+      "loreZh": "一把神圣的武器，剑身的耀眼光芒能将敌人化为灰烬。"
+    },
+    "item:139": {
+      "en": "Butterfly",
+      "stats": [
+        {
+          "value": "+30",
+          "en": "Agility",
+          "zh": "敏捷"
+        },
+        {
+          "value": "+30%",
+          "en": "Evasion",
+          "zh": "闪避"
+        },
+        {
+          "value": "+30",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        },
+        {
+          "value": "+30",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ],
+      "notesEn": [
+        "Stacks diminishingly with other sources of Evasion."
+      ],
+      "notesZh": [
+        "与其他闪避效果为非线性叠加。"
+      ],
+      "loreEn": "Only the mightiest and most experienced of warriors can wield the Butterfly, but it provides incredible dexterity in combat.",
+      "loreZh": "只有最强大最老练的战士才能携带蝴蝶，但它也提供无可比拟的战斗灵活力作为回报。"
+    },
+    "item:141": {
+      "en": "Daedalus",
+      "stats": [
+        {
+          "value": "+88",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ],
+      "notesEn": [
+        "Critical Strike does not work against buildings."
+      ],
+      "notesZh": [
+        "致命一击对建筑无效。"
+      ],
+      "loreEn": "A weapon of incredible power that is difficult for even the strongest of warriors to control.",
+      "loreZh": "这件武器有着惊人的力量，即使是最强的战士也难以掌控它。"
+    },
+    "item:143": {
+      "en": "Skull Basher",
+      "stats": [
+        {
+          "value": "+30",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+10",
+          "en": "Strength",
+          "zh": "力量"
+        }
+      ],
+      "notesEn": [
+        "Does not stack with other sources of Bash.",
+        "The following heroes cannot trigger Bash on this item: Spirit Breaker, Faceless Void, Slardar, and Kez while in Sai mode.",
+        "Does not grant Bash to Clones, Illusions, or Tempest Doubles."
+      ],
+      "notesZh": [
+        "不与其他击晕类技能叠加。",
+        "以下英雄无法触发该物品的重击效果：裂魂人，虚空假面，斯拉达和双钗模式下的凯。",
+        "幻象、米波的克隆体和天穹守望者的风暴双雄不继承重击效果。"
+      ],
+      "loreEn": "A feared weapon in the right hands, this maul's ability to shatter the defenses of its opponents should not be underestimated.",
+      "loreZh": "用对了地方会让人闻风丧胆的武器，千万不要低估这把大槌粉碎对手防御的能力。"
+    },
+    "item:145": {
+      "en": "Battle Fury",
+      "stats": [
+        {
+          "value": "+50",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+7.5",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        },
+        {
+          "value": "+2.75",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "notesEn": [
+        "Cleave damage goes through spell immunity.",
+        "If multiple sources of Cleave are present, each Cleave's damage is applied separately."
+      ],
+      "notesZh": [
+        "分裂伤害无视减益免疫。",
+        "如果存在多个分裂效果，每个分裂的伤害都会单独计算。"
+      ],
+      "loreEn": "The bearer of this mighty axe gains the ability to cut down swaths of enemies at once.",
+      "loreZh": "握着这把强大的斧头可以一次砍倒一片敌人。"
+    },
+    "item:147": {
+      "en": "Manta Style",
+      "stats": [
+        {
+          "value": "+10",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+26",
+          "en": "Agility",
+          "zh": "敏捷"
+        },
+        {
+          "value": "+10",
+          "en": "Intelligence",
+          "zh": "智力"
+        },
+        {
+          "value": "+15",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        },
+        {
+          "value": "+6%",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        }
+      ],
+      "notesEn": [
+        "Has a 0.1 second cast time during which you are invulnerable.",
+        "Many effects are removed upon using Manta.",
+        "Yasha based movement speed bonuses from multiple items do not stack."
+      ],
+      "notesZh": [
+        "有0.1秒的施法时间，其间处于无敌状态。",
+        "可以使用幻影斧移除多种负面效果。",
+        "不会与其他夜叉、散夜对剑以及幻影斧提供的移动速度加成叠加。"
+      ],
+      "loreEn": "An axe made of reflective materials that causes confusion amongst enemy ranks.",
+      "loreZh": "用反光材料制成的斧头，能够混淆敌军。"
+    },
+    "item:149": {
+      "en": "Crystalys",
+      "stats": [
+        {
+          "value": "+32",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ],
+      "notesEn": [
+        "Critical Strike does not work against buildings."
+      ],
+      "notesZh": [
+        "在攻击建筑物时不会触发致命一击。"
+      ],
+      "loreEn": "A blade forged from rare crystals, it seeks weak points in enemy armor.",
+      "loreZh": "用稀有水晶锻造的剑刃，会寻找敌人护甲的脆弱处。"
+    },
+    "item:236": {
+      "en": "Dragon Lance",
+      "stats": [
+        {
+          "value": "+15",
+          "en": "Agility",
+          "zh": "敏捷"
+        },
+        {
+          "value": "+10",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+130",
+          "en": "Attack Range",
+          "zh": "攻击距离"
+        }
+      ],
+      "notesEn": [
+        "Attack Range bonuses from Dragon Lance and its upgrades do not stack."
+      ],
+      "notesZh": [
+        "来自魔龙枪和升级物品的攻击距离加成不会叠加。"
+      ],
+      "loreEn": "The forward charge of the wyvern host grants no quarter.",
+      "loreZh": "向前冲锋的飞龙群毫不留情。"
+    },
+    "item:151": {
+      "en": "Armlet of Mordiggian",
+      "stats": [
+        {
+          "value": "+15",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+25",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        },
+        {
+          "value": "+6",
+          "en": "Armor",
+          "zh": "护甲"
+        },
+        {
+          "value": "+5",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        }
+      ],
+      "notesEn": [
+        "The strength change will affect both maximum and current HP, but you cannot die from the change.",
+        "The strength change occurs over 0.6 seconds.",
+        "Activating or deactivating Unholy Strength does not interrupt channeling."
+      ],
+      "notesZh": [
+        "力量值的变化会影响血量上限和当前生命值，但是不会致死。",
+        "力量的增加将在0.6秒内完成。",
+        "开启或关闭邪恶之力并不会打断持续施法。"
+      ],
+      "loreEn": "Weapon of choice among brutes, the bearer sacrifices his life energy to gain immense strength and power.",
+      "loreZh": "暴徒们首选的武器，持有者牺牲自己的生命能量来获得巨大力量。"
+    },
+    "item:152": {
+      "en": "Shadow Blade",
+      "stats": [
+        {
+          "value": "+25",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+35",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        }
+      ],
+      "notesEn": [
+        "Has a 0.3 second fade time.",
+        "If the invisibility ends without attacking, the bonus damage is lost."
+      ],
+      "notesZh": [
+        "拥有0.3秒的进入隐身时间。",
+        "如果隐身结束时没有攻击，额外伤害效果将会消失。"
+      ],
+      "loreEn": "The blade of a fallen king, it allows you to move unseen and strike from the shadows.",
+      "loreZh": "一位国王死后留下的宝剑，拿着它你可以隐身移动并从阴影中发动突袭。"
+    },
+    "item:249": {
+      "en": "Silver Edge",
+      "stats": [
+        {
+          "value": "+70",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+35",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        }
+      ],
+      "loreEn": "Once used to slay an unjust king, only to have the kingdom erupt into civil war in the aftermath.",
+      "loreZh": "曾经是手刃不义之君的利器，但是后来王国也因此陷入了内乱。"
+    },
+    "item:154": {
+      "en": "Sange and Yasha",
+      "stats": [
+        {
+          "value": "+16",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+16",
+          "en": "Agility",
+          "zh": "敏捷"
+        },
+        {
+          "value": "+16%",
+          "en": "Status Resistance",
+          "zh": "状态抗性"
+        },
+        {
+          "value": "+20",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        },
+        {
+          "value": "+10%",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        },
+        {
+          "value": "+30%",
+          "en": "Slow Resistance",
+          "zh": "减速抗性"
+        }
+      ],
+      "notesEn": [
+        "Yasha-based movement speed bonuses from multiple items do not stack."
+      ],
+      "notesZh": [
+        "不会与其他夜叉、散夜对剑以及幻影斧提供的移动速度加成叠加。"
+      ],
+      "loreEn": "Sange and Yasha, when attuned by the moonlight and used together, become a very powerful combination.",
+      "loreZh": "散华和夜叉经过月光的照耀而产生共鸣，双剑合璧发挥出更大的威力。"
+    },
+    "item:273": {
+      "en": "Kaya and Sange",
+      "stats": [
+        {
+          "value": "+16",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+16",
+          "en": "Intelligence",
+          "zh": "智力"
+        },
+        {
+          "value": "+25%",
+          "en": "Slow Resistance",
+          "zh": "减速抗性"
+        },
+        {
+          "value": "+25%",
+          "en": "Mana Regen Amplification",
+          "zh": "魔法恢复增强"
+        },
+        {
+          "value": "+10%",
+          "en": "Spell Amplification",
+          "zh": "技能增强"
+        },
+        {
+          "value": "+25%",
+          "en": "Mana Cost/Mana Loss Reduction",
+          "zh": "魔法消耗/魔法损失降低"
+        }
+      ],
+      "loreEn": "Two of three known items of unimaginable power that many believe were crafted at the same enchanter's forge.",
+      "loreZh": "这是三大利器的其中两件，因为他们都蕴含着不可思议的力量，很多人相信他们全是在同一个附魔师的熔炉中打造的。"
+    },
+    "item:277": {
+      "en": "Yasha and Kaya",
+      "stats": [
+        {
+          "value": "+16",
+          "en": "Agility",
+          "zh": "敏捷"
+        },
+        {
+          "value": "+16",
+          "en": "Intelligence",
+          "zh": "智力"
+        },
+        {
+          "value": "+20",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        },
+        {
+          "value": "+25%",
+          "en": "Mana Regen Amplification",
+          "zh": "魔法恢复增强"
+        },
+        {
+          "value": "+10%",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        },
+        {
+          "value": "+10%",
+          "en": "Spell Amplification",
+          "zh": "技能增强"
+        },
+        {
+          "value": "+25%",
+          "en": "Cast Speed Bonus",
+          "zh": "施法速度加成"
+        }
+      ],
+      "loreEn": "Yasha and Kaya when paired together share a natural resonance.",
+      "loreZh": "夜叉和慧光配成一对时会产生共鸣。"
+    },
+    "item:156": {
+      "en": "Satanic",
+      "stats": [
+        {
+          "value": "+25",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+25",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+25%",
+          "en": "Lifesteal",
+          "zh": "攻击吸血"
+        }
+      ],
+      "loreEn": "Immense power at the cost of your soul.",
+      "loreZh": "无穷的力量，需要你付出灵魂作为代价。"
+    },
+    "item:158": {
+      "en": "Mjollnir",
+      "stats": [
+        {
+          "value": "+25",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+90",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        }
+      ],
+      "notesEn": [
+        "Static Charge cannot trigger more than once per second.",
+        "Static Charge's shock deals magical damage centered on hero with the Static Charge. Static Charge's targets cannot be more than 900 range away.",
+        "Static Charge procs will not bounce to heroes that are invisible or hidden by Fog of War.",
+        "Chain Lightning does not trigger off of attacks from illusions."
+      ],
+      "notesZh": [
+        "静电冲击的触发间隔大于1秒。",
+        "静电冲击的闪电伤害范围以拥有甲盾的英雄为圆心。静电冲击只会对900范围以内的目标发出闪电冲击。",
+        "静电冲击不会弹跳至处于隐身状态下或战争迷雾内的英雄。",
+        "幻象的攻击不会触发连环闪电。"
+      ],
+      "loreEn": "Thor's magical hammer, made for him by the dwarves Brok and Eitri.",
+      "loreZh": "索尔的魔法之锤，由矮人名匠布鲁克和艾崔打造。"
+    },
+    "item:160": {
+      "en": "Eye of Skadi",
+      "stats": [
+        {
+          "value": "+35",
+          "en": "All Attributes",
+          "zh": "全属性"
+        }
+      ],
+      "loreEn": "Extremely rare artifact, guarded by the azure dragons.",
+      "loreZh": "极度罕见的古物，由苍空之龙看管。"
+    },
+    "item:162": {
+      "en": "Sange",
+      "stats": [
+        {
+          "value": "+16",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+25%",
+          "en": "Slow Resistance",
+          "zh": "减速抗性"
+        }
+      ],
+      "loreEn": "Sange is an unusually accurate weapon, seeking weak points automatically.",
+      "loreZh": "散华是一把异常精准的武器，会自动寻找对方的弱点所在。"
+    },
+    "item:164": {
+      "en": "Helm of the Dominator",
+      "stats": [
+        {
+          "value": "+6",
+          "en": "All Attributes",
+          "zh": "全属性"
+        },
+        {
+          "value": "+6",
+          "en": "Armor",
+          "zh": "护甲"
+        },
+        {
+          "value": "+6",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        }
+      ],
+      "notesEn": [
+        "Cannot dominate more than one unit at a time.  If a new unit is dominated, the old one will die.",
+        "Can also Dominate enemy lane creeps and summoned units.",
+        "Selling Helm of the Dominator will cause dominated units to die."
+      ],
+      "notesZh": [
+        "只能存在一个被支配的单位。如果支配了新的单位，原来的单位将会死亡。",
+        "出售支配头盔会导致支配的单位死亡。",
+        "出售支配头盔会导致被支配单位死亡。"
+      ],
+      "loreEn": "The powerful headpiece of a dead necromancer.",
+      "loreZh": "死去的死灵法师留下的可怕头盔。"
+    },
+    "item:635": {
+      "en": "Helm of the Overlord",
+      "stats": [
+        {
+          "value": "+21",
+          "en": "All Attributes",
+          "zh": "全属性"
+        },
+        {
+          "value": "+7",
+          "en": "Armor",
+          "zh": "护甲"
+        },
+        {
+          "value": "+7",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        }
+      ],
+      "notesEn": [
+        "Can also Dominate enemy lane creeps and summoned units.",
+        "Selling will cause dominated units to die."
+      ],
+      "notesZh": [
+        "也可以支配敌方线上小兵和召唤单位。",
+        "出售会导致支配的单位死亡。"
+      ],
+      "loreEn": "The powerful headpiece of an undead necromancer.",
+      "loreZh": "不死的死灵法师留下的可怕头盔。"
+    },
+    "item:166": {
+      "en": "Maelstrom",
+      "stats": [
+        {
+          "value": "+25",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+25",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        }
+      ],
+      "notesEn": [
+        "Chain Lightning does not trigger off of attacks from illusions."
+      ],
+      "notesZh": [
+        "Chain Lightning does not trigger off of attacks from illusions."
+      ],
+      "loreEn": "A hammer forged for the gods themselves, Maelstrom allows its user to harness the power of lightning.",
+      "loreZh": "神亲自打造的战锤，漩涡可以在攻击中发动闪电的力量。"
+    },
+    "item:1466": {
+      "en": "Gleipnir",
+      "stats": [
+        {
+          "value": "+450",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+200",
+          "en": "Mana",
+          "zh": "魔法值"
+        },
+        {
+          "value": "+20",
+          "en": "Intelligence",
+          "zh": "智力"
+        }
+      ],
+      "notesEn": [
+        "AoE bonuses from multiple Chasm Stones or its upgrades do not stack."
+      ],
+      "notesZh": [
+        "多个裂隙之石或升级物品的作用范围加成不会叠加。"
+      ],
+      "loreEn": "Bindings forged by impossible means to leash an ancient evil.",
+      "loreZh": "以不可能的手段铸就的束缚之物，为了限制一个上古魔物。"
+    },
+    "item:168": {
+      "en": "Desolator",
+      "stats": [
+        {
+          "value": "+55",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ],
+      "notesEn": [
+        "Armor reduction works on buildings."
+      ],
+      "notesZh": [
+        "护甲降低效果对建筑有效。"
+      ],
+      "loreEn": "A wicked weapon, used in torturing political criminals.",
+      "loreZh": "这把邪恶并且嗜血的武器，通常用于拷打政治犯。"
+    },
+    "item:170": {
+      "en": "Yasha",
+      "stats": [
+        {
+          "value": "+16",
+          "en": "Agility",
+          "zh": "敏捷"
+        },
+        {
+          "value": "+15",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        },
+        {
+          "value": "+6%",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        }
+      ],
+      "notesEn": [
+        "Yasha-based movement speed bonuses from multiple items do not stack."
+      ],
+      "notesZh": [
+        "不会与其他夜叉、散夜对剑以及幻影斧提供的移动速度加成叠加。"
+      ],
+      "loreEn": "Yasha is regarded as the swiftest weapon ever created.",
+      "loreZh": "夜叉可以称得上有史以来最轻巧的武器。"
+    },
+    "item:172": {
+      "en": "Mask of Madness",
+      "stats": [
+        {
+          "value": "+15",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+10",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        },
+        {
+          "value": "+22%",
+          "en": "Lifesteal",
+          "zh": "攻击吸血"
+        }
+      ],
+      "loreEn": "Once this mask is worn, its bearer becomes an uncontrollable aggressive force.",
+      "loreZh": "一旦戴上这个面具就会变成无法控制的好战分子。"
+    },
+    "item:174": {
+      "en": "Diffusal Blade",
+      "stats": [
+        {
+          "value": "+15",
+          "en": "Agility",
+          "zh": "敏捷"
+        },
+        {
+          "value": "+10",
+          "en": "Intelligence",
+          "zh": "智力"
+        }
+      ],
+      "notesEn": [
+        "Does not stack with other diffusal blades."
+      ],
+      "notesZh": [
+        "不会与其他净魂之刃叠加。"
+      ],
+      "loreEn": "An enchanted blade that allows the user to cut straight into the enemy's soul.",
+      "loreZh": "一把直接切入敌人灵魂的魔力之刃。"
+    },
+    "item:1097": {
+      "en": "Disperser",
+      "stats": [
+        {
+          "value": "+40",
+          "en": "Agility",
+          "zh": "敏捷"
+        },
+        {
+          "value": "+10",
+          "en": "Intelligence",
+          "zh": "智力"
+        }
+      ],
+      "loreEn": "Once entrusted to an Apostle General of the Rumusque Faithful's expeditionary force.",
+      "loreZh": "曾被托付给鲁姆斯克信徒远征军的使徒将军。"
+    },
+    "item:176": {
+      "en": "Ethereal Blade",
+      "stats": [
+        {
+          "value": "+25",
+          "en": "All Attributes",
+          "zh": "全属性"
+        }
+      ],
+      "notesEn": [
+        "Shares cooldown with Ghost Scepter and its upgrades.",
+        "Ethereal units take -30% bonus magic damage."
+      ],
+      "notesZh": [
+        "和幽魂权杖以及升级物品共享冷却时间。",
+        "虚无状态下的单位将额外受到-30%的魔法伤害。"
+      ],
+      "loreEn": "A flickering blade of a ghastly nature, it is capable of dealing damage in both magical and physical planes.",
+      "loreZh": "一把忽隐忽现的阴森刀刃，可以在物理和魔法两个位面造成伤害。"
+    },
+    "item:178": {
+      "en": "Soul Ring",
+      "stats": [
+        {
+          "value": "+6",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+2",
+          "en": "Armor",
+          "zh": "护甲"
+        }
+      ],
+      "notesEn": [
+        "If this mana is not used before the duration ends, the extra mana is lost."
+      ],
+      "notesZh": [
+        "如果在持续时间结束时没有使用，额外的魔法将会消失。"
+      ],
+      "loreEn": "A ring that feeds on the souls of those who wear it.",
+      "loreZh": "一枚能吞噬佩带者灵魂的戒指。"
+    },
+    "item:180": {
+      "en": "Arcane Boots",
+      "stats": [
+        {
+          "value": "+50",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        },
+        {
+          "value": "+0.25",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        },
+        {
+          "value": "+150",
+          "en": "Mana",
+          "zh": "魔法值"
+        }
+      ],
+      "notesEn": [
+        "Does not work on Meepo clones."
+      ],
+      "notesZh": [
+        "米波的克隆体不能使用。"
+      ],
+      "loreEn": "Magi equipped with these boots are valued in battle.",
+      "loreZh": "装备这种鞋子的法师在战斗中值得重视。"
+    },
+    "item:235": {
+      "en": "Octarine Core",
+      "stats": [
+        {
+          "value": "+450",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+450",
+          "en": "Mana",
+          "zh": "魔法值"
+        },
+        {
+          "value": "+6",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "loreEn": "At the core of spellcraft are spectrums only the very gifted can sense.",
+      "loreZh": "位于法术技艺核心的，是只有身负异能之人才能感知的光带。"
+    },
+    "item:181": {
+      "en": "Orb of Venom",
+      "notesEn": [
+        "Does not stack with its upgrades.",
+        "Does not trigger on attacks from illusions."
+      ],
+      "notesZh": [
+        "不与后续升级物品叠加。",
+        "Does not trigger on attacks from illusions."
+      ],
+      "loreEn": "Envenoms your veapon with the venom of a venomous viper.",
+      "loreZh": "给你的毒器渡上毒蛇的毒液。"
+    },
+    "item:240": {
+      "en": "Orb of Blight",
+      "notesEn": [
+        "Does not stack with its upgrades, Desolator, or Stygian Desolator."
+      ],
+      "notesZh": [
+        "不会与升级版物品，黯灭或寂灭叠加。"
+      ],
+      "loreEn": "An unnerving stone unearthed beneath the Fields of Endless Carnage.",
+      "loreZh": "一颗让人闻风丧胆的石头，发掘自戮尽之地。"
+    },
+    "item:569": {
+      "en": "Orb of Corrosion",
+      "stats": [
+        {
+          "value": "+7",
+          "en": "Agility",
+          "zh": "敏捷"
+        }
+      ],
+      "notesEn": [
+        "Armor reduction does not stack with its components, Desolator, or Stygian Desolator.",
+        "Slow and Health Restoration Reduction does not stack with its components or Eye of Skadi."
+      ],
+      "notesZh": [
+        "护甲降低效果不会与其配件，黯灭或寂灭叠加。",
+        "Slow and Health Restoration Reduction does not stack with its components or Eye of Skadi."
+      ],
+      "loreEn": "Seepage from the wounds of a warrior deity, sealed in an arcanist's orb following a campaign of vicious slaughter.",
+      "loreZh": "凶残的屠杀战役过后，从战士之神的伤口渗出的液体被封进一个秘术师的宝珠内。"
+    },
+    "item:1575": {
+      "en": "Orb of Frost",
+      "loreEn": "Slowly growing since the universe began, it will envelop everything when it ends.",
+      "loreZh": "在宇宙伊始就缓慢成长，到了成长完毕的时候它将覆盖万物。"
+    },
+    "item:596": {
+      "en": "Falcon Blade",
+      "stats": [
+        {
+          "value": "+200",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+1.8",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        },
+        {
+          "value": "+14",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ],
+      "loreEn": "An enchanted blade that long ago raised a hopeless urchin from pauper to king.",
+      "loreZh": "一把具有魔力的战刃，多年前让一个无可救药的顽童从乞丐登上王位。"
+    },
+    "item:598": {
+      "en": "Mage Slayer",
+      "stats": [
+        {
+          "value": "+18%",
+          "en": "Magic Resistance",
+          "zh": "魔法抗性"
+        },
+        {
+          "value": "+5.5",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        },
+        {
+          "value": "+2.5",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        },
+        {
+          "value": "+12",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ],
+      "loreEn": "Forged by a secret order in The Third Age of Praxa'cia to fell the False King.",
+      "loreZh": "在天瑶城的第三纪元由一个秘密教团打造，意图扳倒冒牌的大帝。"
+    },
+    "item:185": {
+      "en": "Drum of Endurance",
+      "stats": [
+        {
+          "value": "+8",
+          "en": "Strength",
+          "zh": "力量"
+        }
+      ],
+      "loreEn": "A relic that enchants the bodies of those around it for swifter movement in times of crisis.",
+      "loreZh": "在危难时刻能鼓舞周围人士气的遗物。"
+    },
+    "item:931": {
+      "en": "Boots of Bearing",
+      "stats": [
+        {
+          "value": "+8",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+65",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        },
+        {
+          "value": "+18",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        }
+      ],
+      "loreEn": "Resplendent footwear fashioned for the ancient herald that first dared spread the glory of Stonehall beyond the original borders of its nascent claim.",
+      "loreZh": "这双华丽的靴子是为一个古代的先驱打造，是他率先敢于将石堂城的荣光散播到国土的初始边界之外。"
+    },
+    "item:229": {
+      "en": "Solar Crest",
+      "stats": [
+        {
+          "value": "+7",
+          "en": "Armor",
+          "zh": "护甲"
+        },
+        {
+          "value": "+25",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        },
+        {
+          "value": "+200",
+          "en": "Mana",
+          "zh": "魔法值"
+        },
+        {
+          "value": "+200",
+          "en": "Health",
+          "zh": "生命值"
+        }
+      ],
+      "notesEn": [
+        "Shares cooldown with Pavise."
+      ],
+      "notesZh": [
+        "与长盾共享冷却时间。"
+      ],
+      "loreEn": "A talisman forged to honor the daytime sky.",
+      "loreZh": "为了纪念炎日天空所打造的护符。"
+    },
+    "item:1128": {
+      "en": "Pavise",
+      "stats": [
+        {
+          "value": "+3",
+          "en": "Armor",
+          "zh": "护甲"
+        },
+        {
+          "value": "+175",
+          "en": "Mana",
+          "zh": "魔法值"
+        },
+        {
+          "value": "+175",
+          "en": "Health",
+          "zh": "生命值"
+        }
+      ],
+      "loreEn": "Devised by a wizard who made one too many enemies.",
+      "loreZh": "一位树敌过多的巫师设计之物。"
+    },
+    "item:188": {
+      "en": "Smoke of Deceit",
+      "loreEn": "The charlatan wizard Myrddin's only true contribution to the arcane arts.",
+      "loreZh": "招摇撞骗的法师梅丁对奥术唯一真正的贡献。"
+    },
+    "item:257": {
+      "en": "Tome of Knowledge",
+      "loreEn": "That which raises beast to man and man to god.",
+      "loreZh": "让兽变成人，人变成神的东西。"
+    },
+    "item:190": {
+      "en": "Veil of Discord",
+      "stats": [
+        {
+          "value": "+175",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+10",
+          "en": "Intelligence",
+          "zh": "智力"
+        },
+        {
+          "value": "+18%",
+          "en": "Spell Lifesteal",
+          "zh": "技能吸血"
+        }
+      ],
+      "notesEn": [
+        "Spell Weakness does not stack with Bloodstone's Spell Weakness Aura."
+      ],
+      "notesZh": [
+        "法术虚弱不与血精石的法术虚弱光环叠加。"
+      ],
+      "loreEn": "The headwear of corrupt magi.",
+      "loreZh": "一个堕落法师的头饰。"
+    },
+    "item:1806": {
+      "en": "Parasma",
+      "stats": [
+        {
+          "value": "+40",
+          "en": "Intelligence",
+          "zh": "智力"
+        },
+        {
+          "value": "+40",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        },
+        {
+          "value": "+7",
+          "en": "Armor",
+          "zh": "护甲"
+        },
+        {
+          "value": "+1.5",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        },
+        {
+          "value": "+300",
+          "en": "Projectile Speed",
+          "zh": "弹道速度"
+        }
+      ],
+      "notesEn": [
+        "Illusions do not apply Witch Blade, but can apply Magic Corruption"
+      ],
+      "notesZh": [
+        "Illusions do not apply Witch Blade, but can apply Magic Corruption"
+      ],
+      "loreEn": "Warning: There is no antidote if picked up by the wrong end.",
+      "loreZh": "警告：抓到另一头将无药可救。"
+    },
+    "item:231": {
+      "en": "Guardian Greaves",
+      "stats": [
+        {
+          "value": "+55",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        },
+        {
+          "value": "+5",
+          "en": "Armor",
+          "zh": "护甲"
+        },
+        {
+          "value": "+150",
+          "en": "Mana",
+          "zh": "魔法值"
+        },
+        {
+          "value": "+1",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "notesEn": [
+        "Mend does not affect units that have been affected by Mend or Mekansm Restore within Guardian Greaves' cooldown."
+      ],
+      "notesZh": [
+        "卫士胫甲的冷却时间内回复不能作用于已经被修复或梅肯斯姆的回复作用过的单位。"
+      ],
+      "loreEn": "One of many holy instruments constructed to honor the Omniscience.",
+      "loreZh": "为了向全能之神致敬所打造的众多圣器之一。"
+    },
+    "item:206": {
+      "en": "Rod of Atos",
+      "stats": [
+        {
+          "value": "+15",
+          "en": "Intelligence",
+          "zh": "智力"
+        },
+        {
+          "value": "+275",
+          "en": "Health",
+          "zh": "生命值"
+        }
+      ],
+      "loreEn": "Atos, the Lord of Blight, has his essence stored in this deceptively simple wand.",
+      "loreZh": "荒芜之王阿托斯将他的精粹储存在这根看似平平无奇的魔杖中。"
+    },
+    "item:239": {
+      "en": "Iron Talon",
+      "notesEn": [
+        "Has a 4 second cooldown on Trees."
+      ],
+      "notesZh": [
+        "对树木使用时冷却时间为4秒。"
+      ],
+      "loreEn": "A simple but effective weapon devised to quell a great Hellbear uprising.",
+      "loreZh": "简单却有效的武器，为镇压地狱熊怪的起义而设计。"
+    },
+    "item:208": {
+      "en": "Abyssal Blade",
+      "stats": [
+        {
+          "value": "+35",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+30",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+15",
+          "en": "Agility",
+          "zh": "敏捷"
+        }
+      ],
+      "notesEn": [
+        "The stun is melee range.",
+        "Does not stack with other bashes, and does not grant bash to Clones, Illusions, or Tempest Doubles.",
+        "The following heroes cannot trigger Bash on this item: Spirit Breaker, Faceless Void, Slardar, and Kez while in Sai mode.",
+        "Attack Range bonuses from Dragon Lance and its upgrades do not stack."
+      ],
+      "notesZh": [
+        "眩晕的施法距离与近战单位的攻击距离相同。",
+        "不与其他重击效果叠加，并且幻象、米波的克隆体和天穹守望者的风暴双雄不继承重击效果。",
+        "以下英雄无法触发该物品的重击效果：裂魂人，虚空假面，斯拉达和双钗模式下的凯。",
+        "来自魔龙枪和升级物品的攻击距离加成不会叠加。"
+      ],
+      "loreEn": "The lost blade of the Commander of the Abyss, this edge cuts into an enemy's soul.",
+      "loreZh": "深渊指挥官的失落宝剑，能够轻易刺穿敌人的灵魂。"
+    },
+    "item:210": {
+      "en": "Heaven's Halberd",
+      "stats": [
+        {
+          "value": "+12",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+4.5",
+          "en": "Armor",
+          "zh": "护甲"
+        },
+        {
+          "value": "+4.5",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        }
+      ],
+      "loreEn": "This halberd moves with the speed of a smaller weapon, allowing the bearer to win duels that a heavy edge would not.",
+      "loreZh": "这把战戟挥动起来如同轻型武器般迅捷，能让持有者赢得决斗的胜利。"
+    },
+    "item:1948": {
+      "en": "Skypiercer",
+      "stats": [
+        {
+          "value": "+35",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+5",
+          "en": "Armor",
+          "zh": "护甲"
+        },
+        {
+          "value": "+5",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        },
+        {
+          "value": "+25%",
+          "en": "Slow Resistance",
+          "zh": "减速抗性"
+        },
+        {
+          "value": "+25%",
+          "en": "Evasion",
+          "zh": "闪避"
+        }
+      ],
+      "notesEn": [
+        "Nearby illusions and nearby heroes in fog of war will activate Riposte.",
+        "Nearby invisible heroes will not activate Riposte."
+      ],
+      "notesZh": [
+        "战争迷雾中附近的幻象和英雄都会触发还击。",
+        "附近的隐身英雄不会触发还击。"
+      ]
+    },
+    "item:212": {
+      "en": "Ring of Aquila",
+      "notesEn": [
+        "Multiple instances of Aquila Aura do not stack."
+      ],
+      "notesZh": [
+        "多个天鹰光环效果不会叠加。"
+      ],
+      "loreEn": "The ring of the fallen Warlord Aquila continues to support armies in battle.",
+      "loreZh": "战将阿奎拉阵亡后他的戒指依然在战场上支援着军队。"
+    },
+    "item:214": {
+      "en": "Tranquil Boots",
+      "stats": [
+        {
+          "value": "+65",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        },
+        {
+          "value": "+14",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        }
+      ],
+      "loreEn": "While they increase the longevity of the wearer, this boot is not particularly reliable.",
+      "loreZh": "虽然延长了穿戴者的寿命，但这鞋子其实并不可靠。"
+    },
+    "item:215": {
+      "en": "Shadow Amulet",
+      "notesEn": [
+        "Takes 1.25s of the 3.5s for the hero to fully fade into invisibility."
+      ],
+      "notesZh": [
+        "需要3.5秒中的1.25秒才能使英雄完全进入隐身状态。"
+      ],
+      "loreEn": "A small talisman that clouds the senses of one's enemies when held perfectly still.",
+      "loreZh": "一件小小的护符，握住了完全不动就能隔开敌人的感应。"
+    },
+    "item:254": {
+      "en": "Glimmer Cape",
+      "stats": [
+        {
+          "value": "+20%",
+          "en": "Magic Resistance",
+          "zh": "魔法抗性"
+        }
+      ],
+      "loreEn": "The stolen cape of a master illusionist.",
+      "loreZh": "一位幻术大师失窃的披风。"
+    },
+    "item:287": {
+      "en": "Keen Optic",
+      "stats": [
+        {
+          "value": "+75",
+          "en": "Cast Range",
+          "zh": "施法距离"
+        },
+        {
+          "value": "+1.25",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "loreEn": "Stolen from a tinker's shop ages ago, this handy lens has seen service to many owners.",
+      "loreZh": "多年以前窃取自一名修补匠的车间，这片实用的镜片已经服侍过很多主人。"
+    },
+    "item:288": {
+      "en": "Grove Bow",
+      "loreEn": "A gift from the moon goddess to one of her prized disciples many memories ago.",
+      "loreZh": "月之女神在许多年之前赐给了一名她珍视的信徒一件礼物。"
+    },
+    "item:289": {
+      "en": "Quickening Charm",
+      "stats": [
+        {
+          "value": "+10",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        }
+      ],
+      "loreEn": "An evergreen amulet of druidic origins.",
+      "loreZh": "源自德鲁伊的常青护符。"
+    },
+    "item:290": {
+      "en": "Philosopher's Stone",
+      "stats": [
+        {
+          "value": "+75 / +100",
+          "en": "GPM BONUS",
+          "zh": "额外每分钟金钱"
+        },
+        {
+          "value": "+200 / +250",
+          "en": "Mana",
+          "zh": "魔法值"
+        },
+        {
+          "value": "-30 / -60",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ],
+      "loreEn": "A weightless charm created by an enchanter with a powerful scorn for brute force.",
+      "loreZh": "轻如无物的饰物，附魔师在创造时心中满是对蛮力的蔑视。"
+    },
+    "item:291": {
+      "en": "Force Boots",
+      "stats": [
+        {
+          "value": "+115",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        },
+        {
+          "value": "+30",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        }
+      ],
+      "notesEn": [
+        "Does not trigger spell block or spell reflect."
+      ],
+      "notesZh": [
+        "不会触发法术抵抗或法术反弹。"
+      ],
+      "loreEn": "Elusive marvels never successfully studied for proper classification in the archives.",
+      "loreZh": "难以捉摸的奇物到了档案室里从来没有成功确定合适的分类。"
+    },
+    "item:292": {
+      "en": "Stygian Desolator",
+      "notesEn": [
+        "Armor reduction works on buildings."
+      ],
+      "notesZh": [
+        "护甲降低效果对建筑有效。"
+      ],
+      "loreEn": "The original demonic favorite that served as basis for the beloved mortal design.",
+      "loreZh": "邪魔最爱的原版，广受欢迎的凡人作品正是以此为设计依据。"
+    },
+    "item:294": {
+      "en": "Seer Stone",
+      "stats": [
+        {
+          "value": "+350",
+          "en": "Cast Range",
+          "zh": "施法距离"
+        },
+        {
+          "value": "+350",
+          "en": "Bonus Vision",
+          "zh": "额外视野"
+        },
+        {
+          "value": "+10",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "loreEn": "The curious creation of a wizard who professed to hail from another time.",
+      "loreZh": "一名巫师的古怪造物，声称自己来自另一个时代的巫师。"
+    },
+    "item:297": {
+      "en": "Vampire Fangs",
+      "stats": [
+        {
+          "value": "+12% / +16% / +20%",
+          "en": "Lifesteal",
+          "zh": "攻击吸血"
+        },
+        {
+          "value": "+8% / +12% / +16%",
+          "en": "Spell Lifesteal",
+          "zh": "技能吸血"
+        }
+      ]
+    },
+    "item:829": {
+      "en": "Arcanist's Armor",
+      "notesEn": [
+        "Damage done by this item is considered reflected damage. Reflected damage does not provide any lifesteal and cannot be reflected."
+      ],
+      "notesZh": [
+        "这个技能造成的伤害被视为反弹伤害。反弹伤害不提供任何吸血，而且无法反弹。"
+      ],
+      "loreEn": "An exquisite piece commissioned by a paranoid monarch who choked on a piece of fruit long before the item saw its intended use.",
+      "loreZh": "一件精致的物事，由一位偏执的君王委托打造，在这件物品展现用途前他就被一块水果噎死了。"
+    },
+    "item:834": {
+      "en": "Blast Rig",
+      "stats": [
+        {
+          "value": "+7",
+          "en": "Armor",
+          "zh": "护甲"
+        }
+      ],
+      "loreEn": "One of a set of custom rigs once worn by infamous road agents in the Outlands, its siblings have been lost to misfires and the various tides of time.",
+      "loreZh": "曾属于世外之地的拦路强盗身上的一套自制服装，而它的兄弟姐妹早已在打劫的失败和时间的浪潮中失落。"
+    },
+    "item:299": {
+      "en": "Greater Faerie Fire",
+      "stats": [
+        {
+          "value": "+20",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ]
+    },
+    "item:300": {
+      "en": "Timeless Relic",
+      "stats": [
+        {
+          "value": "+10% / +20%",
+          "en": "Spell Amplification",
+          "zh": "技能增强"
+        }
+      ],
+      "loreEn": "An unmarred discovery from the excavated ruins of an ancient wizard's academy.",
+      "loreZh": "一个完好无损的发现，出土自一座古老的巫师学院废墟。"
+    },
+    "item:301": {
+      "en": "Mirror Shield",
+      "loreEn": "The shield that long ago robbed the old one of his first memories.",
+      "loreZh": "这面战盾很久以前劫走了他早年的一个初时回忆。"
+    },
+    "item:304": {
+      "en": "Ironwood Tree",
+      "stats": [
+        {
+          "value": "+5",
+          "en": "All Attributes",
+          "zh": "全属性"
+        }
+      ],
+      "loreEn": "Precious. And hearty as a weed.",
+      "loreZh": "珍贵。而且像野草一样健壮。"
+    },
+    "item:305": {
+      "en": "Royal Jelly",
+      "stats": [
+        {
+          "value": "+50",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+50",
+          "en": "Mana",
+          "zh": "魔法值"
+        }
+      ],
+      "loreEn": "To those who harvest olgru jelly, success serves more than mere profit--it's often the means to survival--for only the jelly itself can cure the ravages that follow a sting from the vigilant denizens of the giant hives.",
+      "loreZh": "对于采集虿蜂浆的人来说，成功的意义不仅仅是获利——常常也是能死里逃生的手段——因为硕大的蜂巢中机警的工蜂出动后随着毒刺而来的摧残只有浆液才能治愈。"
+    },
+    "item:306": {
+      "en": "Pupil's Gift",
+      "stats": [
+        {
+          "value": "+15",
+          "en": "SECONDARY STATS",
+          "zh": "次属性"
+        }
+      ],
+      "notesEn": [
+        "Grants two-thirds value to each attribute for Universal Heroes"
+      ],
+      "notesZh": [
+        "对全才英雄提供2/3的全属性"
+      ],
+      "loreEn": "An astounding plate of ever-replenishing, fortifying fruit.",
+      "loreZh": "一盘惊人的水果，取之不尽，又强身健体。"
+    },
+    "item:308": {
+      "en": "Repair Kit",
+      "stats": [
+        {
+          "value": "+25",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        }
+      ]
+    },
+    "item:309": {
+      "en": "Mind Breaker",
+      "loreEn": "A bewitching blade of indeterminate form capable of piercing the psyche of even the most willful foe.",
+      "loreZh": "一把具有魔力的战刃，形态难以确定，而对于意志最为坚韧的敌人，刃锋也能将其心智刺穿。"
+    },
+    "item:310": {
+      "en": "Third Eye",
+      "stats": [
+        {
+          "value": "+300",
+          "en": "BONUS VISION",
+          "zh": "额外视野"
+        },
+        {
+          "value": "+7",
+          "en": "All Attributes",
+          "zh": "全属性"
+        }
+      ]
+    },
+    "item:311": {
+      "en": "Spell Prism",
+      "stats": [
+        {
+          "value": "+5",
+          "en": "All Attributes",
+          "zh": "全属性"
+        },
+        {
+          "value": "+2",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "loreEn": "Even the slightest flaw in the components of a spell prism can result in the death of its user.",
+      "loreZh": "一块法术棱镜之中即使出现再细小的瑕疵都会导致使用者身亡。"
+    },
+    "item:325": {
+      "en": "Prince's Knife",
+      "stats": [
+        {
+          "value": "+60%",
+          "en": "Attack Projectile Speed",
+          "zh": "攻击弹道速度"
+        }
+      ]
+    },
+    "item:330": {
+      "en": "Witless Shako",
+      "stats": [
+        {
+          "value": "+1350",
+          "en": "Max Health Increase",
+          "zh": "最大生命值提升"
+        },
+        {
+          "value": "-400",
+          "en": "Max Mana",
+          "zh": "最大魔法值"
+        }
+      ]
+    },
+    "item:334": {
+      "en": "Imp Claw",
+      "loreEn": "Though their tasks are largely thankless, demon hunters can often turn a profit bartering parts in Weeping Rose.",
+      "loreZh": "尽管恶魔猎人的任务普遍吃力不讨好，但是他们在悲玫城用一些残件做交换也常常获得不菲的收益。"
+    },
+    "item:335": {
+      "en": "Flicker",
+      "loreEn": "The technically-true-to-his-word 'teleportation device' crafted by a notorious fae trickster.",
+      "loreZh": "严格意义上说到做到的“传送装置”，由一个声名狼藉的仙灵欺诈师打造。"
+    },
+    "item:336": {
+      "en": "Telescope",
+      "loreEn": "A handy tool that manages to make close what once was far.",
+      "loreZh": "可靠的工具，可以让远处的东西变得更近。"
+    },
+    "item:326": {
+      "en": "Spider Legs",
+      "loreEn": "A horrifying yet useful mixture of necromancy and artificing.",
+      "loreZh": "亡灵术和制宝工艺的结合，令人恶心却很实用。"
+    },
+    "item:327": {
+      "en": "Helm of the Undying",
+      "loreEn": "The price for wearing it is paid in the afterlife.",
+      "loreZh": "戴上它的代价会在来世偿还。"
+    },
+    "item:331": {
+      "en": "Vambrace",
+      "loreEn": "The coveted treasure that divided the heirs of Queen Raiya upon her death, resulting in the eventual downfall of her kingdom.",
+      "loreZh": "令人觊觎的珍宝，莱娅女王的子孙在她死后为它反目成仇，她的王国因此走上了末路。"
+    },
+    "item:354": {
+      "en": "Ocean Heart",
+      "stats": [
+        {
+          "value": "+5",
+          "en": "All Attributes",
+          "zh": "全属性"
+        }
+      ],
+      "loreEn": "A charm blessed by the Council of the Brine.",
+      "loreZh": "苍洋议会祝福过的一个护符。"
+    },
+    "item:1124": {
+      "en": "Spark of Courage",
+      "loreEn": "A common battle charm in the armies that served the Children of Light.",
+      "loreZh": "为光之子效力的军队中常见的战斗护身符。"
+    },
+    "item:355": {
+      "en": "Broom Handle",
+      "stats": [
+        {
+          "value": "+8",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+4",
+          "en": "Armor",
+          "zh": "护甲"
+        }
+      ],
+      "loreEn": "The surprisingly dangerous creation of an apprentice sorcerer with a strange fondness for brooms.",
+      "loreZh": "一个异常危险的造物，出自一个对扫帚有着特殊喜好的巫师学徒。"
+    },
+    "item:356": {
+      "en": "Trusty Shovel",
+      "notesEn": [
+        "16% chance for a Bounty Rune.",
+        "28% chance each for a Flask, an Enchanted Mango, or a kobold.",
+        "The same Trusty Shovel cannot find the same reward twice in a row."
+      ],
+      "notesZh": [
+        "16%几率挖出赏金神符。",
+        "28%几率分别挖出一瓶治疗药膏，一颗魔法芒果或一个狗头人。",
+        "同一把可靠铁铲不会连续两次挖出同一种奖励。"
+      ],
+      "loreEn": "Former plaything of a young deity, received as a gift from his uncle.",
+      "loreZh": "原为一个神明年幼时的玩物，是当年他叔叔送给他的礼物。"
+    },
+    "item:357": {
+      "en": "Nether Shawl",
+      "stats": [
+        {
+          "value": "+20%",
+          "en": "Magic Resistance",
+          "zh": "魔法抗性"
+        },
+        {
+          "value": "+6%",
+          "en": "Spell Amplification",
+          "zh": "技能增强"
+        },
+        {
+          "value": "-2",
+          "en": "Armor",
+          "zh": "护甲"
+        }
+      ],
+      "loreEn": "An otherworldly garment tethered to our plane by unknown means.",
+      "loreZh": "一件异世的衣服，通过未知的手段与我们的位面产生维系。"
+    },
+    "item:358": {
+      "en": "Dragon Scale",
+      "loreEn": "The remains of a dragon always outvalue the wealth of even the most prodigious hoard.",
+      "loreZh": "就连最为浩大的宝库在巨龙的遗骸面前也会相形见绌。"
+    },
+    "item:359": {
+      "en": "Essence Ring",
+      "loreEn": "An ancient bauble blessed by the breath of Verodicia.",
+      "loreZh": "一件远古饰物，附有维萝迪希娅之息的祝福。"
+    },
+    "item:361": {
+      "en": "Enchanted Quiver",
+      "loreEn": "A graceful gift blessed by the goddess of the hunt.",
+      "loreZh": "受到追猎女神赐福的优雅馈赠。"
+    },
+    "item:362": {
+      "en": "Ninja Gear",
+      "loreEn": "Valuable equipment recovered by a young explorer sifting through the flotsam and detritus drifting in the void.",
+      "loreZh": "一位年轻的探险家筛查虚空中漂浮的废料和碎石后找到的珍贵装备。"
+    },
+    "item:363": {
+      "en": "Illusionist's Cape",
+      "stats": [
+        {
+          "value": "+14",
+          "en": "Agility",
+          "zh": "敏捷"
+        },
+        {
+          "value": "+14",
+          "en": "Strength",
+          "zh": "力量"
+        }
+      ],
+      "loreEn": "A dashing cape whose creator insists on calling 'Cloak of Apparition' as opposed to his assistant's 'Illusion' drivel.",
+      "loreZh": "一件时髦的披风，它的制造者坚持要叫“幻影斗篷”，而他的助手说的是“幻觉”这种蠢话。"
+    },
+    "item:364": {
+      "en": "Havoc Hammer",
+      "stats": [
+        {
+          "value": "+16",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+14",
+          "en": "Strength",
+          "zh": "力量"
+        }
+      ]
+    },
+    "item:366": {
+      "en": "Apex",
+      "stats": [
+        {
+          "value": "+40",
+          "en": "Primary Attribute",
+          "zh": "主属性"
+        }
+      ],
+      "notesEn": [
+        "Grants +24 to each attribute for Universal Heroes."
+      ],
+      "notesZh": [
+        "对全才英雄提供+24 全属性。"
+      ],
+      "loreEn": "Three orbs of remarkable power bound within a single scepter.",
+      "loreZh": "三个极具威力的宝珠附在一把权杖之上。"
+    },
+    "item:367": {
+      "en": "Ballista",
+      "stats": [
+        {
+          "value": "+250",
+          "en": "Attack Range",
+          "zh": "攻击距离"
+        }
+      ],
+      "loreEn": "A simple design much improved by a master smith's loving hand.",
+      "loreZh": "非常朴实的设计，经过一位锻造大师有爱的双手改良后提升颇多。"
+    },
+    "item:368": {
+      "en": "Woodland Striders",
+      "stats": [
+        {
+          "value": "+140",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        },
+        {
+          "value": "+60",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        }
+      ]
+    },
+    "item:370": {
+      "en": "Book of the Dead",
+      "notesEn": [
+        "The Demonic Warrior has 1600 Health, 4 Armor, 40% Magic Resistance, 380 Movement Speed, 134 Attack Damage, 50 Mana Burn on Hit, and deals 800 Damage on Death.",
+        "The Demonic Archer has 1300 Health, 4 Armor, 40% Magic Resistance, 425 Movement Speed, 131 Attack Damage, a basic dispel ability with a slow on a 15s Cooldown, and a 9% Bonus Movement Speed Aura."
+      ],
+      "notesZh": [
+        "恶魔战士拥有1600点生命，4点护甲，40%魔法抗性，380移动速度，134点攻击力，攻击燃烧50点魔法，死亡时造成800点伤害。",
+        "恶魔射手拥有1300点生命，4点护甲，40%魔法抗性，425移动速度，131点攻击力，15秒冷却时间具有弱驱散效果的减速和9%移速加成的光环。"
+      ],
+      "loreEn": "A record of the final reckoning. With one page torn out.",
+      "loreZh": "记载着最终之战。其中一页被人撕下。"
+    },
+    "item:371": {
+      "en": "Fallen Sky",
+      "loreEn": "One of the few surviving creations of the acolytes of the Wyrmforge.",
+      "loreZh": "龙炉的侍僧为数不多的几个幸存造物之一。"
+    },
+    "item:372": {
+      "en": "Pirate Hat",
+      "loreEn": "A salty skulltopper cursed with endless good fortune.",
+      "loreZh": "咸味颇重的骷髅礼帽，戴上后会深受财运无穷的诅咒。"
+    },
+    "item:374": {
+      "en": "Ex Machina",
+      "loreEn": "The remains of an ancient universe, preserved within a single sphere.",
+      "loreZh": "一个上古宇宙的残余，保存在一个天球之内。"
+    },
+    "item:375": {
+      "en": "Faded Broach",
+      "stats": [
+        {
+          "value": "+150",
+          "en": "Mana",
+          "zh": "魔法值"
+        },
+        {
+          "value": "+15",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        }
+      ],
+      "loreEn": "A life-saving jewel bestowed upon a young queen by a kindly vizier.",
+      "loreZh": "一件救命的珠宝，一位善良的维齐尔将其献给了一位年轻的女王。"
+    },
+    "item:376": {
+      "en": "Paladin Sword",
+      "stats": [
+        {
+          "value": "+16",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+16%",
+          "en": "Lifesteal",
+          "zh": "攻击吸血"
+        },
+        {
+          "value": "+8%",
+          "en": "Spell Lifesteal",
+          "zh": "技能吸血"
+        }
+      ],
+      "loreEn": "The sigil blade of the legendary Brother Yhols of Gausra, stripped from its scabbard on the day of his controversial excommunication.",
+      "loreZh": "这把徽记之剑曾为一代传奇——高斯瑞的伊荷斯修士所有，后来他遭到排挤被逐出教会时长剑也失去了剑鞘。"
+    },
+    "item:377": {
+      "en": "Minotaur Horn",
+      "loreEn": "The trophy from a mighty beast ambushed and slain in the recesses of its own home.",
+      "loreZh": "在一只强大野兽的居所深处伏击得手后获得的战利品。"
+    },
+    "item:378": {
+      "en": "Orb of Destruction",
+      "loreEn": "An ingot of chaos suspended in wizard's ether, housed within an arcanist's orb.",
+      "loreZh": "一团混沌悬浮在巫师的灵气中，被装进秘术师的灵球里。"
+    },
+    "item:379": {
+      "en": "The Leveller",
+      "loreEn": "A demonic blade that struck the final blow to crack the gates of the Sanctum of Solanas.",
+      "loreZh": "魔性十足的战刃，劈开了索拉纳斯圣所的大门。"
+    },
+    "item:349": {
+      "en": "Arcane Ring",
+      "loreEn": "Once a prized heirloom of a minor lord's house.",
+      "loreZh": "曾经是一个默默无名的领主家族祖传的珍宝。"
+    },
+    "item:381": {
+      "en": "Titan Sliver",
+      "stats": [
+        {
+          "value": "+15% / +25%",
+          "en": "Base Attack Damage",
+          "zh": "基础攻击力"
+        },
+        {
+          "value": "+10% / +15%",
+          "en": "Status Resistance",
+          "zh": "状态抗性"
+        }
+      ],
+      "loreEn": "Though many desire this brilliant shard for its obvious qualities, a school of study exists to determine the true size and purpose of its incomprehensible whole.",
+      "loreZh": "尽管由于肉眼可见的品质，很多人都想得到这块出色的碎片，不过有一门学派还在研究它无限的整体到底是多大的尺寸，又有什么用途。"
+    },
+    "item:565": {
+      "en": "Chipped Vest",
+      "notesEn": [
+        "Damage done by this item is considered reflected damage. Reflected damage does not provide any lifesteal and cannot be reflected."
+      ],
+      "notesZh": [
+        "这个技能造成的伤害被视为反弹伤害。反弹伤害不提供任何吸血，而且无法反弹。"
+      ],
+      "loreEn": "It doesn't look like much, but it's oddly comfy.",
+      "loreZh": "看起来并不厚实，但很奇妙地令人感到舒适。"
+    },
+    "item:573": {
+      "en": "Elven Tunic",
+      "stats": [
+        {
+          "value": "+26",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        },
+        {
+          "value": "+16%",
+          "en": "Evasion",
+          "zh": "闪避"
+        },
+        {
+          "value": "+7%",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        }
+      ],
+      "loreEn": "Even simple items of elven make seem imbued with inexplicable efficacy.",
+      "loreZh": "即使是简单的精灵物事似乎也灌注了莫名其妙的功效。"
+    },
+    "item:574": {
+      "en": "Cloak of Flames",
+      "loreEn": "A very fine cloak that plays host to an overly-protective living flame.",
+      "loreZh": "非常精良的斗篷，可以承载过度防护的活体火焰。"
+    },
+    "item:571": {
+      "en": "Trickster Cloak",
+      "loreEn": "A fantastic garment immediately misplaced by its creator upon completion.",
+      "loreZh": "神奇的衣服，刚制作完毕就被它的创造者弄丢了。"
+    },
+    "item:577": {
+      "en": "Possessed Mask",
+      "notesEn": [
+        "Grants 1/3rd of the value to each attribute for Universal Heroes."
+      ],
+      "notesZh": [
+        "对全才英雄提供1/3全属性。"
+      ],
+      "loreEn": "Even when discarded with specific purpose and great care, this frightening mask always finds its way onto the face of a new owner.",
+      "loreZh": "即使是出于特定的目的和谨慎的态度而遭到丢弃，但这副骇人的面具总有办法让新主人戴上。"
+    },
+    "item:638": {
+      "en": "Penta-Edged Sword",
+      "stats": [
+        {
+          "value": "+45",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ],
+      "loreEn": "The final, twisted work of a severely pious blacksmith, completed immediately before the taking of his own life.",
+      "loreZh": "极其虔诚的铁匠生前最后一个作品，邪性十足，制作甫毕就夺走了他自己的性命。"
+    },
+    "item:680": {
+      "en": "Bullwhip",
+      "notesEn": [
+        "Does not trigger spell block or spell reflect."
+      ],
+      "notesZh": [
+        "不会触发法术抵抗或法术反弹。"
+      ],
+      "loreEn": "Once the favored lash of an infamous broker of pit fighters and other live trade.",
+      "loreZh": "原来是臭名昭著的经纪人在从事斗士以及其他行当时青睐的鞭子。"
+    },
+    "item:675": {
+      "en": "Psychic Headband",
+      "notesEn": [
+        "Does not trigger spell block or spell reflect."
+      ],
+      "notesZh": [
+        "不会触发法术抵抗或法术反弹。"
+      ],
+      "loreEn": "A failed experiment in finer telekinetic control, still fit for other ends.",
+      "loreZh": "精进念力控制时发生失败的试验品，在其他方面仍然管用。"
+    },
+    "item:676": {
+      "en": "Ceremonial Robe",
+      "loreEn": "One of many items lost in the looting of Zelenwyr's sacred reliquary.",
+      "loreZh": "泽伦维尔的圣物箱遭劫时遗失的其中一件物品。"
+    },
+    "item:686": {
+      "en": "Quicksilver Amulet",
+      "stats": [
+        {
+          "value": "+4%",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        },
+        {
+          "value": "+18",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        },
+        {
+          "value": "+40%",
+          "en": "Attack Animation Speed",
+          "zh": "攻击动作速度"
+        },
+        {
+          "value": "+40%",
+          "en": "Attack Projectile Speed",
+          "zh": "攻击弹道速度"
+        }
+      ],
+      "loreEn": "An enchanted talisman brimming with a mysterious substance.",
+      "loreZh": "带有魔力的挂件，闪耀着神秘的光泽。"
+    },
+    "item:677": {
+      "en": "Book of Shadows",
+      "notesEn": [
+        "Does not trigger spell block or spell reflect."
+      ],
+      "notesZh": [
+        "不会触发法术抵抗或法术反弹。"
+      ],
+      "loreEn": "An impossible tome filled with unreadable prose of unknowable thoughts.",
+      "loreZh": "一本不可能存在的书，里面全是难以理解的段落，由不可知的想法组成。"
+    },
+    "item:678": {
+      "en": "Giant's Ring",
+      "stats": [
+        {
+          "value": "+60%",
+          "en": "Model Scale",
+          "zh": "模型大小"
+        }
+      ],
+      "loreEn": "Prized procurement of an otherwise unremarkable ruler of Elze who abdicated his position and vanished.",
+      "loreZh": "出价购得的珍贵之物，卖家是厄泽王庭本来并不起眼的统治者，他放弃自己的王位后消失得无影无踪。"
+    },
+    "item:585": {
+      "en": "Stormcrafter",
+      "loreEn": "The accidental byproduct of a spell conjured to entrap a lesser god.",
+      "loreZh": "捕捉一个弱小的神明时施下的咒语意外有了副产物。"
+    },
+    "item:589": {
+      "en": "Fairy's Trinket",
+      "stats": [
+        {
+          "value": "+50",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+5%",
+          "en": "Spell Amplification",
+          "zh": "技能增强"
+        }
+      ],
+      "loreEn": "A small token imbued with the fortune of the fae in recognition of an intriguing display of mortal kindness.",
+      "loreZh": "较小的配饰，为了酬谢凡人不经意间流露出的善意而注入了仙灵的好运。"
+    },
+    "item:825": {
+      "en": "Ascetic's Cap",
+      "loreEn": "An austere hat thought to be of Turstarkuri origin.",
+      "loreZh": "一顶朴素的帽子，看上去源自星隐寺。"
+    },
+    "item:828": {
+      "en": "Brigand's Blade",
+      "loreEn": "An infamous assassin's blade stolen and smuggled out of White Spire after its owner's mysterious demise.",
+      "loreZh": "这把武器来自名声狼藉的刺客，在其拥有者神秘的消亡后，遭到盗窃并走私出了白色尖塔。"
+    },
+    "item:837": {
+      "en": "Witchbane",
+      "loreEn": "With ready access to test subjects, untold cruelties have been dreamed up and loosed upon the world from within the walls of the Tyler Estate.",
+      "loreZh": "有了方法测试对象后，泰勒庄园的高墙之内已设想出无穷的暴行，并散播到外面的世界。"
+    },
+    "item:838": {
+      "en": "Pig Pole",
+      "loreEn": "A makeshift charm misplaced by a peace-loving, addlebrained enchanter.",
+      "loreZh": "一个凑合使用的护符，被一个热爱和平又有点糊涂的附魔师弄丢了。"
+    },
+    "item:840": {
+      "en": "Tumbler's Toy",
+      "loreEn": "An antique plaything found in the ruins of an Ozenja circus bazaar.",
+      "loreZh": "一件古董玩具，是在一个奥泽尼亚杂技团集市的废墟里找到的。"
+    },
+    "item:835": {
+      "en": "Fae Grenade",
+      "stats": [
+        {
+          "value": "+20",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        }
+      ],
+      "notesEn": [
+        "Does not trigger spell block or spell reflect."
+      ],
+      "notesZh": [
+        "不会触发法术抵抗或法术反弹。"
+      ],
+      "loreEn": "Those marked for death by the fae shine brightly to all manner of creatures in the shadow realm.",
+      "loreZh": "被仙灵标记已死的人对暗影之域中的生物来说都是灿烂的存在。"
+    },
+    "item:945": {
+      "en": "Seeds of Serenity",
+      "loreEn": "An evergreen sprout treasured by the woodkin and highly coveted by interlopers and their like.",
+      "loreZh": "常青的嫩芽，被树人视为珍宝，也遭到入侵者的觊觎。"
+    },
+    "item:946": {
+      "en": "Lance of Pursuit",
+      "stats": [
+        {
+          "value": "+200",
+          "en": "Mana",
+          "zh": "魔法值"
+        }
+      ],
+      "loreEn": "The gleaming weapon of a tarnished knight haunted by his duties to an unworthy king.",
+      "loreZh": "这把带着微光的武器来自一位名声不再的骑士，他常年来都在纠结是否向昏君效劳。"
+    },
+    "item:947": {
+      "en": "Occult Bracelet",
+      "loreEn": "A band that bears effigy of the dark goddess Eloshar's unsleeping eye.",
+      "loreZh": "手镯上的雕像刻的是黑暗女神埃罗莎的不眠之眼。"
+    },
+    "item:939": {
+      "en": "Harpoon",
+      "stats": [
+        {
+          "value": "+25",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+30",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+15",
+          "en": "Agility",
+          "zh": "敏捷"
+        },
+        {
+          "value": "+2.5",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "notesEn": [
+        "Attack Range bonuses from Dragon Lance and its upgrades do not stack."
+      ],
+      "notesZh": [
+        "来自魔龙枪和升级物品的攻击距离加成不会叠加。"
+      ],
+      "loreEn": "A perfect solution for the flight of foes.",
+      "loreZh": "完美解决敌人逃跑的问题。"
+    },
+    "item:990": {
+      "en": "Eye of the Vizier",
+      "stats": [
+        {
+          "value": "+125 / +135",
+          "en": "Cast Range",
+          "zh": "施法距离"
+        },
+        {
+          "value": "+1 / +1.5",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        },
+        {
+          "value": "-15%",
+          "en": "Max Mana",
+          "zh": "最大魔法值"
+        }
+      ],
+      "loreEn": "The ring of a cunning court mage who imprisoned a cadre of enemies to serve as his personal mana reserve.",
+      "loreZh": "这枚戒指属于一个狡猾的当朝法师，他将一小撮敌人囚禁后用作他私人的法力储备。"
+    },
+    "item:1077": {
+      "en": "Dagger of Ristul",
+      "loreEn": "A sinister shiv that grants favor to those willing to stain its blade with a sacrifice of their own blood.",
+      "loreZh": "一把险恶的小刀，如果自愿在刀刃上涂上自己鲜血将会得到它的帮助。"
+    },
+    "item:4300": {
+      "en": "Beloved Memory",
+      "loreEn": "Take joy in remembering those beloved who've passed now beyond the veil.",
+      "loreZh": "回忆已穿过生死之界的挚爱，给自己一点欣慰。"
+    },
+    "item:4301": {
+      "en": "Scrying Shovel",
+      "loreEn": "You don't know where it came from, but it knows where you need to go. All you need to do is dig.",
+      "loreZh": "你不知道它来自何处，但它知道你需要去哪。你需要的就是挖掘。"
+    },
+    "item:4302": {
+      "en": "Forebearer's Fortune",
+      "loreEn": "This item seems unstable. Like it might just disappear.",
+      "loreZh": "这件物品看起来不稳定。仿佛很快就会消失。"
+    },
+    "item:1090": {
+      "en": "Mercy & Grace",
+      "notesEn": [
+        "Feared enemies are phased and unslowable.",
+        "The ricochet will travel 1x Dead Shot's cast range."
+      ],
+      "notesZh": [
+        "被恐惧的敌人为相位状态，无法被减速。",
+        "跳弹的行进距离为弹无虚发施法距离的1倍。"
+      ],
+      "loreEn": "One to deliver the body, the other to claim the soul.",
+      "loreZh": "一把拯救肉体，另一把夺取灵魂。"
+    },
+    "item:911": {
+      "en": "Revenant's Brooch",
+      "notesEn": [
+        "Counts as a critical strike, and so does not stack with other critical strikes.",
+        "Does not work against buildings."
+      ],
+      "notesZh": [
+        "Counts as a critical strike, and so does not stack with other critical strikes.",
+        "Does not work against buildings."
+      ]
+    },
+    "item:1156": {
+      "en": "Ancient Guardian",
+      "stats": [
+        {
+          "value": "+50",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ]
+    },
+    "item:1158": {
+      "en": "Whisper of the Dread",
+      "loreEn": "The air that passes through this amulet makes a dreadful sound.",
+      "loreZh": "空气穿过这个护符时会发出可怕的声音。"
+    },
+    "item:1160": {
+      "en": "Aviana's Feather",
+      "stats": [
+        {
+          "value": "+25%",
+          "en": "Evasion",
+          "zh": "闪避"
+        },
+        {
+          "value": "+30",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        }
+      ]
+    },
+    "item:1161": {
+      "en": "Unwavering Condition",
+      "stats": [
+        {
+          "value": "+95%",
+          "en": "Magic Resistance",
+          "zh": "魔法抗性"
+        }
+      ]
+    },
+    "item:2192": {
+      "en": "Martyr's Plate",
+      "stats": [
+        {
+          "value": "+25%",
+          "en": "Magic Resistance",
+          "zh": "魔法抗性"
+        },
+        {
+          "value": "+7",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        }
+      ],
+      "notesEn": [
+        "Damage done by this item is considered reflected damage. Reflected damage does not provide any lifesteal and cannot be reflected."
+      ],
+      "notesZh": [
+        "这个技能造成的伤害被视为反弹伤害。反弹伤害不提供任何吸血，而且无法反弹。"
+      ]
+    },
+    "item:1167": {
+      "en": "Light Collector",
+      "stats": [
+        {
+          "value": "+5%",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        }
+      ]
+    },
+    "item:1168": {
+      "en": "Rattlecage",
+      "notesEn": [
+        "Damage done by this item is considered reflected damage. Reflected damage does not provide any lifesteal and cannot be reflected."
+      ],
+      "notesZh": [
+        "这个技能造成的伤害被视为反弹伤害。反弹伤害不提供任何吸血，而且无法反弹。"
+      ]
+    },
+    "item:1804": {
+      "en": "Roshan's Banner",
+      "notesEn": [
+        "The banner has fragile pips: melee heroes and Roshan remove 2 pips per attack."
+      ],
+      "notesZh": [
+        "The banner has fragile pips: melee heroes and Roshan remove 2 pips per attack."
+      ]
+    },
+    "item:1949": {
+      "en": "Stone of Recall",
+      "loreEn": "A shard chipped from one of the ancient waystones, still remembering the road home.",
+      "loreZh": "A shard chipped from one of the ancient waystones, still remembering the road home."
+    },
+    "item:1576": {
+      "en": "Vast",
+      "stats": [
+        {
+          "value": "+6 / +10 / +14",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "-4 / -6 / -8",
+          "en": "Armor",
+          "zh": "护甲"
+        }
+      ]
+    },
+    "item:1577": {
+      "en": "Quickened",
+      "stats": [
+        {
+          "value": "+14 / +22 / +30",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        },
+        {
+          "value": "+0 / +130 / +200",
+          "en": "Mana",
+          "zh": "魔法值"
+        },
+        {
+          "value": "+0% / +15%",
+          "en": "Evasion",
+          "zh": "闪避"
+        }
+      ]
+    },
+    "item:1581": {
+      "en": "Audacious",
+      "stats": [
+        {
+          "value": "+100",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        },
+        {
+          "value": "+80",
+          "en": "Magic Attack Damage",
+          "zh": "魔法攻击伤害"
+        },
+        {
+          "value": "+10%",
+          "en": "Incoming Damage",
+          "zh": "承受伤害"
+        }
+      ]
+    },
+    "item:1583": {
+      "en": "Mystical",
+      "stats": [
+        {
+          "value": "+0.8 / +2 / +3.2",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        },
+        {
+          "value": "+0% / +12% / +15%",
+          "en": "Magic Resistance",
+          "zh": "魔法抗性"
+        },
+        {
+          "value": "+0% / +15%",
+          "en": "Mana Cost/Mana Loss Reduction",
+          "zh": "魔法消耗/魔法损失降低"
+        }
+      ]
+    },
+    "item:1584": {
+      "en": "Alert",
+      "stats": [
+        {
+          "value": "+8 / +18 / +28",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        },
+        {
+          "value": "+0 / +150 / +200",
+          "en": "Bonus Night Vision",
+          "zh": "额外夜间视野"
+        },
+        {
+          "value": "+0 / +80",
+          "en": "Attack Range",
+          "zh": "攻击距离"
+        }
+      ]
+    },
+    "item:1585": {
+      "en": "Brawny",
+      "stats": [
+        {
+          "value": "+110 / +170 / +230",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+0 / +4 / +8",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        },
+        {
+          "value": "+0% / +16%",
+          "en": "Lifesteal",
+          "zh": "攻击吸血"
+        }
+      ]
+    },
+    "item:1586": {
+      "en": "Tough",
+      "stats": [
+        {
+          "value": "+6 / +11 / +16",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+0 / +5 / +7",
+          "en": "Armor",
+          "zh": "护甲"
+        },
+        {
+          "value": "+0% / +40%",
+          "en": "Knockback Resistance",
+          "zh": "击退抗性"
+        }
+      ]
+    },
+    "item:1587": {
+      "en": "Feverish",
+      "stats": [
+        {
+          "value": "-20%",
+          "en": "Max Mana",
+          "zh": "最大魔法值"
+        }
+      ]
+    },
+    "item:1588": {
+      "en": "Fleetfooted",
+      "stats": [
+        {
+          "value": "+115",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        }
+      ],
+      "notesEn": [
+        "Does not stack with Movement Speed bonuses from boots"
+      ],
+      "notesZh": [
+        "不会与鞋类物品的移动速度加成叠加"
+      ]
+    },
+    "item:1589": {
+      "en": "Crude",
+      "stats": [
+        {
+          "value": "+10% / +15%",
+          "en": "Health Restoration",
+          "zh": "生命回复"
+        },
+        {
+          "value": "-7% / -12%",
+          "en": "Base Attack Time",
+          "zh": "基础攻击间隔"
+        },
+        {
+          "value": "-9%",
+          "en": "Intelligence",
+          "zh": "智力"
+        }
+      ]
+    },
+    "item:1590": {
+      "en": "Boundless",
+      "stats": [
+        {
+          "value": "+275",
+          "en": "Cast Range",
+          "zh": "施法距离"
+        }
+      ]
+    },
+    "item:1591": {
+      "en": "Wise",
+      "stats": [
+        {
+          "value": "+1000",
+          "en": "Experience per Minute",
+          "zh": "每分钟经验"
+        }
+      ]
+    },
+    "item:1592": {
+      "en": "Timeless",
+      "stats": [
+        {
+          "value": "+10%",
+          "en": "Spell Amplification",
+          "zh": "技能增强"
+        }
+      ]
+    },
+    "item:1593": {
+      "en": "Greedy",
+      "stats": [
+        {
+          "value": "+80",
+          "en": "GPM BONUS",
+          "zh": "额外每分钟金钱"
+        },
+        {
+          "value": "+200",
+          "en": "Mana",
+          "zh": "魔法值"
+        },
+        {
+          "value": "-70",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ]
+    },
+    "item:1594": {
+      "en": "Vampiric",
+      "stats": [
+        {
+          "value": "+30%",
+          "en": "Lifesteal",
+          "zh": "攻击吸血"
+        },
+        {
+          "value": "+20%",
+          "en": "Spell Lifesteal",
+          "zh": "技能吸血"
+        },
+        {
+          "value": "+300",
+          "en": "Night Vision",
+          "zh": "夜间视野"
+        }
+      ]
+    },
+    "item:1595": {
+      "en": "Keen-eyed",
+      "stats": [
+        {
+          "value": "+100 / +120",
+          "en": "Cast Range",
+          "zh": "施法距离"
+        },
+        {
+          "value": "+1 / +2",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        },
+        {
+          "value": "-10% / -14%",
+          "en": "Max Mana",
+          "zh": "最大魔法值"
+        }
+      ]
+    },
+    "item:1596": {
+      "en": "Evolved",
+      "stats": [
+        {
+          "value": "+20%",
+          "en": "Item Potency",
+          "zh": "物品威力"
+        },
+        {
+          "value": "+20",
+          "en": "Primary Attribute",
+          "zh": "主属性"
+        }
+      ],
+      "notesEn": [
+        "Grants +12 to each attribute for Universal Heroes."
+      ],
+      "notesZh": [
+        "对全才英雄提供+12 全属性。"
+      ]
+    },
+    "item:1597": {
+      "en": "Titanic",
+      "stats": [
+        {
+          "value": "+10% / +15%",
+          "en": "Base Attack Damage",
+          "zh": "基础攻击力"
+        },
+        {
+          "value": "+11% / +13%",
+          "en": "Status Resistance",
+          "zh": "状态抗性"
+        },
+        {
+          "value": "-9%",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        }
+      ]
+    },
+    "item:1598": {
+      "en": "Unrelenting Eye",
+      "loreEn": "A serpent's eye the size of a melon (and just as moist).",
+      "loreZh": "巨蟒之眼大如蜜瓜（湿度一样）。"
+    },
+    "item:1599": {
+      "en": "Mana Draught",
+      "loreEn": "A refreshing drink best shared with friends.",
+      "loreZh": "让人为之一振的饮料，最适合与朋友分享。"
+    },
+    "item:1600": {
+      "en": "Ripper's Lash",
+      "loreEn": "The Fae horticulturists of Revtel are known to push the boundaries of both cross pollination and safety.",
+      "loreZh": "众所周知，瑞文特尔的仙灵园艺师们不断突破异花授粉和安全的界限。"
+    },
+    "item:1601": {
+      "en": "Crippling Crossbow",
+      "loreEn": "The ever-weeping woodgrain of this crossbow coats every bolt in a potent but short-lived narcotic sap.",
+      "loreZh": "这把弩的木纹上不断渗出树浆，给每支箭都覆盖上强效但短暂的麻醉汁液。"
+    },
+    "item:1602": {
+      "en": "Gale Guard",
+      "loreEn": "If one truly listens, they can always rely upon the wind to make its will known.",
+      "loreZh": "如果能静下心来倾听，就能依靠风来传达自己的意愿。"
+    },
+    "item:1603": {
+      "en": "Gunpowder Gauntlet",
+      "loreEn": "A 'harmless' prank that went entirely too far.",
+      "loreZh": "“无害”的恶作剧，但实在是玩过火了。"
+    },
+    "item:1604": {
+      "en": "Searing Signet",
+      "notesEn": [
+        "Will not ignite enemies that are more than 2000 range away."
+      ],
+      "notesZh": [
+        "不会点燃2000距离以外的敌人。"
+      ],
+      "loreEn": "To torture a magic user, one must devise means far beyond the mundane.",
+      "loreZh": "想要折磨魔法的使用者，必须想出非常规的手段。"
+    },
+    "item:1605": {
+      "en": "Serrated Shiv",
+      "loreEn": "Too dangerous for taskwork, this blade's only purpose is vile murder.",
+      "loreZh": "这把刀用来执行任务太过危险，它唯一的用途就是卑鄙的谋杀。"
+    },
+    "item:1606": {
+      "en": "Pollywog Charm",
+      "loreEn": "A tiny trinket that wriggles when wet.",
+      "loreZh": "遇水就会扭动的小饰品。"
+    },
+    "item:1607": {
+      "en": "Magnifying Monocle",
+      "loreEn": "Deadly refinement.",
+      "loreZh": "致命的精进。"
+    },
+    "item:1608": {
+      "en": "Pyrrhic Cloak",
+      "notesEn": [
+        "Damage done by this item is considered reflected damage. Reflected damage does not provide any lifesteal and cannot be reflected."
+      ],
+      "notesZh": [
+        "这个技能造成的伤害被视为反弹伤害。反弹伤害不提供任何吸血，而且无法反弹。"
+      ],
+      "loreEn": "There are generals that care far less about the survival of their troops than the destruction of their enemies.",
+      "loreZh": "世上就是有那种不关心部下死活，只想着消灭敌人的将军。"
+    },
+    "item:1637": {
+      "en": "Kobold Cup",
+      "loreEn": "The Kobold King will sip when he damn well pleases.",
+      "loreZh": "狗头人之王只要开心了就会喝一口。"
+    },
+    "item:1638": {
+      "en": "Dormant Curio",
+      "notesEn": [
+        "Certain stats on the next artifact will be amplified. Will not amplify cooldown, mana cost, or cast range."
+      ],
+      "notesZh": [
+        "下一件宝物的特定属性会被增强。不会增强冷却时间、魔法消耗和施法距离。"
+      ],
+      "loreEn": "Everyone has an idea, but no one has a clue.",
+      "loreZh": "每个人都有想法，但没有人有头绪。"
+    },
+    "item:1639": {
+      "en": "Sister's Shroud",
+      "notesEn": [
+        "Does not trigger from damage by non-player controlled creeps"
+      ],
+      "notesZh": [
+        "受到来自非玩家控制的非英雄单位的伤害不会触发。"
+      ],
+      "loreEn": "A pall that draped the sarcophagus of the First Sister.",
+      "loreZh": "这面棺罩原先盖着魅影之纱大长老的石棺。"
+    },
+    "item:1640": {
+      "en": "Jidi Pollen Bag",
+      "notesEn": [
+        "Damage is non-lethal and classified as HP Loss."
+      ],
+      "notesZh": [
+        "伤害不会致死，被归为生命损失。"
+      ],
+      "loreEn": "Very dangerous. Very difficult to obtain more.",
+      "loreZh": "非常危险。很难去获得更多。"
+    },
+    "item:1641": {
+      "en": "Outworld Staff",
+      "notesEn": [
+        "Damage taken when returning is non-lethal and disables Blink Dagger and other items that are muted upon taking damage."
+      ],
+      "notesZh": [
+        "承受的回归伤害不会致死，会禁用闪烁匕首和其他受到伤害时会被锁闭的物品。"
+      ],
+      "loreEn": "Proof that the lone sentinel was not always so.",
+      "loreZh": "独孤的哨卫并非总是如此的证明。"
+    },
+    "item:1642": {
+      "en": "Dezun Bloodrite",
+      "loreEn": "The gateway to a lost lineage of power, unlocked only with blood.",
+      "loreZh": "通往失落血脉的门户，只有鲜血才能打开。"
+    },
+    "item:1643": {
+      "en": "Giant's Maul",
+      "loreEn": "Crude but smashingly effective.",
+      "loreZh": "粗糙但效果很猛。"
+    },
+    "item:1644": {
+      "en": "Divine Regalia",
+      "loreEn": "So magnificent, it cannot abide failure.",
+      "loreZh": "太过耀眼，它无法忍受失败。"
+    },
+    "item:1645": {
+      "en": "Disgraced Regalia",
+      "loreEn": "It cannot abide failure.",
+      "loreZh": "它无法忍受失败。"
+    },
+    "item:1647": {
+      "en": "Fierce",
+      "stats": [
+        {
+          "value": "+30",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        },
+        {
+          "value": "+250",
+          "en": "Bonus Night Vision",
+          "zh": "额外夜间视野"
+        },
+        {
+          "value": "+15",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ]
+    },
+    "item:1648": {
+      "en": "Dominant",
+      "stats": [
+        {
+          "value": "+25",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        },
+        {
+          "value": "+15%",
+          "en": "Magic Resistance",
+          "zh": "魔法抗性"
+        },
+        {
+          "value": "+205",
+          "en": "Health",
+          "zh": "生命值"
+        }
+      ]
+    },
+    "item:1649": {
+      "en": "Restorative",
+      "stats": [
+        {
+          "value": "+200",
+          "en": "Mana",
+          "zh": "魔法值"
+        },
+        {
+          "value": "+8",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        }
+      ]
+    },
+    "item:1650": {
+      "en": "Thick",
+      "stats": [
+        {
+          "value": "+240",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+3",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        },
+        {
+          "value": "+7",
+          "en": "Armor",
+          "zh": "护甲"
+        }
+      ]
+    },
+    "item:1651": {
+      "en": "Unleashed",
+      "stats": [
+        {
+          "value": "+30%",
+          "en": "Artifact Potency",
+          "zh": "宝物威力"
+        }
+      ]
+    },
+    "item:1076": {
+      "en": "Specialist's Array",
+      "stats": [
+        {
+          "value": "+15",
+          "en": "Agility",
+          "zh": "敏捷"
+        },
+        {
+          "value": "+20",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ],
+      "loreEn": "An impressive kit of trigger enhancements born in an aging assassin's idle mind.",
+      "loreZh": "加强扳机的出色器具，源自一位年迈的刺客闲暇时的想法。"
+    },
+    "item:1858": {
+      "en": "Hydra's Breath",
+      "stats": [
+        {
+          "value": "+15",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+30",
+          "en": "Agility",
+          "zh": "敏捷"
+        },
+        {
+          "value": "+25",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+150",
+          "en": "Attack Range",
+          "zh": "攻击距离"
+        }
+      ],
+      "notesEn": [
+        "Attack Range bonuses from Dragon Lance and its upgrades do not stack.",
+        "Does not trigger on attacks from illusions."
+      ],
+      "notesZh": [
+        "来自魔龙枪和升级物品的攻击距离加成不会叠加。",
+        "Does not trigger on attacks from illusions."
+      ]
+    },
+    "item:1863": {
+      "en": "Harmonizer",
+      "notesEn": [
+        "Only considers abilities that are visible and have a cooldown."
+      ],
+      "notesZh": [
+        "只会计算可见的技能和拥有冷却时间的技能。"
+      ]
+    },
+    "item:1916": {
+      "en": "Brick",
+      "notesEn": [
+        "Barrier damage ignores any reductions and affects any kind of barrier in the following order: Magical Barrier, Physical Barrier, All-Damage Barrier.",
+        "If barrier damage destroys one type of barrier, the remaining barrier damage is dealt to the next barrier. Any remaining barrier damage is not dealt to the player."
+      ],
+      "notesZh": [
+        "Barrier damage ignores any reductions and affects any kind of barrier in the following order: Magical Barrier, Physical Barrier, All-Damage Barrier.",
+        "If barrier damage destroys one type of barrier, the remaining barrier damage is dealt to the next barrier. Any remaining barrier damage is not dealt to the player."
+      ],
+      "loreEn": "A simple answer for madness",
+      "loreZh": "A simple answer for madness"
+    },
+    "item:1864": {
+      "en": "Conjurer's Catalyst",
+      "notesEn": [
+        "Spellover has a 0.1s cooldown between overheats.",
+        "Accumulated damage resets if no damage is dealt to the target for 6s."
+      ],
+      "notesZh": [
+        "法术外溢现在拥有0.1秒的触发冷却时间。",
+        "累计的伤害在目标6秒内未受到伤害后重置。"
+      ]
+    },
+    "item:1865": {
+      "en": "Vital",
+      "stats": [
+        {
+          "value": "+2.25 / +3",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        },
+        {
+          "value": "+0 / +0.8",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ]
+    },
+    "item:1866": {
+      "en": "Hulking",
+      "stats": [
+        {
+          "value": "+5%",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+1.5%",
+          "en": "Max Health Regen",
+          "zh": "最大生命值恢复"
+        },
+        {
+          "value": "-30%",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        }
+      ]
+    },
+    "item:1867": {
+      "en": "Manic",
+      "stats": [
+        {
+          "value": "-18%",
+          "en": "Base Attack Time",
+          "zh": "基础攻击间隔"
+        },
+        {
+          "value": "+20%",
+          "en": "Cast Speed Bonus",
+          "zh": "施法速度加成"
+        },
+        {
+          "value": "-20%",
+          "en": "Vision",
+          "zh": "视野"
+        }
+      ]
+    },
+    "item:1869": {
+      "en": "Vital Toadstool",
+      "stats": [
+        {
+          "value": "+2",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        }
+      ],
+      "notesEn": [
+        "Hold Control to use on a nearby allied hero."
+      ],
+      "notesZh": [
+        "按住Ctrl键点击附近友方英雄可以对其使用。"
+      ]
+    },
+    "item:1870": {
+      "en": "Ironwood Nut",
+      "stats": [
+        {
+          "value": "+3",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        }
+      ],
+      "notesEn": [
+        "Universal heroes get 0.4 bonus to all attributes."
+      ],
+      "notesZh": [
+        "全才英雄获得0.4点额外全属性。"
+      ]
+    },
+    "item:1871": {
+      "en": "Tomo'kan Ringcap",
+      "stats": [
+        {
+          "value": "+2",
+          "en": "Intelligence",
+          "zh": "智力"
+        }
+      ],
+      "notesEn": [
+        "Hold Control to use on a nearby allied hero."
+      ],
+      "notesZh": [
+        "按住Ctrl键点击附近友方英雄可以对其使用。"
+      ]
+    },
+    "item:1872": {
+      "en": "Chasm Stone",
+      "stats": [
+        {
+          "value": "+40",
+          "en": "AoE Radius",
+          "zh": "作用范围"
+        }
+      ],
+      "notesEn": [
+        "AoE bonuses from multiple Chasm Stones or its upgrades do not stack."
+      ],
+      "notesZh": [
+        "来自魔龙枪和升级物品的攻击距离加成不会叠加。"
+      ]
+    },
+    "item:1873": {
+      "en": "Partisan's Brand",
+      "notesEn": [
+        "Player controlled targets includes heroes and any creep summoned or converted by them."
+      ],
+      "notesZh": [
+        "玩家控制目标包括英雄和他们召唤和劝化的所有非英雄单位。"
+      ]
+    },
+    "item:1874": {
+      "en": "Nimble",
+      "stats": [
+        {
+          "value": "+6% / +8%",
+          "en": "Movement Speed",
+          "zh": "移动速度"
+        },
+        {
+          "value": "+12 / +18",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "-2 / -3",
+          "en": "Health Regeneration",
+          "zh": "生命恢复"
+        }
+      ]
+    },
+    "item:1880": {
+      "en": "Red Ledger",
+      "notesEn": [
+        "Automatically generates a new list once all bounties have been collected.",
+        "Can be manually activated if off cooldown to replace the current bounty list."
+      ],
+      "notesZh": [
+        "Automatically generates a new list once all bounties have been collected.",
+        "Can be manually activated if off cooldown to replace the current bounty list."
+      ]
+    },
+    "item:1953": {
+      "en": "Sabatons of Mordiggian",
+      "stats": [
+        {
+          "value": "+45",
+          "en": "Move Speed (Ranged Heroes)",
+          "zh": "移动速度（远程英雄）"
+        },
+        {
+          "value": "+55",
+          "en": "Move Speed (Melee Heroes)",
+          "zh": "移动速度（近战英雄）"
+        },
+        {
+          "value": "+40",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+30",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        },
+        {
+          "value": "+10",
+          "en": "Armor",
+          "zh": "护甲"
+        },
+        {
+          "value": "+5",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        }
+      ]
+    }
+  }
+}
