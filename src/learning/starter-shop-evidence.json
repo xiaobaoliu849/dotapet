@@ -1,14 +1,14 @@
 {
   "schema": 1,
-  "checkedAt": "2026-11-16T02:58:28.645Z",
+  "checkedAt": "2026-11-19T05:02:27.116Z",
   "sources": [
     {
       "url": "https://www.dota2.com.cn/itemscategory/json",
-      "sha256": "a3107d10b256c779ce8af19a38950a17a1ca3e70722499f176d4ef040d5f53ca"
+      "sha256": "50a76734c278b7e494ff867545f45d13351a94ab044c81642d58581113876b89"
     },
     {
       "url": "https://www.dota2.com/datafeed/itemlist?language=english",
-      "sha256": "829f67446e6a88acd1e4deedabd59090546130dda7bd319fbca13808c7cf99d9"
+      "sha256": "628e71625dc7de7ccb3f1f8f3594ec884535e755b3da3a3528c4d43738384299"
     }
   ],
   "limitation": "Listed in official shop categories and Valve feed at this time. Not independently checked in the running game client; source listings can lag gameplay updates.",
