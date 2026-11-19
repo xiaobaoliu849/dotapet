@@ -81,6 +81,21 @@ export async function runStarterPathSmoke({ page, controlCenter, nativeImage, ou
     if (byId('session-summary').hidden) throw new Error('Starter lesson has no summary');
     const final = await window.learningAPI.load();
     if (final.study.active.answers.filter(answer => answer.correct).length !== 5 || !final.progress['item:44'].saved) throw new Error('Starter results or bookmarks were lost');
+    // Planning another session after finishing starter-lane must auto-advance away from the exhausted unit.
+    byId('new-session').click();
+    if (byId('session-scope').value !== 'starter-team') throw new Error('Plan another session stayed stuck on exhausted scope: ' + byId('session-scope').value);
+    if (byId('study-status').dataset.state !== 'ready') throw new Error('Next ready starter scope did not report ready preview');
+    // Manually selecting the exhausted unit must explain why and offer a 1-click switch button.
+    byId('session-scope').value = 'starter-lane';
+    byId('session-scope').dispatchEvent(new Event('change'));
+    if (byId('study-status').dataset.state !== 'empty' || byId('study-switch-scope').hidden) throw new Error('Exhausted scope did not show live empty guidance + switch button');
+    // Clicking the 1-click switch button must recover immediately to the ready collection.
+    byId('study-switch-scope').click();
+    if (byId('session-scope').value !== 'starter-team' || byId('study-status').dataset.state !== 'ready') throw new Error('1-click scope switch button did not recover');
+    // Selecting "all" must immediately clear empty warnings and report ready lessons.
+    byId('session-scope').value = 'all';
+    byId('session-scope').dispatchEvent(new Event('change'));
+    if (byId('study-status').dataset.state !== 'ready' || !byId('study-switch-scope').hidden) throw new Error('Switching scope to all did not update live preview');
     byId('starter-tab').click();
     if (!document.querySelector('[data-starter-unit="starter-lane"]').disabled) throw new Error('Starter path pulled future reviews forward');
   })()`);

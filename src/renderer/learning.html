@@ -12,7 +12,7 @@
   <header class="academy-topbar">
     <div class="topbar-title-group">
       <h1 id="heading">Dota English</h1>
-      <span id="path-status" class="topbar-status" role="status"></span>
+      <button id="path-status" class="topbar-status" type="button" disabled></button>
     </div>
     <button id="quick-practice" class="quick-practice-btn" type="button">Practice 5 lessons →</button>
   </header>
@@ -111,7 +111,10 @@
       <p id="today" class="today-pill" role="status"></p>
     </div>
     <div class="study-options"><label><span id="size-label">Session length</span><select id="session-size"><option value="5">5 lessons</option><option value="10">10 lessons</option></select></label><label><span id="scope-label">Word collection</span><select id="session-scope"><option value="all">All matching lessons</option><option value="saved">Saved words only</option><option value="starter-lane">Starter: stay in lane</option><option value="starter-team">Starter: vision and movement</option></select></label><button id="start-session" type="button">Start session →</button></div>
-    <p id="study-status" role="status" aria-live="polite"></p>
+    <div class="study-status-row">
+      <p id="study-status" role="status" aria-live="polite"></p>
+      <button id="study-switch-scope" class="study-switch-btn" type="button" hidden></button>
+    </div>
   </section>
   <section id="progress-overview" class="progress-overview" hidden aria-labelledby="progress-heading">
     <h3 id="progress-heading" class="progress-heading">Learning progress</h3>

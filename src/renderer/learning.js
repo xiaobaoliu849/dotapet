@@ -104,6 +104,8 @@ function stats() {
   if (dueBadge) { dueBadge.textContent = String(counts.reviews); dueBadge.hidden = counts.reviews === 0; }
   const statusEl = $('path-status');
   statusEl.dataset.due = String(counts.reviews > 0);
+  statusEl.disabled = counts.reviews === 0;
+  statusEl.title = counts.reviews > 0 ? text('Click to review due words now', '点击立即开始复习到期词条') : '';
   statusEl.textContent = counts.reviews > 0
     ? text(`${counts.reviews} due for review`, `${counts.reviews} 条待复习`)
     : text('Learn Dota, speak English', '玩懂刀塔，开口说英语');
@@ -1152,7 +1154,7 @@ function renderStudy() {
   const active = study.active;
   const running = active && !active.completedAt;
   $('start-session').hidden = Boolean(running || (active?.completedAt && !planning));
-  if (!active || planning) return;
+  if (!active || planning) { updateStudyPreview(); return; }
   if (isLearningStep(active)) { renderGuide(active); return; }
   const showFeedback = feedbackIndex !== null && active.answers[feedbackIndex];
   if (active.completedAt && !showFeedback) { renderSummary(active); return; }
@@ -1254,14 +1256,113 @@ function renderSummary(active) {
     actions.append(listen, save); card.append(actions); $('session-mistakes').append(card);
   }
 }
+function unitReadyCount(unit) {
+  if (!unit || !catalog) return 0;
+  const rows = unit.lessonIds.map(id => catalog.lessons.find(lesson => lesson.id === id)).filter(Boolean);
+  if (rows.length !== unit.lessonIds.length || !rows.every(lesson => starterAvailability(starterEvidence, lesson.id, lesson))) return 0;
+  const now = Date.now();
+  return rows.filter(lesson => !progress[lesson.id]?.due || progress[lesson.id].due <= now).length;
+}
+function pickReadyScope(preferredScope) {
+  const unit = starterUnit(preferredScope);
+  if (unit && unitReadyCount(unit) === 0) return nextStarterUnit()?.id || 'all';
+  return preferredScope;
+}
+function setupAvailability(scope = $('session-scope').value, kind = $('kind').value, search = $('search').value) {
+  const now = Date.now();
+  const unit = starterUnit(scope);
+  if (unit) {
+    const rows = unit.lessonIds.map(id => catalog.lessons.find(lesson => lesson.id === id)).filter(Boolean);
+    const verified = rows.length === unit.lessonIds.length && rows.every(lesson => starterAvailability(starterEvidence, lesson.id, lesson));
+    const readyRows = verified ? rows.filter(lesson => !progress[lesson.id]?.due || progress[lesson.id].due <= now) : [];
+    const reviews = readyRows.filter(lesson => progress[lesson.id]?.attempts).length;
+    return { unit, verified, ready: readyRows.length, reviews, unseen: readyRows.length - reviews };
+  }
+  const eligible = filterLessons(catalog.lessons, { kind, search, saved: scope === 'saved', progress })
+    .filter(lesson => !progress[lesson.id]?.due || progress[lesson.id].due <= now);
+  const reviews = eligible.filter(lesson => progress[lesson.id]?.attempts).length;
+  return { unit: null, verified: true, ready: eligible.length, reviews, unseen: eligible.length - reviews };
+}
+function updateStudyPreview() {
+  if (!catalog) return;
+  const status = $('study-status');
+  const switchBtn = $('study-switch-scope');
+  const scope = $('session-scope').value;
+  const avail = setupAvailability(scope, $('kind').value, $('search').value);
+  if (avail.ready > 0) {
+    status.dataset.state = 'ready';
+    switchBtn.hidden = true;
+    switchBtn.onclick = null;
+    if (avail.unit) {
+      status.textContent = text(
+        `${avail.unit.en}: ${avail.ready} words ready (learn first, then recall in English).`,
+        `「${avail.unit.zh}」有 ${avail.ready} 个词待学习（先看图认词，再回忆英文）。`,
+      );
+    } else if (avail.reviews > 0) {
+      status.textContent = text(
+        `Ready: ${avail.reviews} due review${avail.reviews === 1 ? '' : 's'} · ${avail.unseen.toLocaleString()} new lessons (due reviews come first).`,
+        `当前词库可练习：${avail.reviews} 条待复习 · ${avail.unseen.toLocaleString()} 条新课程（优先复习到期词条）。`,
+      );
+    } else {
+      status.textContent = text(
+        `${avail.ready.toLocaleString()} lessons ready to practice.`,
+        `当前词库有 ${avail.ready.toLocaleString()} 条课程可练习。`,
+      );
+    }
+    return;
+  }
+  status.dataset.state = 'empty';
+  if (avail.unit) {
+    status.textContent = text(
+      `"${avail.unit.en}" is already scheduled for later review. Switch collections to keep practicing.`,
+      `「${avail.unit.zh}」的 5 个词已完成本轮学习，复习时间未到。可切换词库继续练习。`,
+    );
+    const nextUnit = nextStarterUnit();
+    switchBtn.hidden = false;
+    if (nextUnit) {
+      switchBtn.textContent = text(`Switch to "${nextUnit.en}" →`, `切换到「${nextUnit.zh}」→`);
+      switchBtn.onclick = () => { $('session-scope').value = nextUnit.id; updateStudyPreview(); };
+    } else {
+      const allCounts = reviewCounts(catalog.lessons, progress);
+      switchBtn.textContent = allCounts.reviews > 0
+        ? text(`Switch to all (${allCounts.reviews} due) →`, `切换到全部课程（${allCounts.reviews} 条待复习）→`)
+        : text('Switch to all lessons →', '切换到「符合筛选的全部课程」→');
+      switchBtn.onclick = () => { $('session-scope').value = 'all'; $('kind').value = 'all'; $('search').value = ''; updateStudyPreview(); };
+    }
+    return;
+  }
+  if (scope === 'saved') {
+    status.textContent = text(
+      'No saved words are ready yet. Star any hero, item, or phrase, or switch to all lessons.',
+      '当前没有待练习的收藏词条。请先收藏词条，或切换到全部课程。',
+    );
+    switchBtn.hidden = false;
+    switchBtn.textContent = text('Switch to all lessons →', '切换到「符合筛选的全部课程」→');
+    switchBtn.onclick = () => { $('session-scope').value = 'all'; $('kind').value = 'all'; $('search').value = ''; updateStudyPreview(); };
+    return;
+  }
+  status.textContent = text(
+    'No lessons match your current search or topic filter.',
+    '当前搜索或主题筛选下暂无可练习课程。',
+  );
+  const hasFilters = Boolean($('search').value.trim() || $('kind').value !== 'all');
+  switchBtn.hidden = !hasFilters;
+  switchBtn.textContent = text('Clear filters →', '清除筛选条件 →');
+  switchBtn.onclick = () => { $('search').value = ''; $('kind').value = 'all'; updateStudyPreview(); };
+}
 function enterPractice(scope) {
   player.stop();
+  const alreadyPlanning = mode === 'quiz' && planning && !scope;
   mode = 'quiz'; feedbackIndex = null;
-  planning = Boolean(scope && study.active?.completedAt);
-  const options = study.active?.options || study.preferences;
-  $('session-size').value = options.size; $('session-scope').value = study.active && !study.active.completedAt ? options.scope : scope || options.scope;
-  if (study.active && !study.active.completedAt) {
-    $('kind').value = options.kind; $('search').value = options.search; $('direction').value = options.direction;
+  if (!alreadyPlanning) {
+    planning = Boolean(scope && study.active?.completedAt);
+    const options = study.active?.options || study.preferences;
+    const running = Boolean(study.active && !study.active.completedAt);
+    $('session-size').value = options.size;
+    $('session-scope').value = running ? options.scope : pickReadyScope(scope || options.scope);
+    if (running) {
+      $('kind').value = options.kind; $('search').value = options.search; $('direction').value = options.direction;
+    }
   }
   render();
   focusStudy();
@@ -1306,6 +1407,17 @@ for (const [id, m] of [['starter-tab', 'starter'], ['heroes-tab', 'heroes'], ['i
 };
 $('hero-back').onclick = () => { player.stop(); selectedHeroId = null; render(); };
 for (const id of ['search', 'kind', 'direction']) $(id).addEventListener(id === 'search' ? 'input' : 'change', () => { player.stop(); hideShopHoverTip(); if (id === 'search') { selectedHeroId = null; selectedItemId = null; } limit = 24; render(); });
+for (const id of ['session-scope', 'session-size']) $(id).addEventListener('change', () => { if (mode === 'quiz') updateStudyPreview(); });
+$('path-status').onclick = async () => {
+  if (!catalog || starting) return;
+  const counts = reviewCounts(catalog.lessons, progress);
+  if (!counts.reviews) return;
+  const running = Boolean(study.active && !study.active.completedAt);
+  enterPractice('all');
+  if (running) return;
+  $('session-scope').value = 'all'; $('kind').value = 'all'; $('search').value = ''; $('session-size').value = '5';
+  await beginSession();
+};
 $('item-modal').addEventListener('click', event => {
   if (event.target === $('item-modal')) closeItemModal();
 });
@@ -1350,7 +1462,15 @@ $('guide-next').onclick = async () => {
   } catch (error) { $('guide-status').textContent = error.message; }
   finally { advancing = false; $('guide-next').disabled = false; }
 };
-$('new-session').onclick = () => { planning = true; feedbackIndex = null; render(); focusStudy(); };
+$('new-session').onclick = () => {
+  const currentScope = $('session-scope').value;
+  const nextScope = pickReadyScope(currentScope);
+  if (nextScope !== currentScope) {
+    $('session-scope').value = nextScope;
+    if (nextScope === 'all') { $('kind').value = 'all'; $('search').value = ''; }
+  }
+  planning = true; feedbackIndex = null; render(); focusStudy();
+};
 $('more').onclick = () => { limit += 24; render(); };
 $('next').onclick = () => { player.stop(); feedbackIndex = null; render(); focusStudy(); };
 $('patches').onclick = async () => { const response = await api.sources(); if (!response.ok) $('update-status').textContent = response.error; };

@@ -13,8 +13,11 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .academy-topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:36px;margin:0 0 10px}
 .topbar-title-group{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;min-width:0}
 .academy-topbar h1{font-size:20px;line-height:1.25;font-weight:700;letter-spacing:-.3px;margin:0;color:#213426}
-.topbar-status{font-size:12px;line-height:1.4;color:#62735d;white-space:nowrap}
-.topbar-status[data-due=true]{padding:2px 9px;border-radius:999px;background:#e5efe0;color:#2b5328;font-weight:600}
+.topbar-status{font-size:12px;line-height:1.4;color:#62735d;white-space:nowrap;border:0;background:transparent;padding:0;border-radius:999px}
+.topbar-status:disabled{opacity:1;cursor:default}
+.topbar-status:disabled:hover{background:transparent}
+.topbar-status[data-due=true]{padding:3px 10px;background:#e5efe0;border:1px solid #cadbc0;color:#274f25;font-weight:600;cursor:pointer}
+.topbar-status[data-due=true]:hover{background:#d7e7ce;border-color:#a9c59c}
 .topbar-status:empty{display:none}
 .quick-practice-btn{flex-shrink:0;padding:7px 14px;border:0;border-radius:10px;background:#3f6a52;color:#fff;font-size:13px;font-weight:600;box-shadow:0 1px 3px rgba(34,58,41,.14)}
 .quick-practice-btn:hover:not(:disabled){background:#325844}
@@ -81,8 +84,13 @@ input:focus,select:focus{border-color:#5b8267;box-shadow:0 0 0 3px rgba(63,106,8
 .study-options label{display:flex;flex-direction:column;gap:5px;font-size:11.5px;font-weight:600;color:#5b6d53}
 .study-options button{height:38px;padding:0 16px;border:0;border-radius:10px;background:#3f6a52;color:#fff;font-weight:600}
 .study-options button:hover:not(:disabled){background:#325844}
-#study-status{margin:10px 0 0;font-size:12px;color:#56694e}
+.study-status-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px}
+.study-status-row:not(:has(#study-status:not(:empty),#study-switch-scope:not([hidden]))){display:none}
+#study-status{margin:0;font-size:12.5px;line-height:1.5;color:#4f664a}
+#study-status[data-state=empty]{color:#8a4f1f;font-weight:600}
 #study-status:empty{display:none}
+.study-switch-btn{padding:5px 12px;border-radius:8px;border:1px solid #b7cca9;background:#fff;color:#29502d;font-size:12px;font-weight:600;flex-shrink:0}
+.study-switch-btn:hover{background:#f3f8ee;border-color:#8cab7c}
 
 .progress-overview{margin:0 0 18px}
 .progress-heading{font-size:12.5px;font-weight:700;letter-spacing:.3px;color:#5b6d54;margin:0 0 10px}
