@@ -88,6 +88,37 @@ export async function runLearningSmoke({ controlCenter, nativeImage, outputDirec
   await page.executeJavaScript("document.getElementById('search').value=''; document.getElementById('kind').value='all'; document.getElementById('search').dispatchEvent(new Event('input')); window.scrollTo(0,0)");
   if (mainWindow.isDestroyed()) throw new Error('Learning page closed desktop companion');
   fs.writeFileSync(path.join(outputDirectory, 'learning-wide.png'), (await captureHub(controlCenter, nativeImage)).toPNG());
+  // Verify every tab reveals its primary content above the fold at scrollY = 0 (no bloated repeated header).
+  for (const [tabId, selector, maxTop, shot] of [
+    ['starter-tab', '.starter-unit', 340, 'learning-tab-starter.png'],
+    ['heroes-tab', '#hero-categories .hero-tile', 360, 'learning-tab-heroes.png'],
+    ['items-tab', '#item-list .shop-column', 420, 'learning-tab-items.png'],
+    ['phrases-tab', '#spoken-list .spoken-card', 360, 'learning-tab-phrases.png'],
+    ['saved', '#lessons .lesson', 320, 'learning-tab-saved.png'],
+  ]) {
+    const top = await page.executeJavaScript(`(async () => {
+      document.getElementById(${JSON.stringify(tabId)}).click();
+      window.scrollTo(0, 0);
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+      const el = document.querySelector(${JSON.stringify(selector)});
+      if (!el) throw new Error('Tab ${tabId} missing content: ${selector}');
+      return Math.round(el.getBoundingClientRect().top);
+    })()`);
+    if (top > maxTop) throw new Error(`Tab ${tabId} pushed main content too far down: top=${top}px > ${maxTop}px`);
+    fs.writeFileSync(path.join(outputDirectory, shot), (await captureHub(controlCenter, nativeImage)).toPNG());
+  }
+  await page.executeJavaScript(`(async () => {
+    document.getElementById('quiz').click();
+    if (!document.getElementById('new-session').hidden) document.getElementById('new-session').click();
+    window.scrollTo(0, 0);
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+    if (document.getElementById('progress-overview').hidden) throw new Error('Practice setup did not show progress overview');
+    const setupTop = Math.round(document.getElementById('study-setup').getBoundingClientRect().top);
+    const statsTop = Math.round(document.querySelector('#progress-overview .stats').getBoundingClientRect().top);
+    if (setupTop > 260 || statsTop > 520) throw new Error('Practice overview pushed too far down: setup=' + setupTop + ', stats=' + statsTop);
+  })()`);
+  fs.writeFileSync(path.join(outputDirectory, 'learning-tab-practice.png'), (await captureHub(controlCenter, nativeImage)).toPNG());
+  await page.executeJavaScript("document.getElementById('browse').click(); window.scrollTo(0, 0);");
   controlCenter.window.setSize(620, 730);
   await new Promise(resolve => setTimeout(resolve, 200));
   if (await page.executeJavaScript('document.documentElement.scrollWidth > document.documentElement.clientWidth')) throw new Error('Learning page overflows narrow window');

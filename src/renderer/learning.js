@@ -20,20 +20,22 @@ const chinese = window.dotapetI18n?.language === 'zh';
 const text = (en, zh) => chinese ? zh : en;
 const labels = { hero: text('Hero', '英雄'), ability: text('Hero ability', '英雄技能'), item: text('Item', '物品'), phrase: text('Team expression', '团队表达') };
 const translations = {
-  heading: '玩懂刀塔，开口说英语。', intro: '每天一点刀塔英语，桌面小伙伴一直陪着你。', 'total-label': '条双语课程', 'saved-label': '个收藏词条', 'due-label': '条待复习', 'accuracy-label': '答题正确率',
-  'heroes-tab': '英雄图鉴', 'items-tab': '物品图鉴', 'phrases-tab': '实战口语', browse: '探索课程', saved: '我的词本', quiz: '练习测验', 'search-label': '查找课程', 'kind-label': '学习主题', 'direction-label': '练习方向', next: '下一题 →', more: '加载更多',
+  heading: '刀塔英语学堂', 'total-label': '条双语课程', 'saved-label': '个收藏词条', 'due-label': '条待复习', 'accuracy-label': '答题正确率',
+  'starter-tab-label': '从这里开始', 'heroes-tab-label': '英雄图鉴', 'items-tab-label': '物品图鉴', 'phrases-tab-label': '实战口语', 'browse-label': '探索课程', 'saved-tab-label': '我的词本', 'quiz-tab-label': '练习测验',
+  'search-label': '查找课程', 'kind-label': '学习主题', 'direction-label': '练习方向', next: '下一题 →', more: '加载更多',
   'hero-back': '← 返回四属性英雄墙', 'hero-abilities-heading': '英雄技能（中英双语对照）',
-  'path-heading': '看图认物 → 读懂英文 → 开口说 → 回忆巩固', 'path-help': '先认图片、读英文，再大声说一句实战表达，最后用五道题巩固记忆。',
+  'step-see': '看图认物', 'step-read': '读懂英文', 'step-say': '开口说', 'step-recall': '回忆巩固',
+  'progress-heading': '学习总览',
   'quick-practice': '练习 5 条课程 →', 'recall-help': '先大声说出答案，再选择。物品图片可以帮助你回忆。',
-  'starter-tab': '从这里开始', 'starter-heading': '先学会十个常见物品名', 'starter-help': '每次学五个词。先看图、读含义、说一句实战表达，再回忆英文。这是英语学习顺序，不是游戏出装顺序。',
+  'starter-heading': '先学会十个常见物品名', 'starter-help': '每次学五个词。先看图、读含义、说一句实战表达，再回忆英文。这是英语学习顺序，不是游戏出装顺序。',
   'guide-heading': '先认识，再回忆', 'guide-help': '看图，读懂含义，再大声说出实战表达。准备好后点击下一步。学习卡本身不计答题正确率。', 'guide-next': '下一张学习卡 →',
   'voice-bar-hint': '实时对话与双语字幕已同步显示在桌面伙伴「实时对话转写」面板中。',
   'study-heading': '每日学习小课', 'study-help': '先复习到期的错题和旧词，再学习新词。', 'size-label': '每轮课程数量', 'scope-label': '练习词库', 'start-session': '开始学习 →', 'practice-saved': '练习我的收藏词条 →', 'summary-heading': '本轮学习完成', 'mistakes-heading': '需要再看看的词条', 'new-session': '安排下一轮 →',
   'audio-source': '音频使用你的双语词典中已生成的 AI 录音，按原速播放。历史录音可能与当前课程文字不同；缺少录音的词条会明确标注。',
-  'sources-heading': '让知识保持更新', freshness: '技能说明是有日期的数据快照。数值和机制请以官方更新日志为准。', refresh: '从 Valve 更新课程', patches: '官方更新日志 ↗',
+  'sources-heading': '课程数据与更新', 'footer-notes-label': '数据与音频说明', freshness: '技能说明是有日期的数据快照。数值和机制请以官方更新日志为准。', refresh: '从 Valve 更新课程', patches: '官方更新日志 ↗',
 };
 if (chinese) {
-  for (const [id, value] of Object.entries(translations)) $(id).textContent = value;
+  for (const [id, value] of Object.entries(translations)) { const el = $(id); if (el) el.textContent = value; }
   const names = ['全部主题', '英雄', '英雄技能', '物品', '团队表达'];
   [...$('kind').options].forEach((option, index) => { option.textContent = names[index]; });
   [...$('session-size').options].forEach(option => { option.textContent = option.value + ' 条课程'; });
@@ -92,10 +94,19 @@ function syncMasteryActive() {
 }
 function stats() {
   $('total').textContent = catalog.lessons.length.toLocaleString();
-  $('saved-count').textContent = catalog.lessons.filter(r => progress[r.id]?.saved).length;
+  const savedTotal = catalog.lessons.filter(r => progress[r.id]?.saved).length;
+  $('saved-count').textContent = savedTotal;
+  const savedBadge = $('saved-tab-badge');
+  if (savedBadge) { savedBadge.textContent = String(savedTotal); savedBadge.hidden = savedTotal === 0; }
   const counts = reviewCounts(catalog.lessons, progress);
   $('due-count').textContent = counts.reviews;
-  $('path-status').textContent = text(`${counts.reviews} reviews due · ${counts.unseen} new lessons to explore`, `${counts.reviews} 条旧词待复习 · ${counts.unseen} 条新课程可探索`);
+  const dueBadge = $('due-tab-badge');
+  if (dueBadge) { dueBadge.textContent = String(counts.reviews); dueBadge.hidden = counts.reviews === 0; }
+  const statusEl = $('path-status');
+  statusEl.dataset.due = String(counts.reviews > 0);
+  statusEl.textContent = counts.reviews > 0
+    ? text(`${counts.reviews} due for review`, `${counts.reviews} 条待复习`)
+    : text('Learn Dota, speak English', '玩懂刀塔，开口说英语');
   quickLabel();
   const records = Object.values(progress), attempts = records.reduce((n, r) => n + (r.attempts || 0), 0);
   $('accuracy').textContent = attempts ? Math.round(records.reduce((n, r) => n + (r.correct || 0), 0) / attempts * 100) + '%' : '—';
@@ -122,6 +133,7 @@ function stats() {
         else if (item.key === 'phrase') { mode = 'phrases'; }
         else { mode = 'browse'; $('kind').value = item.key; limit = 24; }
         render();
+        window.scrollTo(0, 0);
       };
       strip.append(card);
     }
@@ -462,11 +474,12 @@ function nextStarterUnit() {
     && unit.lessonIds.some(id => catalog.lessons.some(lesson => lesson.id === id) && (!progress[id]?.due || progress[id].due <= Date.now())));
 }
 function quickLabel() {
-  const running = study.active && !study.active.completedAt;
+  const running = Boolean(study.active && !study.active.completedAt);
   const next = mode === 'starter' ? nextStarterUnit() : null;
+  $('quick-practice').hidden = mode === 'quiz' || (mode === 'saved' && !running);
   $('quick-practice').disabled = starting || (mode === 'starter' && !running && !next);
-  $('quick-practice').textContent = study.active && !study.active.completedAt
-    ? text('Continue my session →', '继续上次练习 →')
+  $('quick-practice').textContent = running
+    ? text('Continue session →', '继续上次练习 →')
     : mode === 'starter' ? next === STARTER_UNITS[0] ? text('Start first lesson →', '开始第一课 →') : next ? text('Start next lesson →', '开始下一课 →') : text('Reviews scheduled', '已安排后续复习')
       : text('Practice 5 lessons →', '练习 5 条课程 →');
 }
@@ -1074,15 +1087,18 @@ function render() {
   $('starter-browser').hidden = mode !== 'starter';
   // The pagination control is shared by Explore and Items; keep it outside either hidden panel.
   $('library').hidden = mode !== 'browse' && mode !== 'saved';
-  const quizCompleted = mode === 'quiz' && !planning && Boolean(study.active?.completedAt) && !(feedbackIndex !== null && study.active.answers[feedbackIndex]);
-  $('study-setup').hidden = mode !== 'quiz' || quizCompleted;
+  const activeQuiz = Boolean(mode === 'quiz' && study.active && !study.active.completedAt);
+  const inActiveStudy = Boolean(mode === 'quiz' && !planning && study.active && (!study.active.completedAt || (feedbackIndex !== null && study.active.answers[feedbackIndex])));
+  const quizCompleted = Boolean(mode === 'quiz' && !planning && study.active?.completedAt && !inActiveStudy);
+  const showStudySetup = mode === 'quiz' && !inActiveStudy && !quizCompleted;
+  $('study-setup').hidden = !showStudySetup;
+  $('progress-overview').hidden = !showStudySetup;
   $('practice-saved').hidden = mode !== 'saved';
   $('practice').hidden = true; $('session-summary').hidden = true; $('guided-lesson').hidden = true;
   const tools = $('tools');
   const kindLabel = $('kind').closest('label');
   const dirLabel = $('direction').closest('label');
-  const activeQuiz = mode === 'quiz' && study.active && !study.active.completedAt;
-  const hideTools = mode === 'quiz' && Boolean(study.active) && !planning;
+  const hideTools = mode === 'quiz' && !showStudySetup;
   if (tools) {
     tools.hidden = hideTools || mode === 'starter';
     tools.dataset.layout = (mode === 'heroes' || mode === 'items' || mode === 'phrases') ? 'search-only'
@@ -1091,10 +1107,12 @@ function render() {
   }
   if (kindLabel) kindLabel.hidden = mode === 'heroes' || mode === 'items' || mode === 'phrases';
   if (dirLabel) dirLabel.hidden = mode !== 'quiz';
-  for (const id of ['search', 'kind', 'direction', 'session-size', 'session-scope']) $(id).disabled = Boolean(activeQuiz);
+  for (const id of ['search', 'kind', 'direction', 'session-size', 'session-scope']) $(id).disabled = activeQuiz;
+  $('search').placeholder = text('Search English or Chinese…', '搜索英文 / 中文 / 英雄名…');
   if (mode === 'starter') { $('message').textContent = ''; $('more').hidden = true; renderStarter(); return; }
   if (mode === 'quiz') { $('message').textContent = ''; $('more').hidden = true; renderStudy(); return; }
   if (mode === 'heroes') {
+    $('search').placeholder = text('Search hero or ability (English / Chinese)…', '搜索英雄名或技能（中 / 英文）…');
     $('more').hidden = true;
     if (selectedHero) renderHeroDetail(selectedHero);
     else renderHeroBrowser();
@@ -1105,8 +1123,12 @@ function render() {
     renderItemBrowser();
     return;
   }
-  $('search').placeholder = text('Search English or Chinese…', '搜索英文 / 中文 / 英雄名…');
-  if (mode === 'phrases') { $('more').hidden = true; renderSpokenBrowser(); return; }
+  if (mode === 'phrases') {
+    $('search').placeholder = text('Search callouts or situations (smoke, rosh, back)…', '搜索实战口语或场景（如 开雾、肉山、撤退）…');
+    $('more').hidden = true;
+    renderSpokenBrowser();
+    return;
+  }
   const rows = selection();
   $('message').textContent = rows.length ? text(`${rows.length} lessons · Read, listen, then save a word to practice.`, `${rows.length} 条课程 · 阅读、听发音、收藏后练习。`) : text('No lessons found. Try another topic or save some words.', '暂无课程，请更换筛选条件或先收藏词条。');
   $('lessons').replaceChildren();
@@ -1236,6 +1258,7 @@ async function beginSession() {
 }
 for (const [id, m] of [['starter-tab', 'starter'], ['heroes-tab', 'heroes'], ['items-tab', 'items'], ['phrases-tab', 'phrases'], ['browse', 'browse'], ['saved', 'saved'], ['quiz', 'quiz']]) $(id).onclick = () => {
   player.stop();
+  const changed = mode !== m;
   if (m === 'quiz') enterPractice();
   else {
     if (m === 'heroes' && mode === 'heroes') selectedHeroId = null;
@@ -1243,6 +1266,7 @@ for (const [id, m] of [['starter-tab', 'starter'], ['heroes-tab', 'heroes'], ['i
     if (m === 'saved' && mode !== 'saved') $('kind').value = 'all';
     if (m === 'browse' && mode !== 'browse') $('kind').value = 'all';
     mode = m; limit = 24; render();
+    if (changed) window.scrollTo(0, 0);
   }
 };
 $('hero-back').onclick = () => { player.stop(); selectedHeroId = null; render(); };

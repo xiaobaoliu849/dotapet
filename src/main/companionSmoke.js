@@ -52,6 +52,13 @@ export async function runCompanionSmoke({
   if (reloaded.getPrivate('google').apiKey !== 'smoke-encrypted-key') throw new Error('Encrypted key did not survive reload');
   aiSettingsStore.deleteSecrets('google');
   openAISettings();
+  if (controlCenter.active !== 'learning') throw new Error('Opening settings without a purpose should land on learning');
+  await pageLoaded(controlCenter.window.webContents);
+  await controlCenter.window.webContents.executeJavaScript(`(() => {
+    const visible = [...document.querySelectorAll('.nav-item')].filter(item => !item.hidden);
+    if (visible[0]?.dataset.page !== 'learning') throw new Error('Learning should be the first sidebar item');
+  })()`);
+  openAISettings('voice');
   const page = settingsPage();
   await Promise.all([pageLoaded(page), pageLoaded(controlCenter.window.webContents)]);
   const result = await page.executeJavaScript(`(async () => {

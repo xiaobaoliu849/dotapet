@@ -9,7 +9,7 @@ export const HUB_TOP = 40;
 export const SIDEBAR_SLIDE_MS = 200;
 /** Pages drawn by the shell itself; every other page is an isolated view. */
 export const NATIVE_PAGES = ['help'];
-export const PAGE_ORDER = ['services', 'learning', 'appearance', 'phrases', 'help', 'update'];
+export const PAGE_ORDER = ['learning', 'services', 'appearance', 'phrases', 'help', 'update'];
 
 /**
  * Main owns the geometry so the sidebar and the page view never disagree.
@@ -46,6 +46,7 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
 
   const alive = () => Boolean(window && !window.isDestroyed());
   const available = () => PAGE_ORDER.filter(id => NATIVE_PAGES.includes(id) || pages.has(id));
+  const defaultPage = () => available().includes('learning') ? 'learning' : available().includes('services') ? 'services' : available()[0] || 'help';
   const state = () => ({ pages: available(), active, compact: geometry.compact, narrow: geometry.narrow, collapsed,
     sidebar: geometry.sidebar, top: HUB_TOP });
   function publishState() {
@@ -147,7 +148,7 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
   }
   function show(id) {
     if (!alive()) return;
-    if (!available().includes(id)) id = 'services';
+    if (!available().includes(id)) id = defaultPage();
     const previous = active;
     active = id;
     const target = NATIVE_PAGES.includes(id) ? null : views.get(id) || createView(id);
@@ -205,10 +206,10 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
     loadShell();
   }
 
-  /** Open on a page, or on the page last shown when none is named. */
+  /** Open on a page, or on the default/last-shown page when none is named. */
   function open(id) {
     const existed = alive();
-    if (!existed) { create(); active = 'services'; }
+    if (!existed) { create(); active = defaultPage(); }
     show(id || active);
     if (existed && !smokeTest) {
       if (window.isMinimized()) window.restore();
@@ -224,7 +225,7 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
   function unregister(id) {
     closeView(id);
     pages.delete(id);
-    if (active === id) show('services');
+    if (active === id) show(defaultPage());
     else publishState();
   }
 

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import path from 'node:path';
 import { EventEmitter } from 'node:events';
 import { pathToFileURL } from 'node:url';
-import { createControlCenter, hubLayout, HUB_TOP } from '../src/main/controlCenter.js';
+import { createControlCenter, hubLayout, HUB_TOP, PAGE_ORDER } from '../src/main/controlCenter.js';
 import { isTrustedSettingsSender } from '../src/main/aiSettingsIpc.js';
 
 const rendererDirectory = path.resolve('src/renderer');
@@ -329,6 +329,24 @@ test('the window is not owned by the pet and reports focus so the pet can step b
   windows[0].emit('focus');
   hub.close();
   assert.deepEqual(calls.focus, [true, false, true, false, true, false]);
+});
+
+test('learning sits at the top of the sidebar and opens by default when registered', async () => {
+  assert.equal(PAGE_ORDER[0], 'learning');
+  const { hub, handlers, shell } = fixture();
+  hub.register('services', services());
+  hub.register('learning', { file: 'learning.html', preload: '../preload/learning.js' });
+  hub.open();
+  assert.equal(hub.active, 'learning', 'opening without a page lands on learning first');
+  const { state } = await handlers.get('hub:state')(shell());
+  assert.deepEqual(state.pages, ['learning', 'services', 'help'], 'learning precedes services in sidebar order');
+  hub.open('services');
+  assert.equal(hub.active, 'services', 'explicit deep links still open the requested page');
+  hub.close();
+  hub.open();
+  assert.equal(hub.active, 'learning', 'a fresh window returns to the default learning page');
+  hub.unregister('learning');
+  assert.equal(hub.active, 'services', 'removing learning falls back cleanly to services');
 });
 
 test('settings IPC trust also accepts a page view’s web contents', () => {

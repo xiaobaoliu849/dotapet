@@ -9,18 +9,38 @@
 </head>
 <body>
 <main>
-  <header><p class="eyebrow">DOTAPAD ACADEMY</p><h1 id="heading">Learn the game. Speak the language.</h1><p id="intro">A little Dota, a little English. Your desktop companion stays with you.</p></header>
-  <section class="stats" aria-label="Learning progress"><div><strong id="total">—</strong><span id="total-label">bilingual lessons</span></div><div><strong id="saved-count">0</strong><span id="saved-label">saved words</span></div><div><strong id="due-count">0</strong><span id="due-label">ready to review</span></div><div><strong id="accuracy">—</strong><span id="accuracy-label">quiz accuracy</span></div></section>
-  <section id="mastery-strip" class="mastery-strip" aria-label="Mastery by category"></section>
-  <section class="learning-path" aria-labelledby="path-heading">
-    <div><h2 id="path-heading">See it. Read it. Say it. Recall it.</h2><p id="path-help">Recognize the picture, read the English, say the match phrase aloud, then try five questions.</p><p id="path-status" role="status"></p></div>
-    <button id="quick-practice" type="button">Practice 5 lessons →</button>
-  </section>
-  <nav class="tabs" aria-label="Learning mode"><button id="starter-tab" aria-pressed="true">Start here</button><button id="heroes-tab" aria-pressed="false">Heroes</button><button id="items-tab" aria-pressed="false">Items</button><button id="phrases-tab" aria-pressed="false">Spoken Phrases</button><button id="browse" aria-pressed="false">Explore</button><button id="saved" aria-pressed="false">My words</button><button id="quiz" aria-pressed="false">Practice</button></nav>
-  <div id="tools" class="tools"><label><span id="search-label">Find a lesson</span><input id="search" type="search" placeholder="Search English or Chinese…" maxlength="120"></label><label><span id="kind-label">Topic</span><select id="kind"><option value="all">All topics</option><option value="hero">Heroes</option><option value="ability">Hero abilities</option><option value="item">Items</option><option value="phrase">Team expressions</option></select></label><label><span id="direction-label">Practice direction</span><select id="direction" translate="no"><option value="en">English → 中文</option><option value="zh">中文 → English</option></select></label></div>
-  <p id="message" role="status" aria-live="polite"></p>
+  <header class="academy-topbar">
+    <div class="topbar-title-group">
+      <h1 id="heading">Dota English</h1>
+      <span id="path-status" class="topbar-status" role="status"></span>
+    </div>
+    <button id="quick-practice" class="quick-practice-btn" type="button">Practice 5 lessons →</button>
+  </header>
+  <nav class="tabs" aria-label="Learning mode">
+    <button id="starter-tab" aria-pressed="true"><span id="starter-tab-label">Start here</span></button>
+    <button id="heroes-tab" aria-pressed="false"><span id="heroes-tab-label">Heroes</span></button>
+    <button id="items-tab" aria-pressed="false"><span id="items-tab-label">Items</span></button>
+    <button id="phrases-tab" aria-pressed="false"><span id="phrases-tab-label">Spoken Phrases</span></button>
+    <button id="browse" aria-pressed="false"><span id="browse-label">Explore</span></button>
+    <button id="saved" aria-pressed="false"><span id="saved-tab-label">My words</span><span id="saved-tab-badge" class="tab-badge" hidden></span></button>
+    <button id="quiz" aria-pressed="false"><span id="quiz-tab-label">Practice</span><span id="due-tab-badge" class="tab-badge is-due" hidden></span></button>
+  </nav>
+  <div id="tools" class="tools">
+    <label class="tool-search">
+      <span id="search-label">Find a lesson</span>
+      <span class="search-field">
+        <svg class="search-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="search" type="search" placeholder="Search English or Chinese…" maxlength="120">
+      </span>
+    </label>
+    <label><span id="kind-label">Topic</span><select id="kind"><option value="all">All topics</option><option value="hero">Heroes</option><option value="ability">Hero abilities</option><option value="item">Items</option><option value="phrase">Team expressions</option></select></label>
+    <label><span id="direction-label">Practice direction</span><select id="direction" translate="no"><option value="en">English → 中文</option><option value="zh">中文 → English</option></select></label>
+  </div>
+  <div id="status-row" class="status-row">
+    <p id="message" role="status" aria-live="polite"></p>
+    <button id="practice-saved" class="practice-saved-btn" type="button" hidden>Practice my saved words →</button>
+  </div>
   <p id="audio-status" class="audio-status" role="status" aria-live="polite" hidden></p>
-  <button id="practice-saved" hidden>Practice my saved words →</button>
   <section id="voice-practice-bar" class="voice-practice-bar" hidden aria-label="Live voice practice">
     <div class="voice-bar-top">
       <div class="voice-bar-meta">
@@ -36,11 +56,24 @@
     <p id="voice-bar-hint" class="voice-bar-hint">Live captions appear in your desktop pet's Live Transcript panel.</p>
   </section>
   <section id="starter-browser" aria-labelledby="starter-heading">
-    <h2 id="starter-heading">Your first ten item names</h2>
-    <p id="starter-help">Learn five names at a time. First see the pictures and say a useful sentence; then recall the English. This is a language lesson, not a purchase order.</p>
-    <p id="starter-source" class="starter-source"></p>
+    <div class="starter-intro">
+      <div class="starter-intro-copy">
+        <h2 id="starter-heading">Your first ten item names</h2>
+        <p id="starter-help">Learn five names at a time. First see the pictures and say a useful sentence; then recall the English. This is a language lesson, not a purchase order.</p>
+      </div>
+      <ol class="method-steps" aria-label="Learning method">
+        <li><span class="step-num">1</span><span id="step-see">See it</span></li>
+        <li class="step-arrow" aria-hidden="true">→</li>
+        <li><span class="step-num">2</span><span id="step-read">Read it</span></li>
+        <li class="step-arrow" aria-hidden="true">→</li>
+        <li><span class="step-num">3</span><span id="step-say">Say it</span></li>
+        <li class="step-arrow" aria-hidden="true">→</li>
+        <li><span class="step-num">4</span><span id="step-recall">Recall it</span></li>
+      </ol>
+    </div>
     <div id="starter-units" class="starter-units"></div>
     <p id="starter-status" role="status" aria-live="polite"></p>
+    <p id="starter-source" class="starter-source"></p>
   </section>
   <section id="item-browser" hidden aria-label="Dota 2 items">
     <div id="item-shop-bar" class="item-shop-bar">
@@ -70,10 +103,20 @@
     <div id="hero-abilities" class="hero-abilities" translate="no"></div>
   </section>
   <section id="study-setup" class="study-setup" hidden aria-labelledby="study-heading">
-    <h2 id="study-heading">Your daily practice</h2><p id="study-help">Start with due mistakes and reviews, then learn something new.</p>
-    <p id="today" role="status"></p>
-    <div class="study-options"><label><span id="size-label">Session length</span><select id="session-size"><option value="5">5 lessons</option><option value="10">10 lessons</option></select></label><label><span id="scope-label">Word collection</span><select id="session-scope"><option value="all">All matching lessons</option><option value="saved">Saved words only</option><option value="starter-lane">Starter: stay in lane</option><option value="starter-team">Starter: vision and movement</option></select></label><button id="start-session">Start session →</button></div>
+    <div class="study-setup-head">
+      <div>
+        <h2 id="study-heading">Your daily practice</h2>
+        <p id="study-help">Start with due mistakes and reviews, then learn something new.</p>
+      </div>
+      <p id="today" class="today-pill" role="status"></p>
+    </div>
+    <div class="study-options"><label><span id="size-label">Session length</span><select id="session-size"><option value="5">5 lessons</option><option value="10">10 lessons</option></select></label><label><span id="scope-label">Word collection</span><select id="session-scope"><option value="all">All matching lessons</option><option value="saved">Saved words only</option><option value="starter-lane">Starter: stay in lane</option><option value="starter-team">Starter: vision and movement</option></select></label><button id="start-session" type="button">Start session →</button></div>
     <p id="study-status" role="status" aria-live="polite"></p>
+  </section>
+  <section id="progress-overview" class="progress-overview" hidden aria-labelledby="progress-heading">
+    <h3 id="progress-heading" class="progress-heading">Learning progress</h3>
+    <section class="stats" aria-label="Learning progress"><div><strong id="total">—</strong><span id="total-label">bilingual lessons</span></div><div><strong id="saved-count">0</strong><span id="saved-label">saved words</span></div><div><strong id="due-count">0</strong><span id="due-label">ready to review</span></div><div><strong id="accuracy">—</strong><span id="accuracy-label">quiz accuracy</span></div></section>
+    <section id="mastery-strip" class="mastery-strip" aria-label="Mastery by category"></section>
   </section>
   <section id="guided-lesson" class="practice" hidden aria-labelledby="guide-heading">
     <p id="guide-counter"></p><h2 id="guide-heading">Learn first</h2>
@@ -87,6 +130,13 @@
   <section id="session-summary" class="practice" hidden aria-labelledby="summary-heading"><h2 id="summary-heading">Session complete</h2><p id="summary-score" role="status"></p><p id="summary-tip"></p><h3 id="mistakes-heading">Words to revisit</h3><div id="session-mistakes" translate="no"></div><button id="new-session">Plan another session →</button></section>
   <section id="library" aria-label="Bilingual lessons"><div id="lessons" class="lessons" translate="no"></div></section>
   <button id="more" hidden>Load more</button>
-  <footer><h2 id="sources-heading">Keep your knowledge current</h2><p id="source" translate="no"></p><p id="freshness">Descriptions are a dated snapshot. Check official patch notes before relying on balance values.</p><p id="audio-source">Audio uses your bilingual library's AI recordings at their original speed. Archive recordings can differ from current lesson text. Missing recordings are marked explicitly.</p><div class="source-actions"><button id="refresh">Refresh from Valve</button><button id="patches">Official patch notes ↗</button></div><p id="update-status" role="status" aria-live="polite"></p></footer>
+  <footer>
+    <div class="footer-bar">
+      <div class="footer-meta"><h2 id="sources-heading">Keep your knowledge current</h2><p id="source" translate="no"></p></div>
+      <div class="source-actions"><button id="refresh" type="button">Refresh from Valve</button><button id="patches" type="button">Official patch notes ↗</button></div>
+    </div>
+    <p id="update-status" role="status" aria-live="polite"></p>
+    <details class="footer-notes"><summary id="footer-notes-label">Data &amp; audio notes</summary><p id="freshness">Descriptions are a dated snapshot. Check official patch notes before relying on balance values.</p><p id="audio-source">Audio uses your bilingual library's AI recordings at their original speed. Archive recordings can differ from current lesson text. Missing recordings are marked explicitly.</p></details>
+  </footer>
 </main>
 </body></html>
