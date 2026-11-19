@@ -182,7 +182,7 @@ let settingsFirstRun = false;
  */
 function openAISettings(purpose = '', { firstRun = false } = {}) {
   settingsFirstRun ||= firstRun;
-  if (purpose === 'help') return controlCenter.open('help');
+  if (purpose === 'help' || purpose === 'learning') return controlCenter.open(purpose);
   if (!['voice', 'translate'].includes(purpose)) return controlCenter.open();
   settingsPurpose = purpose;
   const loaded = settingsPage();
