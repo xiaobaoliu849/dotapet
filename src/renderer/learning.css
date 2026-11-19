@@ -219,6 +219,7 @@ main[data-mode=starter] .stats,main[data-mode=starter] .mastery-strip{display:no
 .shop-tip-cue{margin:0 0 6px;font-size:11.5px;line-height:1.45;color:#e7f3df;font-style:italic}
 .shop-tip-hint{margin:0;font-size:10px;color:#93ad8d;border-top:1px solid rgba(255,255,255,.1);padding-top:5px}
 .shop-empty{font-size:13px;color:#62725b;background:#fff;border:1px dashed #cdd8c3;border-radius:14px;padding:24px;text-align:center;margin:8px 0}
+.shop-patch-note{margin:0;padding:10px 14px;border-radius:11px;background:#eef4e7;border:1px solid #d5e0c8;font-size:12px;line-height:1.6;color:#415639}
 
 @media(max-width:740px){
   .shop-columns-basic,.shop-columns-upgrade{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}

@@ -1,9 +1,13 @@
 {
   "schema": 1,
-  "fetchedAt": "2026-11-19T06:01:38.390Z",
+  "patchNote": "Shop categories from dota2.com.cn; Neutral Tiers 1-4 and Enchantments synced to Valve live item_neutral_tier (Patch 7.42).",
+  "fetchedAt": "2026-11-19T06:33:08.572Z",
   "sourceUrl": "https://www.dota2.com.cn/itemscategory/json",
+  "valveNeutralSourceUrl": "https://www.dota2.com/datafeed/itemdata?language=english&item_id=",
   "sha256": "f724fe9789a5fd5ae79808d137cc78a580572a9f2ba7f6c5fe36bd783e2af1cd",
-  "count": 245,
+  "count": 251,
+  "neutralArtifactCount": 43,
+  "neutralEnchantmentCount": 19,
   "entries": {
     "item:46": {
       "realm": "shop",
@@ -1895,472 +1899,292 @@
       "internalName": "item_harpoon",
       "zh": "鱼叉"
     },
-    "item:947": {
+    "item:911": {
       "realm": "neutral",
       "shelf": "neutral",
-      "category": "tier1",
+      "category": "tier3",
       "order": 0,
-      "sortValue": 11,
+      "sortValue": 2,
       "shopCost": 0,
-      "internalName": "item_occult_bracelet",
-      "zh": "玄奥手镯"
+      "internalName": "item_revenants_brooch",
+      "zh": "英灵胸针"
     },
-    "item:1637": {
+    "item:309": {
       "realm": "neutral",
       "shelf": "neutral",
-      "category": "tier1",
-      "order": 1,
-      "sortValue": 12,
-      "shopCost": 0,
-      "internalName": "item_kobold_cup",
-      "zh": "狗头人酒杯"
-    },
-    "item:565": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier1",
-      "order": 2,
-      "sortValue": 13,
-      "shopCost": 0,
-      "internalName": "item_chipped_vest",
-      "zh": "碎裂背心"
-    },
-    "item:1606": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier1",
-      "order": 3,
-      "sortValue": 14,
-      "shopCost": 0,
-      "internalName": "item_polliwog_charm",
-      "zh": "蝌蚪护符"
-    },
-    "item:1638": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier1",
-      "order": 4,
-      "sortValue": 15,
-      "shopCost": 0,
-      "internalName": "item_dormant_curio",
-      "zh": "休眠珍品"
-    },
-    "item:2097": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier1",
-      "order": 5,
-      "sortValue": 16,
-      "shopCost": 0,
-      "internalName": "item_duelist_gloves",
-      "zh": "决斗家手套"
-    },
-    "item:1716": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier1",
-      "order": 6,
-      "sortValue": 17,
-      "shopCost": 0,
-      "internalName": "item_weighted_dice",
-      "zh": "加重骰子"
-    },
-    "item:1717": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier1",
-      "order": 7,
-      "sortValue": 18,
-      "shopCost": 0,
-      "internalName": "item_ash_legion_shield",
-      "zh": "余烬军团战盾"
-    },
-    "item:1861": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier1",
-      "order": 8,
-      "sortValue": 19,
-      "shopCost": 0,
-      "internalName": "item_stonefeather_satchel",
-      "zh": "石羽小包"
-    },
-    "item:1868": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier1",
-      "order": 9,
-      "sortValue": 20,
-      "shopCost": 0,
-      "internalName": "item_foragers_kit",
-      "zh": "采菌套具"
-    },
-    "item:577": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier1",
-      "order": 10,
-      "sortValue": 110,
-      "shopCost": 0,
-      "internalName": "item_possessed_mask",
-      "zh": "附魂面具"
-    },
-    "item:1077": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier1",
-      "order": 11,
-      "sortValue": 112,
-      "shopCost": 0,
-      "internalName": "item_dagger_of_ristul",
-      "zh": "瑞斯图尔尖匕"
-    },
-    "item:359": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier2",
+      "category": "tier4",
       "order": 0,
-      "sortValue": 21,
+      "sortValue": 3,
       "shopCost": 0,
-      "internalName": "item_essence_ring",
-      "zh": "精华指环"
-    },
-    "item:1599": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier2",
-      "order": 1,
-      "sortValue": 22,
-      "shopCost": 0,
-      "internalName": "item_mana_draught",
-      "zh": "魔力药水"
-    },
-    "item:71": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier2",
-      "order": 2,
-      "sortValue": 23,
-      "shopCost": 0,
-      "internalName": "item_poor_mans_shield",
-      "zh": "穷鬼盾"
-    },
-    "item:1604": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier2",
-      "order": 3,
-      "sortValue": 24,
-      "shopCost": 0,
-      "internalName": "item_searing_signet",
-      "zh": "炽热纹章"
-    },
-    "item:840": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier2",
-      "order": 4,
-      "sortValue": 25,
-      "shopCost": 0,
-      "internalName": "item_pogo_stick",
-      "zh": "杂技玩具"
-    },
-    "item:950": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier2",
-      "order": 5,
-      "sortValue": 26,
-      "shopCost": 0,
-      "internalName": "item_defiant_shell",
-      "zh": "不羁甲壳"
-    },
-    "item:1603": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier2",
-      "order": 6,
-      "sortValue": 32,
-      "shopCost": 0,
-      "internalName": "item_gunpowder_gauntlets",
-      "zh": "火药手套"
-    },
-    "item:1640": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier2",
-      "order": 7,
-      "sortValue": 34,
-      "shopCost": 0,
-      "internalName": "item_jidi_pollen_bag",
-      "zh": "基迪花粉袋"
-    },
-    "item:675": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier2",
-      "order": 8,
-      "sortValue": 35,
-      "shopCost": 0,
-      "internalName": "item_psychic_headband",
-      "zh": "通灵头带"
-    },
-    "item:1719": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier2",
-      "order": 9,
-      "sortValue": 46,
-      "shopCost": 0,
-      "internalName": "item_metamorphic_mandible",
-      "zh": "变态上颚"
+      "internalName": "item_mind_breaker",
+      "zh": "智灭"
     },
     "item:334": {
       "realm": "neutral",
       "shelf": "neutral",
       "category": "tier2",
-      "order": 10,
-      "sortValue": 222,
+      "order": 0,
+      "sortValue": 1,
       "shopCost": 0,
       "internalName": "item_imp_claw",
       "zh": "魔童之爪"
     },
-    "item:945": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier2",
-      "order": 11,
-      "sortValue": 223,
-      "shopCost": 0,
-      "internalName": "item_seeds_of_serenity",
-      "zh": "宁静种籽"
-    },
-    "item:1157": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier2",
-      "order": 12,
-      "sortValue": 224,
-      "shopCost": 0,
-      "internalName": "item_safety_bubble",
-      "zh": "安全泡泡"
-    },
-    "item:1601": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier2",
-      "order": 13,
-      "sortValue": 230,
-      "shopCost": 0,
-      "internalName": "item_crippling_crossbow",
-      "zh": "致残之弩"
-    },
-    "item:1859": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier2",
-      "order": 14,
-      "sortValue": 231,
-      "shopCost": 0,
-      "internalName": "item_spellslinger",
-      "zh": "咏咒之坠"
-    },
-    "item:1873": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier2",
-      "order": 15,
-      "sortValue": 233,
-      "shopCost": 0,
-      "internalName": "item_partisans_brand",
-      "zh": "天游烙印"
-    },
-    "item:1605": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier3",
-      "order": 0,
-      "sortValue": 31,
-      "shopCost": 0,
-      "internalName": "item_serrated_shiv",
-      "zh": "锯齿短刀"
-    },
-    "item:585": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier3",
-      "order": 1,
-      "sortValue": 37,
-      "shopCost": 0,
-      "internalName": "item_stormcrafter",
-      "zh": "风暴宝器"
-    },
-    "item:1168": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier3",
-      "order": 2,
-      "sortValue": 43,
-      "shopCost": 0,
-      "internalName": "item_rattlecage",
-      "zh": "回响之笼"
-    },
-    "item:1720": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier3",
-      "order": 3,
-      "sortValue": 44,
-      "shopCost": 0,
-      "internalName": "item_idol_of_screeauk",
-      "zh": "丝奎奥克神像"
-    },
-    "item:676": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier3",
-      "order": 4,
-      "sortValue": 310,
-      "shopCost": 0,
-      "internalName": "item_ceremonial_robe",
-      "zh": "祭礼长袍"
-    },
-    "item:1860": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier3",
-      "order": 5,
-      "sortValue": 311,
-      "shopCost": 0,
-      "internalName": "item_prophets_pendulum",
-      "zh": "先知灵摆"
-    },
-    "item:1862": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier3",
-      "order": 6,
-      "sortValue": 312,
-      "shopCost": 0,
-      "internalName": "item_enchanters_bauble",
-      "zh": "附魔师之椟"
-    },
-    "item:1863": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier3",
-      "order": 7,
-      "sortValue": 313,
-      "shopCost": 0,
-      "internalName": "item_harmonizer",
-      "zh": "协和"
-    },
-    "item:1882": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier3",
-      "order": 8,
-      "sortValue": 314,
-      "shopCost": 0,
-      "internalName": "item_vile_phial",
-      "zh": "Vile Phial"
-    },
-    "item:2190": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier3",
-      "order": 9,
-      "sortValue": 315,
-      "shopCost": 0,
-      "internalName": "item_dandelion_amulet",
-      "zh": "蒲公英护符"
-    },
-    "item:911": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier3",
-      "order": 10,
-      "sortValue": 333,
-      "shopCost": 0,
-      "internalName": "item_revenants_brooch",
-      "zh": "英灵胸针"
-    },
-    "item:1917": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier3",
-      "order": 11,
-      "sortValue": 365,
-      "shopCost": 0,
-      "internalName": "item_balmhook",
-      "zh": "Balmhook"
-    },
-    "item:1643": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier4",
-      "order": 0,
-      "sortValue": 42,
-      "shopCost": 0,
-      "internalName": "item_giant_maul",
-      "zh": "巨人之槌"
-    },
-    "item:1721": {
+    "item:335": {
       "realm": "neutral",
       "shelf": "neutral",
       "category": "tier4",
       "order": 1,
-      "sortValue": 45,
+      "sortValue": 3,
       "shopCost": 0,
-      "internalName": "item_flayers_bota",
-      "zh": "剥皮血囊"
-    },
-    "item:371": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier4",
-      "order": 2,
-      "sortValue": 52,
-      "shopCost": 0,
-      "internalName": "item_fallen_sky",
-      "zh": "天崩"
+      "internalName": "item_flicker",
+      "zh": "闪灵"
     },
     "item:370": {
       "realm": "neutral",
       "shelf": "neutral",
       "category": "tier4",
-      "order": 3,
-      "sortValue": 53,
+      "order": 2,
+      "sortValue": 3,
       "shopCost": 0,
       "internalName": "item_demonicon",
       "zh": "冥灵书"
+    },
+    "item:371": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier4",
+      "order": 3,
+      "sortValue": 3,
+      "shopCost": 0,
+      "internalName": "item_fallen_sky",
+      "zh": "天崩"
     },
     "item:377": {
       "realm": "neutral",
       "shelf": "neutral",
       "category": "tier4",
       "order": 4,
-      "sortValue": 54,
+      "sortValue": 3,
       "shopCost": 0,
       "internalName": "item_minotaur_horn",
       "zh": "恶牛角"
     },
-    "item:1718": {
+    "item:565": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier1",
+      "order": 0,
+      "sortValue": 0,
+      "shopCost": 0,
+      "internalName": "item_chipped_vest",
+      "zh": "碎裂背心"
+    },
+    "item:577": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier1",
+      "order": 1,
+      "sortValue": 0,
+      "shopCost": 0,
+      "internalName": "item_possessed_mask",
+      "zh": "附魂面具"
+    },
+    "item:675": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 1,
+      "sortValue": 1,
+      "shopCost": 0,
+      "internalName": "item_psychic_headband",
+      "zh": "通灵头带"
+    },
+    "item:676": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier3",
+      "order": 1,
+      "sortValue": 2,
+      "shopCost": 0,
+      "internalName": "item_ceremonial_robe",
+      "zh": "祭礼长袍"
+    },
+    "item:678": {
       "realm": "neutral",
       "shelf": "neutral",
       "category": "tier4",
       "order": 5,
-      "sortValue": 56,
+      "sortValue": 3,
       "shopCost": 0,
-      "internalName": "item_riftshadow_prism",
-      "zh": "影墟棱晶"
+      "internalName": "item_giants_ring",
+      "zh": "巨人之戒"
+    },
+    "item:585": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier3",
+      "order": 2,
+      "sortValue": 2,
+      "shopCost": 0,
+      "internalName": "item_stormcrafter",
+      "zh": "风暴宝器"
+    },
+    "item:837": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier4",
+      "order": 6,
+      "sortValue": 3,
+      "shopCost": 0,
+      "internalName": "item_heavy_blade",
+      "zh": "行巫之祸"
+    },
+    "item:840": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier1",
+      "order": 2,
+      "sortValue": 0,
+      "shopCost": 0,
+      "internalName": "item_pogo_stick",
+      "zh": "杂技玩具"
+    },
+    "item:945": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier1",
+      "order": 3,
+      "sortValue": 0,
+      "shopCost": 0,
+      "internalName": "item_seeds_of_serenity",
+      "zh": "宁静种籽"
+    },
+    "item:950": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 2,
+      "sortValue": 1,
+      "shopCost": 0,
+      "internalName": "item_defiant_shell",
+      "zh": "不羁甲壳"
+    },
+    "item:1157": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 3,
+      "sortValue": 1,
+      "shopCost": 0,
+      "internalName": "item_safety_bubble",
+      "zh": "安全泡泡"
+    },
+    "item:2190": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier3",
+      "order": 3,
+      "sortValue": 2,
+      "shopCost": 0,
+      "internalName": "item_dandelion_amulet",
+      "zh": "蒲公英护符"
+    },
+    "item:1168": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier3",
+      "order": 4,
+      "sortValue": 2,
+      "shopCost": 0,
+      "internalName": "item_rattlecage",
+      "zh": "回响之笼"
+    },
+    "item:1599": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 4,
+      "sortValue": 1,
+      "shopCost": 0,
+      "internalName": "item_mana_draught",
+      "zh": "魔力药水"
+    },
+    "item:1601": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 5,
+      "sortValue": 1,
+      "shopCost": 0,
+      "internalName": "item_crippling_crossbow",
+      "zh": "致残之弩"
+    },
+    "item:1603": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 6,
+      "sortValue": 1,
+      "shopCost": 0,
+      "internalName": "item_gunpowder_gauntlets",
+      "zh": "火药手套"
+    },
+    "item:1605": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier3",
+      "order": 5,
+      "sortValue": 2,
+      "shopCost": 0,
+      "internalName": "item_serrated_shiv",
+      "zh": "锯齿短刀"
+    },
+    "item:1606": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier1",
+      "order": 4,
+      "sortValue": 0,
+      "shopCost": 0,
+      "internalName": "item_polliwog_charm",
+      "zh": "蝌蚪护符"
+    },
+    "item:1637": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier1",
+      "order": 5,
+      "sortValue": 0,
+      "shopCost": 0,
+      "internalName": "item_kobold_cup",
+      "zh": "狗头人酒杯"
+    },
+    "item:1638": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier1",
+      "order": 6,
+      "sortValue": 0,
+      "shopCost": 0,
+      "internalName": "item_dormant_curio",
+      "zh": "休眠珍品"
+    },
+    "item:1640": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 7,
+      "sortValue": 1,
+      "shopCost": 0,
+      "internalName": "item_jidi_pollen_bag",
+      "zh": "基迪花粉袋"
     },
     "item:1642": {
       "realm": "neutral",
       "shelf": "neutral",
       "category": "tier4",
-      "order": 6,
-      "sortValue": 57,
+      "order": 7,
+      "sortValue": 3,
       "shopCost": 0,
       "internalName": "item_dezun_bloodrite",
       "zh": "德尊血式"
@@ -2369,91 +2193,331 @@
       "realm": "neutral",
       "shelf": "neutral",
       "category": "tier4",
-      "order": 7,
-      "sortValue": 58,
+      "order": 8,
+      "sortValue": 3,
       "shopCost": 0,
       "internalName": "item_divine_regalia",
       "zh": "天赐华冠"
     },
-    "item:837": {
+    "item:1716": {
       "realm": "neutral",
       "shelf": "neutral",
-      "category": "tier4",
-      "order": 8,
-      "sortValue": 59,
+      "category": "tier1",
+      "order": 7,
+      "sortValue": 0,
       "shopCost": 0,
-      "internalName": "item_heavy_blade",
-      "zh": "行巫之祸"
+      "internalName": "item_weighted_dice",
+      "zh": "加重骰子"
     },
-    "item:309": {
+    "item:1717": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier1",
+      "order": 8,
+      "sortValue": 0,
+      "shopCost": 0,
+      "internalName": "item_ash_legion_shield",
+      "zh": "余烬军团战盾"
+    },
+    "item:1718": {
       "realm": "neutral",
       "shelf": "neutral",
       "category": "tier4",
       "order": 9,
-      "sortValue": 410,
+      "sortValue": 3,
       "shopCost": 0,
-      "internalName": "item_mind_breaker",
-      "zh": "智灭"
+      "internalName": "item_riftshadow_prism",
+      "zh": "影墟棱晶"
     },
-    "item:335": {
+    "item:1719": {
       "realm": "neutral",
       "shelf": "neutral",
-      "category": "tier4",
-      "order": 10,
-      "sortValue": 411,
+      "category": "tier2",
+      "order": 8,
+      "sortValue": 1,
       "shopCost": 0,
-      "internalName": "item_flicker",
-      "zh": "闪灵"
+      "internalName": "item_metamorphic_mandible",
+      "zh": "变态上颚"
     },
-    "item:678": {
+    "item:1720": {
       "realm": "neutral",
       "shelf": "neutral",
-      "category": "tier4",
-      "order": 11,
-      "sortValue": 412,
+      "category": "tier3",
+      "order": 6,
+      "sortValue": 2,
       "shopCost": 0,
-      "internalName": "item_giants_ring",
-      "zh": "巨人之戒"
+      "internalName": "item_idol_of_screeauk",
+      "zh": "丝奎奥克神像"
+    },
+    "item:1859": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 9,
+      "sortValue": 1,
+      "shopCost": 0,
+      "internalName": "item_spellslinger",
+      "zh": "咏咒之坠"
+    },
+    "item:1860": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier3",
+      "order": 7,
+      "sortValue": 2,
+      "shopCost": 0,
+      "internalName": "item_prophets_pendulum",
+      "zh": "先知灵摆"
+    },
+    "item:1861": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier1",
+      "order": 9,
+      "sortValue": 0,
+      "shopCost": 0,
+      "internalName": "item_stonefeather_satchel",
+      "zh": "石羽小包"
+    },
+    "item:1862": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier3",
+      "order": 8,
+      "sortValue": 2,
+      "shopCost": 0,
+      "internalName": "item_enchanters_bauble",
+      "zh": "附魔师之椟"
+    },
+    "item:1863": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier3",
+      "order": 9,
+      "sortValue": 2,
+      "shopCost": 0,
+      "internalName": "item_harmonizer",
+      "zh": "协和"
     },
     "item:1864": {
       "realm": "neutral",
       "shelf": "neutral",
       "category": "tier4",
-      "order": 12,
-      "sortValue": 413,
+      "order": 10,
+      "sortValue": 3,
       "shopCost": 0,
       "internalName": "item_conjurers_catalyst",
       "zh": "咒术师触媒"
     },
-    "item:1911": {
+    "item:1868": {
       "realm": "neutral",
       "shelf": "neutral",
-      "category": "tier4",
-      "order": 13,
-      "sortValue": 414,
+      "category": "tier1",
+      "order": 10,
+      "sortValue": 0,
       "shopCost": 0,
-      "internalName": "item_helm_of_the_hivemind",
-      "zh": "虫巢思维头盔"
+      "internalName": "item_foragers_kit",
+      "zh": "采菌套具"
     },
-    "item:292": {
+    "item:1873": {
       "realm": "neutral",
       "shelf": "neutral",
-      "category": "tier5",
+      "category": "tier2",
+      "order": 10,
+      "sortValue": 1,
+      "shopCost": 0,
+      "internalName": "item_partisans_brand",
+      "zh": "天游烙印"
+    },
+    "item:1865": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "enchantments",
       "order": 0,
-      "sortValue": 51,
+      "sortValue": 0,
       "shopCost": 0,
-      "internalName": "item_desolator_2",
-      "zh": "寂灭"
+      "internalName": "",
+      "zh": "活力"
     },
-    "item:326": {
+    "item:1577": {
       "realm": "neutral",
       "shelf": "neutral",
-      "category": "tier5",
+      "category": "enchantments",
       "order": 1,
-      "sortValue": 55,
+      "sortValue": 1,
       "shopCost": 0,
-      "internalName": "item_spider_legs",
-      "zh": "网虫腿"
+      "internalName": "",
+      "zh": "迅速"
+    },
+    "item:1584": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "enchantments",
+      "order": 2,
+      "sortValue": 2,
+      "shopCost": 0,
+      "internalName": "",
+      "zh": "警觉"
+    },
+    "item:1585": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "enchantments",
+      "order": 3,
+      "sortValue": 3,
+      "shopCost": 0,
+      "internalName": "",
+      "zh": "壮实"
+    },
+    "item:1583": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "enchantments",
+      "order": 4,
+      "sortValue": 4,
+      "shopCost": 0,
+      "internalName": "",
+      "zh": "神秘"
+    },
+    "item:1586": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "enchantments",
+      "order": 5,
+      "sortValue": 5,
+      "shopCost": 0,
+      "internalName": "",
+      "zh": "坚强"
+    },
+    "item:1589": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "enchantments",
+      "order": 6,
+      "sortValue": 6,
+      "shopCost": 0,
+      "internalName": "",
+      "zh": "粗暴"
+    },
+    "item:1595": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "enchantments",
+      "order": 7,
+      "sortValue": 7,
+      "shopCost": 0,
+      "internalName": "",
+      "zh": "犀利"
+    },
+    "item:1874": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "enchantments",
+      "order": 8,
+      "sortValue": 8,
+      "shopCost": 0,
+      "internalName": "",
+      "zh": "轻快"
+    },
+    "item:1597": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "enchantments",
+      "order": 9,
+      "sortValue": 9,
+      "shopCost": 0,
+      "internalName": "",
+      "zh": "巨神"
+    },
+    "item:1593": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "enchantments",
+      "order": 10,
+      "sortValue": 10,
+      "shopCost": 0,
+      "internalName": "",
+      "zh": "贪婪"
+    },
+    "item:1596": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "enchantments",
+      "order": 11,
+      "sortValue": 11,
+      "shopCost": 0,
+      "internalName": "",
+      "zh": "进化"
+    },
+    "item:1592": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "enchantments",
+      "order": 12,
+      "sortValue": 12,
+      "shopCost": 0,
+      "internalName": "",
+      "zh": "永恒"
+    },
+    "item:1588": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "enchantments",
+      "order": 13,
+      "sortValue": 13,
+      "shopCost": 0,
+      "internalName": "",
+      "zh": "捷足"
+    },
+    "item:1594": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "enchantments",
+      "order": 14,
+      "sortValue": 14,
+      "shopCost": 0,
+      "internalName": "",
+      "zh": "吸血鬼"
+    },
+    "item:1866": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "enchantments",
+      "order": 15,
+      "sortValue": 15,
+      "shopCost": 0,
+      "internalName": "",
+      "zh": "笨重"
+    },
+    "item:1581": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "enchantments",
+      "order": 16,
+      "sortValue": 16,
+      "shopCost": 0,
+      "internalName": "",
+      "zh": "冒险"
+    },
+    "item:1587": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "enchantments",
+      "order": 17,
+      "sortValue": 17,
+      "shopCost": 0,
+      "internalName": "",
+      "zh": "狂热"
+    },
+    "item:1867": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "enchantments",
+      "order": 18,
+      "sortValue": 18,
+      "shopCost": 0,
+      "internalName": "",
+      "zh": "癫狂"
     }
   }
 }

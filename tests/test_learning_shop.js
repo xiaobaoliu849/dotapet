@@ -19,7 +19,9 @@ test('official shop categories manifest has valid schema and covers basic, upgra
   const neutralCats = SHOP_CATEGORIES.filter(c => c.shelf === 'neutral');
   assert.equal(basicCats.length, 5);
   assert.equal(upgradeCats.length, 6);
+  // Patch 7.42: 4 Neutral Tiers (0/15/30/50m) + Neutral Enchantments
   assert.equal(neutralCats.length, 5);
+  assert.deepEqual(neutralCats.map(c => c.key), ['tier1', 'tier2', 'tier3', 'tier4', 'enchantments']);
 });
 
 test('every catalog item classifies cleanly into a known realm and category with zero drops', () => {
@@ -39,7 +41,7 @@ test('every catalog item classifies cleanly into a known realm and category with
   }
 });
 
-test('key Dota 2 items land in their exact official shop columns and Roshan drops land in roshan_map', () => {
+test('key Dota 2 items land in their exact official shop columns, Patch 7.42 neutral tiers, and Roshan drops', () => {
   const byEn = name => items.find(i => i.en === name);
   assert.equal(classifyItem(byEn('Tango'), shopCategories).category, 'consumables');
   assert.equal(classifyItem(byEn('Iron Branch'), shopCategories).category, 'attributes');
@@ -49,6 +51,19 @@ test('key Dota 2 items land in their exact official shop columns and Roshan drop
   assert.equal(classifyItem(byEn('Divine Rapier'), shopCategories).category, 'weapons');
   assert.equal(classifyItem(byEn('Aegis of the Immortal'), shopCategories).category, 'roshan_map');
   assert.equal(classifyItem(byEn('Cheese'), shopCategories).category, 'roshan_map');
+  // Patch 7.42 Neutral Tiers 1-4 & Enchantments (Tier 5 merged into Tier 4)
+  assert.equal(classifyItem(byEn('Chipped Vest'), shopCategories).category, 'tier1');
+  assert.equal(classifyItem(byEn('Safety Bubble'), shopCategories).category, 'tier2');
+  assert.equal(classifyItem(byEn('Stormcrafter'), shopCategories).category, 'tier3');
+  assert.equal(classifyItem(byEn('Fallen Sky'), shopCategories).category, 'tier4');
+  assert.equal(classifyItem(byEn('Book of the Dead'), shopCategories).category, 'tier4');
+  assert.equal(classifyItem(byEn('Minotaur Horn'), shopCategories).category, 'tier4');
+  assert.equal(classifyItem(byEn("Giant's Ring"), shopCategories).category, 'tier4');
+  assert.equal(classifyItem(byEn('Divine Regalia'), shopCategories).category, 'tier4');
+  assert.equal(classifyItem(byEn('Evolved'), shopCategories).category, 'enchantments');
+  // Cycled-out neutral items live in archive
+  assert.equal(classifyItem(byEn('Stygian Desolator'), shopCategories).category, 'enchantments_legacy');
+  assert.equal(classifyItem(byEn('Spider Legs'), shopCategories).category, 'enchantments_legacy');
 });
 
 test('ranked shop search matches exact aliases, Chinese nicknames, and official category names', () => {

@@ -911,6 +911,17 @@ function renderItemBrowser() {
   }
 
   // Focused category, Names mode, Neutral Tiers, or Special & Archive shelves
+  if (itemRealm === 'neutral' && itemCategory === 'all') {
+    const note = node(
+      'p',
+      text(
+        'Patch 7.42: Neutral items now use 4 tiers (0:00 / 15:00 / 30:00 / 50:00, Infinite Madstone at 65:00). Surviving Tier 5 artifacts moved to Tier 4; cycled-out neutrals (like Stygian Desolator & Spider Legs) live in Special & Archive.',
+        '7.42 版本说明：中立物品已精简为 4 个等级（0:00 / 15:00 / 30:00 / 50:00，65:00 无限狂石）。原 5 级圣物（天崩、冥灵书、恶牛角、巨人之戒等）已合并至第 4 级；轮换移除的旧中立物品（如寂灭、网虫腿）收录在「肉山与历史」中。',
+      ),
+      'shop-patch-note',
+    );
+    board.append(note);
+  }
   for (const { category, items } of activeGroups) {
     if (!items.length) continue;
     const section = node('section', '', 'shop-band');

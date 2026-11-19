@@ -27,16 +27,16 @@ export const SHOP_CATEGORIES = [
   { key: 'armor', realm: 'shop', shelf: 'upgrade', en: 'Armor', zh: '防具', accent: '#7c4da8', tint: '#f5effa', icon: 'armor' },
   { key: 'weapons', realm: 'shop', shelf: 'upgrade', en: 'Weapons', zh: '兵刃', accent: '#b53d3d', tint: '#fbeeee', icon: 'weapons' },
   { key: 'artifacts', realm: 'shop', shelf: 'upgrade', en: 'Artifacts', zh: '宝物', accent: '#b37414', tint: '#fcf5e6', icon: 'artifacts' },
-  // Neutral Tiers (5 official Dota 2 tiers)
-  { key: 'tier1', realm: 'neutral', shelf: 'neutral', en: 'Tier 1', zh: '第 1 级', hintEn: '0m+', hintZh: '开局起', accent: '#607063', tint: '#f1f4ef', icon: 'tier' },
-  { key: 'tier2', realm: 'neutral', shelf: 'neutral', en: 'Tier 2', zh: '第 2 级', hintEn: '15m+', hintZh: '15 分钟', accent: '#2e7d47', tint: '#edf7ef', icon: 'tier' },
-  { key: 'tier3', realm: 'neutral', shelf: 'neutral', en: 'Tier 3', zh: '第 3 级', hintEn: '25m+', hintZh: '25 分钟', accent: '#2b6cb0', tint: '#edf4fc', icon: 'tier' },
-  { key: 'tier4', realm: 'neutral', shelf: 'neutral', en: 'Tier 4', zh: '第 4 级', hintEn: '35m+', hintZh: '35 分钟', accent: '#7c4da8', tint: '#f5effa', icon: 'tier' },
-  { key: 'tier5', realm: 'neutral', shelf: 'neutral', en: 'Tier 5', zh: '第 5 级', hintEn: '60m+', hintZh: '60 分钟', accent: '#b7791f', tint: '#fcf5e6', icon: 'tier' },
-  // Special & Archive (Roshan/Map drops, Upgrade variants, Neutral enchantments & Legacy)
+  // Neutral Tiers (Patch 7.42: 4 official Dota 2 tiers + active Neutral Enchantments)
+  { key: 'tier1', realm: 'neutral', shelf: 'neutral', en: 'Tier 1', zh: '第 1 级', hintEn: '0:00', hintZh: '0:00 起', accent: '#607063', tint: '#f1f4ef', icon: 'tier' },
+  { key: 'tier2', realm: 'neutral', shelf: 'neutral', en: 'Tier 2', zh: '第 2 级', hintEn: '15:00', hintZh: '15:00 起', accent: '#2e7d47', tint: '#edf7ef', icon: 'tier' },
+  { key: 'tier3', realm: 'neutral', shelf: 'neutral', en: 'Tier 3', zh: '第 3 级', hintEn: '30:00', hintZh: '30:00 起', accent: '#2b6cb0', tint: '#edf4fc', icon: 'tier' },
+  { key: 'tier4', realm: 'neutral', shelf: 'neutral', en: 'Tier 4', zh: '第 4 级', hintEn: '50:00 · Peak', hintZh: '50:00 · 终极', accent: '#b7791f', tint: '#fcf5e6', icon: 'tier' },
+  { key: 'enchantments', realm: 'neutral', shelf: 'neutral', en: 'Enchantments', zh: '中立附魔', hintEn: 'Tiers 1–4', hintZh: '1–4 级词条', accent: '#7c4da8', tint: '#f5effa', icon: 'magical' },
+  // Special & Archive (Roshan/Map drops, Upgrade variants, Legacy & Cycled-Out Items)
   { key: 'roshan_map', realm: 'archive', shelf: 'archive', en: 'Roshan & Map', zh: '肉山与地图掉落', accent: '#b7791f', tint: '#fcf6e8', icon: 'roshan' },
   { key: 'variants', realm: 'archive', shelf: 'archive', en: 'Upgrade Variants', zh: '多级与进阶变体', accent: '#3b6e9c', tint: '#eef5fb', icon: 'variants' },
-  { key: 'enchantments_legacy', realm: 'archive', shelf: 'archive', en: 'Enchantments & Legacy', zh: '附魔与历史物品', accent: '#6b7567', tint: '#f2f4ef', icon: 'archive' },
+  { key: 'enchantments_legacy', realm: 'archive', shelf: 'archive', en: 'Legacy & Cycled Out', zh: '轮换移除与历史物品', accent: '#6b7567', tint: '#f2f4ef', icon: 'archive' },
 ];
 
 export const CATEGORY_BY_KEY = Object.fromEntries(SHOP_CATEGORIES.map(c => [c.key, c]));
