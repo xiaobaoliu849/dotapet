@@ -223,10 +223,30 @@ main[data-mode=starter] .stats,main[data-mode=starter] .mastery-strip{display:no
 .shop-tip-cat{font-size:10px;font-weight:600;padding:1px 6px;border-radius:999px;background:#2f4734;color:#d6e9cb}
 .shop-tip-cost{font-size:10.5px;font-weight:700;color:#fcd34d;font-variant-numeric:tabular-nums}
 .shop-tip-aliases{margin:0 0 6px;font-size:10.5px;color:#a9bfa3}
+.shop-tip-stats{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 6px}
+.shop-tip-stat{font-size:10px;font-weight:700;padding:2px 6px;border-radius:6px;background:rgba(140,173,101,.22);color:#dcf0c5;border:1px solid rgba(140,173,101,.3)}
 .shop-tip-cue{margin:0 0 6px;font-size:11.5px;line-height:1.45;color:#e7f3df;font-style:italic}
 .shop-tip-hint{margin:0;font-size:10px;color:#93ad8d;border-top:1px solid rgba(255,255,255,.1);padding-top:5px}
 .shop-empty{font-size:13px;color:#62725b;background:#fff;border:1px dashed #cdd8c3;border-radius:14px;padding:24px;text-align:center;margin:8px 0}
 .shop-patch-note{margin:0;padding:10px 14px;border-radius:11px;background:#eef4e7;border:1px solid #d5e0c8;font-size:12px;line-height:1.6;color:#415639}
+
+/* Bilingual Item Stats, Notes & Lore Introduction */
+.item-detail-section{margin-bottom:12px}
+.item-detail-section:last-child{margin-bottom:0}
+.item-detail-section h3{font-size:10.5px;font-weight:700;letter-spacing:.35px;text-transform:uppercase;color:#607253;margin:0 0 7px}
+.item-stats-grid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
+.item-stat-pill{display:inline-flex;align-items:baseline;gap:5px;padding:4px 9px;border-radius:8px;background:#eef5e6;border:1px solid #d4e1c7;font-size:11.5px;color:#263d28}
+.item-stat-pill strong{font-weight:800;color:#2f5928;font-variant-numeric:tabular-nums}
+.item-stat-label{font-size:11px;color:#4e6347}
+.item-notes-box{padding:10px 12px;border-radius:10px;background:#f7f9f3;border:1px solid #e2eadb}
+.item-note-en{margin:0 0 3px;font-size:11.5px;line-height:1.55;color:#334835}
+.item-note-zh{margin:0 0 7px;font-size:11px;line-height:1.55;color:#65755d}
+.item-note-zh:last-child,.item-note-en:last-child{margin-bottom:0}
+.item-lore-box{padding:10px 12px;border-radius:10px;background:#fbfaf5;border:1px solid #e7e2d1;border-left:3px solid #c5b482}
+.item-lore-en{margin:0 0 4px;font-size:11.5px;line-height:1.55;color:#4a483b;font-style:italic}
+.item-lore-zh{margin:0;font-size:11px;line-height:1.55;color:#736f5e}
+.item-lore-inline{font-style:italic;color:#556350}
+.item-empty-detail{margin:0;padding:12px;border-radius:10px;background:#f5f7f1;border:1px dashed #d3dcc9;font-size:12px;line-height:1.6;color:#64745c}
 
 @media(max-width:740px){
   .shop-columns-basic,.shop-columns-upgrade{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}

@@ -49,6 +49,7 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
   const audio = read(path.join(rendererDirectory, '../learning/audio-manifest.json'), { entries: {}, missing: [] });
   const itemImages = read(path.join(rendererDirectory, '../learning/item-images.json'), { entries: {}, missing: [] });
   const itemShopCategories = read(path.join(rendererDirectory, '../learning/item-shop-categories.json'), { entries: {} });
+  const itemDetails = read(path.join(rendererDirectory, '../learning/item-details.json'), { entries: {} });
   const starterEvidence = read(path.join(rendererDirectory, '../learning/starter-shop-evidence.json'), { entries: {} });
   const baseline = read(path.join(rendererDirectory, '../learning/audio-baseline.json'), { entries: {} });
   const audioBaseline = { entries: Object.fromEntries(Object.entries(baseline.entries).map(([id, entry]) => [id, { candidateSpeech: entry.candidateSpeech, evidence: entry.evidence }])) };
@@ -73,7 +74,7 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
     if (!trusted(event)) return { ok: false, error: 'Untrusted learning page' };
     try { return { ok: true, ...await fn(...args) }; } catch (error) { return { ok: false, error: error.message }; }
   };
-  ipcMain.handle('learning:load', respond(() => ({ catalog: lessonCatalog(), heroMeta, itemImages, itemShopCategories, starterEvidence, audio, audioBaseline, ...snapshot() })));
+  ipcMain.handle('learning:load', respond(() => ({ catalog: lessonCatalog(), heroMeta, itemImages, itemShopCategories, itemDetails, starterEvidence, audio, audioBaseline, ...snapshot() })));
   ipcMain.handle('learning:progress', respond((id, action, value) => {
     const known = catalog.lessons.some(r => r.id === id) || SPOKEN_PHRASES.some(p => p.id === id);
     if (!known) throw new Error('Unknown lesson');

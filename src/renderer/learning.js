@@ -4,6 +4,7 @@ import { createLearningAudio } from './learning-audio.js';
 import { filterLessons } from '../learning/model.js';
 import { itemImageSources } from '../learning/itemImages.js';
 import { itemCoaching } from '../learning/itemCoaching.js';
+import { resolveItemDetails } from '../learning/itemDetails.js';
 import {
   SHOP_REALMS, SHOP_SHELVES, SHOP_CATEGORIES, CATEGORY_BY_KEY,
   isActiveItem, classifyItem, realmCounts, groupItemsByCategory, searchShopItems,
@@ -46,6 +47,7 @@ let visibleShopItems = [], lastShopTrigger = null;
 let audioManifest = { entries: {} };
 let itemImages = { entries: {} };
 let itemShopCategories = { entries: {} };
+let itemDetails = { entries: {} };
 let starterEvidence = { entries: {} };
 let audioBaseline = { entries: {} };
 let pendingAnswer = false, starting = false, feedbackIndex = null, planning = false, advancing = false;
@@ -397,6 +399,14 @@ function showShopHoverTip(lesson, anchor) {
   if (cue?.aliases?.length) {
     tip.append(node('p', text('Aliases: ', '简称：') + cue.aliases.slice(0, 4).join(' · '), 'shop-tip-aliases'));
   }
+  const details = resolveItemDetails(lesson, itemDetails);
+  if (details.stats.length) {
+    const statRow = node('div', '', 'shop-tip-stats');
+    for (const st of details.stats.slice(0, 4)) {
+      statRow.append(node('span', `${st.value} ${text(st.en, st.zh)}`, 'shop-tip-stat'));
+    }
+    tip.append(statRow);
+  }
   if (cue?.en) {
     tip.append(node('p', `“${cue.en}”`, 'shop-tip-cue'));
   }
@@ -542,9 +552,21 @@ function buildLessonCard(lesson, onUpdated) {
     if (manas?.length) pills.append(node('span', `Mana: ${[...new Set(manas)].join(' / ')}`, 'mech-pill'));
     card.append(pills);
   }
+  const extra = lesson.kind === 'item' ? resolveItemDetails(lesson, itemDetails) : null;
+  if (extra?.stats?.length) {
+    const statsGrid = node('div', '', 'item-stats-grid');
+    for (const st of extra.stats) {
+      const pill = node('span', '', 'item-stat-pill');
+      pill.append(node('strong', st.value), node('span', `${st.en} · ${st.zh}`, 'item-stat-label'));
+      statsGrid.append(pill);
+    }
+    card.append(statsGrid);
+  }
   if (lesson.descriptionEn) card.append(node('p', lesson.descriptionEn, 'description'));
+  else if (extra?.loreEn) card.append(node('p', extra.loreEn, 'description item-lore-inline'));
   const translation = node('details', '', 'translation');
-  translation.append(node('summary', text('Chinese explanation', '中文说明')), node('p', lesson.descriptionZh || lesson.zh, 'description'));
+  const zhText = lesson.descriptionZh || extra?.loreZh || (extra?.stats?.length ? extra.stats.map(s => `${s.value} ${s.zh}`).join('，') : lesson.zh);
+  translation.append(node('summary', text('Chinese explanation', '中文说明')), node('p', zhText, 'description'));
   card.append(translation);
   const actions = node('div', '', 'actions');
   actions.append(audioButton(lesson), saveButton(lesson, onUpdated));
@@ -757,8 +779,41 @@ function buildItemStudyCard(lesson, { inModal = false } = {}) {
   leftCol.append(actions);
 
   const rightCol = node('div', '', 'item-inspector-col');
+  const details = resolveItemDetails(lesson, itemDetails);
+  if (details.stats.length) {
+    const statSection = node('section', '', 'item-detail-section item-stats-section');
+    statSection.append(node('h3', text('Attributes & Bonuses', '属性加成')));
+    const statsGrid = node('div', '', 'item-stats-grid');
+    for (const st of details.stats) {
+      const pill = node('span', '', 'item-stat-pill');
+      pill.append(node('strong', st.value), node('span', `${st.en} · ${st.zh}`, 'item-stat-label'));
+      statsGrid.append(pill);
+    }
+    statSection.append(statsGrid);
+    rightCol.append(statSection);
+  }
   if (lesson.descriptionEn) rightCol.append(node('p', lesson.descriptionEn, 'description'));
   if (lesson.descriptionZh) rightCol.append(node('p', lesson.descriptionZh, 'description zh-block'));
+  if (details.notesEn.length || details.notesZh.length) {
+    const notesSection = node('section', '', 'item-detail-section item-notes-box');
+    notesSection.append(node('h3', text('Mechanics Notes', '机制说明')));
+    const maxNotes = Math.max(details.notesEn.length, details.notesZh.length);
+    for (let i = 0; i < maxNotes; i++) {
+      if (details.notesEn[i]) notesSection.append(node('p', details.notesEn[i], 'item-note-en'));
+      if (details.notesZh[i]) notesSection.append(node('p', details.notesZh[i], 'item-note-zh'));
+    }
+    rightCol.append(notesSection);
+  }
+  if (details.loreEn || details.loreZh) {
+    const loreSection = node('section', '', 'item-detail-section item-lore-box');
+    loreSection.append(node('h3', text('Item Introduction', '物品背景介绍')));
+    if (details.loreEn) loreSection.append(node('p', details.loreEn, 'item-lore-en'));
+    if (details.loreZh) loreSection.append(node('p', details.loreZh, 'item-lore-zh'));
+    rightCol.append(loreSection);
+  }
+  if (!rightCol.childElementCount) {
+    rightCol.append(node('p', text('Historical or special event item — Valve’s current feed has no active stats or description for this entry.', '历史或活动特殊物品，Valve 当前数据接口未提供技能或属性说明。'), 'item-empty-detail'));
+  }
   body.append(leftCol, rightCol);
   card.append(body);
   return card;
@@ -1298,5 +1353,5 @@ api.onHidden(() => player.stop());
 window.addEventListener('pagehide', () => player.stop());
 try {
   const response = await api.load(); if (!response.ok) throw new Error(response.error);
-  catalog = response.catalog; heroMeta = response.heroMeta || {}; itemImages = response.itemImages || { entries: {} }; itemShopCategories = response.itemShopCategories || { entries: {} }; starterEvidence = response.starterEvidence || { entries: {} }; audioManifest = response.audio; audioBaseline = response.audioBaseline; receive(response); $('session-size').value = study.preferences.size; $('session-scope').value = study.preferences.scope; render();
+  catalog = response.catalog; heroMeta = response.heroMeta || {}; itemImages = response.itemImages || { entries: {} }; itemShopCategories = response.itemShopCategories || { entries: {} }; itemDetails = response.itemDetails || { entries: {} }; starterEvidence = response.starterEvidence || { entries: {} }; audioManifest = response.audio; audioBaseline = response.audioBaseline; receive(response); $('session-size').value = study.preferences.size; $('session-scope').value = study.preferences.scope; render();
 } catch (error) { $('message').textContent = error.message; for (const button of document.querySelectorAll('button')) button.disabled = true; }

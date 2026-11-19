@@ -66,7 +66,19 @@ export async function runLearningImagesSmoke({ page, controlCenter, nativeImage,
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
     if (!document.getElementById('item-modal').hidden) throw new Error('Escape did not close floating item modal');
     if (Math.abs(window.scrollY - beforeCloseY) > 2) throw new Error('Closing modal shifted scroll position');
+    // Also verify stat-only item Cloak (item:31) renders bilingual stats, notes, and lore introduction
+    const cloakTile = document.querySelector('.shop-icon-tile[data-item-id="item:31"]');
+    if (!cloakTile) throw new Error('Cloak tile missing from Basics shop');
+    cloakTile.click();
+    const cloakModal = document.getElementById('item-modal');
+    if (cloakModal.hidden || !cloakModal.querySelector('.item-stat-pill') || !cloakModal.querySelector('.item-lore-box')) {
+      throw new Error('Cloak stat-only item is missing bilingual stats or lore introduction');
+    }
+    const cloakImg = cloakModal.querySelector('.item-picture img');
+    if (cloakImg) await cloakImg.decode().catch(() => {});
   })()`);
+  fs.writeFileSync(path.join(outputDirectory, 'learning-items-cloak.png'), (await captureHub(controlCenter, nativeImage)).toPNG());
+  await page.executeJavaScript("window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))");
 
   // Capture 2: Neutral Items Tiers view
   await page.executeJavaScript(`(async () => {

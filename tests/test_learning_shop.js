@@ -5,9 +5,11 @@ import {
   SHOP_REALMS, SHOP_CATEGORIES, CATEGORY_BY_KEY,
   classifyItem, realmCounts, groupItemsByCategory, searchShopItems, isActiveItem,
 } from '../src/learning/itemShop.js';
+import { resolveItemDetails } from '../src/learning/itemDetails.js';
 
 const catalog = JSON.parse(fs.readFileSync(new URL('../src/learning/catalog.json', import.meta.url)));
 const shopCategories = JSON.parse(fs.readFileSync(new URL('../src/learning/item-shop-categories.json', import.meta.url)));
+const itemDetails = JSON.parse(fs.readFileSync(new URL('../src/learning/item-details.json', import.meta.url)));
 const items = catalog.lessons.filter(l => l.kind === 'item');
 
 test('official shop categories manifest has valid schema and covers basic, upgrade and neutral shelves', () => {
@@ -84,4 +86,30 @@ test('ranked shop search matches exact aliases, Chinese nicknames, and official 
   assert.equal(ac[0].en, 'Assault Cuirass');
 
   assert.equal(isActiveItem(bkb[0]), true);
+});
+
+test('every Shop and Neutral item has rich stats, description, notes or lore with zero unresolved tokens', () => {
+  const cloak = items.find(i => i.id === 'item:31');
+  const cloakDetails = resolveItemDetails(cloak, itemDetails);
+  assert.ok(cloakDetails.stats.some(s => s.en === 'Magic Resistance' && s.value.includes('%')));
+  assert.ok(cloakDetails.loreEn.length > 10 && cloakDetails.loreZh.length > 5);
+  assert.ok(cloakDetails.notesEn.length >= 1 && cloakDetails.notesZh.length >= 1);
+
+  const evolved = items.find(i => i.id === 'item:1596');
+  const evolvedDetails = resolveItemDetails(evolved, itemDetails);
+  assert.ok(evolvedDetails.stats.some(s => s.en === 'Primary Attribute'));
+  assert.ok(evolvedDetails.notesEn.every(n => !/%[\w]+%/.test(n)));
+  assert.ok(evolvedDetails.notesZh.every(n => !/%[\w]+%/.test(n)));
+
+  for (const item of items) {
+    const info = classifyItem(item, shopCategories);
+    const d = resolveItemDetails(item, itemDetails);
+    for (const st of d.stats) {
+      assert.ok(!st.en.includes('$') && !st.zh.includes('$'), `${item.id} unresolved stat token: ${st.en}`);
+    }
+    if (info.realm === 'shop' || info.realm === 'neutral') {
+      const hasContent = Boolean(item.descriptionEn?.trim() || d.stats.length || d.notesEn.length || d.loreEn);
+      assert.ok(hasContent, `Active ${info.realm} item has blank details: ${item.id} ${item.en}`);
+    }
+  }
 });
