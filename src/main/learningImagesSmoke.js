@@ -45,6 +45,29 @@ export async function runLearningImagesSmoke({ page, controlCenter, nativeImage,
   })()`);
   fs.writeFileSync(path.join(outputDirectory, 'learning-items-upgrades.png'), (await captureHub(controlCenter, nativeImage)).toPNG());
 
+  // Capture 1c: Click an item at the bottom of Upgrades and verify Floating Study Modal opens with ZERO scroll jump
+  await page.executeJavaScript(`(async () => {
+    window.scrollTo(0, document.documentElement.scrollHeight);
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+    const beforeScrollY = window.scrollY;
+    if (beforeScrollY < 200) throw new Error('Expected shop page to be scrolled down before clicking bottom item');
+    const bottomTile = document.querySelector('.shop-icon-tile[data-item-id="item:133"]') || [...document.querySelectorAll('.shop-icon-tile')].at(-1);
+    bottomTile.click();
+    const modal = document.getElementById('item-modal');
+    if (modal.hidden || !modal.querySelector('.item-inspector-card')) throw new Error('Floating item modal did not open');
+    await new Promise(r => setTimeout(r, 80));
+    if (Math.abs(window.scrollY - beforeScrollY) > 2) throw new Error('Clicking bottom item jumped page scroll from ' + beforeScrollY + ' to ' + window.scrollY);
+    const img = modal.querySelector('.item-picture img');
+    if (img) await img.decode().catch(() => {});
+  })()`);
+  fs.writeFileSync(path.join(outputDirectory, 'learning-items-modal.png'), (await captureHub(controlCenter, nativeImage)).toPNG());
+  await page.executeJavaScript(`(async () => {
+    const beforeCloseY = window.scrollY;
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    if (!document.getElementById('item-modal').hidden) throw new Error('Escape did not close floating item modal');
+    if (Math.abs(window.scrollY - beforeCloseY) > 2) throw new Error('Closing modal shifted scroll position');
+  })()`);
+
   // Capture 2: Neutral Items Tiers view
   await page.executeJavaScript(`(async () => {
     const byId = id => document.getElementById(id);

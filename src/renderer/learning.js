@@ -42,7 +42,7 @@ if (chinese) {
 let catalog, heroMeta = {}, progress = {}, study = { preferences: STUDY_DEFAULTS, active: null, history: [] }, mode = 'starter', limit = 24;
 let selectedHeroId = null, attrFilter = 'all', spokenFilter = 'all';
 let itemRealm = 'shop', itemCategory = 'all', itemQuickFilter = 'all', itemViewMode = 'grid', selectedItemId = null;
-let visibleShopItems = [];
+let visibleShopItems = [], lastShopTrigger = null;
 let audioManifest = { entries: {} };
 let itemImages = { entries: {} };
 let itemShopCategories = { entries: {} };
@@ -551,17 +551,56 @@ function buildLessonCard(lesson, onUpdated) {
   card.append(actions);
   return card;
 }
-function formatGold(cost) {
-  return cost > 0 ? `${cost}g` : text('Free', '免费');
+function syncShopTileStates() {
+  for (const tile of document.querySelectorAll('#item-list [data-item-id]')) {
+    const id = tile.dataset.itemId;
+    const isSel = selectedItemId === id;
+    tile.classList.toggle('is-selected', isSel);
+    tile.setAttribute('aria-pressed', String(isSel));
+    const saved = Boolean(progress[id]?.saved);
+    if (tile.classList.contains('shop-icon-tile')) {
+      const art = tile.querySelector('.shop-icon-art');
+      const existing = art?.querySelector('.shop-tile-star');
+      if (saved && !existing && art) art.append(node('span', '★', 'shop-tile-star'));
+      else if (!saved && existing) existing.remove();
+    } else if (tile.classList.contains('item-name-tile')) {
+      const existing = tile.querySelector('.item-name-saved');
+      if (saved && !existing) tile.append(node('span', '★', 'item-name-saved'));
+      else if (!saved && existing) existing.remove();
+    }
+  }
 }
-function selectShopItem(itemId, { scroll = true } = {}) {
+function closeItemModal({ restoreFocus = true } = {}) {
+  const modal = $('item-modal');
+  if (!modal || modal.hidden) { selectedItemId = null; return; }
+  player.stop();
+  hideShopHoverTip();
+  selectedItemId = null;
+  modal.hidden = true;
+  $('item-modal-dialog').replaceChildren();
+  syncShopTileStates();
+  if (restoreFocus && lastShopTrigger?.isConnected) {
+    lastShopTrigger.focus({ preventScroll: true });
+  }
+  lastShopTrigger = null;
+}
+function openItemModal(itemId, trigger = null) {
   hideShopHoverTip();
   player.stop();
-  selectedItemId = itemId;
-  renderItemBrowser();
-  if (scroll && itemId && !$('item-inspector').hidden) {
-    $('item-inspector').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-  }
+  if (!itemId) { closeItemModal(); return; }
+  const lesson = visibleShopItems.find(item => item.id === itemId)
+    || catalog.lessons.find(item => item.kind === 'item' && item.id === itemId);
+  if (!lesson) return;
+  if (trigger) lastShopTrigger = trigger;
+  selectedItemId = lesson.id;
+  syncShopTileStates();
+  const modal = $('item-modal');
+  const dialog = $('item-modal-dialog');
+  dialog.replaceChildren(buildItemStudyCard(lesson, { inModal: true }));
+  modal.hidden = false;
+  dialog.scrollTop = 0;
+  dialog.tabIndex = -1;
+  dialog.focus({ preventScroll: true });
 }
 function buildShopIconTile(lesson, cat) {
   const tile = node('button', '', 'shop-icon-tile');
@@ -577,11 +616,11 @@ function buildShopIconTile(lesson, cat) {
   if (progress[lesson.id]?.saved) artWrap.append(node('span', '★', 'shop-tile-star'));
   tile.append(artWrap);
   tile.append(node('span', cost > 0 ? `${cost}g` : text('Free', '免费'), `shop-icon-cost${cost > 0 ? '' : ' is-free'}`));
-  tile.onmouseenter = () => showShopHoverTip(lesson, tile);
+  tile.onmouseenter = () => { if ($('item-modal')?.hidden) showShopHoverTip(lesson, tile); };
   tile.onmouseleave = hideShopHoverTip;
-  tile.onfocus = () => showShopHoverTip(lesson, tile);
+  tile.onfocus = () => { if ($('item-modal')?.hidden) showShopHoverTip(lesson, tile); };
   tile.onblur = hideShopHoverTip;
-  tile.onclick = () => selectShopItem(selectedItemId === lesson.id ? null : lesson.id);
+  tile.onclick = () => openItemModal(lesson.id, tile);
   return tile;
 }
 function buildItemNameTile(lesson, { showCategory = false } = {}) {
@@ -603,23 +642,16 @@ function buildItemNameTile(lesson, { showCategory = false } = {}) {
   if (meta.childElementCount) body.append(meta);
   tile.append(body);
   if (progress[lesson.id]?.saved) tile.append(node('span', '★', 'item-name-saved'));
-  tile.onclick = () => selectShopItem(selectedItemId === lesson.id ? null : lesson.id);
+  tile.onclick = () => openItemModal(lesson.id, tile);
   return tile;
 }
-function renderItemInspector(lesson) {
-  const host = $('item-inspector');
-  if (!lesson) {
-    host.hidden = true;
-    host.replaceChildren();
-    return;
-  }
-  host.hidden = false;
+function buildItemStudyCard(lesson, { inModal = false } = {}) {
   const info = classifyItem(lesson, itemShopCategories);
   const cat = CATEGORY_BY_KEY[info.category];
   const realm = SHOP_REALMS.find(r => r.key === info.realm);
   const shelf = SHOP_SHELVES[info.shelf];
   const idx = visibleShopItems.findIndex(item => item.id === lesson.id);
-  const card = node('article', '', 'lesson item-inspector-card');
+  const card = node('article', '', `lesson item-inspector-card${inModal ? ' is-modal' : ''}`);
   card.dataset.lessonId = lesson.id;
   if (cat?.accent) card.style.setProperty('--cat-accent', cat.accent);
   if (cat?.tint) card.style.setProperty('--cat-tint', cat.tint);
@@ -636,32 +668,36 @@ function renderItemInspector(lesson) {
   crumbBtn.append(node('span', crumbParts.join(' › ')));
   crumbBtn.title = text('Filter to this category', '筛选该分类');
   crumbBtn.onclick = () => {
+    closeItemModal({ restoreFocus: false });
     $('search').value = '';
     itemRealm = info.realm;
     itemCategory = info.category;
     renderItemBrowser();
+    $('tools')?.scrollIntoView({ block: 'start', behavior: 'smooth' });
   };
   const nav = node('div', '', 'item-inspector-nav');
-  if (visibleShopItems.length > 1 && idx >= 0) {
+  if (inModal && visibleShopItems.length > 1 && idx >= 0) {
     const prevBtn = node('button', '←', 'item-nav-btn');
     prevBtn.type = 'button';
     prevBtn.title = text('Previous item (←)', '上一件物品 (←)');
     prevBtn.setAttribute('aria-label', text('Previous item', '上一件物品'));
-    prevBtn.onclick = () => selectShopItem(visibleShopItems[(idx - 1 + visibleShopItems.length) % visibleShopItems.length].id, { scroll: false });
+    prevBtn.onclick = () => openItemModal(visibleShopItems[(idx - 1 + visibleShopItems.length) % visibleShopItems.length].id);
     const counter = node('span', `${idx + 1} / ${visibleShopItems.length}`, 'item-nav-count');
     const nextBtn = node('button', '→', 'item-nav-btn');
     nextBtn.type = 'button';
     nextBtn.title = text('Next item (→)', '下一件物品 (→)');
     nextBtn.setAttribute('aria-label', text('Next item', '下一件物品'));
-    nextBtn.onclick = () => selectShopItem(visibleShopItems[(idx + 1) % visibleShopItems.length].id, { scroll: false });
+    nextBtn.onclick = () => openItemModal(visibleShopItems[(idx + 1) % visibleShopItems.length].id);
     nav.append(prevBtn, counter, nextBtn);
   }
-  const closeBtn = node('button', '×', 'item-close-btn');
-  closeBtn.type = 'button';
-  closeBtn.title = text('Close details (Esc)', '关闭详情 (Esc)');
-  closeBtn.setAttribute('aria-label', text('Close item details', '关闭物品详情'));
-  closeBtn.onclick = () => selectShopItem(null, { scroll: false });
-  nav.append(closeBtn);
+  if (inModal) {
+    const closeBtn = node('button', '×', 'item-close-btn');
+    closeBtn.type = 'button';
+    closeBtn.title = text('Close details (Esc)', '关闭详情 (Esc)');
+    closeBtn.setAttribute('aria-label', text('Close item details', '关闭物品详情'));
+    closeBtn.onclick = () => closeItemModal();
+    nav.append(closeBtn);
+  }
   bar.append(crumbBtn, nav);
   card.append(bar);
 
@@ -693,10 +729,24 @@ function renderItemInspector(lesson) {
   const leftCol = node('div', '', 'item-inspector-col');
   leftCol.append(itemCoachNode(lesson));
   const actions = node('div', '', 'actions');
-  actions.append(audioButton(lesson), saveButton(lesson, () => { stats(); renderItemBrowser(); }));
+  actions.append(audioButton(lesson), saveButton(lesson, () => {
+    stats();
+    if (inModal) {
+      if (itemQuickFilter === 'saved' && !progress[lesson.id]?.saved) {
+        closeItemModal({ restoreFocus: false });
+        renderItemBrowser();
+      } else {
+        syncShopTileStates();
+        $('item-modal-dialog').replaceChildren(buildItemStudyCard(lesson, { inModal: true }));
+      }
+    } else {
+      renderItemBrowser();
+    }
+  }));
   const practiceBtn = node('button', text('🎯 Practice this item', '🎯 练习此物品'), 'item-practice-btn');
   practiceBtn.type = 'button';
   practiceBtn.onclick = async () => {
+    closeItemModal({ restoreFocus: false });
     $('search').value = lesson.en;
     enterPractice('all');
     if (study.active && !study.active.completedAt) return;
@@ -711,11 +761,21 @@ function renderItemInspector(lesson) {
   if (lesson.descriptionZh) rightCol.append(node('p', lesson.descriptionZh, 'description zh-block'));
   body.append(leftCol, rightCol);
   card.append(body);
-
-  host.replaceChildren(card);
+  return card;
+}
+function renderInlineInspector(lesson) {
+  const host = $('item-inspector');
+  if (!lesson) {
+    host.hidden = true;
+    host.replaceChildren();
+    return;
+  }
+  host.hidden = false;
+  host.replaceChildren(buildItemStudyCard(lesson, { inModal: false }));
 }
 function renderItemBrowser() {
   hideShopHoverTip();
+  closeItemModal({ restoreFocus: false });
   const allItems = catalog.lessons.filter(l => l.kind === 'item');
   const rawQuery = $('search').value.trim();
   const counts = realmCounts(allItems, itemShopCategories);
@@ -795,15 +855,15 @@ function renderItemBrowser() {
       ? text(`${matches.length} matching items across Shop, Neutral & Archive · Click any item to study.`, `在全部 ${allItems.length} 件物品中找到 ${matches.length} 件 · 点击即可查看双语详情与发音。`)
       : text('No matching items found. Try English name, Chinese name, alias (BKB, TP, Blink) or category (Armor, Support).', '未找到匹配物品，可尝试英文名、中文名、简称（bkb / 跳刀 / 羊刀）或分类（防具 / 辅助）。');
 
-    // Auto-open inspector when search narrows to 1 exact item (e.g. "bkb") or preserve selected match.
-    const activeLesson = matches.find(i => i.id === selectedItemId) || (matches.length === 1 ? matches[0] : null);
-    renderItemInspector(activeLesson);
+    // Auto-open inline study card when search narrows to 1 exact item (e.g. "bkb") so the search input stays unobstructed.
+    const singleMatch = matches.length === 1 ? matches[0] : null;
+    renderInlineInspector(singleMatch);
 
     if (!matches.length) {
       board.append(node('p', text('No items match your search and filters.', '当前搜索和筛选条件下没有匹配物品。'), 'shop-empty'));
       return;
     }
-    if (matches.length === 1 && activeLesson) return;
+    if (singleMatch) return;
     const grid = node('div', '', 'item-name-grid');
     for (const item of matches) grid.append(buildItemNameTile(item, { showCategory: true }));
     board.append(grid);
@@ -811,6 +871,7 @@ function renderItemBrowser() {
   }
 
   // 4. Realm & official subcategory browse mode
+  renderInlineInspector(null);
   const realmItems = applyQuickFilter(allItems.filter(item => classifyItem(item, itemShopCategories).realm === itemRealm));
   const groups = groupItemsByCategory(realmItems, itemShopCategories, itemRealm);
 
@@ -840,10 +901,6 @@ function renderItemBrowser() {
 
   const activeGroups = itemCategory === 'all' ? groups : groups.filter(g => g.category.key === itemCategory);
   visibleShopItems = activeGroups.flatMap(g => g.items);
-
-  const activeLesson = visibleShopItems.find(i => i.id === selectedItemId) || null;
-  if (!activeLesson) selectedItemId = null;
-  renderItemInspector(activeLesson);
 
   const realmLabel = SHOP_REALMS.find(r => r.key === itemRealm);
   const catObj = itemCategory !== 'all' ? CATEGORY_BY_KEY[itemCategory] : null;
@@ -945,6 +1002,7 @@ function renderItemBrowser() {
 }
 function render() {
   player.stop();
+  closeItemModal({ restoreFocus: false });
   document.querySelector('main').dataset.mode = mode;
   quickLabel();
   syncMasteryActive();
@@ -1134,18 +1192,21 @@ for (const [id, m] of [['starter-tab', 'starter'], ['heroes-tab', 'heroes'], ['i
 };
 $('hero-back').onclick = () => { player.stop(); selectedHeroId = null; render(); };
 for (const id of ['search', 'kind', 'direction']) $(id).addEventListener(id === 'search' ? 'input' : 'change', () => { player.stop(); hideShopHoverTip(); if (id === 'search') { selectedHeroId = null; selectedItemId = null; } limit = 24; render(); });
+$('item-modal').addEventListener('click', event => {
+  if (event.target === $('item-modal')) closeItemModal();
+});
 window.addEventListener('scroll', hideShopHoverTip, { passive: true });
 window.addEventListener('keydown', event => {
-  if (mode !== 'items' || !selectedItemId) return;
+  if (mode !== 'items' || $('item-modal').hidden || !selectedItemId) return;
   const tag = document.activeElement?.tagName;
   if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
-  if (event.key === 'Escape') { selectShopItem(null, { scroll: false }); return; }
+  if (event.key === 'Escape') { closeItemModal(); return; }
   if ((event.key === 'ArrowLeft' || event.key === 'ArrowRight') && visibleShopItems.length > 1) {
     const idx = visibleShopItems.findIndex(item => item.id === selectedItemId);
     if (idx < 0) return;
     event.preventDefault();
     const step = event.key === 'ArrowRight' ? 1 : -1;
-    selectShopItem(visibleShopItems[(idx + step + visibleShopItems.length) % visibleShopItems.length].id, { scroll: false });
+    openItemModal(visibleShopItems[(idx + step + visibleShopItems.length) % visibleShopItems.length].id);
   }
 });
 $('practice-saved').onclick = () => { enterPractice('saved'); };
