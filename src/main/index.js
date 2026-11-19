@@ -693,9 +693,16 @@ function createWindow() {
   const showAndPresentWindow = () => {
     if (smokeTest) return;
     if (!mainWindow || mainWindow.isDestroyed()) return;
+    if (mainWindow.isMinimized()) mainWindow.restore();
     // Appearing must not take focus from the settings center (first launch).
-    if (controlCenter?.window) mainWindow.showInactive();
-    else mainWindow.show();
+    if (controlCenter?.window) {
+      mainWindow.showInactive();
+      if (!mainWindow.isVisible()) mainWindow.showInactive();
+    } else {
+      // On Windows, a process launched with SW_HIDE can swallow the very first ShowWindow call.
+      mainWindow.show();
+      if (!mainWindow.isVisible()) mainWindow.show();
+    }
     if (!settingsFocused) mainWindow.setAlwaysOnTop(true, TOPMOST_LEVEL);
     if (!controlCenter?.window) {
       mainWindow.focus();
@@ -1934,6 +1941,10 @@ if (app?.whenReady) {  app.whenReady().then(() => {
         onShortcutFailures: reportShortcutFailures,
       });
       void gamePhraseShortcuts.start();
+    }
+
+    if (!smokeTest && process.argv.includes('--open-learning')) {
+      openAISettings('learning');
     }
 
     app.on('activate', () => {
