@@ -1,11 +1,11 @@
 {
   "schema": 1,
-  "fetchedAt": "2026-11-19T06:59:51.641Z",
+  "fetchedAt": "2026-11-19T07:07:41.110Z",
   "sourceUrl": "https://www.dota2.com/datafeed/itemdata",
-  "count": 356,
-  "withStats": 247,
-  "withLore": 294,
-  "withNotes": 129,
+  "count": 365,
+  "withStats": 253,
+  "withLore": 296,
+  "withNotes": 136,
   "entries": {
     "item:1": {
       "en": "Blink Dagger",
@@ -733,6 +733,32 @@
       "loreEn": "Both the hunter and the hunted must pay the blood price.",
       "loreZh": "猎人和猎物都必须付出血的代价。"
     },
+    "item:1942": {
+      "en": "Bloodslinger",
+      "stats": [
+        {
+          "value": "+100",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+1.25",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        },
+        {
+          "value": "+8",
+          "en": "Intelligence",
+          "zh": "智力"
+        }
+      ],
+      "notesEn": [
+        "Shares a cooldown with Blood Grenade."
+      ],
+      "notesZh": [
+        "与血腥榴弹共用冷却时间。"
+      ]
+    },
     "item:1154": {
       "en": "Block of Cheese",
       "loreEn": "First there was the Belt of Strength. Then there were the Boots of Travel. Now, at long last, the Block of Cheese.",
@@ -1140,6 +1166,53 @@
       "loreEn": "A blade sharp enough to slice through magic itself.",
       "loreZh": "锋利至极的刀刃，足以斩开魔法本身。"
     },
+    "item:1955": {
+      "en": "Caduceus",
+      "stats": [
+        {
+          "value": "+8",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+8",
+          "en": "Agility",
+          "zh": "敏捷"
+        },
+        {
+          "value": "+20",
+          "en": "Intelligence",
+          "zh": "智力"
+        },
+        {
+          "value": "+175",
+          "en": "Health",
+          "zh": "生命值"
+        },
+        {
+          "value": "+6",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        },
+        {
+          "value": "+3",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "notesEn": [
+        "The enemy and ally halves of Empower Spell run on separate cooldowns of 8s and 8s.",
+        "Force applies Empower Spell to its target whether or not that half's cooldown is ready, and does not put it on cooldown.",
+        "Force doesn't interrupt the target's actions.",
+        "Force has 850 cast range when cast on enemies."
+      ],
+      "notesZh": [
+        "法术强化的敌军和友军效果是相互独立的冷却时间，分别为8秒和8秒。",
+        "原力对其目标施加的法术强化无视对应效果的冷却时间，并且不会使其进入冷却。",
+        "原力不会打断目标的动作。",
+        "原力对敌人施放时施法距离为850。"
+      ]
+    },
     "item:65": {
       "en": "Hand of Midas",
       "stats": [
@@ -1408,6 +1481,27 @@
       ],
       "loreEn": "An eerie mask that is haunted with the malice of a fallen vampire.",
       "loreZh": "一副怪异的面具，纠缠着死去吸血鬼的怨念。"
+    },
+    "item:1944": {
+      "en": "Ristul's Devotion",
+      "stats": [
+        {
+          "value": "+8",
+          "en": "Armor",
+          "zh": "护甲"
+        },
+        {
+          "value": "+1",
+          "en": "Mana Regen",
+          "zh": "魔法恢复"
+        }
+      ],
+      "notesEn": [
+        "Lifesteal on attacks against creeps is reduced to 12%."
+      ],
+      "notesZh": [
+        "攻击非英雄单位的吸血效果减少至12%。"
+      ]
     },
     "item:908": {
       "en": "Wraith Pact",
@@ -2288,6 +2382,42 @@
       ],
       "loreEn": "An enchanted hammer forged of metals discovered in the ruins of a village destroyed by a great star storm.",
       "loreZh": "一柄带有魔力的战锤，铸造所用的金属发掘自被流星雨摧毁的村庄废墟之内。"
+    },
+    "item:1946": {
+      "en": "Starforge",
+      "stats": [
+        {
+          "value": "+24",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+24",
+          "en": "Agility",
+          "zh": "敏捷"
+        },
+        {
+          "value": "+40",
+          "en": "Intelligence",
+          "zh": "智力"
+        },
+        {
+          "value": "+6%",
+          "en": "Spell Amplification",
+          "zh": "技能增强"
+        },
+        {
+          "value": "+20%",
+          "en": "Mana Regen Amplification",
+          "zh": "魔法恢复增强"
+        }
+      ],
+      "notesEn": [
+        "Celestial Flare triggers from the following disables: Stun, Hex, Hypnosis, Cyclone, Taunt, Fear, Sleep, and Banish."
+      ],
+      "notesZh": [
+        "Celestial Flare triggers from the following disables: Stun, Hex, Hypnosis, Cyclone, Taunt, Fear, Sleep, and Banish."
+      ]
     },
     "item:225": {
       "en": "Nullifier",
@@ -3764,17 +3894,6 @@
       "loreEn": "The headwear of corrupt magi.",
       "loreZh": "一个堕落法师的头饰。"
     },
-    "item:911": {
-      "en": "Revenant's Brooch",
-      "notesEn": [
-        "Counts as a critical strike, and so does not stack with other critical strikes.",
-        "Does not work against buildings."
-      ],
-      "notesZh": [
-        "Counts as a critical strike, and so does not stack with other critical strikes.",
-        "Does not work against buildings."
-      ]
-    },
     "item:1806": {
       "en": "Parasma",
       "stats": [
@@ -3929,6 +4048,44 @@
       ],
       "loreEn": "This halberd moves with the speed of a smaller weapon, allowing the bearer to win duels that a heavy edge would not.",
       "loreZh": "这把战戟挥动起来如同轻型武器般迅捷，能让持有者赢得决斗的胜利。"
+    },
+    "item:1948": {
+      "en": "Skypiercer",
+      "stats": [
+        {
+          "value": "+35",
+          "en": "Strength",
+          "zh": "力量"
+        },
+        {
+          "value": "+5",
+          "en": "Armor",
+          "zh": "护甲"
+        },
+        {
+          "value": "+5",
+          "en": "Health Regen",
+          "zh": "生命恢复"
+        },
+        {
+          "value": "+25%",
+          "en": "Slow Resistance",
+          "zh": "减速抗性"
+        },
+        {
+          "value": "+25%",
+          "en": "Evasion",
+          "zh": "闪避"
+        }
+      ],
+      "notesEn": [
+        "Nearby illusions and nearby heroes in fog of war will activate Riposte.",
+        "Nearby invisible heroes will not activate Riposte."
+      ],
+      "notesZh": [
+        "战争迷雾中附近的幻象和英雄都会触发还击。",
+        "附近的隐身英雄不会触发还击。"
+      ]
     },
     "item:212": {
       "en": "Ring of Aquila",
@@ -4897,6 +5054,17 @@
       "loreEn": "One to deliver the body, the other to claim the soul.",
       "loreZh": "一把拯救肉体，另一把夺取灵魂。"
     },
+    "item:911": {
+      "en": "Revenant's Brooch",
+      "notesEn": [
+        "Counts as a critical strike, and so does not stack with other critical strikes.",
+        "Does not work against buildings."
+      ],
+      "notesZh": [
+        "Counts as a critical strike, and so does not stack with other critical strikes.",
+        "Does not work against buildings."
+      ]
+    },
     "item:1156": {
       "en": "Ancient Guardian",
       "stats": [
@@ -4985,6 +5153,11 @@
       "notesZh": [
         "The banner has fragile pips: melee heroes and Roshan remove 2 pips per attack."
       ]
+    },
+    "item:1949": {
+      "en": "Stone of Recall",
+      "loreEn": "A shard chipped from one of the ancient waystones, still remembering the road home.",
+      "loreZh": "A shard chipped from one of the ancient waystones, still remembering the road home."
     },
     "item:1576": {
       "en": "Vast",
@@ -5578,6 +5751,19 @@
         "只会计算可见的技能和拥有冷却时间的技能。"
       ]
     },
+    "item:1916": {
+      "en": "Brick",
+      "notesEn": [
+        "Barrier damage ignores any reductions and affects any kind of barrier in the following order: Magical Barrier, Physical Barrier, All-Damage Barrier.",
+        "If barrier damage destroys one type of barrier, the remaining barrier damage is dealt to the next barrier. Any remaining barrier damage is not dealt to the player."
+      ],
+      "notesZh": [
+        "Barrier damage ignores any reductions and affects any kind of barrier in the following order: Magical Barrier, Physical Barrier, All-Damage Barrier.",
+        "If barrier damage destroys one type of barrier, the remaining barrier damage is dealt to the next barrier. Any remaining barrier damage is not dealt to the player."
+      ],
+      "loreEn": "A simple answer for madness",
+      "loreZh": "A simple answer for madness"
+    },
     "item:1864": {
       "en": "Conjurer's Catalyst",
       "notesEn": [
@@ -5733,6 +5919,52 @@
         {
           "value": "-2 / -3",
           "en": "Health Regeneration",
+          "zh": "生命恢复"
+        }
+      ]
+    },
+    "item:1880": {
+      "en": "Red Ledger",
+      "notesEn": [
+        "Automatically generates a new list once all bounties have been collected.",
+        "Can be manually activated if off cooldown to replace the current bounty list."
+      ],
+      "notesZh": [
+        "Automatically generates a new list once all bounties have been collected.",
+        "Can be manually activated if off cooldown to replace the current bounty list."
+      ]
+    },
+    "item:1953": {
+      "en": "Sabatons of Mordiggian",
+      "stats": [
+        {
+          "value": "+45",
+          "en": "Move Speed (Ranged Heroes)",
+          "zh": "移动速度（远程英雄）"
+        },
+        {
+          "value": "+55",
+          "en": "Move Speed (Melee Heroes)",
+          "zh": "移动速度（近战英雄）"
+        },
+        {
+          "value": "+40",
+          "en": "Attack Damage",
+          "zh": "攻击力"
+        },
+        {
+          "value": "+30",
+          "en": "Attack Speed",
+          "zh": "攻击速度"
+        },
+        {
+          "value": "+10",
+          "en": "Armor",
+          "zh": "护甲"
+        },
+        {
+          "value": "+5",
+          "en": "Health Regen",
           "zh": "生命恢复"
         }
       ]

@@ -1,12 +1,12 @@
 {
   "schema": 1,
   "patchNote": "Shop categories from dota2.com.cn; Neutral Tiers 1-4 and Enchantments synced to Valve live item_neutral_tier (Patch 7.42).",
-  "fetchedAt": "2026-11-19T06:33:08.572Z",
+  "fetchedAt": "2026-11-19T07:07:15.888Z",
   "sourceUrl": "https://www.dota2.com.cn/itemscategory/json",
   "valveNeutralSourceUrl": "https://www.dota2.com/datafeed/itemdata?language=english&item_id=",
   "sha256": "f724fe9789a5fd5ae79808d137cc78a580572a9f2ba7f6c5fe36bd783e2af1cd",
-  "count": 251,
-  "neutralArtifactCount": 43,
+  "count": 256,
+  "neutralArtifactCount": 48,
   "neutralEnchantmentCount": 19,
   "entries": {
     "item:46": {
@@ -1899,16 +1899,6 @@
       "internalName": "item_harpoon",
       "zh": "鱼叉"
     },
-    "item:911": {
-      "realm": "neutral",
-      "shelf": "neutral",
-      "category": "tier3",
-      "order": 0,
-      "sortValue": 2,
-      "shopCost": 0,
-      "internalName": "item_revenants_brooch",
-      "zh": "英灵胸针"
-    },
     "item:309": {
       "realm": "neutral",
       "shelf": "neutral",
@@ -2003,7 +1993,7 @@
       "realm": "neutral",
       "shelf": "neutral",
       "category": "tier3",
-      "order": 1,
+      "order": 0,
       "sortValue": 2,
       "shopCost": 0,
       "internalName": "item_ceremonial_robe",
@@ -2023,7 +2013,7 @@
       "realm": "neutral",
       "shelf": "neutral",
       "category": "tier3",
-      "order": 2,
+      "order": 1,
       "sortValue": 2,
       "shopCost": 0,
       "internalName": "item_stormcrafter",
@@ -2068,6 +2058,16 @@
       "shopCost": 0,
       "internalName": "item_defiant_shell",
       "zh": "不羁甲壳"
+    },
+    "item:911": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier3",
+      "order": 2,
+      "sortValue": 2,
+      "shopCost": 0,
+      "internalName": "item_revenants_brooch",
+      "zh": "英灵胸针"
     },
     "item:1157": {
       "realm": "neutral",
@@ -2299,11 +2299,41 @@
       "internalName": "item_harmonizer",
       "zh": "协和"
     },
-    "item:1864": {
+    "item:1911": {
       "realm": "neutral",
       "shelf": "neutral",
       "category": "tier4",
       "order": 10,
+      "sortValue": 3,
+      "shopCost": 0,
+      "internalName": "item_helm_of_the_hivemind",
+      "zh": "虫巢思维头盔"
+    },
+    "item:1916": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 10,
+      "sortValue": 1,
+      "shopCost": 0,
+      "internalName": "item_brick",
+      "zh": "板砖"
+    },
+    "item:1917": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier3",
+      "order": 10,
+      "sortValue": 2,
+      "shopCost": 0,
+      "internalName": "item_balmhook",
+      "zh": "Balmhook"
+    },
+    "item:1864": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier4",
+      "order": 11,
       "sortValue": 3,
       "shopCost": 0,
       "internalName": "item_conjurers_catalyst",
@@ -2323,11 +2353,31 @@
       "realm": "neutral",
       "shelf": "neutral",
       "category": "tier2",
-      "order": 10,
+      "order": 11,
       "sortValue": 1,
       "shopCost": 0,
       "internalName": "item_partisans_brand",
       "zh": "天游烙印"
+    },
+    "item:1880": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier1",
+      "order": 11,
+      "sortValue": 0,
+      "shopCost": 0,
+      "internalName": "item_red_ledger",
+      "zh": "悬红"
+    },
+    "item:1882": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier3",
+      "order": 11,
+      "sortValue": 2,
+      "shopCost": 0,
+      "internalName": "item_vile_phial",
+      "zh": "Vile Phial"
     },
     "item:1865": {
       "realm": "neutral",
@@ -2336,7 +2386,7 @@
       "order": 0,
       "sortValue": 0,
       "shopCost": 0,
-      "internalName": "",
+      "internalName": "item_enhancement_vital",
       "zh": "活力"
     },
     "item:1577": {
@@ -2346,7 +2396,7 @@
       "order": 1,
       "sortValue": 1,
       "shopCost": 0,
-      "internalName": "",
+      "internalName": "item_enhancement_quickened",
       "zh": "迅速"
     },
     "item:1584": {
@@ -2356,7 +2406,7 @@
       "order": 2,
       "sortValue": 2,
       "shopCost": 0,
-      "internalName": "",
+      "internalName": "item_enhancement_alert",
       "zh": "警觉"
     },
     "item:1585": {
@@ -2366,7 +2416,7 @@
       "order": 3,
       "sortValue": 3,
       "shopCost": 0,
-      "internalName": "",
+      "internalName": "item_enhancement_brawny",
       "zh": "壮实"
     },
     "item:1583": {
@@ -2376,7 +2426,7 @@
       "order": 4,
       "sortValue": 4,
       "shopCost": 0,
-      "internalName": "",
+      "internalName": "item_enhancement_mystical",
       "zh": "神秘"
     },
     "item:1586": {
@@ -2386,7 +2436,7 @@
       "order": 5,
       "sortValue": 5,
       "shopCost": 0,
-      "internalName": "",
+      "internalName": "item_enhancement_tough",
       "zh": "坚强"
     },
     "item:1589": {
@@ -2396,7 +2446,7 @@
       "order": 6,
       "sortValue": 6,
       "shopCost": 0,
-      "internalName": "",
+      "internalName": "item_enhancement_crude",
       "zh": "粗暴"
     },
     "item:1595": {
@@ -2406,7 +2456,7 @@
       "order": 7,
       "sortValue": 7,
       "shopCost": 0,
-      "internalName": "",
+      "internalName": "item_enhancement_keen_eyed",
       "zh": "犀利"
     },
     "item:1874": {
@@ -2416,7 +2466,7 @@
       "order": 8,
       "sortValue": 8,
       "shopCost": 0,
-      "internalName": "",
+      "internalName": "item_enhancement_nimble",
       "zh": "轻快"
     },
     "item:1597": {
@@ -2426,7 +2476,7 @@
       "order": 9,
       "sortValue": 9,
       "shopCost": 0,
-      "internalName": "",
+      "internalName": "item_enhancement_titanic",
       "zh": "巨神"
     },
     "item:1593": {
@@ -2436,7 +2486,7 @@
       "order": 10,
       "sortValue": 10,
       "shopCost": 0,
-      "internalName": "",
+      "internalName": "item_enhancement_greedy",
       "zh": "贪婪"
     },
     "item:1596": {
@@ -2446,7 +2496,7 @@
       "order": 11,
       "sortValue": 11,
       "shopCost": 0,
-      "internalName": "",
+      "internalName": "item_enhancement_evolved",
       "zh": "进化"
     },
     "item:1592": {
@@ -2456,7 +2506,7 @@
       "order": 12,
       "sortValue": 12,
       "shopCost": 0,
-      "internalName": "",
+      "internalName": "item_enhancement_timeless",
       "zh": "永恒"
     },
     "item:1588": {
@@ -2466,7 +2516,7 @@
       "order": 13,
       "sortValue": 13,
       "shopCost": 0,
-      "internalName": "",
+      "internalName": "item_enhancement_fleetfooted",
       "zh": "捷足"
     },
     "item:1594": {
@@ -2476,7 +2526,7 @@
       "order": 14,
       "sortValue": 14,
       "shopCost": 0,
-      "internalName": "",
+      "internalName": "item_enhancement_vampiric",
       "zh": "吸血鬼"
     },
     "item:1866": {
@@ -2486,7 +2536,7 @@
       "order": 15,
       "sortValue": 15,
       "shopCost": 0,
-      "internalName": "",
+      "internalName": "item_enhancement_hulking",
       "zh": "笨重"
     },
     "item:1581": {
@@ -2496,7 +2546,7 @@
       "order": 16,
       "sortValue": 16,
       "shopCost": 0,
-      "internalName": "",
+      "internalName": "item_enhancement_audacious",
       "zh": "冒险"
     },
     "item:1587": {
@@ -2506,7 +2556,7 @@
       "order": 17,
       "sortValue": 17,
       "shopCost": 0,
-      "internalName": "",
+      "internalName": "item_enhancement_feverish",
       "zh": "狂热"
     },
     "item:1867": {
@@ -2516,7 +2566,7 @@
       "order": 18,
       "sortValue": 18,
       "shopCost": 0,
-      "internalName": "",
+      "internalName": "item_enhancement_manic",
       "zh": "癫狂"
     }
   }

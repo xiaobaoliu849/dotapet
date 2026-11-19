@@ -16,6 +16,7 @@ export function presentSettingsWhenReady(window, { smokeTest = false, schedule =
     presented = true;
     if (window.isMinimized()) window.restore();
     window.show();
+    if (window.isVisible && !window.isVisible()) window.show();
     window.focus();
     window.moveTop();
   };

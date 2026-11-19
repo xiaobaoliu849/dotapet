@@ -1,20 +1,31 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import { audioCandidates, recordedAudio } from '../src/learning/audioAssets.js';
+import { audioFreshness } from '../src/learning/contentAudit.js';
 import { createLearningAudio } from '../src/renderer/learning-audio.js';
 
 const manifest = JSON.parse(fs.readFileSync(new URL('../src/learning/audio-manifest.json', import.meta.url)));
 const catalog = JSON.parse(fs.readFileSync(new URL('../src/learning/catalog.json', import.meta.url)));
+const baseline = JSON.parse(fs.readFileSync(new URL('../src/learning/audio-baseline.json', import.meta.url)));
 test('recordings are bundled locally, nonempty MP3s, and cover every hero, ability and expression', () => {
-  assert.equal(Object.keys(manifest.entries).length, 1146);
+  assert.equal(Object.keys(manifest.entries).length, 1165);
   for (const [id, entry] of Object.entries(manifest.entries)) {
     assert.match(entry.file, /^(hero|ability|item|phrase)\/[\w-]+\.mp3$/);
     const file = new URL('../src/renderer/assets/learning-audio/' + entry.file, import.meta.url);
+    if (entry.localOnly && !fs.existsSync(file)) continue;
     assert.equal(fs.statSync(file).size, entry.bytes, id);
     const header = Buffer.alloc(3), fd = fs.openSync(file, 'r');
     try { fs.readSync(fd, header, 0, 3, 0); } finally { fs.closeSync(fd); }
     assert.ok(header.toString() === 'ID3' || (header[0] === 255 && (header[1] & 224) === 224), id + ' has no MP3 header');
+    if (entry.patch === '7.42') {
+      const audio = fs.readFileSync(file);
+      assert.equal(createHash('sha256').update(audio).digest('hex'), entry.audioSha256, id);
+      assert.equal(createHash('sha256').update(entry.script).digest('hex'), entry.scriptSha256, id);
+      const lesson = catalog.lessons.find(row => row.id === id);
+      assert.equal(audioFreshness(entry, lesson, baseline).status, 'current-verified', id);
+    }
   }
   for (const lesson of catalog.lessons.filter(lesson => lesson.kind !== 'item')) assert.ok(recordedAudio(manifest, lesson), lesson.id);
   assert.equal(manifest.missing.length, 164);

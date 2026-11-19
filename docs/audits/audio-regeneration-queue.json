@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAt": "2026-11-15T07:41:48.202Z",
+  "generatedAt": "2026-11-19T05:10:00.585Z",
   "note": "Review these candidate scripts before synthesis. No audio has been generated or replaced.",
   "entries": [
     {
@@ -9,7 +9,17 @@
       "reason": "baseline-changed",
       "text": "Flesh Heap. Pudge's skin thickens permanently every time he kills an enemy Hero, gaining 2 bonus Strength for each stack.",
       "textSha256": "317977a041b252b46f04124265bfa7b3c662c255e63fc7e1011700510037c17f",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:1229",
+      "name": "Stinger",
+      "reason": "baseline-changed",
+      "text": "Stinger. Sand King strikes an area, performing an attack on all enemies in the area of effect, dealing extra damage to each. Attacks have decreased Item Potency. Enemies within an innermost radius of 120 / 140 / 160 / 180 take 40% extra damage. Applies Caustic Finale and a slow to all enemies hit.",
+      "textSha256": "d7d7eb5224a33a3d8a741d2598fe5a5589e1cd42bcab759266cfdf71f2aaabe9",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -17,9 +27,29 @@
       "id": "ability:1231",
       "name": "Galvanized",
       "reason": "baseline-changed",
-      "text": "Galvanized. Storm Spirit gains a charge of 0.2 mana regeneration per kill, and a charge every 3 levels. Loses 2 charges per death. Additionally every time he gains a charge he also gains 0.1 Mana Regen permanently.",
-      "textSha256": "f5392d1a139de0608e6891349c36b545bbfd7f84a64a1778d2c0ac2fb1372fe8",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Galvanized. Storm Spirit gains a charge of 0.25 mana regeneration per kill, and a charge every 3 levels. Loses 2 charges per death. Additionally every time he gains a charge he also gains 0.1 Mana Regen permanently.",
+      "textSha256": "dac678bca94abba755b57a42de31c25bf2dfd3be5841ade26e574b6a1fb43a65",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:1249",
+      "name": "To Hell and Back",
+      "reason": "baseline-changed",
+      "text": "To Hell and Back. Lion gains 20% debuff duration after killing or assisting in a Hero kill while that Hero is dead.\n\nLion gains 15% spell amplification for 90s after respawning or resurrecting or until he gets a kill or assist.",
+      "textSha256": "b5c6dfa84a443184434a0bee4cd7a42041ad06b7a172f16819396c19b137683c",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:1258",
+      "name": "Backstab",
+      "reason": "baseline-changed",
+      "text": "Backstab. Every time Riki strikes his enemy from behind, he deals additional bonus damage equal to a multiple of his Agility and his attack has increased Item Potency.",
+      "textSha256": "13481e6856590ed3ac4885e284e8238b26425840864a6bf91a725f2d5605b7c7",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -29,7 +59,27 @@
       "reason": "baseline-changed",
       "text": "Immaterial. Phantom Assassin focuses inward, increasing her ability to evade enemy attacks.\n\nStacks diminishingly with other sources of Evasion.",
       "textSha256": "e3fd00fb72adf73b4d589ef57ad6be4f63e5979ee9629fe8b46de3c739442ad6",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:1295",
+      "name": "Armor Power",
+      "reason": "baseline-changed",
+      "text": "Armor Power. Clockwerk's outgoing damage increases by 0.55845% per point of armor.\n\nClockwerk can consume Chainmails to permanently gain +4 armor per Chainmail consumed. Can stack. Self-cast to consume.",
+      "textSha256": "ac3c365603e212462f3f444c9fecb4d80a839e4bd6a6189a836f9925a6f27d1b",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:1297",
+      "name": "Defilement",
+      "reason": "baseline-changed",
+      "text": "Defilement. Leshrac gains 0.6 Area of Effect Bonus per Intelligence.",
+      "textSha256": "453acd626e0b4f92def29428bbf3967f823042ba72849e5b7a3fa94e4ec355a9",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -37,9 +87,19 @@
       "id": "ability:1298",
       "name": "Spirit of the Forest",
       "reason": "baseline-changed",
-      "text": "Spirit of the Forest. Nature's Prophet gains 2% bonus damage for each nearby tree. Treants also provide this bonus with multiplied values regardless of proximity. Treants also possess this ability.",
-      "textSha256": "f0f3beb67f2af76da838029bd094004de240bdf387059f036ca236bd4b920278",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Spirit of the Forest. Nature's Prophet's attacks gain 2% bonus base damage for each tree near the target, including Sprout trees. Treants near the target also provide this bonus with multiplied values. Treants also possess this ability.",
+      "textSha256": "105c4d4758394505c5ae448425f1c50b530d040b33f0c4fb2c8b23ebf2cfe4a2",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:1313",
+      "name": "Spider's Milk",
+      "reason": "baseline-changed",
+      "text": "Spider's Milk. Whenever Broodmother or a nearby unit under her control kills an enemy, Broodmother and her units close to the victim receive a buff for 3s that heals them for a percentage of the victim's health every 0.5 seconds. Healing from creeps is reduced by 40%.",
+      "textSha256": "489b0c469faec2fafc6e92ede28ddfbc68ba22fa87b54611240d2d5cf069e629",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -49,7 +109,37 @@
       "reason": "baseline-changed",
       "text": "Big Game Hunter. Bounty Hunter receives 20% more kill and assist gold if the dying enemy hero is Big Game. An enemy hero is considered Big Game if they are one of the top 3 net worth heroes on the enemy team.",
       "textSha256": "363e64181757f5d01f062b9c7d3bdab89381f80a2163df789bc0f7f6ea139ad0",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:1342",
+      "name": "Summon Spirit Bear",
+      "reason": "baseline-changed",
+      "text": "Summon Spirit Bear. Summons a powerful Spirit Bear companion that can equip items.\n\nIf the bear moves too far away from the Lone Druid, it cannot attack.  Lone Druid suffers 20% of his max health as backlash damage if the Spirit Bear dies.\nSpirit Bear has Demolish, Return, Entangling Claws, Savage Roar, and Spirit Link abilities.",
+      "textSha256": "e60a5610743219a5ae1e762c497072187691c020c7e1bf5eef4fbe33aac14fc3",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:1360",
+      "name": "Ceaseless Dirge",
+      "reason": "baseline-changed",
+      "text": "Ceaseless Dirge. When Undying dies he will instantly respawn in the fountain. Begins the game on cooldown. Cannot be refreshed and is not affected by cooldown reduction.",
+      "textSha256": "4f7da24f694cc3369440536780f3ce361883e03bad1258549b29581f3288a937",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:1362",
+      "name": "Kinetic Fence",
+      "reason": "baseline-changed",
+      "text": "Kinetic Fence. After a short formation time, creates a wall out of kinetic energy that enemies cannot pass.  Enemies touching the wall are struck by Electromagnetic Repulsion with 0% reduced knockback.",
+      "textSha256": "4ab977c3b14fdff84bb37cabbca4253e0c62eb134b8c94c3dd0f9fcdf6b87343",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -59,7 +149,7 @@
       "reason": "baseline-changed",
       "text": "Stone Remnant. Call a Stone Remnant to the target location.  Stone Remnants have no vision and are invulnerable, and can be used with Earth Spirit's abilities.  Calling a Stone Remnant consumes a charge, which recharge over time. Stone Remnant has 7 charges.\n\nEarth Spirit passively gains 3% bonus damage per unused Stone Remnant charge, and gains an additional 7.5% bonus damage for 10s when a Stone Remnant is targeted with an ability (does not stack).",
       "textSha256": "bdc0df5b5dd6d6d3e61633673b5f2b34b9a1749f716411e21df928becf023eac",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -69,7 +159,7 @@
       "reason": "baseline-changed",
       "text": "Dying Light. Phoenix deals 3.5% of its missing health as magic damage to all enemies in a 400 radius every second.",
       "textSha256": "0b5514e368f3822100d1c09535b3b67971007433298715fc28770bb0f2334e18",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -79,7 +169,17 @@
       "reason": "baseline-changed",
       "text": "Dauntless. Mars gets more HP Regen the more he is outnumbered by enemy heroes in 900 radius.",
       "textSha256": "d62b3275bf89b62d7d898ee769464d559645b317b9a2b3ab950a38d92799a1e3",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:1428",
+      "name": "Special Delivery",
+      "reason": "baseline-changed",
+      "text": "Special Delivery. Marci whistles to instantly summon her courier to her. If the courier started in the fountain, it will take items from Marci's stash. After teleporting it will transfer these items to Marci and head back to the fountain.\n\nPassively grants all allied couriers 3 bonus levels and 1 extra pip.",
+      "textSha256": "fcadb854a320dccdbc84234d07f7a56540822b3fc497e52a8c0f7a82cfd1dcb2",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -89,7 +189,17 @@
       "reason": "baseline-changed",
       "text": "Persecutor. Attacks slow enemies based on how much mana they are missing. Min slow at 60% mana, up to max slow at 0% mana. No effect if enemy is above 60% mana.",
       "textSha256": "88e7035c0b778cde0ff9867b70194175c1ced7c230d4608306bd8de97d64fc6b",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:1475",
+      "name": "Gorgon's Grasp",
+      "reason": "baseline-changed",
+      "text": "Gorgon's Grasp. Medusa fires arrows in a line that land in 3 groups, with each grouping larger than the previous. Enemies struck by a volley of arrows take an initial burst of magic damage and then are rooted, cannot turn, are revealed to the enemy, and take damage per second. An enemy can only be hit once per cast.",
+      "textSha256": "0659493edaaefb8ddc6aaf4432fdac7ea46916ff7a4614f446cffd2cc6a04e08",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -97,9 +207,19 @@
       "id": "ability:1481",
       "name": "Withering Mist",
       "reason": "baseline-changed",
-      "text": "Withering Mist. Damaging enemies applies the Withering Mist debuff for 5s. Affected enemies have their Health Restoration reduced by 29.5% if they are below 40% HP.",
-      "textSha256": "0d2d41247f55a9e4eef7d110d4145db1be40681ce3b7e706eda0b77bf203084c",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Withering Mist. Damaging enemies reduces their Health Restoration for 5s. The lower the enemy's HP, the stronger the Health restoration reduction effect. Minimum effect of 10% at full health. Maximum effect at zero health.\n\nDoes not apply from item damage.",
+      "textSha256": "b219c21201dd4817bd6a601cfeab575323a5ee80c6efa8f0ca5d1eb2975e2e3a",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:1486",
+      "name": "Invading Force",
+      "reason": "baseline-changed",
+      "text": "Invading Force. After an allied hero Teleports, they temporarily gain a Physical Damage Barrier based on their max health and Movement Speed. Allies receive 2x bonuses if teleporting via Fiend's Gate.",
+      "textSha256": "6f4ca097376dce670ecc449f417688eee617266423f7ccb38aba27c5a639020d",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -107,9 +227,29 @@
       "id": "ability:1498",
       "name": "Echo Slash",
       "reason": "baseline-changed",
-      "text": "Echo Slash. Kez slashes forward in a 800 distance line with his Katana, attacking enemies in an area and applying a brief 100% impact slow. After a short delay, the area is attacked again. Heroes take bonus damage.",
-      "textSha256": "09e56ad61b6461d61d7eb7d464432385c6b14006a82e4f0be0dbdf88eefa1c4e",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Echo Slash. Kez slashes forward in a 800 distance line with his Katana, attacking enemies in an area and applying a brief 100% impact slow. After a short delay, the area is attacked again.",
+      "textSha256": "e30a86632bd5ed5597d42083817858ffebe1f983cc97d713b59e4a5491a244a4",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:1501",
+      "name": "Raptor Dance",
+      "reason": "baseline-changed",
+      "text": "Raptor Dance. Kez enters into an uncontrollable state for 1 second, becoming invulnerable for 0.2s and receiving a basic dispel.\n\nIf the cast completes successfully, Kez performs a series of deadly radial slashes around him that deal a fixed damage attack based on the target's max health with enhanced lifesteal.",
+      "textSha256": "7af18ad9d8900e7c199e3105258a28e8c6a2c7f218c972a856f8c12cd576ac57",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:1502",
+      "name": "Falcon Rush",
+      "reason": "baseline-changed",
+      "text": "Falcon Rush. Kez gains the ability to rush towards enemy targets to deliver echoing secondary attacks with reduced damage and Item Potency.  While in this state, Kez has phased collision and slow resistance.",
+      "textSha256": "8f039bfd7424e938f3454fe7a9d7cf5419f3d4ffad65210d6edcc42982c7b746",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -119,7 +259,7 @@
       "reason": "baseline-changed",
       "text": "Shodo Sai. Kez has a chance to critically strike the target when attacking with Sais.\n\nKez may activate the ability to disarm himself, lock his facing, and parry attacks and attack effects from the targeted direction for 1.5 seconds. If an attack is parried from an enemy Hero in this way, that Hero is stunned for 0.4s and gains a Mark.  When a Marked target is attacked by Kez, it will guarantee a critical strike and stun the target.\n\nThe sub-ability may be used to cancel the blocking early.",
       "textSha256": "c33d4298338b7df887d4d1a5b8b6f9cfed54f4baf78cad5a734630810a7f236e",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -129,7 +269,57 @@
       "reason": "baseline-changed",
       "text": "Raven's Veil. Kez releases a wave of smoke that applies his Mark to nearby enemy heroes, briefly reducing their vision. Kez receives a basic dispel and gains bonus movement speed and invisibility until he attacks or casts a spell.",
       "textSha256": "9b9f516636de21cddbe648dcab98cb33bab268fb5865c88a9f7ba1c619780fcb",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:1550",
+      "name": "Nothl Projection",
+      "reason": "baseline-changed",
+      "text": "Nothl Projection. Dazzle departs his body, traveling through the Nothl Realm as an invulnerable spirit that can cast spells, attack, and use items, leaving his body behind in the world with a visible tether. While active, Dazzle's basic abilities are empowered: Poison Touch hexes enemies, Shallow Grave heals upon expiration, and Shadow Wave has reduced cooldown.\n\nThe effect can be ended early, and Dazzle returns to the body at the end.",
+      "textSha256": "4a43390df038b9bbad4cdf46d45f15f689340c0f773184c455575c2018761ce6",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:1663",
+      "name": "Bullbelly Blitz",
+      "reason": "baseline-changed",
+      "text": "Bullbelly Blitz. Largo plays a song that deals 24 / 37 / 50 magical damage to nearby enemies. The song also increases nearby allied heroes' spell amplification and grants their attacks additional magic damage.",
+      "textSha256": "85dbd1dc1f403fa7cc675d57cbd57433b58dcabc97560da8a8c343f7112382f5",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:1681",
+      "name": "Liquid Courage",
+      "reason": "baseline-changed",
+      "text": "Liquid Courage. After taking 400 damage from player-controlled units, Brewmaster gains a Status Resistance buff for 5s and his movement speed alternates every 1s between being faster and being slower. Damage taken is reset if Brewmaster takes no damage for 7s. Can only trigger once every 15s.",
+      "textSha256": "912d9ffcd85314cbe149aebd33bca5d069226916bb0d03d2af84bc11de0c8b26",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:1739",
+      "name": "Celestial Quiver",
+      "reason": "baseline-changed",
+      "text": "Celestial Quiver. When a charge is available, Mirana's next attack will have bonus item potency and magic damage.",
+      "textSha256": "bd6c879ef8897e8275167c61bf46dc84e869d69be6e58038db51062b66f64539",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:1743",
+      "name": "Urnaconda",
+      "reason": "baseline-changed",
+      "text": "Urnaconda. Throw a snake jar at the target location, damaging all enemies in the AoE and creating a Massive Serpent Ward that has 4x the base Serpent Ward damage and pip health there that lasts 15s.",
+      "textSha256": "aca524b5eab44a7e51a7e8634e997ddf4e23c54138f4dd5b583b860b8ec6a9c3",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -137,9 +327,9 @@
       "id": "ability:1746",
       "name": "Leviathan's Catch",
       "reason": "baseline-changed",
-      "text": "Leviathan's Catch. Whenever an enemy hero is killed by Tidehunter or dies under his debuffs, a fish appears in their place; Tidehunter can eat the fish to permanently gain 3 Health, 2 Attack Range, and 1 Bonus Damage Block.\n\nTidehunter eats a free fish every time he reaches an even hero level.",
-      "textSha256": "66f1454e63ccaf9191d485471ac485e80561ba43bf9a3961fec166bdb9041f87",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Leviathan's Catch. Whenever an enemy hero is killed by Tidehunter or dies under his debuffs, a fish appears in their place; Tidehunter can eat the fish to permanently gain 5 Health, 2 Attack Range, and 1 Bonus Damage Block.\n\nTidehunter eats a free fish every time he reaches an even hero level.",
+      "textSha256": "e5c47d2953106279bcaed2926f71a83fa24bb39e1ca0a02331cf89b480addf9d",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -149,7 +339,17 @@
       "reason": "baseline-changed",
       "text": "Inner Peace. When remaining stationary and not taking damage for 0.2s, Templar Assassin begins meditating, gaining health and mana regeneration, reaching the maximum bonus after 1.85s of meditating.",
       "textSha256": "ef8bb6886d09d1f114167b599d36958f302312a108eacbe0120808a82396d2c7",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:1754",
+      "name": "Threads of Fate",
+      "reason": "baseline-changed",
+      "text": "Threads of Fate. Whenever Weaver deals damage to an enemy hero with an attack or ability, if he remains within 700 range of them for 1.25s, he establishes a Thread of Fate that briefly slows the enemy and ties Weaver and the enemy together. While the thread holds, the enemy is slowed again every 6s. Each established thread of fate grants bonus damage to Weaver.",
+      "textSha256": "a87673dbb46120cf8cf4433e9b2bcb77b02c8ea51ae877dc24299d1342d41784",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -157,9 +357,19 @@
       "id": "ability:1755",
       "name": "Zealot",
       "reason": "baseline-changed",
-      "text": "Zealot. Whenever Chen respawns, he is joined by a Zealot, a melee warrior creep with the ability to sacrifice itself to heal or deal damage to an enemy.  The Zealot receives Holy Persuasion's benefits and scales up with other lane melee creeps as game time increases and gains extra base damage.  The Zealot respawns next to Chen.\n\nZealot may be activated to teleport a unit under your control to Chen after a 6 second delay.  If Chen is targeted, it will teleport all units you control. Taking damage from enemy heroes or their units will cancel the teleport.",
-      "textSha256": "914c48e0736a16127fb171ab1ac0c61d0f78eafb9b2a29a8bcd549c272606d83",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Zealot. Passively provides bonus health, damage and move speed to non-hero units under Chen's control.\n\nChen may Anoint a unit under his control converting it into an Anointed Zealot, giving it bonus base damage and the Martyrdom ability. Anointed Zealots can no longer be killed by abilities that instantly kill creeps otherwise. Activating this ability will respawn his current Anointed Zealot.  He begins the game with a melee lane creep as an Anointed Zealot.",
+      "textSha256": "33d07c95be0eabdaae60ad22b7dea356400430b6503189e02d2953867c71050d",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:1756",
+      "name": "Bone Chill",
+      "reason": "baseline-changed",
+      "text": "Bone Chill. When Ancient Apparition deals Magic damage to an enemy Hero with his abilities its Strength is reduced. Multiple instances of this effect stack and have independent durations.",
+      "textSha256": "7909e63e0bf37c91bc9c4cb03e4dbd08858199ac9f9c13f07f278f5eabe251c8",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -169,7 +379,7 @@
       "reason": "baseline-changed",
       "text": "Side Gunner. Gyrocopter gains a Side Gunner that attacks enemy units in a 700 unit radius every 1.3s with his attack. Prioritizes furthest unit away within its range.",
       "textSha256": "b911f2496bc68626164d841297549f4b024d01ecbfe69a29223f5ca24c7458e8",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -179,7 +389,17 @@
       "reason": "baseline-changed",
       "text": "Bright Speed. Keeper of the Light gains 1 movement speed for every 3 Intelligence.\n\nWhenever Keeper of the Light moves 300 distance, he leaves behind light that allows him to see 400 range for 3 seconds.",
       "textSha256": "95d51bf07185699f0ca1de6e8450e6a4c3753ac3f304a090fb00fbb428182ed4",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:1785",
+      "name": "Spectral Slug",
+      "reason": "baseline-changed",
+      "text": "Spectral Slug. Muerta shoots a spectral bullet at an enemy, dealing damage, knocking them back, and turning them ethereal for 2.25s - rendering them immune to physical damage and unable to attack. The target is slowed and -20% more vulnerable to magic damage. Enemies will not be knocked out of Muerta's attack range.",
+      "textSha256": "050356672f3a5b920057f78172c146f5c9cf5a55e7262897973b8d08519bbf73",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -187,9 +407,29 @@
       "id": "ability:196",
       "name": "Unicycle",
       "reason": "baseline-changed",
-      "text": "Unicycle. Use: Saddle Up\nSummons a speedy unicycle to ride around on for 10 seconds. 1.5s after mounting the unicycle, taking damage from enemy hero sources greater than 20 dismounts the rider. Crashing into trees destroys them and slows the unicycle. Attacking, using channeled abilities, or crashing into units and other obstacles also dismounts the rider.",
-      "textSha256": "6764ac0c8769b8729ee83884de8aef67734e05ef4204503a32abcfb90b8d1ddc",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Unicycle. Use: Saddle Up\nSummons a speedy unicycle to ride around on for 15 seconds. 1.5s after mounting the unicycle, taking damage from enemy hero sources greater than 20 dismounts the rider. Crashing into trees destroys them and slows the unicycle. Attacking, using channeled abilities, or crashing into units and other obstacles also dismounts the rider.",
+      "textSha256": "6897f63c73fa1843691fdb312c79a930780f6fd134eee7fea087262dc251329a",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:321",
+      "name": "Overclocking",
+      "reason": "baseline-changed",
+      "text": "Overclocking. Supercharges Clockwerk's abilities:\n\nBattery Assault: Increased radius and affects all enemies in its range.\nPower Cogs: Radius increased, and Clockwerk's armor while near Power Cogs is increased.\nRocket Flares: Increased damage, vision and slow duration, and fire additional rockets to either side of the target.\nHookshot: Stun radius and duration increased.\nJetpack: Moves faster.\n\nClockwerk's movement and attack speed become slowed to a crawl after the duration runs out.",
+      "textSha256": "a0d94221d13c06ecc9134b5caadb28df8377f3b131cbf4d409fd70cb5446c967",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:333",
+      "name": "Wolf Bite",
+      "reason": "baseline-changed",
+      "text": "Wolf Bite. Lycan bites an allied hero or creep-hero, granting them Shapeshift properties. While shapeshifted this way, the target counts as a unit under Lycan's control for Pack Hunter.",
+      "textSha256": "72e0995035d4453aebf5ba77364cfa336026ab4b3c86a549419260ac5d8e9097",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -199,7 +439,7 @@
       "reason": "baseline-changed",
       "text": "Multishot. CHANNELED - Drow releases a flurry of arrows in continuous salvos, hitting enemies for extra damage and applying Frost Arrows with a range of Drow's Attack Range + 475. Lasts up to 1.75 seconds.\n\nDrow can move slowly and use items while casting Multishot.",
       "textSha256": "de2b50d616a18c2bb59bae6c9254e0809fe0136501bc51fc560aaa8946aabffc",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -209,7 +449,7 @@
       "reason": "baseline-changed",
       "text": "Funhouse Mirror. Use: Proportion Distortion\nCreates 1 imperfect image of your hero that lasts 18 seconds. Your illusion deals 100% and takes  300% damage.",
       "textSha256": "795afd56efe0fdcc550b1b24fec4bd68434b7e2526139a6b93d94c4f974552b8",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -217,9 +457,9 @@
       "id": "ability:390",
       "name": "Whoopee Cushion",
       "reason": "baseline-changed",
-      "text": "Whoopee Cushion. Use: Whoopsie\nPropels your hero forward 400 units. Leaves a 250 radius stink cloud behind for 3 seconds that slows enemies by -30%.",
-      "textSha256": "a04cfa97084a7868af916fceae2e154cd3e76c46db882fa8c3519dd0ad216df7",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Whoopee Cushion. Use: Whoopsie\nPropels your hero forward 400 units. Leaves a 300 radius stink cloud behind for 3 seconds that slows enemies by -35%.",
+      "textSha256": "8fc2f55c26ec46ca7eae1525d79f467108c1d24ae0e02af7c88d6bec890f8b2e",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -229,7 +469,7 @@
       "reason": "baseline-changed",
       "text": "Strongman Tonic. Use: Forcefully Imbibe\nTemporarily increases an allied hero's Strength by 5 plus 1 per Ringmaster's level for 8 seconds. The effect holds for 4 seconds and then deteriorates over the duration.",
       "textSha256": "300772ae217c2c7f42d980b652187f66523c52bb8066077af7d0e3fbd15a1752",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -239,7 +479,27 @@
       "reason": "baseline-changed",
       "text": "Marksmanship. Drow's experiences in battle grant her a chance to launch arrows with incredible accuracy and effectiveness. Pierces through the enemy's defenses, ignoring their base armor. This ability is disabled if there is an enemy hero within 300 range.",
       "textSha256": "5a340300b7d906854842109ecbd08e6e399c64c8dd2a148d7ce9bdf54b278d18",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5028",
+      "name": "Blade Fury",
+      "reason": "baseline-changed",
+      "text": "Blade Fury. Causes a bladestorm of destructive force around Juggernaut, rendering him debuff immune with 80% magic resistance and dealing damage every 0.2s to nearby enemy units. Applies a basic dispel at the start and end of the spin.\n\nDISPEL TYPE: Basic Dispel",
+      "textSha256": "3c6821a88d11cef03e644d08cf8fc44aaac207a18a7c69a7ca3c50da7e12b9bd",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5030",
+      "name": "Omnislash",
+      "reason": "baseline-changed",
+      "text": "Omnislash. Juggernaut leaps towards the target enemy unit and then slashes it. Juggernaut continues to jump slash nearby random enemies (including the previously slashed enemy) until the duration ends or there are no enemies nearby. Jump rate is dependent on Juggernaut's attack speed. Juggernaut is invulnerable and has increased attack speed during Omnislash.\n\nDISPEL TYPE: Basic Dispel",
+      "textSha256": "49827a6cc6c40dcc97f94349d7641b1d26989120180fdb5f4badaa4790e7d77b",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -249,7 +509,7 @@
       "reason": "baseline-changed",
       "text": "Fiery Soul. Grants bonus attack and movement speed each time Lina hits an enemy with a spell. Stacks with itself. Lasts 16 seconds.",
       "textSha256": "1983eed0bba70dc5e4888e0527215cbbb11a08ac3df03610a7c7a1393d8e9867",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -259,7 +519,7 @@
       "reason": "baseline-changed",
       "text": "Sacred Arrow. Fires a long-range arrow with deadly precision, which stuns and damages the first enemy unit it strikes. The stun duration ranges from 0.01 to 2.3 / 3.2 / 4.1 / 5 seconds, with bonus damage up to 180 added, based on the distance the arrow travels to its target. Instantly kills the first non-ancient creep it hits.",
       "textSha256": "833e741e2bfa23ab85f5475481aac2592d3fd0abe061d3a1ca4826f882815dbd",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -269,7 +529,7 @@
       "reason": "baseline-changed",
       "text": "Morph. Morphling changes his form to match the targeted enemy, gaining their basic abilities and changing his primary attribute based on his target. Can be toggled for the duration of the ability.",
       "textSha256": "0d12c9751c7fe5eaf23fc242edf7b596625661625d319bd211f637c3f3af407d",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -279,7 +539,67 @@
       "reason": "baseline-changed",
       "text": "Necromastery. Shadow Fiend steals the soul from units he kills, gaining 1 bonus damage per soul. Hero kills grant 4 souls. On death, he releases 30% of them from bondage.",
       "textSha256": "39cc407f75bf202206053578f6df2647bd20a2c33d2d4b37d4393a96b2d20826",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5063",
+      "name": "Presence of the Dark Lord",
+      "reason": "baseline-changed",
+      "text": "Presence of the Dark Lord. Shadow Fiend's presence reduces the armor and magic resistance of nearby enemies.",
+      "textSha256": "8267acd0c93483fb808d84010eb1fbe71d8ef6879e66a218f4dc858bb951d499",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5064",
+      "name": "Requiem of Souls",
+      "reason": "baseline-changed",
+      "text": "Requiem of Souls. Shadow Fiend gathers up to 20 of his captured souls to release them as lines of demonic energy. Units near Shadow Fiend when the souls are released can be damaged by several lines of energy. Any unit damaged by Requiem of Souls will be feared and have its movement speed reduced for 1.2 / 1.5 / 1.8 seconds, increased by 0.1 seconds for each additional soul that hits it. Lines of energy are created for every soul captured through Necromastery. \n\n Requiem of Souls is automatically cast whenever Shadow Fiend dies, regardless of its cooldown.",
+      "textSha256": "5fc4e03bc1179cb5452ebdcfc7e2c198a151cbc7e9377a7215bdac98572cb397",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5067",
+      "name": "Juxtapose",
+      "reason": "baseline-changed",
+      "text": "Juxtapose. Phantom Lancer has a chance to fracture his presence on an attack, creating an illusion of himself. Illusions also have a chance to fracture further. Illusions created from Phantom Lancer last for 7 seconds, while illusions created from other illusions last 4 seconds.",
+      "textSha256": "e800364496d976a5fc2f09f180e14839214c342f5d8a1317d79c8d150a49e577",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5081",
+      "name": "Mass Serpent Ward",
+      "reason": "baseline-changed",
+      "text": "Mass Serpent Ward. Summons 10 Serpent Wards to attack enemy units and structures. The Wards are immune to magic. Creeps and illusions deal 25% damage to the Serpent Ward.",
+      "textSha256": "fb49eaf2c8973aa2912741d2bfe38e91b494fa75c73c0e46668f6d840718862f",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5092",
+      "name": "Witchcraft",
+      "reason": "baseline-changed",
+      "text": "Witchcraft. Whenever Death Prophet attacks an enemy, a ghost will fly out and hit the enemy and return to her with life. The spirit has a percentage of Death Prophet's attack damage and heals for 50% of the damage.\n\nDeath Prophet's occult knowledge deepens with experience, gaining movement speed and Witchcraft spirit damage.",
+      "textSha256": "73cb00e17683a0251eb77405ccbc9f0672d21acd970f4793d122c9f5ab4842eb",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5112",
+      "name": "Static Field",
+      "reason": "baseline-changed",
+      "text": "Static Field. Zeus shocks any enemy that he attacks or is hit with his abilities, causing damage equal to a percentage of their current health.",
+      "textSha256": "d86275f0dbeda78cbaacbf1ac5df0781323103dc2fb002ccab231241df8cd792",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -289,7 +609,17 @@
       "reason": "baseline-changed",
       "text": "Vengeance Aura. Vengeful Spirit's presence increases the damage of nearby friendly heroes. Vengeful Spirit herself receives 25% extra bonus.",
       "textSha256": "a2203a354e49940a83395fd7684047b9b7b8d4944fe27a32aebfd111ac8ea86e",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5133",
+      "name": "Focus Fire",
+      "reason": "baseline-changed",
+      "text": "Focus Fire. Windranger channels the wind to gain 350 / 425 / 500 additional attack speed against a single enemy unit or structure, though with a reduction to her attack damage and her Item Potency.",
+      "textSha256": "dbf0ecda37676b57a300f978c3262f862e8d48c07a6d002ebb76485b7f347104",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -299,7 +629,67 @@
       "reason": "baseline-changed",
       "text": "Maledict. Curses all enemy Heroes and player-controlled targets in a small area, causing them to take a set amount of damage each second, as well as bursts of damage every 4 seconds based on how much health they have lost since the curse began.",
       "textSha256": "4c96aa6ba955e43e94dd58f1d8b41c64c7415feed521f17b7ae85a078a6ea2ea",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5157",
+      "name": "Assassinate",
+      "reason": "baseline-changed",
+      "text": "Assassinate. Sniper locks onto a target enemy unit and, after a short aiming duration, fires a devastating shot that deals Sniper's attack damage with bonus Item Potency and bonus damage at long range and mini-stuns the target. Whenever Sniper kills an enemy hero, Assassinate is refreshed.",
+      "textSha256": "057975c2af449541cc8c22eafbe9f3b5ac198b113ff03aa8c5726d39bbe7c98c",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5173",
+      "name": "Shadow Strike",
+      "reason": "baseline-changed",
+      "text": "Shadow Strike. Hurls a poisoned dagger which deals large initial damage, and then deals damage over time. The poisoned unit has its movement speed slowed for 13 seconds.  An instance of damage is dealt every 3 seconds.",
+      "textSha256": "9568a29c1f895c3873631f0e393e6153891329d8d897a907a6ec531806c58629",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5180",
+      "name": "Plague Ward",
+      "reason": "baseline-changed",
+      "text": "Plague Ward. Summons a plague ward to attack enemy units and structures. The ward is immune to magic. Ward attacks apply Venomancer's Poison Sting with 50% damage/slow.",
+      "textSha256": "406b82190eada0571f7d82c2cd90bcad3baf32a7b5eb5f7d789f5b871186ab98",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5187",
+      "name": "Decrepify",
+      "reason": "baseline-changed",
+      "text": "Decrepify. A powerful banishing spell that slows a unit and renders it unable to attack or be attacked. Healing received and dealt by affected allies is increased, while afflicted enemies take extra magic damage instead.",
+      "textSha256": "350081e2daf36385da5d56bf626c3cfc172fa23f3fdbfa26e9c46e8b82aa5df6",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5188",
+      "name": "Nether Ward",
+      "reason": "baseline-changed",
+      "text": "Nether Ward. Pugna places a Nether Ward at the target location. The ward will fire at any enemy hero who casts a spell dealing base damage plus the damage multiplier of the mana spent by the enemy hero. Only one Nether Ward can be active at a time; casting a new one destroys the previous ward.",
+      "textSha256": "b84866449bd619a5fb226189833bfcc72c8347125ed148fc471da49450f2faaf",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5189",
+      "name": "Life Drain",
+      "reason": "baseline-changed",
+      "text": "Life Drain. CHANNELED - When cast on an enemy, Pugna drains health from the target enemy unit, healing himself for the damage dealt and granting vision over the target.\n\nWhen cast on an ally, Pugna heals his ally and takes magical damage equal to the amount healed. This damage cannot kill Pugna.",
+      "textSha256": "2b169c6336770e105cda1fe559eb02c8c98e99f2b16c60972dedf5cfa006afc1",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -309,7 +699,17 @@
       "reason": "baseline-changed",
       "text": "Meld. Templar Assassin conceals herself, becoming invisible as long as she remains still. If Meld's invisibility is broken by attacking an enemy, Lanaya's attack will deal bonus damage to the enemy and reduce their armor for 6 seconds. Bonus damage and debuffs from Meld are applied to all enemies in the Psi Blades split range.",
       "textSha256": "1959d723b3e1fb619643af8ce9bfd708e284f8f16e06658a3e781d9e2837a201",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5223",
+      "name": "Moon Glaives",
+      "reason": "baseline-changed",
+      "text": "Moon Glaives. Empowers Luna's glaives, causing her attacks to bounce between enemy units. Damage and Item Potency decrease with each bounce.",
+      "textSha256": "cd5e70755d942af3a0eb6ac9fd93ab72394d99fe5b994d708c35594950400c99",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -319,7 +719,97 @@
       "reason": "baseline-changed",
       "text": "Power Cogs. Forms a ring of energized cogs around Clockwerk, trapping any units that are near. Enemies outside the trap that touch a cog are knocked back, losing health and mana. Once a cog has delivered a shock, it will power down. Damage is increased by 50% of the mana burned.\n\n Cogs can be destroyed by enemy attacks, but Clockwerk can push them up to 850 / 900 / 950 / 1000 distance away with one hit. Clockwerk can move through the cogs freely, disabling them as he passes over.",
       "textSha256": "ad4735941a558a5de787f602ae70619dd615ddf647fef0a56544da9ab6d4d30d",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5250",
+      "name": "Feast",
+      "reason": "baseline-changed",
+      "text": "Feast. Lifestealer's attacks deal damage and provide heal for a percentage of his target's max health. He gains 1 permanent max HP whenever he kills a creep and 10 permanent max HP whenever he kills a hero.",
+      "textSha256": "904af4d18e686c5c0fafdabd5097c6d974193947ae4a6eda30dbaefae5505e22",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5261",
+      "name": "Skeleton Walk",
+      "reason": "baseline-changed",
+      "text": "Skeleton Walk. Clinkz moves invisibly through units until the moment he attacks or uses items. Leaving Skeleton Walk creates Skeleton Archers.\n\nSkeleton Archers are immobile and have 2 pip health. Creeps and illusions deal 25% damage to them. Skeleton Archers deal a percentage of Clinkz' damage, and deal 75% less damage to buildings. Attack range is equal to Clinkz' attack range.",
+      "textSha256": "d5dc072fd02c88f5aad1d520a491f23e6a7a34ba726ba316e9b0ccf98075df59",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5268",
+      "name": "Enchant",
+      "reason": "baseline-changed",
+      "text": "Enchant. Enchantress charms an enemy. If the enemy is a hero, they are dispelled and slowed for 3.5 / 4 / 4.5 / 5s, and Enchantress and her units gain bonus attack range against the target.\n\n If the enemy is a creep, she brings it under her control and receives 40% of their experience bounty.  Enchantress can control creeps for up to 45 / 70 / 95 / 120s. \n\nDISPEL TYPE: Basic Dispel",
+      "textSha256": "6d32a7b9079e21b1152e4b363736cf59cdb6ad1c550500ba98469b4e61440e73",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5291",
+      "name": "Geminate Attack",
+      "reason": "baseline-changed",
+      "text": "Geminate Attack. Allows Weaver to dispatch additional attacks. Additional attacks have bonus damage and item potency.",
+      "textSha256": "30c82957a3b11602ca926b1bb351d99e63c11bce1c068fa622c15c81090946de",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5320",
+      "name": "Sticky Napalm",
+      "reason": "baseline-changed",
+      "text": "Sticky Napalm. Drenches an area in sticky oil, amplifying damage from Batrider's attacks and abilities and slowing the movement speed and turn rate of enemies. Additional casts of Sticky Napalm continue to increase damage, up to 10 stacks. Applies a small amount of damage with each cast.",
+      "textSha256": "42868bce11689c74a3e343c33bda243938a348bdac553dc7f3b20a83f5b8e763",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5330",
+      "name": "Holy Persuasion",
+      "reason": "baseline-changed",
+      "text": "Holy Persuasion. Chen takes control of an enemy or neutral creep and receives a percentage of its bounty. Chen may globally target his own creep if it has not taken damage in the last 3 seconds to unsummon it.\n\nCasting Holy Persuasion on Chen teleports all creeps under his control to him after a delay. Taking damage from enemy heroes or their units cancels the teleport.",
+      "textSha256": "e6ca0423a9380f911d5041bd22def1b102a276d27bf5a4527e2ded874084c5e5",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5345",
+      "name": "Cold Feet",
+      "reason": "baseline-changed",
+      "text": "Cold Feet. Places a curse on an enemy, dealing damage over time and slowing the target.  If the enemy unit doesn't move outside of the given range from the initial location, it will be stunned and frozen in place after 4 seconds.",
+      "textSha256": "44cd2221085162e0b47b75c2514530654051ff636cecd8afc0845baf1c6b6e20",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5357",
+      "name": "Earthshock",
+      "reason": "baseline-changed",
+      "text": "Earthshock. Ursa leaps forward 250 units and slams the earth, causing a powerful shock to damage and slow all enemy units in a nearby area for 3.5 seconds.",
+      "textSha256": "620b55b19d9576dccc5d09d50d8ec0e87718f5a40e3f8e6b2bee20d14065d74f",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5363",
+      "name": "Flak Cannon",
+      "reason": "baseline-changed",
+      "text": "Flak Cannon. Gyrocopter's attacks hit all enemy units in an area around it for a limited number of attacks.  The additional attacks can proc attack modifiers at reduced effectiveness, except for Lifesteal and Critical Strike.  Lasts 12 seconds or until the attacks are used.",
+      "textSha256": "48de30e6c78a1aa82aaf2872cf47d68594b552807eea5a4ec16328ca0d9deb65",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -329,7 +819,17 @@
       "reason": "baseline-changed",
       "text": "Invoke. Combines the properties of the elements currently being manipulated to create a new spell for Invoker to use. Invoke cooldown is reduced by 0.3 seconds for each orb level.  Invoker gains a bonus ability point for his orbs at levels 6, 12, and 18.\n\nInvoker's vast knowledge of magic allows him to choose from Multiple Aghanim's Scepter and Shard options.  The items must be activated before they can be used, and cannot be changed after they are chosen.\n\n Click the help button to see the list of possible spells.",
       "textSha256": "039af319d731eca13fd236f82b308793e309d0e5ee8962c8d5f7d5a523755583",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:539",
+      "name": "Nihilism",
+      "reason": "baseline-changed",
+      "text": "Nihilism. Leshrac emits an aura that disarms and constantly dispels nearby enemy units. Leshrac also constantly dispels himself.\n\nDISPEL TYPE: Basic Dispel",
+      "textSha256": "1c08d856029be38db3d36fa5b9777fbd455bd6a2049344d28cef9c29f8bbb77c",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -339,7 +839,27 @@
       "reason": "baseline-changed",
       "text": "Sanity's Eclipse. Unleashes a psychic blast that deals damage to enemies based on the difference between your max mana and the target's max mana. Sanity's Eclipse can hit units trapped by Astral Imprisonment.",
       "textSha256": "fd7821b7d17b10bd1909f2d0972dd69a8cae6c8c7bc973e7d106b00600939710",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5397",
+      "name": "Feral Impulse",
+      "reason": "baseline-changed",
+      "text": "Feral Impulse. Increases the HP regeneration and damage for Lycan and all units under his control.",
+      "textSha256": "eef30ca6bbd6ef0e722328da3c0646bc746075050eb653dcbfa649f21b9b6f37",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5407",
+      "name": "Dead in the Water",
+      "reason": "baseline-changed",
+      "text": "Dead in the Water. Tidehunter attaches a heavy anchor to an enemy hero. The hero is leashed while attached to the anchor. Attempting to move more than 350 units away from the anchor forces the hero to 100 move speed, dragging the anchor behind them. The anchor has 4 pip health.",
+      "textSha256": "ed982921fedfedb0a94b59b2df48c4e45c9e353f903f058c781f2431f13651a5",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -349,7 +869,7 @@
       "reason": "baseline-changed",
       "text": "Shadow Poison. Deals damage in a line, and afflicts enemy units with a poison effect. The poison deals 1/2/4/8/16 times the stack damage based on the number of stacks on the target, up to 5 stacks. Additional stacks cause 60 damage each.  This deferred damage is dealt when Shadow Poison's duration is expired, or the Release sub-ability is used.",
       "textSha256": "5610b40cb7276bef72917398dc86beeaeeb6388b7521b2f443c97549958b88c1",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -359,7 +879,7 @@
       "reason": "baseline-changed",
       "text": "Phantasm. Summons several phantasmal copies of the Chaos Knight from alternate dimensions. The phantasms are illusions that deal 60 / 80 / 100% damage, but take 350% damage.\nDISPEL TYPE: Basic Dispel",
       "textSha256": "8430099690491754ec368000cb8780076378d33def83ee6d3884265373fb7f61",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -367,9 +887,19 @@
       "id": "ability:5433",
       "name": "Divided We Stand",
       "reason": "baseline-changed",
-      "text": "Divided We Stand. Meepo summons another Meepo, which levels up and shares items and experience with the main Meepo. Ability cooldowns are independent, but items share cooldowns between Meepos, except Teleport Scrolls. \n\nDamage, attack speed, health, mana, regeneration, mana burn, and proc chance bonuses from items are distributed equally among the amount of Meepos, making them 50 / 66 / 75 / 80% less effective.\n\nIf any Meepo dies, they all die.",
-      "textSha256": "17c76288b634f3dc0d2d47acd8f958bdfd159c0947c7a184e42ad8b3f45dee23",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Divided We Stand. Meepo summons another Meepo, which levels up and shares items with the main Meepo. Ability cooldowns are independent, but items share cooldowns between Meepos, except Teleport Scrolls. \n\nDamage, attack speed, health, mana, regeneration, mana burn, and proc chance bonuses from items are distributed equally among the amount of Meepos, making them 50 / 66 / 75 / 80% less effective.\n\nIf any Meepo dies, they all die.\n\nExperience gained by any Meepo is decreased proportionally by the number of Meepos that have gained experience in the last 5s.",
+      "textSha256": "fd3ef03920d62f8ce59b8e48ed8750a046c0eb3710193399fa64b7ef9cab5939",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:547",
+      "name": "Dig",
+      "reason": "baseline-changed",
+      "text": "Dig. Digs into the ground for a short duration, dispelling Meepo and causing him to become invulnerable and untargetable for 4s. Restores 50% of his max health over that duration.\n\nDISPEL TYPE: Basic Dispel",
+      "textSha256": "facd4d09030ab5731c78068673f3b199174da38470e0c138ff0fa1428ebf82d7",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -377,9 +907,29 @@
       "id": "ability:5512",
       "name": "Battle Trance",
       "reason": "baseline-changed",
-      "text": "Battle Trance. Troll unleashes a powerful battle trance, that forces you to continuously attack the closest enemy unit within 900 range, prioritizing heroes. Damage does not kill you during this mode. Grants you bonus lifesteal, attack speed, slow resistance and movement speed. Applies a Basic Dispel.\n\nDISPEL TYPE: Basic Dispel",
-      "textSha256": "a3118cc94675b675130741c1ba79788a2534231c16e11c6e234cb01409ce98f5",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Battle Trance. Troll unleashes a powerful battle trance, that forces you to continuously attack the closest enemy unit within 900 range, prioritizing heroes. Unslowable while attacking. Damage does not kill you during this mode. Grants you bonus lifesteal, attack speed, status resistance, and movement speed. Applies a Basic Dispel.\n\nDISPEL TYPE: Basic Dispel",
+      "textSha256": "66de78d7d66c28db303a0e0c36ae971406a7a60faaf47536a0c706096100106f",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5585",
+      "name": "Mist Coil",
+      "reason": "baseline-changed",
+      "text": "Mist Coil. Abaddon releases a coil of deathly mist at the cost of Abaddon's health. Friendly units are healed and have their movement speed increased. Enemy units are damaged and slowed.\n\nHealth cost is 40% of the Damage/Heal amount.",
+      "textSha256": "73c9b550a0e2db7261fe33268319e781b9be24d5e05279ce44ce9b4d908cc6a1",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5587",
+      "name": "Curse of Avernus",
+      "reason": "baseline-changed",
+      "text": "Curse of Avernus. Abaddon strikes an enemy, affecting them by a chilling curse, slowing them, causing them to take damage over time, and all attacks against them gain an attack speed boost. Abaddon gains 1.5x the attack speed boost. Damage over time component to buildings is reduced by 100%.",
+      "textSha256": "7d2229964dd9078f7aac43312c92c596636674fcde954904bd09cc9d236d00b7",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -389,7 +939,17 @@
       "reason": "baseline-changed",
       "text": "Sun Ray. Phoenix expels a beam of light at the cost of its own health. The beam damages enemies and heals allies for a base amount plus a percentage of their max health. The percentage increases as the beam continues to fire.",
       "textSha256": "6b9265d855877ef1b5bb0454cc3a339b36cad96947af376db230bea60776b387",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5630",
+      "name": "Supernova",
+      "reason": "baseline-changed",
+      "text": "Supernova. The Phoenix willingly ends its current life for the chance to be reborn. Transforms into a burning sun that scorches enemies in a huge area. The sun has pip health. Creeps and illusions deal 25% damage to the sun. After 6 seconds the sun explodes, stunning all nearby enemies while restoring Phoenix to full health and mana with refreshed abilities.\n\nDISPEL TYPE: Strong Dispel",
+      "textSha256": "9f06461ec52db32043b4e9d642a74458af7cc983ef522cf45b71d5c1da913a4d",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -399,7 +959,7 @@
       "reason": "baseline-changed",
       "text": "Splinter Blast. Launches a ball of brittle ice toward a unit. The ice shatters on impact, leaving the primary target completely unaffected, while hurling damaging splinters into nearby enemies in a 500 base radius. Enemies struck by these splinters are slowed by 27 / 30 / 33 / 36%.",
       "textSha256": "130514d1c1c1a967287daef409f5825a2079cb8208c743bdcd8132ca13372f22",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -409,7 +969,47 @@
       "reason": "baseline-changed",
       "text": "Winter's Curse. Winter Wyvern dispells then freezes an enemy in place while striking those nearby with a maddening curse which causes them to attack their frozen ally with increased attack speed. The frozen ally and those cursed to attack their ally are immune to all damage from their enemies with the exception of damage from Winter Wyvern or her controlled units. Enemy heroes which enter the cursed area after the cast add to the duration of the curse.",
       "textSha256": "dcba1c47961e4a9c51913f6a0d9e5e7ca970a407c7daa8e09f53e8406eba5878",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5666",
+      "name": "Burrow",
+      "reason": "baseline-changed",
+      "text": "Burrow. Nyx Assassin buries himself beneath the battlefield over a short duration. Once burrowed, Spiked Carapace instantly stuns nearby enemies when cast, the range of Mind Flare and Impale is increased, and Impale's cooldown is decreased. While burrowed, Nyx Assassin is stationary, unable to attack, and invisible. Nyx Assassin gains damage reduction from all damage sources, and Scarab Metabolism is always active at 3x strength.",
+      "textSha256": "18281a4e767e90209724492d792766460fd027799013fc6e5cb675cfd447c20a",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5685",
+      "name": "Spirit Siphon",
+      "reason": "baseline-changed",
+      "text": "Spirit Siphon. Creates a spirit link between Death Prophet and an enemy unit, continuously dealing damage to the enemy and healing herself.",
+      "textSha256": "246798504cc406b2b1c4ce1823547695a52eac1b8f01c35e3a05663aa1b00abf",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:5723",
+      "name": "Jingu Mastery",
+      "reason": "baseline-changed",
+      "text": "Jingu Mastery. Monkey King's attacks awaken the Jingu Bang's power. Upon the number of required hits on the same enemy hero, Monkey King earns 4 charged attacks that have bonus damage and lifesteal.",
+      "textSha256": "e8ed72269b7d6571a6b2ae6f830b7c6e7b46b859d111f62e186f1d84388e3165",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:6344",
+      "name": "Swashbuckle",
+      "reason": "baseline-changed",
+      "text": "Swashbuckle. Pangolier dashes along the target line, then slashes and briefly slows all enemies in the drawn direction with several quick swipes. Attacks have decreased Item Potency.\n\nLucky Shot has a chance to activate from this damage.",
+      "textSha256": "cb3a64d2b7b93620709713f492c0633f35bb83b3dd6310ac086dcdb28814106c",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -419,7 +1019,7 @@
       "reason": "baseline-changed",
       "text": "Scatterblast. Snapfire unloads with a wide blast that damages and slows enemies in a cone. Damage is increased by 25% and Movement Slow, Attack Slow and Slow Duration are increased by 50% for enemies caught at point-blank range.",
       "textSha256": "0e51cbe5067621bb6bfc3fd8098fe69fd5f6cfa25554ec33e542d1a505e68f18",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -429,7 +1029,27 @@
       "reason": "baseline-changed",
       "text": "Hammer of Purity. Omniknight imbues his hammer with holy power, causing his attack to have increased range, deal pure damage based on a percentage of his base damage and slow his target for a short duration.\n\n Omniknight heals for 40% of the damage dealt over 4s.",
       "textSha256": "d6972d72b2bdaf1fe611cb6f8c62e4932eb05c07e337b67ddb549228f6b1ab48",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:7705",
+      "name": "Astral Step",
+      "reason": "baseline-changed",
+      "text": "Astral Step. Void Spirit tears a rift through the astral plane to appear at the target location, attacking all enemies along the path with bonus item potency. This attack inflicts a void mark that slows for 1.25 seconds and then detonates.",
+      "textSha256": "2ddde4d14b0ae0414516757b90475f113b18ff7480a1e1ecd4218d2739fe927f",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:7739",
+      "name": "Rock Throw",
+      "reason": "baseline-changed",
+      "text": "Rock Throw. Primal Beast throws a rock at the target location that stuns enemies and deals 300 + 100% STR damage. The rock cannot be thrown within a minimum range of Primal Beast. After landing, the rock splits into 3 additional fragments that land behind the initial target location.\n\n Rock Throw increases stacks of Uproar for each hero hit.",
+      "textSha256": "cdd404ba130f86e0adf05cb5ce8592d4f3034cef9a98f6cd29a40f54bc37ad8a",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -439,7 +1059,27 @@
       "reason": "baseline-changed",
       "text": "Dark Portrait. Creates an ink illusion of a target enemy hero. Illusion is debuff immune, has 90% magic resistance, and has bonus movement speed and attack damage.",
       "textSha256": "a9fb31c070dd83256c901e5d2339236b72b6d5302b6306a821167fe93cfc3441",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:8006",
+      "name": "Phantom's Embrace",
+      "reason": "baseline-changed",
+      "text": "Phantom's Embrace. Summons a phantom that moves quickly towards the target, latching to it when she arrives. Once latched, the phantom damages and silences. If she survives the full latch duration she rends her victim for heavy damage and refreshes Phantom's Embrace's cooldown.\n\nCreeps and illusions deal 25% damage to the phantom.",
+      "textSha256": "72c67aea163f2a783cc18cb33e65a624cf5f5bf90f8dca8acdb59e1d57b05c5b",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:8028",
+      "name": "Ice Spire",
+      "reason": "baseline-changed",
+      "text": "Ice Spire. Creates an Ice Spire at the target spot, slowing enemies around it. When destroyed it will create a Frost Blast around it.\n\nChain Frost can be cast on the Spire and can bounce to the Spire and damage the spire by 1 pip if there are no other enemies in range.\n\nLich can cast Frost Shield on the Spire. Each Frost Shield tick will heal the spire by 1 pip.",
+      "textSha256": "7557f81c5a418236e6aab57b73d469619408dd6f97678df36e534b253591848b",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
@@ -449,28 +1089,100 @@
       "reason": "baseline-changed",
       "text": "Rebound. Marci bounds to the targeted allied unit, choosing a direction and distance she will spring away from it. Upon reaching the unit, Marci lunges to her final destination, damaging and stunning enemies where she lands.\n\nWhen Rebound is set to alt-cast, Marci brings the target ally with her to her final destination.\n\n The ally receives 25% bonus movement speed for 4s.",
       "textSha256": "a6ec20772468d57704a5ffe110cec0b3ab4a2e63845b9266b839a7f19e0ec209",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false
     },
     {
-      "id": "item:1097",
-      "name": "Disperser",
+      "id": "ability:833",
+      "name": "Shield of the Scion",
       "reason": "baseline-changed",
-      "text": "Disperser. Active: Suppress\n Dispels both the wearer and the target. Enemy targets are slowed for 4 seconds. Allied targets gain bonus movespeed and 40% slow resistance for 4 seconds. Caster is always granted the ally benefit on cast.\n\nBoth movement speed reduction and increase start at 100% and gradually decrease to 0% over the course of the buff duration.\nDispel Type: Basic Dispel\n\nPassive: Manabreak\nEach attack burns 40 mana from the target, and deals 1 physical damage per burned mana. \n\nIllusions do not burn mana.",
-      "textSha256": "88feab89c4fa4630c6cd7570edbd97d1b11aa6d2da23c8625195ca7a58462452",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Shield of the Scion. Every time Skywrath Mage deals magical damage to an enemy hero with his abilities, he gains bonus intelligence and a small magic damage barrier. Each buff stacks independently.",
+      "textSha256": "bc9c69488046ca020da723e358e3b392b76fe91a4e4343284fe6a4f061b4b908",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:865",
+      "name": "Fiend's Gate",
+      "reason": "baseline-changed",
+      "text": "Fiend's Gate. Opens 2 portals, one next to Underlord and one in the target location. Heroes can channel a portal for 3.5 / 3.25 / 3 seconds to teleport to the other side. Portals have to be at least 1500 away from each other.",
+      "textSha256": "70826b5d75d9bc570e5cdb0be801ca6540702774dfb8509872d2f8f6e701c7da",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:909",
+      "name": "Warp Flare",
+      "reason": "baseline-changed",
+      "text": "Warp Flare. Throws a flare towards an enemy, dealing damage, teleporting them away, slowing them and reducing their Cast and Attack Range for 3 seconds.\n\nThe target is teleported further the closer they are to Tinker.",
+      "textSha256": "b3890b7c134d85721c151cc489f830223eeee0c91f05564ec37cc503950be518",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:953",
+      "name": "Crystal Clone",
+      "reason": "baseline-changed",
+      "text": "Crystal Clone. Slides in a direction, creating a crystal clone of herself in her place and disjointing incoming projectiles. If the clone takes enough damage or times out, it shatters, Frostbiting enemies in a 425 AoE around its place. The Clone can also be destroyed by Crystal Maiden's own spells.",
+      "textSha256": "0341c71c2d6f4033d2b0706c502931899600c4326ab5ee50bb54621a24d4db0c",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "ability:997",
+      "name": "Curse of the Oldgrowth",
+      "reason": "baseline-changed",
+      "text": "Curse of the Oldgrowth. Nature's Prophet and his treants curse enemies they attack, slowing them and dealing damage per second. Curses from different attackers stack. Each attacker's curse has an independent duration that can be refreshed by further attacks from the same unit that applied it.",
+      "textSha256": "bd5f34b14cfe1f981b75f194a326a96de3cfeac21c0dfa467d57122baf8c814f",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false
+    },
+    {
+      "id": "item:1077",
+      "name": "Dagger of Ristul",
+      "reason": "baseline-changed",
+      "text": "Dagger of Ristul. Active: Imbrue\n Consume health to temporarily gain 30 damage for 10 seconds.",
+      "textSha256": "6e8d838cc417c73036e5d8f59ecefc126d13b94dacc7f9bf3cf2bd909ecf4a0e",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
     },
     {
-      "id": "item:1168",
-      "name": "Rattlecage",
+      "id": "item:1097",
+      "name": "Disperser",
       "reason": "baseline-changed",
-      "text": "Rattlecage. Passive: Reverberate\n After taking 220 damage from any source, the wearer fires a projectile at up to 2 random enemies in a 600 radius, prioritizing heroes, that deal 90 physical damage and slow the targets movement and attack speed by 100% for 0.2s.",
-      "textSha256": "0b7582bd5a078547b5fa054483672294741da2ad665f2ba0eb53342adf7b259c",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Disperser. Active: Suppress\n Dispels both the wearer and the target. Enemy targets are slowed for 4 seconds. Allied targets gain bonus movespeed and 40% slow resistance for 4 seconds. Caster is always granted the ally benefit on cast.\n\nBoth movement speed reduction and increase start at 100% and gradually decrease to 0% over the course of the buff duration.\nDispel Type: Basic Dispel\n\nPassive: Manabreak\nEach attack burns 40 mana from the target, and deals 1 physical damage per burned mana.",
+      "textSha256": "8cb5a64aa4512fd837da142eb9c1a29d2a541b1018c86294191eb450b7d7007d",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:1107",
+      "name": "Phylactery",
+      "reason": "baseline-changed",
+      "text": "Phylactery. Passive: Empower Spell\nThe next Unit Target spell you cast on an enemy deals a separate 130 bonus damage to the target and slows them by 40% for 2s.",
+      "textSha256": "4296edbb20177eef6ccaadf0207db882be7d46470c44f6131d37540e0ff01662",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:1123",
+      "name": "Blood Grenade",
+      "reason": "baseline-changed",
+      "text": "Blood Grenade. Use: Throw Grenade\n Throw a grenade at the target area. Enemies in the area will take 50 damage on impact, and be slowed by -15% and take 15 damage every 1s for 5s. Radius 300.",
+      "textSha256": "ee1e7f058ccbb05cb9705f022c13b5a594e86452254ff8569d182e72610d2e4e",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -479,9 +1191,9 @@
       "id": "item:119",
       "name": "Shiva's Guard",
       "reason": "baseline-changed",
-      "text": "Shiva's Guard. Active: Arctic Blast\n Emits a freezing wave that deals 225 magical damage to enemies and slows their movement by -40% for 4 seconds.\n\nRadius: 825\n\nPassive: Freezing Aura\n Reduces the attack speed of all enemies by -40. \n\nRadius: 1200",
-      "textSha256": "ee1643750ce69e9cf922bd5184c84d4fe0a88c13a4f0ab96ecfd77dff5003d61",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Shiva's Guard. Active: Arctic Blast\n Emits a freezing wave that deals 225 magical damage to enemies and slows their movement by -30% for 4 seconds.\n\nRadius: 840\n\nPassive: Freezing Aura\n Reduces the attack speed of all enemies by -40. \n\nRadius: 1200",
+      "textSha256": "969cf120dff51a384d0c96e084630d97284ff06be3aa2afd07ac75c116af97c0",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -490,9 +1202,20 @@
       "id": "item:121",
       "name": "Bloodstone",
       "reason": "baseline-changed",
-      "text": "Bloodstone. Active: Bloodpact\n Increases Bloodstone's Spell Lifesteal to 60%. Lasts 5 seconds. \n\nPassive: Spell Weakness Aura\n Enemy units take 10% increased damage from spells. \n\nRadius: 1200",
-      "textSha256": "3f7e3a1e86dd1f7c7ca332d48bf7870af44928d3e8ce885a126d71e6f0a6e629",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Bloodstone. Active: Bloodpact\n Increases Bloodstone's Spell Lifesteal to 70%. Lasts 5 seconds. \n\nPassive: Spell Weakness Aura\n Enemy units take 8% increased damage from spells. \n\nRadius: 1200",
+      "textSha256": "a50b327237bc1d68b0896bba1f6a90b6a04e688eb24f5ac671f136e2def8a9b4",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:135",
+      "name": "Monkey King Bar",
+      "reason": "baseline-changed",
+      "text": "Monkey King Bar. Passive: Pierce\nGrants each attack a 80% chance to pierce through evasion and deal 70 bonus magical damage if the attacker is a hero or 30 if the attacker is an illusion.",
+      "textSha256": "77ec6c5c3ea3037c0d171bc70da7eaed1efe55e68b9830587c29a629713e32fc",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -501,9 +1224,9 @@
       "id": "item:1466",
       "name": "Gleipnir",
       "reason": "baseline-changed",
-      "text": "Gleipnir. Active: Eternal Chains\nRoots all enemies in a 400 radius for 2 seconds.",
-      "textSha256": "d7e1e6cfed0e34de635ae645bc25f2aa733b3eea59cfbca98ebb606833b94103",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Gleipnir. Active: Eternal Chains\nRoots all enemies in the target area for 2s.\n\nRadius: 400",
+      "textSha256": "77b2fcbf9b1ccf9f6be5c0e1723a0724396fab04facee748b359890513d8dcaf",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -512,9 +1235,20 @@
       "id": "item:147",
       "name": "Manta Style",
       "reason": "baseline-changed",
-      "text": "Manta Style. Active: Mirror Image\nCreates 2 images of your hero that last 18 seconds. \n\nMelee images deal 33% damage, while Ranged images deal 25%. Illusions take 300% damage. \n\nDispel Type: Basic Dispel",
-      "textSha256": "061641f468d3f0590927d860cb41195dd23f1b206f31506941056f81257caeb7",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Manta Style. Active: Mirror Image\nCreates 2 images of your hero that last 18 seconds. \n\nMelee images deal 33% damage, while Ranged images deal 25%. Illusions take 300% damage and have 35% Item Potency. \n\nDispel Type: Basic Dispel",
+      "textSha256": "89c997d11d3e68796eedc25c3b0fd51659994a3f6eb87b5167830ebc523a4a2a",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:152",
+      "name": "Shadow Blade",
+      "reason": "baseline-changed",
+      "text": "Shadow Blade. Active: Shadow Walk\nMakes you invisible for 17 seconds, or until you attack or cast a spell.  While Shadow Walk is active, you move 16% faster and can move through units.  \n\nIf attacking to end the invisibility, you gain 175 bonus physical damage on that attack.",
+      "textSha256": "a1609c72d354dbd896c7755460651f7b053da1068b7cfe7f6e86dbfc990e81a6",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -525,7 +1259,7 @@
       "reason": "baseline-changed",
       "text": "Orb of Frost. Passive: Frost\nYour attacks slow the target's movement by -13% (-6% against melee targets), and reduces Health Restoration by 15%. Lasts for 3 seconds.",
       "textSha256": "02e1089af40aa9e0281b7f1a7f74b09d640e8dd5f97484d7aa15f39f76403b41",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -536,7 +1270,29 @@
       "reason": "baseline-changed",
       "text": "Mjollnir. Active: Static Charge\nPlaces a charged shield on a target unit for 12 seconds which has a 20% chance to release a 225 magical damage shocking bolt at a nearby attacker and 4 additional enemies.\n\nPassive: Chain Lightning\nGrants a 25% chance on attack to release a bolt of electricity that leaps between 12 targets within a 650 radius, dealing 180 magical damage to each. Lightning proc pierces evasion.",
       "textSha256": "09b7c02f8e19c12e75a22fb15c69bec8a6f2b61022c1bf360f72ca7c00c193ce",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:1598",
+      "name": "Unrelenting Eye",
+      "reason": "baseline-changed",
+      "text": "Unrelenting Eye. Passive: Relentless\nIncreases slow resistance by 60%. This bonus is reduced by 12% for every enemy hero within the wearer's attack radius.",
+      "textSha256": "2a97e8da6b089f45805389f01e5dae72ec281f364c3f83ca6348d5e5a97f17d3",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:1599",
+      "name": "Mana Draught",
+      "reason": "baseline-changed",
+      "text": "Mana Draught. Active: Bottoms Up\nRestores 90 + 3% of the caster's maximum mana over 6 seconds. If the hero is attacked by an enemy hero or Roshan, the effect is lost.\n\nHold Control to use on an allied hero.\n\nPassive: Fill Up\nCooldown Speed of Mana Draught is increased by 30% while in water.",
+      "textSha256": "ebcf3461ea3c050a73aac6064864148c71c44fbd04458fe9168f3826ead91b9b",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -545,9 +1301,64 @@
       "id": "item:160",
       "name": "Eye of Skadi",
       "reason": "baseline-changed",
-      "text": "Eye of Skadi. Passive: Cold Attack\n Attacks lower enemy movement by -25% if they are melee and -50% if they are ranged. Attacks also lower enemy attack speed by -25% and Health Restoration by 50%. Lasts for 3 seconds.",
-      "textSha256": "50011994573d257ad9d0a270986280ac00181b129ed0807962bc24e2cd44d87f",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Eye of Skadi. Passive: Cold Attack\n Attacks lower enemy movement by -20% if they are melee and -40% if they are ranged. Attacks also lower enemy attack speed by -25% and Health Restoration by 50%. Lasts for 3 seconds.",
+      "textSha256": "ae7d129c1429ef556e320310aa12475af9bc73ac36a150e8401777376ecbcd24",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:1601",
+      "name": "Crippling Crossbow",
+      "reason": "baseline-changed",
+      "text": "Crippling Crossbow. Active: Hobble\nHits an enemy for 25 damage, then slows them by 65% and reduces Health Restoration by 40% for 4 seconds. The slow gradually fades over the duration of the spell.",
+      "textSha256": "a49b7ed6c3249f41c418100c9505db073845883013d4286a7703fccc6135841d",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:1603",
+      "name": "Gunpowder Gauntlet",
+      "reason": "baseline-changed",
+      "text": "Gunpowder Gauntlet. Passive: Beat the Crowd\n Your next attack deals an additional 40 magic damage and splashes to units within 250 units for 60% of the original attack's damage plus the additional magic damage.",
+      "textSha256": "28c5b81619375f93f007e5885681f177e4da5f3b1595ffef9c2acfdceaf79aa9",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:1604",
+      "name": "Searing Signet",
+      "reason": "baseline-changed",
+      "text": "Searing Signet. Passive: Burn Through\n Instances of magic damage from spells over 60 ignites enemies, causing them to take 75 magic damage over 6 seconds. Burn damage against non-hero targets is decreased by 50%.",
+      "textSha256": "2809d1d34e2fa66a086f2284ebb7ad1f3f6d95398891d79e03c4f3e62615fe1c",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:1605",
+      "name": "Serrated Shiv",
+      "reason": "baseline-changed",
+      "text": "Serrated Shiv. Passive: Gut 'Em\n Attacks have a 30% chance to have True Strike and deal 10% of the target's current health as bonus physical damage. Deals a flat bonus of 200 against Roshan.",
+      "textSha256": "50fd1844804bef9ad6e9ce0c851bbbb3ef67b980a40ec17caadd759f8ff9bd48",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:1637",
+      "name": "Kobold Cup",
+      "reason": "baseline-changed",
+      "text": "Kobold Cup. Active: One for the Road\nIncreases movement speed of all allied units by 10% in a 1000 unit radius around the caster for 8 seconds.",
+      "textSha256": "2f688a9b2ee57fe89d9078174e3179550a67ad8668c160523799f731fbcc3711",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -556,9 +1367,9 @@
       "id": "item:1640",
       "name": "Jidi Pollen Bag",
       "reason": "baseline-changed",
-      "text": "Jidi Pollen Bag. Active: Pollinate\nSpreads pollen on all enemy units in a 900 unit radius for 9 seconds, decreasing their health restoration by 50% and dealing damage per second, the total equal to 9% of their maximum health.",
-      "textSha256": "109505a72260e8df7eea56baa1dfa0e5b691fbe9206628fb057af8f2ba9d440a",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Jidi Pollen Bag. Active: Pollinate\nSpreads pollen on all enemy units in a 900 unit radius for 9 seconds, decreasing their health restoration by 65% and dealing damage per second, the total equal to 9% of their maximum health.",
+      "textSha256": "5c81ad78a631560b0b8bf3a5cdb3176d77ef4b8abc46ef29d41f749bbf71707e",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -567,9 +1378,31 @@
       "id": "item:1642",
       "name": "Dezun Bloodrite",
       "reason": "baseline-changed",
-      "text": "Dezun Bloodrite. Passive: Blood Invocation\n Spells have a 20% larger Area of Effect, but now additionally cost health equal to 35% of their mana cost.",
-      "textSha256": "ce4604c4007e34c44052267dabf032ffd3be5b5fa037b5e9e1cbd3591ddebf03",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Dezun Bloodrite. Passive: Blood Invocation\n Spells have a 20% larger Area of Effect, but now additionally cost health equal to 25% of their mana cost.",
+      "textSha256": "a80cba67acc3803ee70046fe5e13599dc216bcbeb568538bba9d46fe15500348",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:1644",
+      "name": "Divine Regalia",
+      "reason": "baseline-changed",
+      "text": "Divine Regalia. Passive: Exalted\n Increases outgoing damage by 25%. Dying permanently disables this Neutral Item and the current Enchantment is lost.",
+      "textSha256": "8c0533d20a4a5086d95d65b41511212159b200a18e0e2d0861eca50b2f858ecb",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:1716",
+      "name": "Weighted Dice",
+      "reason": "baseline-changed",
+      "text": "Weighted Dice. Passive: Loaded\nIncreases your base damage maximum by 8. When calculating your base damage or creep bounty from last hits, the value is computed 2 times and the highest value is taken.",
+      "textSha256": "5bed13014ff194503b91e4e4b3cd8fbf7b545d0ec49e364d286d136f099ace00",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -578,9 +1411,9 @@
       "id": "item:1717",
       "name": "Ash Legion Shield",
       "reason": "baseline-changed",
-      "text": "Ash Legion Shield. Active: Shield Wall\nReduce your own movement speed by 20 to provide a 160 physical damage barrier to allied player controlled targets in a 800 unit radius. Lasts for 6 seconds.",
-      "textSha256": "e8243e9f2332d852c51123ddf18748f12cc5e956b337351aa6b82307a6174648",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Ash Legion Shield. Active: Shield Wall\nReduce your own movement speed by 20 to provide a 180 physical damage barrier to allied player controlled targets in a 800 unit radius. Lasts for 6 seconds.",
+      "textSha256": "0363925ed0186eabac85337e9d925d9f2c81cc35138a0dc4240e1313e2ebfec3",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -589,9 +1422,9 @@
       "id": "item:1718",
       "name": "Riftshadow Prism",
       "reason": "baseline-changed",
-      "text": "Riftshadow Prism. Active: Refract\n Spend 8% of your current life total to create a full health illusion that lasts for 20 seconds. The illusion has 60% outgoing damage and takes 200% of incoming damage.",
-      "textSha256": "c111b713be85946c17ea426030bacc532b853f3337ceb93509f7158d95594292",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Riftshadow Prism. Active: Refract\n Spend 4% of your current life total to create a full health strong illusion that lasts for 20 seconds. The illusion has 60% outgoing damage, takes 200% of incoming damage, and has 100% Item Potency.",
+      "textSha256": "8fcd6f131a5858c3674574458b981a8f9b356b2ea584a376b71c264a617e73b1",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -600,9 +1433,9 @@
       "id": "item:1719",
       "name": "Metamorphic Mandible",
       "reason": "baseline-changed",
-      "text": "Metamorphic Mandible. Active: Pupate\n Enter into an insect form for 5 seconds, increasing magic resistance by 50% and movement speed by 20%. While an insect, your size is decreased and your armor is reduced by 45%.",
-      "textSha256": "a54ae57de89d92932ae859b145086dade570cf1c484c021a65097ee8ee96e6f0",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Metamorphic Mandible. Active: Pupate\n Enter into an insect form for 5 seconds, increasing magic resistance by 40% and movement speed by 15%. While an insect, your size is decreased and your armor is reduced by 30%.",
+      "textSha256": "0e09a377bb6431f586c15f78588db42de7f34fdf32a0f7e8bb5f0b8109469d1a",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -613,7 +1446,7 @@
       "reason": "baseline-changed",
       "text": "Mask of Madness. Active: Berserk\nGives 100 attack speed, 6% / 12% movement speed (ranged/melee), and 15%/30% slow resistance (ranged/melee), but reduces your armor by 7 and silences you.  Lasts 6 seconds.\n\nPassive: Lifesteal\nHeals the attacker for a percentage of physical damage dealt.",
       "textSha256": "0552b15ec45162199b9ad6bbb616ad42cea913148e5284dbcb633107dcf6f41b",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -622,9 +1455,9 @@
       "id": "item:1720",
       "name": "Idol of Scree'auk",
       "reason": "baseline-changed",
-      "text": "Idol of Scree'auk. Active: False Flight\n Gain 50% slow resistance, phased movement, and 35% evasion for 6.5 seconds.",
-      "textSha256": "ca5ee6a1d6ff2fcdff94d37e690a9701113e62492161718f9fac94b2d1eae99d",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Idol of Scree'auk. Active: False Flight\n Gain 60% slow resistance, phased movement, and 40% evasion for 6.5 seconds.",
+      "textSha256": "246595ca38dcb44c239cb2b586e0c1e89b1e2e62ce3c2e64f097cb047365e2b3",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -633,9 +1466,20 @@
       "id": "item:1721",
       "name": "Flayer's Bota",
       "reason": "baseline-changed",
-      "text": "Flayer's Bota. Active: Bloodthirst\n Gain 15% base damage and 30 attack speed for 6 seconds.\n\nPassive: Bloodrush\nEnemy heroes dying within 1500 units reset the cooldown of Bloodthirst.",
-      "textSha256": "99f88a647358708c8aec6f4b364d25ef410304ae6f3fd733ae17272ff477a541",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Flayer's Bota. Active: Bloodthirst\n Gain 15% base damage and 30 attack speed for 9 seconds.\n\nPassive: Bloodrush\nEnemy heroes dying within 1500 units reset the cooldown of Bloodthirst.",
+      "textSha256": "e4cdf9d140dbbfa30513b7d07d75925753471efd618cace57bbe1519a97abcef",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:1806",
+      "name": "Parasma",
+      "reason": "baseline-changed",
+      "text": "Parasma. Passive: Witch Blade\n Causes your next attack to apply a poison for 4 seconds, slowing by 25% and dealing 0.85x your intelligence as damage every second. This attack has True Strike and can affect buildings. Deals 40% damage to buildings. \n\nPassive: Magic Corruption\n Your attacks reduce the enemy's Magic resistance by 15% for 4 seconds.",
+      "textSha256": "6db1d8dfcae8934e0defe8b869aace684ee7fcfd18560fc66cf8f6140465b91a",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -644,9 +1488,9 @@
       "id": "item:181",
       "name": "Orb of Venom",
       "reason": "baseline-changed",
-      "text": "Orb of Venom. Passive: Poison Attack\nPoisons the target, dealing 12 magical damage per second. Lasts for 3 seconds.",
-      "textSha256": "401d20a4c66cab4260765cb274764e27c4d0f956913204619fc9ed2624789309",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Orb of Venom. Passive: Poison Attack\nPoisons the target hero, dealing 12 magical damage per second. Lasts for 3 seconds.",
+      "textSha256": "f464790f9612d283d56ecf0d56afc5d20148bed250a42aaa11b3d6946e0e55b6",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -657,7 +1501,7 @@
       "reason": "baseline-changed",
       "text": "Essence Distiller. Active: Soul Release\n Provides 40 health regeneration when cast on allies.\n\nCan be ground targeted to lie dormant for up to 15s and attach to the first enemy that comes within 450 radius. When on enemies, deals 25 damage per second and provides True Sight over them and shares their vision with the wearer's team.\n\nLasts 8 seconds.\n\nGains charges every time an enemy hero dies within 1500 units.",
       "textSha256": "b3976fca3675c10fbb4eda196b60b3f8e8b4f25600c4bd142a77e8357407df44",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -668,7 +1512,7 @@
       "reason": "baseline-changed",
       "text": "Consecrated Wraps. Passive: Hallowed\n Gain a charge every 4s, up to a maximum of 3 charges. Upon gaining a charge, your movement speed is increased by 15% for 5s.\n\nWhenever you take damage from a player-controlled source or Roshan, consume all charges to gain an all damage barrier for 5s that absorbs 120 damage per charge (360 max).",
       "textSha256": "baa2e611912e05154f807070333e609f1581ab76115431353f1af3d8effaa8e0",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -679,7 +1523,40 @@
       "reason": "baseline-changed",
       "text": "Crella's Crozier. Active: Rite of Rumusque\n You enter ghost form for 4 seconds, becoming immune to physical damage, but are unable to attack and -30% more vulnerable to magic damage.\n\nSteal 6% movement speed from enemy heroes in 900 range every second. Movement speed steal lasts 2s.\n\nPutrefaction Aura's effect is increased to 90%. All of the lost Health Restoration is redirected to you every second.\n\nPassive: Putrefaction Aura\nReduces nearby enemy heroes' Health Restoration by 30%.\n\nRadius: 900",
       "textSha256": "5e69c0874aff0ee4ce2f02409f2e895b9d975b4695e1da4fc6077d11c3a20d95",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:1859",
+      "name": "Spellslinger",
+      "reason": "baseline-changed",
+      "text": "Spellslinger. Passive: Salvo\n20% of the mana used to cast abilities is recovered over 8 seconds.",
+      "textSha256": "3cd4bdd4a27a5940085069eb15f96d7dcd0cbf6ae3a512125de9664077c474fb",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:1860",
+      "name": "Prophet's Pendulum",
+      "reason": "baseline-changed",
+      "text": "Prophet's Pendulum. Passive: Linger\n 30% of incoming damage is delayed over 8 seconds.",
+      "textSha256": "b3b6c438729c82b5f11563060a4d1fc75d20b13c18b623efa7e7885e353fd0d3",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:1861",
+      "name": "Stonefeather Satchel",
+      "reason": "baseline-changed",
+      "text": "Stonefeather Satchel. Toggle: Transmogrify\n Toggle to switch the contents of the Satchel between a pound of Feathers or Rocks.\n\nFeathers: increase movement speed by 15 and distance of forced movement effects applied to the wearer by 30%.\n\nRocks: increase armor by 5 and decrease the distance of forced movement effects applied to the wearer by 30%.",
+      "textSha256": "0aeb35ec521f0c31f8c6681e51b66e8efb46ac2ee617eb5e9ded645881d7818b",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -690,7 +1567,7 @@
       "reason": "baseline-changed",
       "text": "Enchanter's Bauble. Passive: Enchant\n Increases the bonuses of the item's Neutral Enchantment by 10%. Every time this item is crafted again the bonus is increased by 35%.",
       "textSha256": "c5c4e50a97a3d00020a5c08747e724228b13cc29932682d0cf88101f829ab39b",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -699,9 +1576,9 @@
       "id": "item:1863",
       "name": "Harmonizer",
       "reason": "baseline-changed",
-      "text": "Harmonizer. Passive: Balance\n Gain 7% spell mana cost reduction for every ability off cooldown and 6% spell amplification for every ability on cooldown.",
-      "textSha256": "fa24dc26ee765c3273d2ea160612f84460debc933225d459badd3e38dc4a9707",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Harmonizer. Passive: Balance\n Gain 7% spell mana cost reduction for every ability off cooldown and 9% Spell Lifesteal for every ability on cooldown.",
+      "textSha256": "c5ebeb4f4a5c6657981b41f6655a27aef754224cd4c52d243fdeef2698f6e93a",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -710,9 +1587,9 @@
       "id": "item:1864",
       "name": "Conjurer's Catalyst",
       "reason": "baseline-changed",
-      "text": "Conjurer's Catalyst. Passive: Spellover\n Dealing 200 spell damage to an enemy causes them to overheat and deal damage to their allies in a 300 unit radius. Hero targets deal 80 damage to their allies, other targets deal 20 damage.",
-      "textSha256": "20c1254e4e36dcd2478b04f5795e221ff2325f6684d9f9a1fc930f74fef9a552",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Conjurer's Catalyst. Passive: Spellover\n Dealing 150 spell damage to an enemy causes them to overheat and deal damage to their allies in a 300 unit radius. Hero targets deal 80 damage to their allies, other targets deal 20 damage.",
+      "textSha256": "a83a4fbbe88fcbf84505be20c74d849b4368f7a330d52e5d22325c65757d6b72",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -723,7 +1600,7 @@
       "reason": "baseline-changed",
       "text": "Forager's Kit. Passive: Forage\nWhen the cooldown is ready, nearby trees that can be foraged will appear. By standing next to a tree for 0.75s, you can forage the tree and find flora, fungi or a bag of gold containing 30 gold.",
       "textSha256": "2601d89e88a5ea6a9c396288034e6d2601a8a9dc5f85ca8633e6fe6e2e93359f",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -732,9 +1609,9 @@
       "id": "item:187",
       "name": "Medallion of Courage",
       "reason": "baseline-changed",
-      "text": "Medallion of Courage. Active: Valor\nIncreases armor by 7 or decreases armor by -4 for 8s depending on if cast on an ally or enemy. Cannot be cast on self.",
-      "textSha256": "ee0b0a7be1977deb40292ef214ff4c41cf9a21196a014f843c54ae2d7ce74294",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Medallion of Courage. Active: Valor\nIncreases armor by 10 or decreases armor by -6 for 8s depending on if cast on an ally or enemy. Cannot be cast on self.",
+      "textSha256": "38036dd6e5f0439b25dfa80e40c7934b90cb9d553646a26ddcfefe5e9bd93f14",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -743,9 +1620,9 @@
       "id": "item:1873",
       "name": "Partisan's Brand",
       "reason": "baseline-changed",
-      "text": "Partisan's Brand. Passive: Brand\n Increases spell damage dealt to player controlled targets by 9%.",
-      "textSha256": "3c69bb744a9e41b9f88c1117fa531af9a6f23266e918ab6d566a3cd636ab3c79",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Partisan's Brand. Passive: Brand\n Increases spell damage dealt to player controlled targets by 7%.",
+      "textSha256": "22802ba7b2339ff616f58798280c72061af5265fd2bb6d989329ead515a8ff88",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -754,9 +1631,119 @@
       "id": "item:188",
       "name": "Smoke of Deceit",
       "reason": "baseline-changed",
-      "text": "Smoke of Deceit. Use: Disguise\n Turns the caster and all allied player-controlled targets in a 1200 radius invisible, and grants 15% bonus movement speed for 45 seconds. \n\n While the caster is still disguised, any allies that come within 300 range of them will also get the buff applied to them. Each smoke can only be applied once to allies. \n\nAttacking or moving within 1025 range of an enemy hero or tower, will break the invisibility. \n\nDisguise grants invisibility that is immune to True Sight. \n\nSmoke of Deceit is usable from the backpack and has no cooldown when swapped into the main inventory.",
-      "textSha256": "0af00356f08cc71b2b6d1067435cdfcfbf4a063784162ebae0c4d72ab277c58c",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Smoke of Deceit. Use: Disguise\n Turns the caster and all allied player-controlled targets in a 1200 radius invisible, and grants 25% bonus movement speed for 50 seconds. \n\n While the caster is still disguised, any allies that come within 300 range of them will also get the buff applied to them. Each smoke can only be applied once to allies. \n\nAttacking or moving within 1025 range of an enemy hero or tower, will break the invisibility. \n\nDisguise grants invisibility that is immune to True Sight. \n\nSmoke of Deceit is usable from the backpack and has no cooldown when swapped into the main inventory.",
+      "textSha256": "8d73e64948ddc74f288d258e040fc9cbcf042ed257825acda2f69a8c5ceac3d4",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:190",
+      "name": "Veil of Discord",
+      "reason": "baseline-changed",
+      "text": "Veil of Discord. Active: Spell Weakness\n Cast a 900 radius blast that causes enemy heroes to take 8% increased damage from spells.\n\nCan be cast while channeling.\n\nDuration: 16 seconds.",
+      "textSha256": "33bcf1e06730a4b88f4e3a5ffe20c9e58fb0669df54e0a31af949ae0fa9affaf",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:2097",
+      "name": "Duelist Gloves",
+      "reason": "baseline-changed",
+      "text": "Duelist Gloves. Passive: Boldness\n Grants 26 attack speed as long as there are enemy heroes within 1200 units.",
+      "textSha256": "11752d587e9e5a7031979796ccf58c78f6253d1e318d2c724f0d473940bbcbff",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:210",
+      "name": "Heaven's Halberd",
+      "reason": "baseline-changed",
+      "text": "Heaven's Halberd. Active: Disarm\nPrevents a target from attacking for 3 seconds.",
+      "textSha256": "ddac1b782e8eb6123f51d57294f0cd87f2277d117600dcf9d1131dd405208569",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:214",
+      "name": "Tranquil Boots",
+      "reason": "baseline-changed",
+      "text": "Tranquil Boots. Passive: Respite\n Whenever you attack a hero or are attacked by any unit, the health regen bonus is reduced to 2 and the movement speed bonus is reduced to 40 for 13 seconds.\nMovement speed bonuses from multiple pairs of boots do not stack.",
+      "textSha256": "9d7bd14e7e95d863add5924dc5070df2d9be6de0632962fe734387477693e59a",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:2190",
+      "name": "Dandelion Amulet",
+      "reason": "baseline-changed",
+      "text": "Dandelion Amulet. Passive: Magical Damage Block\n Every 10s, blocks up to 300 magic damage from damage instances over 75 damage.",
+      "textSha256": "b78bf90d50d77df8a7700b8fed9b38c7d038ca45032b21d1a845663d909e91a2",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:223",
+      "name": "Meteor Hammer",
+      "reason": "baseline-changed",
+      "text": "Meteor Hammer. Active: Meteor Hammer\n CHANNELED - After a 2s channel, summons a meteor after 0.5s that strikes a 400 AoE, stunning enemies for 0.75s and dealing 150 impact damage. Continues to deal 60 damage per second for 6s.\n\nNon-building units are also slowed by 15% for 6s.\n\nDeals 75% damage to buildings.",
+      "textSha256": "15a19c1327c7f745a00c2e444e89752c60fb8403c2c30bc2c07beed147254e10",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:225",
+      "name": "Nullifier",
+      "reason": "baseline-changed",
+      "text": "Nullifier. Active: Nullify\n Dispels the target and applies a debuff for 4 seconds. Continuously dispels and slows the target, and the target is less susceptible to forced movement effects applied by their allies.\n\nDispel Type: Basic Dispel",
+      "textSha256": "1c2fccb390a5595eb872beceeb5cceafda6e426ead6cca2ae275c39b51a043a4",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:229",
+      "name": "Solar Crest",
+      "reason": "baseline-changed",
+      "text": "Solar Crest. Active: Shine\nWhen cast on an ally, grants them 5 armor, 60 attack speed, 15% movement speed and a 350 physical damage barrier. \n\nBonus armor, movement and attack speed have 50% effectiveness when cast on self. \n\nDuration: 7",
+      "textSha256": "3bb8ddf6658f47570c737f3f9c629cc96879fc5af48530b003be4e60fe7c73bc",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:231",
+      "name": "Guardian Greaves",
+      "reason": "baseline-changed",
+      "text": "Guardian Greaves. Active: Mend\nRestores 325 health and 200 mana to nearby allies, and removes most negative effects from the caster.\n\nRadius: 1200\nDispel Type: Basic Dispel\n\nPassive: Guardian Aura\n Grants 2.5 health regeneration and 1.5 mana regeneration to allied units.\n\nRadius: 1200 \nMovement speed bonuses from multiple pairs of boots do not stack.",
+      "textSha256": "a73c62ea7287b50ad9aa6064b657b691416924a995d2b5a1400f58d4f7b0da64",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:242",
+      "name": "Crimson Guard",
+      "reason": "baseline-changed",
+      "text": "Crimson Guard. Active: Guard\n For 7 seconds, grant nearby allied heroes and buildings a 100% chance to block damage equal to 70 plus 2% of the caster's max health value from each incoming attack.\n\nRadius: 1200\n\nPassive: Damage Block\n Grants a 60% chance to block 75 damage from incoming attacks on melee heroes, and 50 damage on ranged\n\nPassive: Buckler Aura\n Grants 2 armor to allied player units.\n\nRadius: 1200",
+      "textSha256": "b6e0b7209bcc2bb67f4d9e77172439fd91b5d3e8f325ada2751c1211f8b319fb",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -765,9 +1752,20 @@
       "id": "item:249",
       "name": "Silver Edge",
       "reason": "baseline-changed",
-      "text": "Silver Edge. Active: Shadow Walk\nMakes you invisible for 17 seconds, or until you attack or cast a spell.  While invisible, you move 20% faster and can move through units.  \n\nAttacking to end the invisibility will deal 300 bonus physical damage, disable their passive abilities for 5 seconds, and cap their movement speed to 200.",
-      "textSha256": "42529d253eddf23ff6ee5d345b13f521dc9edbb762b752fe2fcb7367944f2597",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Silver Edge. Active: Shadow Walk\nMakes you invisible for 17 seconds, or until you attack or cast a spell.  While invisible, you move 18% faster and can move through units.  \n\nAttacking to end the invisibility will deal 300 bonus physical damage, disable their passive abilities for 5 seconds, and cap their movement speed to 200.",
+      "textSha256": "105e6e68aa8c7417747c686db2461f8dfe1d846f753bf56856e537ff6b104c0d",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:250",
+      "name": "Bloodthorn",
+      "reason": "baseline-changed",
+      "text": "Bloodthorn. Active: Soul Rend\n Silences a target for 5 seconds. At the end of the silence, an additional 60% of all damage taken during the silence will be dealt to the target as magical damage.\n\nAll attacks on the silenced target will deal additional damage equal to 50 if the attacker is a hero, and 20, if the attacker is a creep. Provides True Strike for your attacks and attacks from your controlled units against the silenced target.",
+      "textSha256": "4c65d86a6d09f89f4ae0b33bf1dac2103459dff56521c8693d055e486808f1a8",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -778,7 +1776,7 @@
       "reason": "baseline-changed",
       "text": "Hurricane Pike. Active: Hurricane Thrust\n Pushes you and target enemy 425 units away from each other, and for 5 seconds, allows you to make 5 attacks against the target without range restrictions and with +100 attack speed.\n\nCan be cast on self or allies to push the target 600 units in the direction it is facing.\nEnemy Range: 425",
       "textSha256": "5ae6c56d6dcde6c55036fe80869499a30d5ae630d9f0868052d163d00c23d2a2",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -789,7 +1787,7 @@
       "reason": "baseline-changed",
       "text": "Holy Locket. Active: Energy Charge\nTarget an allied unit to increase their incoming Heal Amplification by 15% for 4s and instantly restore 17 health and 15 mana per charge stored. \n\nAutomatically gains a charge every 10 seconds and whenever a visible enemy within 1200 range uses an ability.\n\nPassive: Holy Blessing\nAmplifies heals you provide by 10%.",
       "textSha256": "333027240bc62d277c3b7edb496e316a3d03130ea1f948cc95713a607f229ed8",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -798,9 +1796,20 @@
       "id": "item:326",
       "name": "Spider Legs",
       "reason": "baseline-changed",
-      "text": "Spider Legs. Active: Skitter\n Grants you 20% bonus movement speed, 50% improved turn rate, and free pathing for 12 seconds. Walking over trees causes them to be destroyed.",
-      "textSha256": "ff94efa97669674c82f98622a4756ca06bcef5fb3d659c04bed05c63580aaa5e",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Spider Legs. Active: Skitter\n Grants you 25% bonus movement speed, 50% improved turn rate, and free pathing for 12 seconds. Walking over trees causes them to be destroyed.",
+      "textSha256": "683ca7d80a0ff071db93bff5fe53b96477588ff7025ccf0bd6ea9dac31de50bb",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:359",
+      "name": "Essence Ring",
+      "reason": "baseline-changed",
+      "text": "Essence Ring. Active: Life Essence\n Increases your current and max health by 240 for 14 seconds.",
+      "textSha256": "a14bfca9feff6b2094f54afaae2985867cc61ccba396ffa5c2721d154c5ef73a",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -811,7 +1820,7 @@
       "reason": "baseline-changed",
       "text": "Book of the Dead. Active: Greater Demonic Summoning\n Summon 2 demonic warriors and 2 demonic archers that last 65 seconds. The Warrior burns mana every hit and deals magical damage to whoever kills it. The Archer has a basic dispel ability with a slow and a passive movement speed aura.",
       "textSha256": "807cf426f11b103a5294937e0853797bc245e7630a70cb29ba440810daa4a617",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -822,7 +1831,7 @@
       "reason": "baseline-changed",
       "text": "Fallen Sky. Active: Fallen Sky\n Transform into a meteor that strikes down at the target area after 1 seconds in a 315 AoE, stunning enemies for 1.6 seconds and dealing impact damage. Continues to deal damage every 1 seconds to enemy units and buildings for 6 seconds.\n\nBuilding Impact Damage: 110 \nBuilding Over Time Damage: 60 \n\nNon-Building Impact Damage: 150 \nNon-Building Over Time Damage: 60\n\nFallen Sky cannot be used for 3 seconds after taking damage from an enemy hero or Roshan.",
       "textSha256": "d90729c6d2e766322fe7b98313259ddc049be27d37cb886193da212d4e2a27b9",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -831,9 +1840,20 @@
       "id": "item:377",
       "name": "Minotaur Horn",
       "reason": "baseline-changed",
-      "text": "Minotaur Horn. Active: Lesser Avatar\nApplies a basic dispel. Grants 60% magic resistance and immunity to reflected and pure damage for 2s. For the duration of the effect, any negative effect from enemy spells has no effect.\n\nDispel Type: Basic Dispel",
-      "textSha256": "e0835ebf071d8fe1f560401837c286b3b89bedc1308a3ffe8d7012e0759c682b",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Minotaur Horn. Active: Lesser Avatar\nApplies a basic dispel. Grants 60% magic resistance and immunity to reflected and pure damage for 3s. For the duration of the effect, any negative effect from enemy spells has no effect.\n\nDispel Type: Basic Dispel",
+      "textSha256": "dc8782598dc0aae9077c232ad31743e94cbeb6a5106179ffb295851701322500",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:565",
+      "name": "Chipped Vest",
+      "reason": "baseline-changed",
+      "text": "Chipped Vest. Passive: Chipper\nEvery time you are attacked, you return 40 damage to heroes and 20 damage to creeps.",
+      "textSha256": "6b61a6eedb9b738932b38535a57b18bf00ee7cac12a5b1eb6ce1e31e82c6e5d8",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -844,7 +1864,7 @@
       "reason": "baseline-changed",
       "text": "Orb of Corrosion. Passive: Corrosion\n Your attacks reduce the target's armor by -2, slows their movement by -16% (-8% against melee targets), and reduces Health Restoration by 18%. Lasts for 3 seconds.",
       "textSha256": "beb74c8777d80271bc8e1c34a8aa3136f1decec3f71bcb3b5e3f9e3a13f25666",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -855,7 +1875,7 @@
       "reason": "baseline-changed",
       "text": "Cloak of Flames. Passive: Immolate\nBurns enemy units in a 375 unit radius for 40 damage per second. Illusions deal 25 damage per second.",
       "textSha256": "0777cd2c24797b279850284e42c034d65d6173c7ae5035a300fef7a688ad221c",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -864,9 +1884,20 @@
       "id": "item:577",
       "name": "Possessed Mask",
       "reason": "baseline-changed",
-      "text": "Possessed Mask. Passive: Lifesteal\nHeals the attacker for 5 HP on each attack.",
-      "textSha256": "77461cb2c31331a793f1e00a4b59efda540215be2800f3b5139501926afbf529",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Possessed Mask. Passive: Lifesteal\nHeals the attacker for 7 HP on each attack.",
+      "textSha256": "d8f868811d36c8f25cf44590fec987ed8528d5c393d4b23ee4a0dc7493788431",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:585",
+      "name": "Stormcrafter",
+      "reason": "baseline-changed",
+      "text": "Stormcrafter. Passive: Bottled Lightning\n Zaps 2 enemy targets within 700 range, dealing 90 damage and a 40% slow for 0.4 seconds.",
+      "textSha256": "f94eeaca660799c6e47db7c316cd56b1d1d87b6b63537ef2b1ff48ff2209a8d8",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -877,7 +1908,18 @@
       "reason": "baseline-changed",
       "text": "Mage Slayer. Passive: Mage Slayer\nPlaces a debuff when you attack enemies, dealing 35 physical damage per second and causing them to do 40% less spell damage for 3 seconds.",
       "textSha256": "bbe43495f84f686b7c919d5cd896471066461b05bbc0f960675cb1e126ed2c04",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:600",
+      "name": "Overwhelming Blink",
+      "reason": "baseline-changed",
+      "text": "Overwhelming Blink. Active: Overwhelming Blink\n Teleport to a target point up to 1200 units away.\n\nAfter teleportation, all enemies in a 800 AoE take damage equal to 100 + 50% of your strength and an additional 100% over time, and have 35% movement speed slow and 70 attack speed slow for 4.5 seconds. \n\nOverwhelming Blink cannot be used for 3 seconds after taking damage from an enemy hero or Roshan.",
+      "textSha256": "e3b9bacb195536c3ff1c6219de0aabd28329230e4608872f6aa8c65136dcabdc",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -888,7 +1930,7 @@
       "reason": "baseline-changed",
       "text": "Helm of the Overlord. Active: Dominate\nTakes control of one neutral target unit and sets its movement speed to 380 and max health to a minimum of 1900. Also provides the unit with +70 base attack damage, +12 health regen, +4 mana regen, +7 armor, and levels up some abilities of the target by 1 level. \n\nDominated units with a max health of greater than 1900 retain their original max health. Grants the caster the gold and experience bounty of the dominated creep. Dominated unit's bounty is set to 250 gold and it can no longer be killed by abilities that instantly kill creeps otherwise.\n\nThe Helm cannot be used for 3 seconds after the dominated creep takes damage from an enemy hero or Roshan.",
       "textSha256": "8f3f496a802d12e0068b9cd9a6149e25af39150b8956edd355c8d2667aa9b112",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -899,7 +1941,29 @@
       "reason": "baseline-changed",
       "text": "Psychic Headband. Active: Psychic Push\nPushes the target unit away from you 400 distance.",
       "textSha256": "82810370230232ad5237ad8e6368dd47a1180f86e37076c2cc34414191fd0cd5",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:71",
+      "name": "Poor Man's Shield",
+      "reason": "baseline-changed",
+      "text": "Poor Man's Shield. Passive: Damage Block\nGives a 100% chance to block 40 damage from incoming attacks on melee heroes, and 25 damage on ranged.\n\nHas a 50% chance to block damage from creeps.",
+      "textSha256": "b4b3c52f6f3dd1f4c20b31a7bd24179b4a8400ebded9fc7c10cd24d80b869c3a",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:81",
+      "name": "Vladmir's Offering",
+      "reason": "baseline-changed",
+      "text": "Vladmir's Offering. Passive: Vladmir's Aura\nGrants 20% lifesteal, 18% bonus damage, 1 mana regeneration, and 1 armor to nearby allies.\n\nRadius: 1200",
+      "textSha256": "5c4b20a1df3be774326fd8badec7ddb766dfaeeb2771e6f9cd5783239cb9a3c4",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -910,7 +1974,40 @@
       "reason": "baseline-changed",
       "text": "Witchbane. Active: Cleanse\nDispel all enemies and allies in a 300 unit radius.\n\nDispel Type: Basic Dispel\n\nPassive: Subjugate\nYour attacks deal bonus magical damage equal to 4% of your target's Max Mana.",
       "textSha256": "d85551bdcaae8cd051b2d109edaf8f9e61b85f03700f62a5f6e03cb31ca4cd02",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:840",
+      "name": "Tumbler's Toy",
+      "reason": "baseline-changed",
+      "text": "Tumbler's Toy. Active: Vault\nPropels your hero forward 350 units. Tumbler's Toy gets disabled for 3 seconds if its owner receives damage from a player source.",
+      "textSha256": "906e58f1a2092977bd2e0b41a209677e0788caeae5351d0fd9dd1d230b757dfd",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:86",
+      "name": "Buckler",
+      "reason": "baseline-changed",
+      "text": "Buckler. Passive: Buckler Aura\n Grants 1 armor to allied player units.\n\nRadius: 1200",
+      "textSha256": "13473e46c865e93581ce318d8c0a608ca7ca4a44ee1624c2cdf2a8f0365777da",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:911",
+      "name": "Revenant's Brooch",
+      "reason": "baseline-changed",
+      "text": "Revenant's Brooch. Passive: Ghastly Strike\nGrants each attack a 15% chance to deal an additional 50% of the attack's damage as bonus magical damage.",
+      "textSha256": "24a159d3cb5906467ac9fbc8962d464c00aa62290e229afc0608bae22096cba0",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -921,7 +2018,40 @@
       "reason": "baseline-changed",
       "text": "Boots of Bearing. Active: Endurance\n Gives +50 attack speed and +15% movement speed to nearby allies for 6 seconds. For the first 1.5 seconds allies are immune to slows.\n\n Radius: 1200  \n\nPassive: Swiftness Aura\nGrants 15 movement speed and 2.5 health regeneration to allies.  \n\nRadius: 1200\nMovement speed bonuses from multiple pairs of boots do not stack.",
       "textSha256": "2eda9a48a8dc978550871fd58da1df55aae98653e0bee6d1293debca82312f1b",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:94",
+      "name": "Headdress",
+      "reason": "baseline-changed",
+      "text": "Headdress. Passive: Regeneration Aura\nGrants 2 health regeneration to allied player units.\n\nRadius: 1200",
+      "textSha256": "bf6df8fd3f1f9ef68658e29c4ebe78a7d9f4f74bec235bbc477028160d2a1ad3",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:945",
+      "name": "Seeds of Serenity",
+      "reason": "baseline-changed",
+      "text": "Seeds of Serenity. Active: Verdurous Dale\n  Target the ground with a 400 radius. Provides health regeneration to all allied units while they are in the area of effect equal to 3 + 25% of the caster's health regeneration at the time of casting. Lasts 8 seconds.",
+      "textSha256": "a9963f7c7f20822e9077774f3113eaf4b945719f0c288fc0c055f379df1e54c7",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
+      "priority": 1,
+      "reviewed": false,
+      "purchaseAvailabilityVerified": false
+    },
+    {
+      "id": "item:947",
+      "name": "Occult Bracelet",
+      "reason": "baseline-changed",
+      "text": "Occult Bracelet. Passive: Rites of Eloshar\nEach time the wearer is attacked, they gain a stack of 0.4 mana regen, up to 8 stacks. Stacks last for 6 seconds.",
+      "textSha256": "3c6a8bb9d3362be36d005eea8cdebf34afad4bf4ea667fb59211404349e59ee7",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 1,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -932,7 +2062,7 @@
       "reason": "missing",
       "text": "Necronomicon. Active: Demonic Summoning\nSummons a Warrior and an Archer to fight for you for 60 seconds.\n\nWarrior:\nBurns mana every hit, and deals magical damage to whoever kills it.  Gains True Sight at level 3.\nHealth: 800 / 1200 / 1600\nDamage: 25 / 45 / 65\nMana Break Damage: 30 / 40 / 50\nLast Will Damage: 600 / 700 / 800\n\nArcher:\nHas a passive movement and attack speed aura. Gains Purge at Level 3.\nHealth: 800 / 1200 / 1600\nDamage: 37 / 57 / 75\nAura Move Speed: 5 / 7 / 9\nAura Radius: 1200",
       "textSha256": "8dfbc72a913feedcb76321277a97175be53e84b9070153584c006f4152887de3",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -943,7 +2073,7 @@
       "reason": "missing",
       "text": "Mercy & Grace. Active: Dead Shot\nFires a ghostly bullet at an enemy unit or tree. When the bullet strikes it will deal 300 damage and slow the target by -100% for 0.5 seconds, then ricochet in the vector-targeted direction. The ricochet will damage all units that it passes through, stopping when it hits a hero. Heroes hit by the ricochet will be feared for 2 seconds in the direction of the shot.",
       "textSha256": "dd8dcdce70b2efbf1e9081629ab4e57ede8d9168c85dcd2da79d9a0b6fe92760",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -954,7 +2084,7 @@
       "reason": "missing",
       "text": "Block of Cheese. Use: Scrumptious\nTry me!",
       "textSha256": "659cd593262879900f0caec0c4137953bec0be0f9805a04161a292f60c7bce02",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -965,7 +2095,7 @@
       "reason": "missing",
       "text": "Ancient Guardian. Passive: Ancient Power\n Grants 50 extra bonus damage as long as the unit is within 2000 range of an ancient.",
       "textSha256": "1a21dd0e5cfbaec8fbb364a4712d3d91a72febd528e68bd2acdca7656e91cdfd",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -974,9 +2104,9 @@
       "id": "item:1157",
       "name": "Safety Bubble",
       "reason": "missing",
-      "text": "Safety Bubble. Passive: Bubbled Up\n Equipped Hero has a 100 HP Barrier against enemy damage. Barrier fully regenerates after not receiving damage for 8 seconds. Self-inflicted damage bypasses the barrier.",
-      "textSha256": "3f08cffef436dffb153852da765071a23d5b4c23dc93fe4f1245fece2605a509",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Safety Bubble. Passive: Bubbled Up\n Equipped Hero has a 125 HP Barrier against enemy damage. Barrier fully regenerates after not receiving damage for 8 seconds. Self-inflicted damage bypasses the barrier.",
+      "textSha256": "35fa97e498cf1a3a744054926027df41b6602a54b7682c2a828fe9927a03a73b",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -987,7 +2117,7 @@
       "reason": "missing",
       "text": "Nemesis Curse. Passive: Glass Cannon\n Hero takes 6% more damage from all sources.\nPassive: Glassify\n When attacking a hero, apply a debuff increasing the damage received by that hero by 12% for 5 seconds. Only one target can be affected by Glassify at the same time.",
       "textSha256": "73444604eaadeb63348a3ef33a87e95b5eb1d0c889e6dec25ad944c7b201fb8f",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -998,7 +2128,7 @@
       "reason": "missing",
       "text": "Aviana's Feather. Passive: Free Bird\n When equipped hero is below 30% HP, they gain flying movement.",
       "textSha256": "e3b4378184f783fcb5c5eb05422e5f375bb08c92d8397e13d01122ba3708e2ca",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1009,7 +2139,7 @@
       "reason": "missing",
       "text": "Unwavering Condition. Passive: Unwavering\n Hero's Max Health is set to 1800 and can't be altered by other effects or attributes.",
       "textSha256": "77ff303dc140ed20a591d0bf78f721e86d6fee2473ffa1a70f8149faf45781b1",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1020,7 +2150,7 @@
       "reason": "missing",
       "text": "Light Collector. Active: Lightbreak\n Produce a brilliant flash of light that destroys trees in a 325 AoE. \n\nPassive: Unclouded\n Provides wearer with health regeneration during the day and mana regeneration during the night. When within a 200 distance of any trees, health and mana regeneration are decreased by 75%.",
       "textSha256": "1ab59b3d6e6b827f58a3595cc51c7c1b1dee8e8481dca5bfbb05889dde3554a6",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1031,7 +2161,7 @@
       "reason": "missing",
       "text": "Aegis of the Immortal. Passive: Reincarnation\n Brings you to life with full health and mana 5 seconds after you die, at the location where you died. \n\nReincarnation must be used within 5 minutes or Aegis of the Immortal disappears. If it expires, it will heal you over 5 seconds (dispels on damage).",
       "textSha256": "f488ccd036724b346cbb6b853dc26f5d1e9ba608a15b1b428af4b62f73bb07f1",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1042,7 +2172,7 @@
       "reason": "missing",
       "text": "Hood of Defiance. Active: Barrier\n Creates a spell shield that absorbs up to 350 magical damage.  Lasts 12 seconds.",
       "textSha256": "4f34807a2cc6d52496821e5d9d70003a59e3d13adbc9c9bf6a9ffdfdf29d3fea",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1053,7 +2183,7 @@
       "reason": "missing",
       "text": "Black Grimoire\n(Warlock). Use: Profane Knowledge\nHero kills and assists empower the Black Grimoire, granting it charges. Right-click to consume and grant 200 experience per charge. Starts on cooldown. \nThis item cannot be dropped.",
       "textSha256": "40ad56a2e217b08a7dc9d6f7a8164acdb9a469eac7eddf2688f988513fcd0b84",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1064,7 +2194,7 @@
       "reason": "missing",
       "text": "Gris-Gris. This item that cannot be dropped or placed in the backpack but can be put into normal inventory slots. When the owner dies, 100% of the gold lost from death is added to the item, and will be refunded when the item is consumed. Right-click to consume and permanently remove the item.",
       "textSha256": "18cdf025f950bdb26e6e78cec9f66d9a932005423be79bdd86b995d9e5c01707",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1075,7 +2205,7 @@
       "reason": "missing",
       "text": "Gale Guard. Active: Cyclonic Shield\n Envelops the caster in an all damage barrier that absorbs 75% of incoming damage up to a max of 225. Lasts for up to 10 seconds and while the barrier is active you have 50% Slow Resistance.",
       "textSha256": "bbad99adef509e130ef17c77680e32a06644e31f447b9a746614f087e224b135",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1086,7 +2216,7 @@
       "reason": "missing",
       "text": "Magnifying Monocle. Passive: Keen Eye\n Increases cast range by 100 and attack range by 100 (Melee & Ranged). Taking over 25 damage from a player controlled source or Roshan disables this effect for 6 seconds.",
       "textSha256": "ece2b4109b7ef98cec79cad46a79a3673f02e62f081f9bda2f100098862e81cc",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1097,7 +2227,7 @@
       "reason": "missing",
       "text": "Pyrrhic Cloak. Active: Retribution\n For the next 6 seconds, 75% of damage taken by the caster is reflected to the target unit as physical damage if they are within 1200 units away.",
       "textSha256": "8bac01e533a97e1628c9f2842ed3abfa5e29b42ed8ea356ddb4c33f6acb07b09",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1108,7 +2238,7 @@
       "reason": "missing",
       "text": "Madstone Bundle. Collect to craft new Neutral Items.",
       "textSha256": "5a5b4da5139b5e04f2e7166cbaf8a8b635520c838c087ac0440f9af380a84ea9",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1119,7 +2249,7 @@
       "reason": "missing",
       "text": "Sister's Shroud. Passive: Veiled\nWhen falling below 50% HP, gain 150% evasion for 5 seconds. While active, dodging an attack decreases the evasion bonus by 75% of its current value.\nPassive: Last Caress\nVeiled cooldown is only reset if the wearer dies or kills an enemy hero.",
       "textSha256": "c01d1a7318d5581b66c77b7307a8dc1294da2750a6bb6472e9405dffd86e2e34",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1130,7 +2260,7 @@
       "reason": "missing",
       "text": "Outworld Staff. Active: Self-Exile\n Makes the caster completely invulnerable and disabled for 0.7 seconds. When returning to the world, the caster takes 5% of their maximum health as damage.",
       "textSha256": "cdc45192d4488abce1158e6e37c9ae80995e465e7a58cb7f709c2a317f6a56d6",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1141,7 +2271,7 @@
       "reason": "missing",
       "text": "Disgraced Regalia. Passive: Fallen\n You have died and thus get nothing.",
       "textSha256": "1c2ccb28b374ecfb488b5a8e8f5e466883a054279fe92052813acd86e055f7a3",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1152,7 +2282,7 @@
       "reason": "missing",
       "text": "Bag of Gold. Contains gold",
       "textSha256": "33ac65c63f0e7806a520df357e891048a15db0db375ead899a1bcd845b32c608",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1163,7 +2293,7 @@
       "reason": "missing",
       "text": "Doubloon. Toggle: Flip\n Toggle to convert 30% of your Max Health to Max Mana, or 30% of your Max Mana to Max Health.",
       "textSha256": "fa6bd4f6da66b9fbbbb2d6be4a19aa931ec9b8b4c31a90b102fe2ed079353a77",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1172,9 +2302,9 @@
       "id": "item:1804",
       "name": "Roshan's Banner",
       "reason": "missing",
-      "text": "Roshan's Banner. Use: Place Banner\n Creates a banner at the target location. Lane creeps in the area of effect become damage immune while the Banner is up. Lasts 120 seconds.\n\n Can be destroyed. Melee hero attacks deal 2x damage to the banner.",
-      "textSha256": "37fa59658ff440d4e912ab796a2d93b792cefb013a131cb2452eb78d3ce2fd6b",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Roshan's Banner. Use: Place Banner\n Creates a banner at the target location. Lane creeps in the area of effect become damage immune while the Banner is up. Lasts 120 seconds.\n\n Can be destroyed. Creeps and illusions deal 25% damage to the banner.",
+      "textSha256": "9706fccf7aed3419b87ccde5c75ad8d7de7d6c63509eb069a4b4809ed968a825",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1185,7 +2315,7 @@
       "reason": "missing",
       "text": "Stout Shield. Passive: Damage Block\nGrants a 50% chance to block 20 damage from incoming attacks on melee heroes, and 8 damage on ranged.",
       "textSha256": "3ba02a46473e80ed76d69d8c00035187fe64c0f6401a91737eb1bcd7ed77481a",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1196,7 +2326,7 @@
       "reason": "missing",
       "text": "Eldwurm's Edda. Passive: Forbidden Knowledge\nWhen consumed, increases Winter Wyvern's base intelligence by 25% of its current value at the time of consumption, and increases the current and maximum level of a basic ability by one. All values except for Mana Cost scale by 50% of the difference between their existing levels for the additional level",
       "textSha256": "f0d4623d525d4ccaa14b1ae655bcc22212233d11c245c46b13094f6fd99923c6",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1207,7 +2337,7 @@
       "reason": "missing",
       "text": "Vital Toadstool. Use: Munch\n Grants 1% max health regeneration to the target for 10 seconds.\n\nIf the unit is attacked by an enemy hero or Roshan, the effect is lost.",
       "textSha256": "4ba8b3827371d6edbbe2884c830f2e05c8700d8d5e8296c467fef36ce3ec6f09",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1218,7 +2348,7 @@
       "reason": "missing",
       "text": "Ironwood Nut. Use: Munch\n Grants 1 permanent primary attribute.",
       "textSha256": "0d068e95a71c044d078fc0482b65031d397ef2edb4c39e801661c6692a2ddf5d",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1229,7 +2359,7 @@
       "reason": "missing",
       "text": "Tomo'kan Ringcap. Use: Munch\nInstantly restores 50 mana + 5% of the target's max mana when consumed",
       "textSha256": "d5d867c343b5679b27a7e657544b44b0f2bb9f0c561f4e51dcd48992456dbd9a",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1240,7 +2370,7 @@
       "reason": "missing",
       "text": "Leviathan's Fish. Yummy Fish",
       "textSha256": "74f60a57ad48c26bb8f96cfae9ab59dcbc744206b72564f523689c4c173be1a6",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1251,7 +2381,7 @@
       "reason": "missing",
       "text": "Necronomicon. Active: Demonic Summoning\nSummons a Warrior and an Archer to fight for you for 60 seconds.\n\nWarrior:\nBurns mana every hit, and deals magical damage to whoever kills it.  Gains True Sight at level 3.\nHealth: 800 / 1200 / 1600\nDamage: 25 / 45 / 65\nMana Break Damage: 30 / 40 / 50\nLast Will Damage: 600 / 700 / 800\n\nArcher:\nHas a passive movement and attack speed aura. Gains Purge at Level 3.\nHealth: 800 / 1200 / 1600\nDamage: 37 / 57 / 75\nAura Move Speed: 5 / 7 / 9\nAura Radius: 1200",
       "textSha256": "8dfbc72a913feedcb76321277a97175be53e84b9070153584c006f4152887de3",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1262,7 +2392,7 @@
       "reason": "missing",
       "text": "Necronomicon. Active: Demonic Summoning\nSummons a Warrior and an Archer to fight for you for 60 seconds.\n\nWarrior:\nBurns mana every hit, and deals magical damage to whoever kills it.  Gains True Sight at level 3.\nHealth: 800 / 1200 / 1600\nDamage: 25 / 45 / 65\nMana Break Damage: 30 / 40 / 50\nLast Will Damage: 600 / 700 / 800\n\nArcher:\nHas a passive movement and attack speed aura. Gains Purge at Level 3.\nHealth: 800 / 1200 / 1600\nDamage: 37 / 57 / 75\nAura Move Speed: 5 / 7 / 9\nAura Radius: 1200",
       "textSha256": "8dfbc72a913feedcb76321277a97175be53e84b9070153584c006f4152887de3",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1273,7 +2403,7 @@
       "reason": "missing",
       "text": "Tier 1 Token. Activate to redeem a Tier 1 Neutral Item. The resulting neutral item isn't shareable and a hero can only redeem a single token per tier.",
       "textSha256": "bbd4aa73a5ff3d116fad5b7cace05f9b601e040d3d8a7f1aa5b5d94789322244",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1284,7 +2414,7 @@
       "reason": "missing",
       "text": "Tier 2 Token. Activate to redeem a Tier 2 Neutral Item. The resulting neutral item isn't shareable and a hero can only redeem a single token per tier.",
       "textSha256": "045718677ddd0915a9f1d900ff5f23183a689459ffb3b6fa5abb89169cca58c0",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1295,7 +2425,7 @@
       "reason": "missing",
       "text": "Tier 3 Token. Activate to redeem a Tier 3 Neutral Item. The resulting neutral item isn't shareable and a hero can only redeem a single token per tier.",
       "textSha256": "c89f374bd0930848c5f56eae4632b0ea8b428e9778063ff5df91d7397cfa58cc",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1306,7 +2436,7 @@
       "reason": "missing",
       "text": "Tier 4 Token. Activate to redeem a Tier 4 Neutral Item. The resulting neutral item isn't shareable and a hero can only redeem a single token per tier.",
       "textSha256": "720e87f35f77d25faece59c90a6d4becff729d07e5f17ea830fa755bdbc61f45",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1317,7 +2447,7 @@
       "reason": "missing",
       "text": "Tier 5 Token. Activate to redeem a Tier 5 Neutral Item. The resulting neutral item isn't shareable and a hero can only redeem a single token per tier.",
       "textSha256": "186bfddf94104845af5170463184b862d4718a65a41f5a713fbecb95608dc3f5",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1328,7 +2458,7 @@
       "reason": "missing",
       "text": "Vindicator's Axe. Passive: Vengeance\n Provides 30 damage if equipped hero is Silenced and 20 armor if equipped hero is Stunned.",
       "textSha256": "82fae0430295473c93bc5b09326a500395cf32274657a1d52c7194f496e917bb",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1337,9 +2467,9 @@
       "id": "item:212",
       "name": "Ring of Aquila",
       "reason": "missing",
-      "text": "Ring of Aquila. Passive: Aquila Aura\nGrants 1 mana regeneration and 2 armor to nearby allies.\n\nRadius: 1200\nToggle: Aura\n Deactivate to stop affecting non-hero units.",
-      "textSha256": "7fb9fa710ace47b79c8438328f51ad80be96518e56236a81ad379bf169806494",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Ring of Aquila. Passive: Aquila Aura\nGrants 1.75 mana regeneration and 3 armor to nearby allies.\n\nRadius: 1200\nToggle: Aura\n Deactivate to stop affecting non-hero units.",
+      "textSha256": "697030b6c4e325c89ab6a4dbf596b4b6e772953757f97c46626955a14379b68d",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1350,7 +2480,7 @@
       "reason": "missing",
       "text": "Observer and Sentry Wards. Use: Plant\n Plant the currently active ward.  Double-Click to switch the currently active ward.",
       "textSha256": "02e4130d5dcaa7925b3a5c505bfce4f9a496e098ee37bed695a2ae0a0f7aafa5",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1361,7 +2491,7 @@
       "reason": "missing",
       "text": "Martyr's Plate. Active: Martyrdom\n Redirect 25% of all magic damage dealt to your allied heroes within 900 radius towards you for 10 seconds.",
       "textSha256": "a46239353a1a4c9a1b725e7439f4fb97e38df4a9365428296311bfb7199fa84f",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1372,7 +2502,7 @@
       "reason": "missing",
       "text": "Gossamer Cape. Passive: Sixth Sense\n Automatically dodge an attack from an enemy hero.",
       "textSha256": "4288ca7c319e802ea32f14e237404afc71f9a3dcf516d5c8baae1ae6f795bec4",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1383,7 +2513,7 @@
       "reason": "missing",
       "text": "Boots of Travel 2. Upgrade: Town Portal Scroll\nUpgrades your Town Portal Scroll, allowing it to target units and heroes, reduces cooldown, channel time and does not consume a charge on usage. \nMovement speed bonuses from multiple pairs of boots do not stack.",
       "textSha256": "c4438f92101db699053125fc3f68d6c0222e4bf6833e5b1627d90b6906dcfb9c",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1392,9 +2522,9 @@
       "id": "item:239",
       "name": "Iron Talon",
       "reason": "missing",
-      "text": "Iron Talon. Active: Chop\nTargets a non-player enemy unit to remove 80% of its current HP.\n\nIf cast on a tree, instantly destroys it.",
-      "textSha256": "0217af31e89adef2a5e1571bd0d8eb3ccfb708e959f1e7a7f750c15ba4e4ed8b",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Iron Talon. Active: Chop\nTargets a non-player enemy unit to remove 45% of its current HP.\n\nIf cast on a tree, instantly destroys it.",
+      "textSha256": "d7737df0565543dc7e0ca06b216e6c3a7e8feffec1b74d3d5f2b1c094ea5204f",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1405,7 +2535,7 @@
       "reason": "missing",
       "text": "Tango (Shared). Use: Devour\n Consumes a target tree to gain 3.5 health regeneration for 16 seconds. Consuming an Ironwood Tree doubles the heal duration.\n\nTree Range: 165",
       "textSha256": "d7c82f73ee846997658d5d8e272e1bf0709347417b013d826cbbe8cf22631319",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1416,7 +2546,7 @@
       "reason": "missing",
       "text": "Refresher Shard. Use: Reset Cooldowns\nResets the cooldowns of all your abilities. Shares a cooldown with Refresher Orb. This item's cooldown only progresses in your hero's main inventory.",
       "textSha256": "cf83c80ec44500d60184aea0b4bba359479067772881a17f2e9a6bbc9af03580",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1427,7 +2557,7 @@
       "reason": "missing",
       "text": "Aghanim's Blessing. Passive: Ability Upgrade\nUpgrades the ultimate, and some abilities, of all heroes.",
       "textSha256": "d556208f949df706438521f29053667dbd5227f39e6c4b61dee02a063c71ca6d",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1438,7 +2568,7 @@
       "reason": "missing",
       "text": "Grove Bow. Passive: Magic Amp\n Reduces magic resistance of the attacked enemy by 20%.",
       "textSha256": "ab04357bc2ef10726c9c06b3d1f8fced5315621de95e9ae3d9b3dcd044d2cdd8",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1449,7 +2579,7 @@
       "reason": "missing",
       "text": "Quickening Charm. Passive: Cooldown Reduction\nReduces the cooldown time of all spells and items.",
       "textSha256": "0a52b992de488f2cf4dc55e9a2117588fd0a034428c376447894e857204163fa",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1460,7 +2590,7 @@
       "reason": "missing",
       "text": "Force Boots. Active: Force\nPushes the target 750 units in the direction they are facing. Dispels if cast on an ally.\n\nDispel Type: Basic Dispel\n\nPassive: Speed Unlock\n Completely removes the speed limit for the wearer \nMovement speed bonuses from multiple pairs of boots do not stack.",
       "textSha256": "262bb397c2161d002c05c57099c98afc6e9d5acd5e9bf3d8eb27694d84cae37a",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1471,7 +2601,7 @@
       "reason": "missing",
       "text": "Phoenix Ash. Passive: Rebirth\nLethal damage is prevented and instead the wearer is healed to half health and non-ultimate ability cooldowns reset. Gets consumed on trigger.",
       "textSha256": "417ffba1f54bd1885b994db58cfd8dbaeabb4bbe0b4c57ba71a4790c57b0e985",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1482,7 +2612,7 @@
       "reason": "missing",
       "text": "Seer Stone. Active: Reveal\n Reveal a target 800 area of the map for 6 seconds.",
       "textSha256": "e6e964d82cc3bc6bdd3c88bcdb2d3335e6055d53c20d26f8f9847efdd05c216d",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1493,7 +2623,7 @@
       "reason": "missing",
       "text": "Craggy Coat. Active: Toughen Up\n Grants you an extra 6 bonus armor at the cost of -20 movement speed. Lasts 6 seconds.",
       "textSha256": "71b41387bc1e9a6d5886f9b91a4e088f7e37525e69bb12a14d5cfb12b2d1262c",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1504,7 +2634,7 @@
       "reason": "missing",
       "text": "Greater Faerie Fire. Use: Imbue\n Instantly restores 250 health.",
       "textSha256": "faaf5fe91d623915b819c627052730192b2a05bc388b19053dc4cad22eb57b72",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1515,7 +2645,7 @@
       "reason": "missing",
       "text": "Timeless Relic. Increases all outgoing spell damage and debuff duration.",
       "textSha256": "bb528e2f607ac9c2eadd1bc7c7d4f63bca71dbb2b9c303906b1b7b34cd28f034",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1526,7 +2656,7 @@
       "reason": "missing",
       "text": "Mirror Shield. Passive: Echo Shield\n Block and reflect most targeted spells back to their caster once every 12 seconds.",
       "textSha256": "41c312745b51be6c4f6affd41bc25c41fb90205c38a70830ee56a15ce46fb676",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1537,7 +2667,7 @@
       "reason": "missing",
       "text": "Elixir. Use: Consume\n Restores 500 health and 250 mana to the target over 6 seconds.\n\nIf the unit is attacked by an enemy hero or Roshan, the effect is lost.",
       "textSha256": "2e7bf21c3b127d62ca3cc7927969d352e0a841f7f07a9f48b112e96d09bb92ab",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1548,7 +2678,7 @@
       "reason": "missing",
       "text": "Ironwood Tree. Use: Plant Tree\n Targets the ground to plant a happy little tree that lasts for 20 seconds.",
       "textSha256": "6ea09720f767f8c876c82ff4da38f8d2b281ec6806b5c2e97a1213728f0f4891",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1559,7 +2689,7 @@
       "reason": "missing",
       "text": "Royal Jelly. Active: Consume\n Consumes all charges and grants a target allied unit a buff that provides +2.5 Health Regen and +1.25 Mana Regen per charge for 8s. \n\nIf the unit is attacked by an enemy hero or Roshan, the effect is lost.",
       "textSha256": "2f7945d0883d9455afbb2704884b1ab683b49ff2a28f06e837b715485938e72f",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1570,7 +2700,7 @@
       "reason": "missing",
       "text": "Pupil's Gift. Increases both non-primary attributes.",
       "textSha256": "350a4959db0d04074700def7c6024c9af788ac0de3727871ed3ce6c381b70d22",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1581,7 +2711,7 @@
       "reason": "missing",
       "text": "Tome of Aghanim. Use: Consume\n Temporarily grants an allied target the Aghanim's Scepter buff for 3 minutes.",
       "textSha256": "acf543029d6e366cdf413e9c946c44ed63a34b265bbf44ca5bed24806af561e2",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1592,7 +2722,7 @@
       "reason": "missing",
       "text": "Repair Kit. Use: Building Repair\n Targets a building, restoring 40% of it's health over 30 seconds. Also grants +10 armor during this period.",
       "textSha256": "ac4201fb61e428652a8a1cba84e00d8bf0d0d20529912cc11fac03b2bad5cb2c",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1601,9 +2731,9 @@
       "id": "item:309",
       "name": "Mind Breaker",
       "reason": "missing",
-      "text": "Mind Breaker. Passive: Silence Strike\n The next attack silences the hit enemy for 1.5 seconds.",
-      "textSha256": "95e9780843b9d2458753e1c098a38796365d0e54d419388f454bb5d223698dce",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Mind Breaker. Passive: Silence Strike\n The next attack silences the hit enemy for 2 seconds.",
+      "textSha256": "d7fec016b91189db53577b3b1a5bfc9399c21c03f63b67638e9b137ed50cc420",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1614,7 +2744,7 @@
       "reason": "missing",
       "text": "Third Eye. Passive: True Sight\n Grants the ability to see invisible units and wards to any allied vision within 500 range of its carrier. \nPassive: Charge Loss\nLoses a charge on death. After all charges are lost, the item disappears.",
       "textSha256": "85d1ab5dbeebb81a5dfc07f7fded1610a7c8bf60f85f70883612dafb1781cb39",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1625,7 +2755,7 @@
       "reason": "missing",
       "text": "Spell Prism. Passive: Cooldown Reduction\nReduces the cooldown time of all spells and items.",
       "textSha256": "ffbcd9582de0222512a3c68f9940d8d2a28f7a24564c07344aa3a62977b2c653",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1636,7 +2766,7 @@
       "reason": "missing",
       "text": "Fusion Rune. Use: Consume\n Grants the target the bonuses of every Power Rune for 50 seconds. Each use consumes a charge.",
       "textSha256": "19175360add68e47d4601eb9cfe3509b9f3911d1800cb0970f0fef3f83409c92",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1647,7 +2777,7 @@
       "reason": "missing",
       "text": "Prince's Knife. Passive: Hex Strike\n The next attack hexes the hit enemy into a frog for 1.5 seconds.",
       "textSha256": "1b22aeff15ff07b8a7d63252b4bdf01cb384d7f37ab89076910a5322617adbcc",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1658,7 +2788,7 @@
       "reason": "missing",
       "text": "Helm of the Undying. Passive: Death Delay\n Survive for an extra 6 seconds after receiving a killing blow. If any enemy heroes dies within 1200 units, the death delay effect is extended by 5 seconds. The hero cannot attack buildings during Death Delay.",
       "textSha256": "5b74fcdb5285163a621309e4f980235cc6798d8cbc505e183c9bbe818e7b1c72",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1669,7 +2799,7 @@
       "reason": "missing",
       "text": "Mango Tree. Use: Plant a Mango Tree\n Targets the ground to plant a mango tree that provides unlimited mango power. The tree generates Enchanted Mangoes every 60 seconds, and provides unobstructed vision in the area .",
       "textSha256": "49ce48b3d44625e921d0fbce734fca3eb1fe433db53ef53b14b47a8abe5be223",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1680,7 +2810,7 @@
       "reason": "missing",
       "text": "Cheese. Use: Fondue\n Instantly restores 2500 health and 1500 mana.",
       "textSha256": "e6854a68cbccd6cb98c77dadd758870109a78771938ab3446811fa2ea36db4ef",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1691,7 +2821,7 @@
       "reason": "missing",
       "text": "Witless Shako. Increases the wearer's max health, while reducing their max mana.",
       "textSha256": "c20471f2bd5a30595a998a0d28bac3fd0a85886680ee6a72c4ead568272c486e",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1702,7 +2832,7 @@
       "reason": "missing",
       "text": "Vambrace. Active: Switch Attributes\nActivate to switch the active attribute between Strength, Agility, and Intelligence. Vambrace provides +10 of the selected attribute and +4 of the other two attributes.",
       "textSha256": "23fb09eb4abe663ec90a23c6a60fc3f3f8e346df5a319a49ff121304cc5669f2",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1713,7 +2843,7 @@
       "reason": "missing",
       "text": "Imp Claw. Passive: Critical Strike\n Empowers your next attack, causing it to be a critical strike dealing 130% damage.",
       "textSha256": "6584481f34ecac3cf6a1170faf2f74126227c2d63d14ac724f7ce2771d77590f",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1724,7 +2854,7 @@
       "reason": "missing",
       "text": "Flicker. Active: Flicker\n Dispells debuffs and blinks you in a random forward direction for a random distance between 200 and 600. If cast within 3 seconds of receiving player damage, it will blink in place.\n\nDispel Type: Basic Dispel",
       "textSha256": "28ecd7dc88fb32fa076b65301bcecf9c24862d335dcf4648fdec740c1eac29f7",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1735,7 +2865,7 @@
       "reason": "missing",
       "text": "Telescope. Passive: Prescient Aura\n Lowers Scan cooldown by 50% . Increases attack range (Ranged only) and cast range of allies in a 1200 unit radius.",
       "textSha256": "25e2ab39f28b6bf603eee96390493e42f00fea06ae61e4feb4185a716a36b744",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1746,7 +2876,7 @@
       "reason": "missing",
       "text": "Arcane Ring. Active: Replenish Mana\n Restores mana equal to 30 + 3% of the caster's maximum mana pool to all nearby allies. \n\n Radius: 1200",
       "textSha256": "530371b848d8f681d20a163e3779d126c2bdb202241217f24d9907f285ef5e55",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1757,7 +2887,7 @@
       "reason": "missing",
       "text": "Ocean Heart. Passive: Water Regen\n Provides you with 10 HP regen and 5 mana regen while in the river.",
       "textSha256": "2bc872acfe23696859dd1a747a9fb2158aa420fdb3f6bd0a1962b7e726231b08",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1768,7 +2898,7 @@
       "reason": "missing",
       "text": "Trusty Shovel. Active: Dig\n Channel for 1 second. \nCan find a Bounty Rune, a Healing Salve, an Enchanted Mango, or a Kobold. If digging in a river, always digs up a Water Rune.",
       "textSha256": "31e56bea3d4442ed6b995edade60573fe23a9ae3b816aa0417a371c94d3c2e95",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1779,7 +2909,7 @@
       "reason": "missing",
       "text": "Dragon Scale. Passive: Afterburn\n Causes attacks to burn the enemy, dealing 22 damage per second for 3 seconds. Affects buildings.",
       "textSha256": "7d37a7d4daa106a8e20a3a37e90c84f327b486261dfe5aa9dc13db58713d6fe3",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1790,7 +2920,7 @@
       "reason": "missing",
       "text": "Clumsy Net. Active: Ensnare\n Ensnares the target enemy and yourself for 1.75 seconds.",
       "textSha256": "754cd86a412566ef3cd41f99606928db8978f33085c2cc8e97f2e0473839cfe6",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1801,7 +2931,7 @@
       "reason": "missing",
       "text": "Enchanted Quiver. Passive: Certain Strike\n Empowers your next attack with 250 bonus magical damage and True Strike. Ranged Attackers have +350 bonus range for the attack.",
       "textSha256": "69b050853acc0d5ffba04d74c4beb56a149d074e3b94e4b529cba21b1ad9c995",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1812,7 +2942,7 @@
       "reason": "missing",
       "text": "Ninja Gear. Active: Solitary Disguise\n Casts Smoke of Deceit on yourself only that lasts for up to 15 seconds.",
       "textSha256": "aae4c013d468dc08b90b3fe289efecdfa43077ace3807f50b3d0f92502922d26",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1823,7 +2953,7 @@
       "reason": "missing",
       "text": "Illusionist's Cape. Active: Create Illusion\n Creates an image under your control. \nPassive: Illusion Mastery\nIncreases outgoing damage of all units and illusions controlled by the hero by 6%.",
       "textSha256": "5bedd03b6755d77b40ed7c168daaa77ba37899d87f0b4f57a44191852d59f31c",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1834,7 +2964,7 @@
       "reason": "missing",
       "text": "Havoc Hammer. Active: Havoc\n Pulls enemies in a 400 range around you, slowing them by 50% for 3 seconds and dealing 175 + 1.5x your str as magical damage.",
       "textSha256": "89205788c63773db279b54eb38a0c5115a8477875ef8003dbdf7e4ac5c4e989e",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1845,7 +2975,7 @@
       "reason": "missing",
       "text": "Magic Lamp. Passive: Rejuvenate\n When the wearer's health falls below 20%, they will receive a strong dispel and be healed for 1500 health.\n\nDispel Type: Strong Dispel",
       "textSha256": "9e91ffebd82b03a18044cefe8485d40b23cd46fd591ec1f6ceae56f0e213efca",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1856,7 +2986,7 @@
       "reason": "missing",
       "text": "Ballista. Passive: Knockback\n Knocks back enemies 50 distance and deals 50 pure damage with every attack.",
       "textSha256": "12f0c0fc111912315881c9355a5ed4afaff0ac12911a781e378166ee163860e3",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1867,7 +2997,7 @@
       "reason": "missing",
       "text": "Woodland Striders. Active: Woodland Stride\n Create a path of trees behind you for 3 seconds. Trees last up to 15 seconds. \nPassive: Tree Walking\n Removes movement speed limit and allows free pathing through trees.\n \nMovement speed bonuses from multiple pairs of boots do not stack.",
       "textSha256": "5da20f4e7b12255a5e3460b2d4d703aeab9d5b20c0732c993fb0e41734d1b5f3",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1878,7 +3008,7 @@
       "reason": "missing",
       "text": "Pirate Hat. Passive: Plunder\n Steals 150 gold from enemy heroes that die within 2400 units. If the wearer is the killer, there is no range limit and an additional 400 gold is stolen.\nPassive: Buried Treasure\n Gold loss on death reduced by 100%.",
       "textSha256": "69a55d4bec24e7f73d32c9c95f48e0a90d734a871f2f34c6f9816dbb262567b3",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1889,7 +3019,7 @@
       "reason": "missing",
       "text": "Ex Machina. Active: Reset Cooldowns\n Reset the cooldown on all items (except Refresher Orb).",
       "textSha256": "2ff7e23f1bbc6706fe63731050ed07b927754a2a17344a2a57e5f2b993e511f4",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1900,7 +3030,7 @@
       "reason": "missing",
       "text": "Orb of Destruction. Passive: Impeding Corruption\n Attacks reduce the target's armor and movement speed. Slow amount varies based on whether the wearer is melee or ranged.",
       "textSha256": "016727c5405108833c5c7a81d286b6ab75fa28f7dea650e300dc3b993bb282aa",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1911,7 +3041,7 @@
       "reason": "missing",
       "text": "The Leveller. Passive: Level\n Attacks deal 35% more damage to buildings.",
       "textSha256": "ebbfedfb7bb2b18627a74d4abd530094a51d15c0c08ec9b1269958036cd6127a",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1922,7 +3052,7 @@
       "reason": "missing",
       "text": "Healing Lotus. Use: Eat Lotus\n Instantly restores 125 health and mana.",
       "textSha256": "5a24be2ea78f9772c8e9841bae7cb116efba740fda97d866a0a6e1e52df020e5",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1933,7 +3063,7 @@
       "reason": "missing",
       "text": "Great Healing Lotus. Use: Eat Lotus\n Instantly restores 400 health and mana.",
       "textSha256": "61d0a16bf692010f4fec68aa33d428c84431372c907f27b66029a0a11f365bff",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1944,7 +3074,7 @@
       "reason": "missing",
       "text": "Greater Healing Lotus. Use: Eat Lotus\n Instantly restores 900 health and mana.",
       "textSha256": "4622d4e58134d79a038da7624609a7968d962804cbba65f4c755359e6436a833",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1955,7 +3085,7 @@
       "reason": "missing",
       "text": "Beloved Memory. Active: Honor the Dead\nPlace this Offering on an Altar to honor the dead with a memory from those they left behind.",
       "textSha256": "ba78debd20ff4fd2c129a32b412ac2b8396a9e550aa0cf2a2ad9cac855e129f2",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1966,7 +3096,7 @@
       "reason": "missing",
       "text": "Scrying Shovel. Active: Dig\nSearch the map for Offerings to the dead.",
       "textSha256": "77e716b7fb06be89ecc721f73a831eef0736920bb899dee44ca388e5d2ee5d9b",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1977,7 +3107,7 @@
       "reason": "missing",
       "text": "Forebearer's Fortune. Active: Undying Promise\nSignal to the spirits of the other realm your commitment to honoring them. If everyone in the battle makes an Undying Promise before the fight begins, the dead might be willing to listen.",
       "textSha256": "3bb3cb4af2d2a90ad782922cc02d4deb609ae9e4c75a1754b4eba50ee6c05beb",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1988,7 +3118,7 @@
       "reason": "missing",
       "text": "Trickster Cloak. Active: Cloak\nCauses you to become invisible for 6 seconds.",
       "textSha256": "c7d6af215c8ec7077c73a04cc58ff291cdb199475c011367329646b8fbc67ff4",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -1999,7 +3129,7 @@
       "reason": "missing",
       "text": "Penta-Edged Sword. Passive: Maim\nEach attack has a 25% chance to reduce enemy hero movement speed by 20% and attack speed by 60 for 3 seconds.",
       "textSha256": "d661c253256875791a81839b0e851a0c16a67624880faac983cf22f2a1621019",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -2008,9 +3138,9 @@
       "id": "item:676",
       "name": "Ceremonial Robe",
       "reason": "missing",
-      "text": "Ceremonial Robe. Passive: Ceremonial Aura\nLowers enemy Status Resistance by 10% and Magic Resistance by 10%.\n\nRadius: 1200",
-      "textSha256": "f7cf54bd3a9a2ef7326700318a60cc0334f0e5b907f1515c2c9da06a7419fbc3",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Ceremonial Robe. Passive: Ceremonial Aura\nLowers enemy Status Resistance by 10% and Magic Resistance by 10%.\n\nRadius: 850",
+      "textSha256": "13d318da2cf32beb6068ea7e98180d7396ffce9aa920f4669cfff4a216d65e37",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -2021,7 +3151,7 @@
       "reason": "missing",
       "text": "Book of Shadows. Active: Shadows\nTarget an enemy, ally or self. Causes the target to become untargetable from enemies to the caster, but also silenced, muted and disarmed for 4 seconds. Applies a Basic Dispel.\n\nDispel Type: Basic Dispel",
       "textSha256": "619f529b1bf950bb8a53ad853869b1cd5255cd560b56f4da50857e5021303c50",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -2032,7 +3162,7 @@
       "reason": "missing",
       "text": "Giant's Ring. Passive: Giant's Foot\nCan path over any terrain and deals 100% of your strength per second to units you are standing ontop of.",
       "textSha256": "b2dabf3be54be1431c1293422678e6ad5f0a595d4c76c7ed5c5b25503c104d42",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -2043,7 +3173,7 @@
       "reason": "missing",
       "text": "Bullwhip. Active: Whip\nGrants 25% movement speed when cast on allies, and slows by 25% when cast on enemies. Lasts 4 seconds.",
       "textSha256": "f9a2057e7f0ebc88f9543125bd06bf6a4c1599d16e3b22130a0e7f193362665a",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -2054,7 +3184,7 @@
       "reason": "missing",
       "text": "Quicksilver Amulet. Passive: Quicksilver\nGrants you a bonus 5% movement speed and 20 attack speed anytime one of your abilities are on cooldown.",
       "textSha256": "2b9188e299d7774e68337a53378fc0db0f310d978b3281fc4b9ac5c2044bddc5",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -2065,7 +3195,7 @@
       "reason": "missing",
       "text": "Aghanim's Shard - Consumable. Passive: Ability Upgrade\nUpgrades an existing ability or adds a new ability to your hero.",
       "textSha256": "e25e23a080623c42c96ca17187670540998c6ff859f5367afa308df8484932f9",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -2076,7 +3206,7 @@
       "reason": "missing",
       "text": "Aghanim's Blessing - Roshan. Passive: Ability Upgrade\nUpgrades the ultimate, and some abilities, of all heroes.",
       "textSha256": "0da4d68f23af8f239b4a9e4b6b27eb80e37cc94cfd28f6bb6cec2ddf1efa4d78",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -2085,9 +3215,9 @@
       "id": "item:828",
       "name": "Brigand's Blade",
       "reason": "missing",
-      "text": "Brigand's Blade. Passive: Dark Mercy\nYour attacks deal 3 more damage to enemies for each 7% HP they are missing.",
-      "textSha256": "620d1cbdfe8e7b8087a6abf29dc0c7c2d1aa62c987e1d47b578288b7a6de0c19",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "text": "Brigand's Blade. Passive: Dark Mercy\nYour attacks deal 7 more damage to enemies for each 10% HP they are missing.",
+      "textSha256": "201186fc1cfd27a94d4539a3f8eafe0c0509bd7a2d84c68e50971f1b8fd7ab6d",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -2098,7 +3228,7 @@
       "reason": "missing",
       "text": "Arcanist's Armor. Active: Mega Shield\n Force Field Aura Grants 25% Damage Reflection for 5 seconds.\n\nPassive: Shield\n Grants +4 armor and +8% Magic Resistance to all other allies within 1200 radius.",
       "textSha256": "bf531fbc688051e25582010ab08de33c660746873194e0b645e9f52eae882d71",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -2109,7 +3239,7 @@
       "reason": "missing",
       "text": "Blast Rig. Passive: Hair Trigger\n The next time you get attacked by a hero within 400 range, explode dealing 250 damage to all enemies within a 400 radius and causing them to miss 100% of their attacks for 2 seconds.",
       "textSha256": "e08ccbc1b5883715d85bc155c110327b4cd5f407caee0e5abd8beb21245f840a",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -2120,7 +3250,7 @@
       "reason": "missing",
       "text": "Fae Grenade. Active: Shadow Brand\nThrows a Mark towards an enemy within 900 range applying a debuff that deals 40 damage every second and provides vision of the unit for 7 seconds.",
       "textSha256": "e5b6eb36dacd6f51df0d51fe9d571e6177269ffb27dec3c920bea5b93c56ca5f",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -2131,7 +3261,7 @@
       "reason": "missing",
       "text": "Pig Pole. Active: Pig, Out!\nTurns your hero into a critter for 3 seconds and gives them +20% Movement Speed.",
       "textSha256": "f74ded6edfa3cd25b9c2096617013910ac25a18eeaf92dfbd1da19d44c2131c8",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -2142,7 +3272,7 @@
       "reason": "missing",
       "text": "Lance of Pursuit. Passive: Hound\n Attacking from behind slows enemies by 16% (8% if Ranged) and deals 20 more damage. Slow lasts 2 second(s).",
       "textSha256": "6c35e5d9237f69d7996501b8a85118a6b003202402589fd70821b47e758509b0",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false
@@ -2153,7 +3283,7 @@
       "reason": "missing",
       "text": "Ogre Seal Totem. Active: Ogre Seal Flop\n Flop forward like an ogre seal 2 times, dealing 250 damage and slowing enemies in a 275 radius by -100% for 1.5 second on each bounce. 400 bounce distance.",
       "textSha256": "bec61dfa242047ddc75ff1c039d60243985572b7af6f979d5e29f60ff4fa4e93",
-      "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+      "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
       "priority": 2,
       "reviewed": false,
       "purchaseAvailabilityVerified": false

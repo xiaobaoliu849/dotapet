@@ -16,11 +16,14 @@ import { reviewCounts } from '../src/learning/study.js';
 import { learningCollection } from '../src/learning/spokenPhrases.js';
 
 const catalog = JSON.parse(fs.readFileSync(new URL('../src/learning/catalog.json', import.meta.url)));
-test('every catalog item has a bundled PNG with a verified signature and content hash', () => {
+test('every catalog item has a bundled PNG with a verified signature and content hash or an explicit artwork gap', () => {
   const manifest = JSON.parse(fs.readFileSync(new URL('../src/learning/item-images.json', import.meta.url)));
-  assert.deepEqual(manifest.missing, []);
+  assert.deepEqual(manifest.missing.map(row => row.id), ['item:1881', 'item:1883', 'item:1884', 'item:1949']);
+  for (const gap of manifest.missing) assert.equal(gap.reason, 'HTTP 404', gap.id);
+  const missingIds = new Set(manifest.missing.map(row => row.id));
   for (const item of catalog.lessons.filter(row => row.kind === 'item')) {
     const entry = manifest.entries[item.id];
+    if (missingIds.has(item.id)) { assert.equal(entry, undefined, item.id); continue; }
     assert.ok(entry, item.id);
     assert.match(entry.file, /^\d+\.png$/);
     const png = fs.readFileSync(new URL('../src/renderer/assets/learning-items/' + entry.file, import.meta.url));

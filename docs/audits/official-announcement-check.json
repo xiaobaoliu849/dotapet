@@ -1,14 +1,25 @@
 {
-  "checkedAt": "2026-11-15T07:38:39.953Z",
+  "checkedAt": "2026-11-19T05:02:11.609Z",
   "source": "https://api.steampowered.com/ISteamNews/GetNewsForApp/v2/?appid=570&count=20&maxlength=0&feeds=steam_community_announcements",
-  "scope": "20 most recent official Steam community announcements; not all client hotfix builds",
-  "latestGameplayAnnouncement": {
-    "title": "7.41f Gameplay Patch",
-    "publishedAt": "2026-09-15T18:44:25.000Z",
-    "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1843481262705400"
+  "patchListSource": "https://www.dota2.com/datafeed/patchnoteslist?language=english",
+  "scope": "20 most recent official Steam community announcements plus official Dota 2 patchnoteslist; not all client hotfix builds",
+  "latestPatchListEntry": {
+    "patchNumber": "7.42",
+    "patchName": "7.42",
+    "publishedAt": "2026-11-18T08:00:00.000Z"
   },
-  "nextMajorPatchDate": "No confirmed date found in the checked announcements",
+  "latestGameplayAnnouncement": {
+    "title": "7.42 Gameplay Update",
+    "publishedAt": "2026-11-18T20:00:46.000Z",
+    "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1849827110425804"
+  },
+  "nextMajorPatchDate": "No confirmed next-patch date found in the checked announcements",
   "headlines": [
+    {
+      "title": "7.42 Gameplay Update",
+      "publishedAt": "2026-11-18T20:00:46.000Z",
+      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1849827110425804"
+    },
     {
       "title": "Inside the Trove of Terror",
       "publishedAt": "2026-10-07T00:22:41.000Z",
@@ -103,11 +114,6 @@
       "title": "The International 2026",
       "publishedAt": "2026-02-12T00:05:34.000Z",
       "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1824459501605090"
-    },
-    {
-      "title": "Dota 2 Update - 1/30/2026",
-      "publishedAt": "2026-01-30T23:12:19.000Z",
-      "url": "https://steamstore-a.akamaihd.net/news/externalpost/steam_community_announcements/1823191198606637"
     }
   ]
 }
