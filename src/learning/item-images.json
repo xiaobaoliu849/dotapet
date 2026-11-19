@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "fetchedAt": "2026-11-16T02:34:34.283Z",
+  "fetchedAt": "2026-11-19T05:04:57.753Z",
   "source": "Valve Steam CDN; internal names from Valve itemlist and local bilingual lexicon official export",
   "entries": {
     "item:1": {
@@ -1200,6 +1200,20 @@
       "source": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/smoke_of_deceit.png",
       "sha256": "b1e8049d422627c0ced883668b11b4d14563cc2ebb24ba1961997d5ba7c8db0d"
     },
+    "item:1880": {
+      "name": "Red Ledger",
+      "slug": "red_ledger",
+      "file": "1880.png",
+      "source": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/red_ledger.png",
+      "sha256": "0c9d60293a3499b2592dfc58d943a01a7a3f6c1e8f38fe3c34a8a8e5c66578ce"
+    },
+    "item:1882": {
+      "name": "Vile Phial",
+      "slug": "vile_phial",
+      "file": "1882.png",
+      "source": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/vile_phial.png",
+      "sha256": "75e1a33ac7196539184173d5811376f914f5e31f4417c147b534ac97fcea3a3c"
+    },
     "item:19": {
       "name": "Robe of the Magi",
       "slug": "robe",
@@ -1214,6 +1228,27 @@
       "source": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/veil_of_discord.png",
       "sha256": "e4accf91cdd05a3aff33e922bfb6fa5edfe17e508499be53c0f94f9865f51c36"
     },
+    "item:1911": {
+      "name": "Helm of the Hivemind",
+      "slug": "helm_of_the_hivemind",
+      "file": "1911.png",
+      "source": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/helm_of_the_hivemind.png",
+      "sha256": "8d0367792aa41154036ea46897e1ade26f91a89225601316df20b07afbceecaf"
+    },
+    "item:1916": {
+      "name": "Brick",
+      "slug": "brick",
+      "file": "1916.png",
+      "source": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/brick.png",
+      "sha256": "a045f30d95401cb80b66bbf31e24280d1dc17a1d75c72512c935b3af929b29bf"
+    },
+    "item:1917": {
+      "name": "Balmhook",
+      "slug": "balmhook",
+      "file": "1917.png",
+      "source": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/balmhook.png",
+      "sha256": "f98e6448b2fffb5a817a330044292bfcd34b0c441fd2e91c04b19446aa1884a2"
+    },
     "item:193": {
       "name": "Necronomicon",
       "slug": "necronomicon_2",
@@ -1227,6 +1262,62 @@
       "file": "194.png",
       "source": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/necronomicon_3.png",
       "sha256": "d60866718b84fe0c27b61fac5ba94d224fe12ceee78ae71911a6e24f2943f868"
+    },
+    "item:1942": {
+      "name": "Bloodslinger",
+      "slug": "bloodslinger",
+      "file": "1942.png",
+      "source": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/bloodslinger.png",
+      "sha256": "14266d6278c795932819ca9ae2b97bb98cfe35f90764d97d95bc9fc7b660ba43"
+    },
+    "item:1944": {
+      "name": "Ristul's Devotion",
+      "slug": "ristuls_devotion",
+      "file": "1944.png",
+      "source": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/ristuls_devotion.png",
+      "sha256": "d0447e138f525346943aa3e7ae8b2aeea95fed97cf17c9b4dad4a9ccb1aea5f1"
+    },
+    "item:1946": {
+      "name": "Starforge",
+      "slug": "starforge",
+      "file": "1946.png",
+      "source": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/starforge.png",
+      "sha256": "2eca330932f8ce0a7126301896112c7a9b09a9b37f5b6faac37cfc456e33ed54"
+    },
+    "item:1948": {
+      "name": "Skypiercer",
+      "slug": "skypiercer",
+      "file": "1948.png",
+      "source": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/skypiercer.png",
+      "sha256": "a3d43758f29e53ee5824afa0ac90074b6b1ce91de95bf311985f0dc732a3485b"
+    },
+    "item:1950": {
+      "name": "Horn of Battle",
+      "slug": "horn_of_battle",
+      "file": "1950.png",
+      "source": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/horn_of_battle.png",
+      "sha256": "f864d1ec1c798bfcfa38e6960953fad929833de2659f8e7af8fe640f9f1621e8"
+    },
+    "item:1951": {
+      "name": "Greater Horn of Battle",
+      "slug": "horn_of_battle_greater",
+      "file": "1951.png",
+      "source": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/horn_of_battle_greater.png",
+      "sha256": "4d42424f1abaf7ea31107136be31d4fb97ec28e389d5cc9d0859897d837b09a1"
+    },
+    "item:1953": {
+      "name": "Sabatons of Mordiggian",
+      "slug": "berserkers_sabatons",
+      "file": "1953.png",
+      "source": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/berserkers_sabatons.png",
+      "sha256": "e326a3b65f908a56c0b436982f90bd295a559b27c9e738b911827a4581e43e87"
+    },
+    "item:1955": {
+      "name": "Caduceus",
+      "slug": "caduceus",
+      "file": "1955.png",
+      "source": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/caduceus.png",
+      "sha256": "7e96d6b6c1270ebef86cb68b38ce249309ebdb42d17e84ff56b50c71fa605b93"
     },
     "item:2": {
       "name": "Blades of Attack",
@@ -1734,9 +1825,9 @@
     },
     "item:292": {
       "name": "Stygian Desolator",
-      "slug": "desolator_2",
+      "slug": "stygian_desolator",
       "file": "292.png",
-      "source": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/desolator_2.png",
+      "source": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/stygian_desolator.png",
       "sha256": "a0a36f0f68d59136ef620893e049f1153ae4a10ea9539fc60f997b20fef60616"
     },
     "item:293": {
@@ -2860,5 +2951,30 @@
       "sha256": "b0d3bec4c15ad29178b8ad01a1624a91fb8643600453ddae5c93c9ba0f1265e6"
     }
   },
-  "missing": []
+  "missing": [
+    {
+      "id": "item:1881",
+      "name": "Berserker's Hood",
+      "slug": "berserkers_hood",
+      "reason": "HTTP 404"
+    },
+    {
+      "id": "item:1883",
+      "name": "Nothl Sigil",
+      "slug": "nothl_sigil",
+      "reason": "HTTP 404"
+    },
+    {
+      "id": "item:1884",
+      "name": "Claszian Timepiece",
+      "slug": "claszian_timepiece",
+      "reason": "HTTP 404"
+    },
+    {
+      "id": "item:1949",
+      "name": "Stone of Recall",
+      "slug": "stone_of_recall",
+      "reason": "HTTP 404"
+    }
+  ]
 }
