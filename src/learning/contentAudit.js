@@ -7,7 +7,7 @@ export function contentKey(value = '') {
 
 export function narrationText(lesson, content) {
   if (content === 'biography') return lesson.biographyEn || '';
-  if (content === 'expression') return lesson.en;
+  if (content === 'expression' || content === 'name') return lesson.en;
   return lesson.descriptionEn ? `${lesson.en}. ${lesson.descriptionEn}` : '';
 }
 
@@ -16,6 +16,10 @@ export function audioFreshness(entry, lesson, baseline) {
   const currentText = narrationText(lesson, entry.content);
   if (!currentText) return { status: 'needs-stats-template' };
   if (/%\w+%/.test(currentText)) return { status: 'unresolved-current' };
+  if (entry.script) {
+    const same = contentKey(entry.script) === contentKey(currentText);
+    return { status: same ? 'current-verified' : 'baseline-changed', currentText, baselineText: entry.script, evidence: 'generated-script' };
+  }
   const reference = baseline?.entries?.[lesson.id];
   if (!reference?.candidateSpeech) return { status: 'unknown-transcript', currentText };
   const same = contentKey(reference.candidateSpeech) === contentKey(currentText);

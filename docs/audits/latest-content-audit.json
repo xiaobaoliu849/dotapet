@@ -1,12 +1,13 @@
 {
   "schema": 1,
-  "catalogFetchedAt": "2026-11-15T07:31:22.731Z",
+  "catalogFetchedAt": "2026-11-19T05:04:28.926Z",
   "baselineSource": "Public archived official exports (March 29, 2026) and items.ts generation-input candidates",
   "evidenceNote": "Baseline candidates are inferred from archived generation inputs. MP3 transcripts have not been verified by listening or speech recognition.",
   "counts": {
-    "baseline-matches": 884,
-    "baseline-changed": 88,
-    "baseline-extra-context": 100,
+    "baseline-matches": 784,
+    "baseline-changed": 197,
+    "baseline-extra-context": 84,
+    "current-verified": 26,
     "needs-stats-template": 65,
     "missing": 164,
     "unknown-transcript": 8,
@@ -298,8 +299,8 @@
       "name": "Crystal Clone",
       "kind": "ability",
       "parent": "Crystal Maiden · 水晶室女",
-      "status": "baseline-matches",
-      "currentText": "Crystal Clone. Slides in a direction, creating a crystal clone of herself in her place and disjointing incoming projectiles. If the clone takes enough damage or times out, it shatters, Frostbiting enemies in a 450 AoE around its place. The Clone can also be destroyed by Crystal Maiden's own spells.",
+      "status": "baseline-changed",
+      "currentText": "Crystal Clone. Slides in a direction, creating a crystal clone of herself in her place and disjointing incoming projectiles. If the clone takes enough damage or times out, it shatters, Frostbiting enemies in a 425 AoE around its place. The Clone can also be destroyed by Crystal Maiden's own spells.",
       "baselineText": "Crystal Clone. Slides in a direction, creating a crystal clone of herself in her place and disjointing incoming projectiles. If the clone takes enough damage or times out, it shatters, Frostbiting enemies in a 450 AoE around its place. The Clone can also be destroyed by Crystal Maiden's own spells.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -468,8 +469,8 @@
       "name": "Blade Fury",
       "kind": "ability",
       "parent": "Juggernaut · 主宰",
-      "status": "baseline-matches",
-      "currentText": "Blade Fury. Causes a bladestorm of destructive force around Juggernaut, rendering him debuff immune with 80% magic resistance and dealing damage every 0.2s to nearby enemy units. Applies a strong dispel at the end of the spin.",
+      "status": "baseline-changed",
+      "currentText": "Blade Fury. Causes a bladestorm of destructive force around Juggernaut, rendering him debuff immune with 80% magic resistance and dealing damage every 0.2s to nearby enemy units. Applies a basic dispel at the start and end of the spin.\n\nDISPEL TYPE: Basic Dispel",
       "baselineText": "Blade Fury. Causes a bladestorm of destructive force around Juggernaut, rendering him debuff immune with 80% magic resistance and dealing damage every 0.2s to nearby enemy units. Applies a strong dispel at the end of the spin.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -494,16 +495,6 @@
       "evidence": "Inferred from archived official export used by generation script"
     },
     {
-      "id": "ability:419",
-      "name": "Swiftslash",
-      "kind": "ability",
-      "parent": "Juggernaut · 主宰",
-      "status": "baseline-matches",
-      "currentText": "Swiftslash. Performs a short Omnislash for 1 seconds.",
-      "baselineText": "Swiftslash. Performs a short Omnislash for 1 seconds.",
-      "evidence": "Inferred from archived official export used by generation script"
-    },
-    {
       "id": "ability:1210",
       "name": "Bladeform",
       "kind": "ability",
@@ -518,8 +509,8 @@
       "name": "Omnislash",
       "kind": "ability",
       "parent": "Juggernaut · 主宰",
-      "status": "baseline-matches",
-      "currentText": "Omnislash. Juggernaut leaps towards the target enemy units, and then slashes the target and other nearby enemy units at an increased attack rate. Juggernaut is invulnerable for the duration.\n\nDISPEL TYPE: Basic Dispel",
+      "status": "baseline-changed",
+      "currentText": "Omnislash. Juggernaut leaps towards the target enemy unit and then slashes it. Juggernaut continues to jump slash nearby random enemies (including the previously slashed enemy) until the duration ends or there are no enemies nearby. Jump rate is dependent on Juggernaut's attack speed. Juggernaut is invulnerable and has increased attack speed during Omnislash.\n\nDISPEL TYPE: Basic Dispel",
       "baselineText": "Omnislash. Juggernaut leaps towards the target enemy units, and then slashes the target and other nearby enemy units at an increased attack rate. Juggernaut is invulnerable for the duration. DISPEL TYPE: Basic Dispel",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -568,8 +559,8 @@
       "name": "Celestial Quiver",
       "kind": "ability",
       "parent": "Mirana · 米拉娜",
-      "status": "baseline-extra-context",
-      "currentText": "Celestial Quiver. When a charge is available, Mirana's next attack will deal bonus magic damage.",
+      "status": "baseline-changed",
+      "currentText": "Celestial Quiver. When a charge is available, Mirana's next attack will have bonus item potency and magic damage.",
       "baselineText": "Celestial Quiver. When a charge is available, Mirana's next attack will deal bonus magic damage.Gains a charge every 7 hero levels.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -618,8 +609,8 @@
       "name": "Presence of the Dark Lord",
       "kind": "ability",
       "parent": "Shadow Fiend · 影魔",
-      "status": "baseline-matches",
-      "currentText": "Presence of the Dark Lord. Shadow Fiend's presence reduces the armor of nearby enemies.",
+      "status": "baseline-changed",
+      "currentText": "Presence of the Dark Lord. Shadow Fiend's presence reduces the armor and magic resistance of nearby enemies.",
       "baselineText": "Presence of the Dark Lord. Shadow Fiend's presence reduces the armor of nearby enemies.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -628,8 +619,8 @@
       "name": "Requiem of Souls",
       "kind": "ability",
       "parent": "Shadow Fiend · 影魔",
-      "status": "baseline-matches",
-      "currentText": "Requiem of Souls. Shadow Fiend gathers up to 20 of his captured souls to release them as lines of demonic energy. Units near Shadow Fiend when the souls are released can be damaged by several lines of energy. Any unit damaged by Requiem of Souls will be feared and have its movement speed and magic resistance reduced for 0.6 seconds for each line hit up to a maximum of 2.15. Lines of energy are created for every soul captured through Necromastery. \n\n Requiem of Souls is automatically cast whenever Shadow Fiend dies, regardless of its cooldown.",
+      "status": "baseline-changed",
+      "currentText": "Requiem of Souls. Shadow Fiend gathers up to 20 of his captured souls to release them as lines of demonic energy. Units near Shadow Fiend when the souls are released can be damaged by several lines of energy. Any unit damaged by Requiem of Souls will be feared and have its movement speed reduced for 1.2 / 1.5 / 1.8 seconds, increased by 0.1 seconds for each additional soul that hits it. Lines of energy are created for every soul captured through Necromastery. \n\n Requiem of Souls is automatically cast whenever Shadow Fiend dies, regardless of its cooldown.",
       "baselineText": "Requiem of Souls. Shadow Fiend gathers up to 20 of his captured souls to release them as lines of demonic energy. Units near Shadow Fiend when the souls are released can be damaged by several lines of energy. Any unit damaged by Requiem of Souls will be feared and have its movement speed and magic resistance reduced for 0.6 seconds for each line hit up to a maximum of 2.15. Lines of energy are created for every soul captured through Necromastery. Requiem of Souls is automatically cast whenever Shadow Fiend dies, regardless of its cooldown.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -768,8 +759,8 @@
       "name": "Juxtapose",
       "kind": "ability",
       "parent": "Phantom Lancer · 幻影长矛手",
-      "status": "baseline-matches",
-      "currentText": "Juxtapose. Phantom Lancer has a chance to fracture his presence on an attack, creating an illusion of himself. Illusions also have a chance to fracture further. Illusions created from Phantom Lancer last for 8 seconds, while illusions created from other illusions last 4 seconds.",
+      "status": "baseline-changed",
+      "currentText": "Juxtapose. Phantom Lancer has a chance to fracture his presence on an attack, creating an illusion of himself. Illusions also have a chance to fracture further. Illusions created from Phantom Lancer last for 7 seconds, while illusions created from other illusions last 4 seconds.",
       "baselineText": "Juxtapose. Phantom Lancer has a chance to fracture his presence on an attack, creating an illusion of himself. Illusions also have a chance to fracture further. Illusions created from Phantom Lancer last for 8 seconds, while illusions created from other illusions last 4 seconds.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -988,8 +979,8 @@
       "name": "Stinger",
       "kind": "ability",
       "parent": "Sand King · 沙王",
-      "status": "baseline-matches",
-      "currentText": "Stinger. Sand King strikes an area, performing an attack on all enemies in the area of effect, dealing extra damage to each. Enemies within an innermost radius of 125 take 40% extra damage. Applies Caustic Finale and a slow to all enemies hit.",
+      "status": "baseline-changed",
+      "currentText": "Stinger. Sand King strikes an area, performing an attack on all enemies in the area of effect, dealing extra damage to each. Attacks have decreased Item Potency. Enemies within an innermost radius of 120 / 140 / 160 / 180 take 40% extra damage. Applies Caustic Finale and a slow to all enemies hit.",
       "baselineText": "Stinger. Sand King strikes an area, performing an attack on all enemies in the area of effect, dealing extra damage to each. Enemies within an innermost radius of 125 take 40% extra damage. Applies Caustic Finale and a slow to all enemies hit.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -1069,7 +1060,7 @@
       "kind": "ability",
       "parent": "Storm Spirit · 风暴之灵",
       "status": "baseline-changed",
-      "currentText": "Galvanized. Storm Spirit gains a charge of 0.2 mana regeneration per kill, and a charge every 3 levels. Loses 2 charges per death. Additionally every time he gains a charge he also gains 0.1 Mana Regen permanently.",
+      "currentText": "Galvanized. Storm Spirit gains a charge of 0.25 mana regeneration per kill, and a charge every 3 levels. Loses 2 charges per death. Additionally every time he gains a charge he also gains 0.1 Mana Regen permanently.",
       "baselineText": "Galvanized. Storm Spirit gains a charge of 0.2 mana regeneration per kill. Loses 2 charges per death. Additionally every time he gains a charge he also gains 0.1 Mana Regen permanently.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -1328,8 +1319,8 @@
       "name": "Focus Fire",
       "kind": "ability",
       "parent": "Windranger · 风行者",
-      "status": "baseline-matches",
-      "currentText": "Focus Fire. Windranger channels the wind to gain 350 / 425 / 500 additional attack speed against a single enemy unit or structure, though with a reduction to her attack damage.  Extra damage from secondary item effects is not reduced.",
+      "status": "baseline-changed",
+      "currentText": "Focus Fire. Windranger channels the wind to gain 350 / 425 / 500 additional attack speed against a single enemy unit or structure, though with a reduction to her attack damage and her Item Potency.",
       "baselineText": "Focus Fire. Windranger channels the wind to gain 350/425/500 additional attack speed against a single enemy unit or structure, though with a reduction to her attack damage. Extra damage from secondary item effects is not reduced.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -1418,8 +1409,8 @@
       "name": "Static Field",
       "kind": "ability",
       "parent": "Zeus · 宙斯",
-      "status": "baseline-matches",
-      "currentText": "Static Field. Zeus shocks any enemy that he attacks or is hit by his abilities, causing damage equal to a percentage of their current health.",
+      "status": "baseline-changed",
+      "currentText": "Static Field. Zeus shocks any enemy that he attacks or is hit with his abilities, causing damage equal to a percentage of their current health.",
       "baselineText": "Static Field. Zeus shocks any enemy that he attacks or is hit by his abilities, causing damage equal to a percentage of their current health.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -1538,8 +1529,8 @@
       "name": "Flame Cloak",
       "kind": "ability",
       "parent": "Lina · 莉娜",
-      "status": "baseline-matches",
-      "currentText": "Flame Cloak. Grants Lina unobstructed movement and increases her spell damage and magic resistance. Grants max fiery soul stacks on activation.",
+      "status": "baseline-extra-context",
+      "currentText": "Flame Cloak. Grants Lina unobstructed movement and increases her spell damage and magic resistance.",
       "baselineText": "Flame Cloak. Grants Lina unobstructed movement and increases her spell damage and magic resistance. Grants max fiery soul stacks on activation.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -1608,8 +1599,8 @@
       "name": "Ice Spire",
       "kind": "ability",
       "parent": "Lich · 巫妖",
-      "status": "baseline-matches",
-      "currentText": "Ice Spire. Creates an Ice Spire at the target spot, slowing enemies around it. Can take 4 hero hits or 8 creep hits and when destroyed it will create a Frost Blast around it.\n\nChain Frost can be cast on the Spire and can bounce to the Spire and damage the spire by 1 hero attack if there are no other enemies in range.\n\nLich can cast Frost Shield on the Spire. Each Frost Shield tick will heal the spire by 1 hero attack.",
+      "status": "baseline-changed",
+      "currentText": "Ice Spire. Creates an Ice Spire at the target spot, slowing enemies around it. When destroyed it will create a Frost Blast around it.\n\nChain Frost can be cast on the Spire and can bounce to the Spire and damage the spire by 1 pip if there are no other enemies in range.\n\nLich can cast Frost Shield on the Spire. Each Frost Shield tick will heal the spire by 1 pip.",
       "baselineText": "Ice Spire. Creates an Ice Spire at the target spot, slowing enemies around it. Can take 4 hero hits or 8 creep hits and when destroyed it will create a Frost Blast around it.Chain Frost can be cast on the Spire and can bounce to the Spire and damage the spire by 1 hero attack if there are no other enemies in range.Lich can cast Frost Shield on the Spire. Each Frost Shield tick will heal the spire by 1 hero attack.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -1678,8 +1669,8 @@
       "name": "To Hell and Back",
       "kind": "ability",
       "parent": "Lion · 莱恩",
-      "status": "baseline-matches",
-      "currentText": "To Hell and Back. Lion gains 20% debuff duration after killing or assisting in a Hero kill while that Hero is dead.\n\nLion gains 20% spell amplification for 90s after respawning or resurrecting or until he gets a kill or assist.",
+      "status": "baseline-changed",
+      "currentText": "To Hell and Back. Lion gains 20% debuff duration after killing or assisting in a Hero kill while that Hero is dead.\n\nLion gains 15% spell amplification for 90s after respawning or resurrecting or until he gets a kill or assist.",
       "baselineText": "To Hell and Back. Lion gains 20% debuff duration after killing or assisting in a Hero kill while that Hero is dead.Lion gains 20% spell amplification for 90s after respawning or resurrecting or until he gets a kill or assist.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -1748,8 +1739,8 @@
       "name": "Urnaconda",
       "kind": "ability",
       "parent": "Shadow Shaman · 暗影萨满",
-      "status": "baseline-matches",
-      "currentText": "Urnaconda. Throw a snake jar at the target location, damaging all enemies in the AoE and creating a Massive Serpent Ward that has 4x the base Serpent Ward damage and health there that lasts 15s.",
+      "status": "baseline-changed",
+      "currentText": "Urnaconda. Throw a snake jar at the target location, damaging all enemies in the AoE and creating a Massive Serpent Ward that has 4x the base Serpent Ward damage and pip health there that lasts 15s.",
       "baselineText": "Urnaconda. Throw a snake jar at the target location, damaging all enemies in the AoE and creating a Massive Serpent Ward that has 4x the base Serpent Ward damage and health there that lasts 15s.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -1758,8 +1749,8 @@
       "name": "Mass Serpent Ward",
       "kind": "ability",
       "parent": "Shadow Shaman · 暗影萨满",
-      "status": "baseline-matches",
-      "currentText": "Mass Serpent Ward. Summons 10 Serpent Wards to attack enemy units and structures. The Wards are immune to magic. Creeps deal half damage to the Serpent Ward.",
+      "status": "baseline-changed",
+      "currentText": "Mass Serpent Ward. Summons 10 Serpent Wards to attack enemy units and structures. The Wards are immune to magic. Creeps and illusions deal 25% damage to the Serpent Ward.",
       "baselineText": "Mass Serpent Ward. Summons 10 Serpent Wards to attack enemy units and structures. The Wards are immune to magic. Creeps deal half damage to the Serpent Ward.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -1868,8 +1859,8 @@
       "name": "Dead in the Water",
       "kind": "ability",
       "parent": "Tidehunter · 潮汐猎人",
-      "status": "baseline-matches",
-      "currentText": "Dead in the Water. Tidehunter attaches a heavy anchor to an enemy hero. The hero is leashed while attached to the anchor. Attempting to move more than 350 units away from the anchor forces the hero to 100 move speed, dragging the anchor behind them. The anchor can be destroyed with 4 hero attacks.",
+      "status": "baseline-changed",
+      "currentText": "Dead in the Water. Tidehunter attaches a heavy anchor to an enemy hero. The hero is leashed while attached to the anchor. Attempting to move more than 350 units away from the anchor forces the hero to 100 move speed, dragging the anchor behind them. The anchor has 4 pip health.",
       "baselineText": "Dead in the Water. Tidehunter attaches a heavy anchor to an enemy hero. The hero is leashed while attached to the anchor. Attempting to move more than 350 units away from the anchor forces the hero to 100 move speed, dragging the anchor behind them. The anchor can be destroyed with 4 hero attacks.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -1889,7 +1880,7 @@
       "kind": "ability",
       "parent": "Tidehunter · 潮汐猎人",
       "status": "baseline-changed",
-      "currentText": "Leviathan's Catch. Whenever an enemy hero is killed by Tidehunter or dies under his debuffs, a fish appears in their place; Tidehunter can eat the fish to permanently gain 3 Health, 2 Attack Range, and 1 Bonus Damage Block.\n\nTidehunter eats a free fish every time he reaches an even hero level.",
+      "currentText": "Leviathan's Catch. Whenever an enemy hero is killed by Tidehunter or dies under his debuffs, a fish appears in their place; Tidehunter can eat the fish to permanently gain 5 Health, 2 Attack Range, and 1 Bonus Damage Block.\n\nTidehunter eats a free fish every time he reaches an even hero level.",
       "baselineText": "Leviathan's Catch. Whenever an enemy hero is killed by Tidehunter or dies under his debuffs, a fish appears in their place for 30 seconds. Tidehunter can eat the fish to permanently gain 3 Health, 2 Attack Range, and 1 Bonus Damage Block. Tidehunter eats a fish every level up.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -2008,8 +1999,8 @@
       "name": "Backstab",
       "kind": "ability",
       "parent": "Riki · 力丸",
-      "status": "baseline-matches",
-      "currentText": "Backstab. Every time Riki strikes his enemy from behind, he deals additional bonus damage equal to a multiple of his Agility.",
+      "status": "baseline-changed",
+      "currentText": "Backstab. Every time Riki strikes his enemy from behind, he deals additional bonus damage equal to a multiple of his Agility and his attack has increased Item Potency.",
       "baselineText": "Backstab. Every time Riki strikes his enemy from behind, he deals additional bonus damage equal to a multiple of his Agility.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -2128,8 +2119,8 @@
       "name": "Warp Flare",
       "kind": "ability",
       "parent": "Tinker · 修补匠",
-      "status": "baseline-matches",
-      "currentText": "Warp Flare. Throws a flare towards an enemy, dealing damage, teleporting them away, rooting them and reducing their Cast and Attack Range for 2 seconds.\n\nThe target is teleported further the closer they are to Tinker.",
+      "status": "baseline-changed",
+      "currentText": "Warp Flare. Throws a flare towards an enemy, dealing damage, teleporting them away, slowing them and reducing their Cast and Attack Range for 3 seconds.\n\nThe target is teleported further the closer they are to Tinker.",
       "baselineText": "Warp Flare. Throws a flare towards an enemy, dealing damage, teleporting them away, rooting them and reducing their Cast and Attack Range for 2 seconds.The target is teleported further the closer they are to Tinker.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -2218,8 +2209,8 @@
       "name": "Assassinate",
       "kind": "ability",
       "parent": "Sniper · 狙击手",
-      "status": "baseline-matches",
-      "currentText": "Assassinate. Sniper locks onto a target enemy unit and, after a short aiming duration, fires a devastating shot that deals Sniper's attack damage plus bonus damage at long range and mini-stuns the target. Whenever Sniper kills an enemy hero, Assassinate is refreshed.",
+      "status": "baseline-changed",
+      "currentText": "Assassinate. Sniper locks onto a target enemy unit and, after a short aiming duration, fires a devastating shot that deals Sniper's attack damage with bonus Item Potency and bonus damage at long range and mini-stuns the target. Whenever Sniper kills an enemy hero, Assassinate is refreshed.",
       "baselineText": "Assassinate. Sniper locks onto a target enemy unit and, after a short aiming duration, fires a devastating shot that deals Sniper's attack damage plus bonus damage at long range and mini-stuns the target. Whenever Sniper kills an enemy hero, Assassinate is refreshed.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -2404,14 +2395,14 @@
       "evidence": "Inferred from archived official export used by generation script"
     },
     {
-      "id": "ability:1005",
-      "name": "Drums of Slom",
+      "id": "ability:1894",
+      "name": "Summon Ancient Thunderhide",
       "kind": "ability",
       "parent": "Beastmaster · 兽王",
-      "status": "baseline-matches",
-      "currentText": "Drums of Slom. Attacks from Beastmaster or a nearby unit he controls will cause him bang his drum, dealing damage to nearby units and healing Beastmaster and units under his control for a portion of the damage dealt. Every attack decreases the interval between drum hits down to a minimum of 0.5s between hits after 20 attacks. If no attacks are made, the intervals gradually increase.\n\nUsing Primal Roar counts as 10 attacks.",
-      "baselineText": "Drums of Slom. Attacks from Beastmaster or a nearby unit he controls will cause him bang his drum, dealing damage to nearby units and healing Beastmaster and units under his control for a portion of the damage dealt. Every attack decreases the interval between drum hits down to a minimum of 0.5s between hits after 20 attacks. If no attacks are made, the intervals gradually increase.Using Primal Roar counts as 10 attacks.",
-      "evidence": "Inferred from archived official export used by generation script"
+      "status": "current-verified",
+      "currentText": "Summon Ancient Thunderhide. Beastmaster calls forth an Ancient Thunderhide to fight alongside him. The Thunderhide can Slam the ground to damage and slow nearby enemies, and beats its Thunderhide Drum as Beastmaster or Beastmaster's units attack, increasing their damage and max health.",
+      "baselineText": "Summon Ancient Thunderhide. Beastmaster calls forth an Ancient Thunderhide to fight alongside him. The Thunderhide can Slam the ground to damage and slow nearby enemies, and beats its Thunderhide Drum as Beastmaster or Beastmaster's units attack, increasing their damage and max health.",
+      "evidence": "generated-script"
     },
     {
       "id": "ability:5177",
@@ -2438,8 +2429,8 @@
       "name": "Shadow Strike",
       "kind": "ability",
       "parent": "Queen of Pain · 痛苦女王",
-      "status": "baseline-matches",
-      "currentText": "Shadow Strike. Hurls a poisoned dagger which deals large initial damage, and then deals damage over time. The poisoned unit has its movement speed slowed for 16 seconds.  An instance of damage is dealt every 3 seconds.",
+      "status": "baseline-changed",
+      "currentText": "Shadow Strike. Hurls a poisoned dagger which deals large initial damage, and then deals damage over time. The poisoned unit has its movement speed slowed for 13 seconds.  An instance of damage is dealt every 3 seconds.",
       "baselineText": "Shadow Strike. Hurls a poisoned dagger which deals large initial damage, and then deals damage over time. The poisoned unit has its movement speed slowed for 16 seconds. An instance of damage is dealt every 3 seconds.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -2518,8 +2509,8 @@
       "name": "Plague Ward",
       "kind": "ability",
       "parent": "Venomancer · 剧毒术士",
-      "status": "baseline-matches",
-      "currentText": "Plague Ward. Summons a plague ward to attack enemy units and structures. The ward is immune to magic. Wards gain the Poison Sting level from Venomancer, dealing 50% of the full damage.",
+      "status": "baseline-changed",
+      "currentText": "Plague Ward. Summons a plague ward to attack enemy units and structures. The ward is immune to magic. Ward attacks apply Venomancer's Poison Sting with 50% damage/slow.",
       "baselineText": "Plague Ward. Summons a plague ward to attack enemy units and structures. The ward is immune to magic. Wards gain the Poison Sting level from Venomancer, dealing 50% of the full damage.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -2708,8 +2699,8 @@
       "name": "Spirit Siphon",
       "kind": "ability",
       "parent": "Death Prophet · 死亡先知",
-      "status": "baseline-matches",
-      "currentText": "Spirit Siphon. Creates a spirit link between Death Prophet and an enemy unit, draining health from the enemy.",
+      "status": "baseline-changed",
+      "currentText": "Spirit Siphon. Creates a spirit link between Death Prophet and an enemy unit, continuously dealing damage to the enemy and healing herself.",
       "baselineText": "Spirit Siphon. Creates a spirit link between Death Prophet and an enemy unit, draining health from the enemy.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -2718,8 +2709,8 @@
       "name": "Witchcraft",
       "kind": "ability",
       "parent": "Death Prophet · 死亡先知",
-      "status": "baseline-matches",
-      "currentText": "Witchcraft. Death Prophet's occult knowledge deepens with experience, gaining movement speed and spell cooldown reduction.",
+      "status": "baseline-changed",
+      "currentText": "Witchcraft. Whenever Death Prophet attacks an enemy, a ghost will fly out and hit the enemy and return to her with life. The spirit has a percentage of Death Prophet's attack damage and heals for 50% of the damage.\n\nDeath Prophet's occult knowledge deepens with experience, gaining movement speed and Witchcraft spirit damage.",
       "baselineText": "Witchcraft. Death Prophet's occult knowledge deepens with experience, gaining movement speed and spell cooldown reduction.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -2828,8 +2819,8 @@
       "name": "Decrepify",
       "kind": "ability",
       "parent": "Pugna · 帕格纳",
-      "status": "baseline-matches",
-      "currentText": "Decrepify. A powerful banishing spell that slows a unit and renders it unable to attack or be attacked. Healing on affected allies is increased, while afflicted enemies take extra magic damage instead.",
+      "status": "baseline-changed",
+      "currentText": "Decrepify. A powerful banishing spell that slows a unit and renders it unable to attack or be attacked. Healing received and dealt by affected allies is increased, while afflicted enemies take extra magic damage instead.",
       "baselineText": "Decrepify. A powerful banishing spell that slows a unit and renders it unable to attack or be attacked. Healing on affected allies is increased, while afflicted enemies take extra magic damage instead.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -2838,8 +2829,8 @@
       "name": "Nether Ward",
       "kind": "ability",
       "parent": "Pugna · 帕格纳",
-      "status": "baseline-matches",
-      "currentText": "Nether Ward. Pugna places a Nether Ward at the target location. The ward will fire at any enemy hero who casts a spell dealing base damage plus the damage multiplier of the mana spent by the enemy hero.",
+      "status": "baseline-changed",
+      "currentText": "Nether Ward. Pugna places a Nether Ward at the target location. The ward will fire at any enemy hero who casts a spell dealing base damage plus the damage multiplier of the mana spent by the enemy hero. Only one Nether Ward can be active at a time; casting a new one destroys the previous ward.",
       "baselineText": "Nether Ward. Pugna places a Nether Ward at the target location. The ward will fire at any enemy hero who casts a spell dealing base damage plus the damage multiplier of the mana spent by the enemy hero.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -2858,8 +2849,8 @@
       "name": "Life Drain",
       "kind": "ability",
       "parent": "Pugna · 帕格纳",
-      "status": "baseline-matches",
-      "currentText": "Life Drain. CHANNELED - When cast on an enemy, Pugna drains health from the target enemy unit to heal himself and granting vision over the target.\n\nWhen cast on an ally, Pugna will drain his own health into his ally.",
+      "status": "baseline-changed",
+      "currentText": "Life Drain. CHANNELED - When cast on an enemy, Pugna drains health from the target enemy unit, healing himself for the damage dealt and granting vision over the target.\n\nWhen cast on an ally, Pugna heals his ally and takes magical damage equal to the amount healed. This damage cannot kill Pugna.",
       "baselineText": "Life Drain. CHANNELED - When cast on an enemy, Pugna drains health from the target enemy unit to heal himself and granting vision over the target. When cast on an ally, Pugna will drain his own health into his ally.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -3038,8 +3029,8 @@
       "name": "Moon Glaives",
       "kind": "ability",
       "parent": "Luna · 露娜",
-      "status": "baseline-matches",
-      "currentText": "Moon Glaives. Empowers Luna's glaives, causing her attacks to bounce between enemy units. Deals less damage with each bounce.",
+      "status": "baseline-changed",
+      "currentText": "Moon Glaives. Empowers Luna's glaives, causing her attacks to bounce between enemy units. Damage and Item Potency decrease with each bounce.",
       "baselineText": "Moon Glaives. Empowers Luna's glaives, causing her attacks to bounce between enemy units. Deals less damage with each bounce.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -3174,6 +3165,16 @@
       "evidence": "Inferred from archived official export used by generation script"
     },
     {
+      "id": "ability:1930",
+      "name": "Through the Realm",
+      "kind": "ability",
+      "parent": "Dazzle · 戴泽",
+      "status": "current-verified",
+      "currentText": "Through the Realm. Only active during Nothl Projection. Dazzle pulls his body through the Nothl Realm to his spirit. Nothl Projection ends upon return.\n\nCannot be cast if Dazzle's body is rooted or leashed.",
+      "baselineText": "Through the Realm. Only active during Nothl Projection. Dazzle pulls his body through the Nothl Realm to his spirit. Nothl Projection ends upon return. Cannot be cast if Dazzle's body is rooted or leashed.",
+      "evidence": "generated-script"
+    },
+    {
       "id": "ability:1293",
       "name": "Weave",
       "kind": "ability",
@@ -3188,8 +3189,8 @@
       "name": "Nothl Projection",
       "kind": "ability",
       "parent": "Dazzle · 戴泽",
-      "status": "baseline-matches",
-      "currentText": "Nothl Projection. Dazzle departs his body, traveling through the Nothl Realm as an invulnerable spirit that can cast spells, attack, and use items, leaving his body behind in the world with a visible tether. While active, Dazzle's basic abilities are empowered: Poison Touch hexes enemies, Shallow Grave heals upon expiration, and Shadow Wave has a shorter cooldown. The effect can be ended early, and Dazzle returns to the body at the end.",
+      "status": "baseline-changed",
+      "currentText": "Nothl Projection. Dazzle departs his body, traveling through the Nothl Realm as an invulnerable spirit that can cast spells, attack, and use items, leaving his body behind in the world with a visible tether. While active, Dazzle's basic abilities are empowered: Poison Touch hexes enemies, Shallow Grave heals upon expiration, and Shadow Wave has reduced cooldown.\n\nThe effect can be ended early, and Dazzle returns to the body at the end.",
       "baselineText": "Nothl Projection. Dazzle departs his body, traveling through the Nothl Realm as an invulnerable spirit that can cast spells, attack, and use items, leaving his body behind in the world with a visible tether. While active, Dazzle's basic abilities are empowered: Poison Touch hexes enemies, Shallow Grave heals upon expiration, and Shadow Wave has a shorter cooldown. The effect can be ended early, and Dazzle returns to the body at the end.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -3238,8 +3239,8 @@
       "name": "Overclocking",
       "kind": "ability",
       "parent": "Clockwerk · 发条技师",
-      "status": "baseline-matches",
-      "currentText": "Overclocking. Supercharges Clockwerks abilities:\n\nBattery Assault: Increased radius and affects all enemies in its range.\nPower Cogs: Radius increased, and Clockwerk's armor while near Power Cogs is increased.\nRocket Flares: Increased damage, vision and slow duration, and fire additional rockets to either side of the target.\nHookshot: Stun radius and duration increased.\nJetpack: Moves faster.\n\nClockwerk's movement and attack speed becomes slowed to a crawl after the duration runs out.",
+      "status": "baseline-changed",
+      "currentText": "Overclocking. Supercharges Clockwerk's abilities:\n\nBattery Assault: Increased radius and affects all enemies in its range.\nPower Cogs: Radius increased, and Clockwerk's armor while near Power Cogs is increased.\nRocket Flares: Increased damage, vision and slow duration, and fire additional rockets to either side of the target.\nHookshot: Stun radius and duration increased.\nJetpack: Moves faster.\n\nClockwerk's movement and attack speed become slowed to a crawl after the duration runs out.",
       "baselineText": "Overclocking. Supercharges Clockwerks abilities:Battery Assault: Increased radius and affects all enemies in its range.Power Cogs: Radius increased, and Clockwerk's armor while near Power Cogs is increased.Rocket Flares: Increased damage, vision and slow duration, and fire additional rockets to either side of the target.Hookshot: Stun radius and duration increased.Jetpack Moves faster.Clockwerk's movement and attack speed becomes slowed to a crawl after the duration runs out.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -3268,8 +3269,8 @@
       "name": "Armor Power",
       "kind": "ability",
       "parent": "Clockwerk · 发条技师",
-      "status": "baseline-matches",
-      "currentText": "Armor Power. Clockwerk's outgoing damage increases by 0.25% per point of armor.\n\nClockwerk can consume Chainmails to permanently gain +4 armor per Chainmail consumed. Can stack. Self-cast to consume.",
+      "status": "baseline-changed",
+      "currentText": "Armor Power. Clockwerk's outgoing damage increases by 0.55845% per point of armor.\n\nClockwerk can consume Chainmails to permanently gain +4 armor per Chainmail consumed. Can stack. Self-cast to consume.",
       "baselineText": "Armor Power. Clockwerk's outgoing damage increases by 0.25% per point of armor. Clockwerk can consume Chainmails to permanently gain +4 armor per Chainmail consumed. Can stack. Self-cast to consume.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -3318,8 +3319,8 @@
       "name": "Nihilism",
       "kind": "ability",
       "parent": "Leshrac · 拉席克",
-      "status": "baseline-matches",
-      "currentText": "Nihilism. Causes Leshrac and all nearby enemies to turn ethereal, preventing them from attacking, slowing them, and making them take more magic damage. Increases Leshrac's speed rather than reducing it. Does not cause Leshrac to take amplified damage.",
+      "status": "baseline-changed",
+      "currentText": "Nihilism. Leshrac emits an aura that disarms and constantly dispels nearby enemy units. Leshrac also constantly dispels himself.\n\nDISPEL TYPE: Basic Dispel",
       "baselineText": "Nihilism. Causes Leshrac and all nearby enemies to turn ethereal, preventing them from attacking, slowing them, and making them take more magic damage. Increases Leshrac's speed rather than reducing it. Does not cause Leshrac to take amplified damage.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -3328,8 +3329,8 @@
       "name": "Defilement",
       "kind": "ability",
       "parent": "Leshrac · 拉席克",
-      "status": "baseline-matches",
-      "currentText": "Defilement. Leshrac gains 0.7 Area of Effect Bonus per Intelligence.",
+      "status": "baseline-changed",
+      "currentText": "Defilement. Leshrac gains 0.6 Area of Effect Bonus per Intelligence.",
       "baselineText": "Defilement. Leshrac gains 0.7 Area of Effect Bonus per Intelligence.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -3368,8 +3369,8 @@
       "name": "Teleportation",
       "kind": "ability",
       "parent": "Nature's Prophet · 自然先知",
-      "status": "baseline-matches",
-      "currentText": "Teleportation. Teleports to any point on the map. Gains a barrier after arriving to its destination.",
+      "status": "baseline-extra-context",
+      "currentText": "Teleportation. Teleports to any point on the map.",
       "baselineText": "Teleportation. Teleports to any point on the map. Gains a barrier after arriving to its destination.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -3388,8 +3389,8 @@
       "name": "Curse of the Oldgrowth",
       "kind": "ability",
       "parent": "Nature's Prophet · 自然先知",
-      "status": "baseline-matches",
-      "currentText": "Curse of the Oldgrowth. Applies a curse on all enemy heroes within 900 range, displaying them in fog, slowing them, and dealing damage over time based on the number of trees within 250 radius. Treants count as trees for this purpose.",
+      "status": "baseline-changed",
+      "currentText": "Curse of the Oldgrowth. Nature's Prophet and his treants curse enemies they attack, slowing them and dealing damage per second. Curses from different attackers stack. Each attacker's curse has an independent duration that can be refreshed by further attacks from the same unit that applied it.",
       "baselineText": "Curse of the Oldgrowth. Applies a curse on all enemy heroes within 900 range, displaying them in fog, slowing them, and dealing damage over time based on the number of trees within 250 radius. Treants count as trees for this purpose.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -3399,7 +3400,7 @@
       "kind": "ability",
       "parent": "Nature's Prophet · 自然先知",
       "status": "baseline-changed",
-      "currentText": "Spirit of the Forest. Nature's Prophet gains 2% bonus damage for each nearby tree. Treants also provide this bonus with multiplied values regardless of proximity. Treants also possess this ability.",
+      "currentText": "Spirit of the Forest. Nature's Prophet's attacks gain 2% bonus base damage for each tree near the target, including Sprout trees. Treants near the target also provide this bonus with multiplied values. Treants also possess this ability.",
       "baselineText": "Spirit of the Forest. Nature's Prophet gains 2% bonus damage for each nearby tree. Treants also provide this bonus with multiplied values and with larger radius. Treants also possess this ability.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -3448,8 +3449,8 @@
       "name": "Feast",
       "kind": "ability",
       "parent": "Lifestealer · 噬魂鬼",
-      "status": "baseline-matches",
-      "currentText": "Feast. Lifestealer's attacks deal damage and provide heal for a percentage of his target's max health. He gains permanent max HP whenever he kills a unit.",
+      "status": "baseline-changed",
+      "currentText": "Feast. Lifestealer's attacks deal damage and provide heal for a percentage of his target's max health. He gains 1 permanent max HP whenever he kills a creep and 10 permanent max HP whenever he kills a hero.",
       "baselineText": "Feast. Lifestealer's attacks deal damage and provide heal for a percentage of his target's max health. He gains permanent max HP whenever he kills a unit.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -3608,8 +3609,8 @@
       "name": "Skeleton Walk",
       "kind": "ability",
       "parent": "Clinkz · 克林克兹",
-      "status": "baseline-matches",
-      "currentText": "Skeleton Walk. Clinkz moves invisibly through units until the moment he attacks or uses items. Leaving Skeleton Walk creates Skeleton Archers.\n\nSkeleton Archers are immobile and die within multiple attacks from a hero or tower. Skeleton Archers deal a percentage of Clinkz' damage, and deal 75% less damage to buildings. Attack range is equal to Clinkz' attack range.",
+      "status": "baseline-changed",
+      "currentText": "Skeleton Walk. Clinkz moves invisibly through units until the moment he attacks or uses items. Leaving Skeleton Walk creates Skeleton Archers.\n\nSkeleton Archers are immobile and have 2 pip health. Creeps and illusions deal 25% damage to them. Skeleton Archers deal a percentage of Clinkz' damage, and deal 75% less damage to buildings. Attack range is equal to Clinkz' attack range.",
       "baselineText": "Skeleton Walk. Clinkz moves invisibly through units until the moment he attacks or uses items. Leaving Skeleton Walk creates Skeleton Archers.Skeleton Archers are immobile and die within multiple attacks from a hero or tower. Skeleton Archers deal a percentage of Clinkz' damage, and deal 75% less damage to buildings. Attack range is equal to Clinkz' attack range.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -3708,8 +3709,8 @@
       "name": "Enchant",
       "kind": "ability",
       "parent": "Enchantress · 魅惑魔女",
-      "status": "baseline-matches",
-      "currentText": "Enchant. Enchantress charms an enemy. If the enemy is a hero, they are dispelled and slowed for 3.5 / 4 / 4.5 / 5s, and Enchantress and her units gain bonus attack range against the target.\n\n If the enemy is a creep, she brings it under her control and receives 40% of their experience bounty.  Enchantress can control creeps for up to 30 / 60 / 90 / 120s. \n\nDISPEL TYPE: Basic Dispel",
+      "status": "baseline-changed",
+      "currentText": "Enchant. Enchantress charms an enemy. If the enemy is a hero, they are dispelled and slowed for 3.5 / 4 / 4.5 / 5s, and Enchantress and her units gain bonus attack range against the target.\n\n If the enemy is a creep, she brings it under her control and receives 40% of their experience bounty.  Enchantress can control creeps for up to 45 / 70 / 95 / 120s. \n\nDISPEL TYPE: Basic Dispel",
       "baselineText": "Enchant. Enchantress charms an enemy. If the enemy is a hero, they are dispelled and slowed for 3.5/4/4.5/5s, and Enchantress and her units gain bonus attack range against the target. If the enemy is a creep, she brings it under her control and receives 40% of their experience bounty. Enchantress can control creeps for up to 30/60/90/120s. DISPEL TYPE: Basic Dispel",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -3938,8 +3939,8 @@
       "name": "Spider's Milk",
       "kind": "ability",
       "parent": "Broodmother · 育母蜘蛛",
-      "status": "baseline-matches",
-      "currentText": "Spider's Milk. Whenever Broodmother kills a unit, she and all units under her control in a 600 radius receive a buff for 3s that heals them for a percentage of the victim's health every 0.5 seconds. Healing from creeps is reduced by 40%.",
+      "status": "baseline-changed",
+      "currentText": "Spider's Milk. Whenever Broodmother or a nearby unit under her control kills an enemy, Broodmother and her units close to the victim receive a buff for 3s that heals them for a percentage of the victim's health every 0.5 seconds. Healing from creeps is reduced by 40%.",
       "baselineText": "Spider's Milk. Whenever Broodmother kills a unit, she and all units under her control in a 600 radius receive a buff for 3s that heals them for a percentage of the victim's health every 0.5 seconds. Healing from creeps is reduced by 40%.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -4058,10 +4059,20 @@
       "name": "Geminate Attack",
       "kind": "ability",
       "parent": "Weaver · 编织者",
-      "status": "baseline-matches",
-      "currentText": "Geminate Attack. Allows Weaver to dispatch two attacks at once.",
+      "status": "baseline-changed",
+      "currentText": "Geminate Attack. Allows Weaver to dispatch additional attacks. Additional attacks have bonus damage and item potency.",
       "baselineText": "Geminate Attack. Allows Weaver to dispatch two attacks at once.",
       "evidence": "Inferred from archived official export used by generation script"
+    },
+    {
+      "id": "ability:1915",
+      "name": "Time Lapse (Ally)",
+      "kind": "ability",
+      "parent": "Weaver · 编织者",
+      "status": "current-verified",
+      "currentText": "Time Lapse (Ally). Weaver warps an allied Hero backward to whatever position it was in five seconds earlier - restoring the HP and mana it had at that time. Shares a cooldown with Time Lapse.\n\nDISPEL TYPE: Strong Dispel",
+      "baselineText": "Time Lapse (Ally). Weaver warps an allied Hero backward to whatever position it was in five seconds earlier - restoring the HP and mana it had at that time. Shares a cooldown with Time Lapse. DISPEL TYPE: Strong Dispel",
+      "evidence": "generated-script"
     },
     {
       "id": "ability:5292",
@@ -4069,7 +4080,7 @@
       "kind": "ability",
       "parent": "Weaver · 编织者",
       "status": "baseline-matches",
-      "currentText": "Time Lapse. Weaver warps backward to whatever position it was in five seconds earlier--regaining the HP and mana from that time. No effect on cooldown, gold or experience.\n\nDISPEL TYPE: Strong Dispel",
+      "currentText": "Time Lapse. Weaver warps backward to whatever position it was in five seconds earlier - regaining the HP and mana from that time. No effect on cooldown, gold or experience.\n\nDISPEL TYPE: Strong Dispel",
       "baselineText": "Time Lapse. Weaver warps backward to whatever position it was in five seconds earlier--regaining the HP and mana from that time. No effect on cooldown, gold or experience. DISPEL TYPE: Strong Dispel",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -4078,8 +4089,8 @@
       "name": "Threads of Fate",
       "kind": "ability",
       "parent": "Weaver · 编织者",
-      "status": "baseline-matches",
-      "currentText": "Threads of Fate. Whenever Weaver deals damage to an enemy hero with an attack or ability, if he remains within 700 range of them for 1.5s, he establishes a Thread of Fate that briefly slows the enemy and ties Weaver and the enemy together. Each established thread of fate grants bonus damage to Weaver.",
+      "status": "baseline-changed",
+      "currentText": "Threads of Fate. Whenever Weaver deals damage to an enemy hero with an attack or ability, if he remains within 700 range of them for 1.25s, he establishes a Thread of Fate that briefly slows the enemy and ties Weaver and the enemy together. While the thread holds, the enemy is slowed again every 6s. Each established thread of fate grants bonus damage to Weaver.",
       "baselineText": "Threads of Fate. Whenever Weaver deals damage to an enemy hero with an attack or ability, if he remains within 700 range of them for 1.5s, he establishes a Thread of Fate that briefly slows the enemy and ties Weaver and the enemy together. Each established thread of fate grants bonus damage to Weaver.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -4168,8 +4179,8 @@
       "name": "Sticky Napalm",
       "kind": "ability",
       "parent": "Batrider · 蝙蝠骑士",
-      "status": "baseline-matches",
-      "currentText": "Sticky Napalm. Drenches an area in sticky oil, amplifying damage from Batrider's attacks and abilities and slowing the movement speed and turn rate of enemies. Additional casts of Sticky Napalm continue to increase damage, up to 20 stacks. Applies a small amount of damage with each cast.",
+      "status": "baseline-changed",
+      "currentText": "Sticky Napalm. Drenches an area in sticky oil, amplifying damage from Batrider's attacks and abilities and slowing the movement speed and turn rate of enemies. Additional casts of Sticky Napalm continue to increase damage, up to 10 stacks. Applies a small amount of damage with each cast.",
       "baselineText": "Sticky Napalm. Drenches an area in sticky oil, amplifying damage from Batrider's attacks and abilities and slowing the movement speed and turn rate of enemies. Additional casts of Sticky Napalm continue to increase damage, up to 20 stacks. Applies a small amount of damage with each cast.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -4238,8 +4249,8 @@
       "name": "Holy Persuasion",
       "kind": "ability",
       "parent": "Chen · 陈",
-      "status": "baseline-matches",
-      "currentText": "Holy Persuasion. Chen takes control of an enemy or neutral creep and receives a percentage of its bounty. Its maximum health is set to 400. Converted creeps will have increased movement speed and bonus damage. Chen may globally target his own creep if it has not taken damage in the last 3 seconds to unsummon it.",
+      "status": "baseline-changed",
+      "currentText": "Holy Persuasion. Chen takes control of an enemy or neutral creep and receives a percentage of its bounty. Chen may globally target his own creep if it has not taken damage in the last 3 seconds to unsummon it.\n\nCasting Holy Persuasion on Chen teleports all creeps under his control to him after a delay. Taking damage from enemy heroes or their units cancels the teleport.",
       "baselineText": "Holy Persuasion. Chen takes control of an enemy or neutral creep and receives a percentage of its bounty. Its maximum health is set to 400. Converted creeps will have increased movement speed and bonus damage. Chen may globally target his own creep if it has not taken damage in the last 3 seconds to unsummon it.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -4259,7 +4270,7 @@
       "kind": "ability",
       "parent": "Chen · 陈",
       "status": "baseline-changed",
-      "currentText": "Zealot. Whenever Chen respawns, he is joined by a Zealot, a melee warrior creep with the ability to sacrifice itself to heal or deal damage to an enemy.  The Zealot receives Holy Persuasion's benefits and scales up with other lane melee creeps as game time increases and gains extra base damage.  The Zealot respawns next to Chen.\n\nZealot may be activated to teleport a unit under your control to Chen after a 6 second delay.  If Chen is targeted, it will teleport all units you control. Taking damage from enemy heroes or their units will cancel the teleport.",
+      "currentText": "Zealot. Passively provides bonus health, damage and move speed to non-hero units under Chen's control.\n\nChen may Anoint a unit under his control converting it into an Anointed Zealot, giving it bonus base damage and the Martyrdom ability. Anointed Zealots can no longer be killed by abilities that instantly kill creeps otherwise. Activating this ability will respawn his current Anointed Zealot.  He begins the game with a melee lane creep as an Anointed Zealot.",
       "baselineText": "Zealot. Whenever Chen respawns, he is joined by a Zealot, a melee warrior creep with the ability to sacrifice itself to heal or deal damage to an enemy. The Zealot receives Holy Persuasion's benefits and scales up with other lane melee creeps as game time increases and gains extra base damage. The Zealot respawns next to Chen after 60s.Zealot may be activated to teleport a unit under your control to Chen after a 6 second delay. If Chen is targeted, it will teleport all units you control. Taking damage from enemy heroes or their units will cancel the teleport.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -4408,8 +4419,8 @@
       "name": "Cold Feet",
       "kind": "ability",
       "parent": "Ancient Apparition · 远古冰魄",
-      "status": "baseline-matches",
-      "currentText": "Cold Feet. Places a curse on an enemy, dealing damage over time.  If the enemy unit doesn't move outside of the given range from the initial location, it will be stunned and frozen in place after 4 seconds.",
+      "status": "baseline-changed",
+      "currentText": "Cold Feet. Places a curse on an enemy, dealing damage over time and slowing the target.  If the enemy unit doesn't move outside of the given range from the initial location, it will be stunned and frozen in place after 4 seconds.",
       "baselineText": "Cold Feet. Places a curse on an enemy, dealing damage over time. If the enemy unit doesn't move outside of the given range from the initial location, it will be stunned and frozen in place after 4 seconds.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -4438,8 +4449,8 @@
       "name": "Bone Chill",
       "kind": "ability",
       "parent": "Ancient Apparition · 远古冰魄",
-      "status": "baseline-matches",
-      "currentText": "Bone Chill. When Ancient Apparition deals Magic damage to an enemy with his abilities, it is slowed for a short duration. If the target is a Hero, its Strength is also reduced. Multiple instances of this effect stack and have independent durations.",
+      "status": "baseline-changed",
+      "currentText": "Bone Chill. When Ancient Apparition deals Magic damage to an enemy Hero with his abilities its Strength is reduced. Multiple instances of this effect stack and have independent durations.",
       "baselineText": "Bone Chill. When Ancient Apparition deals Magic damage to an enemy with his abilities, it is slowed for a short duration. If the target is a Hero, its Strength is also reduced. Multiple instances of this effect stack and have independent durations.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -4468,8 +4479,8 @@
       "name": "Earthshock",
       "kind": "ability",
       "parent": "Ursa · 熊战士",
-      "status": "baseline-matches",
-      "currentText": "Earthshock. Ursa leaps forward 250 units and slams the earth, causing a powerful shock to damage and slow all enemy units in a nearby area for 4 seconds.",
+      "status": "baseline-changed",
+      "currentText": "Earthshock. Ursa leaps forward 250 units and slams the earth, causing a powerful shock to damage and slow all enemy units in a nearby area for 3.5 seconds.",
       "baselineText": "Earthshock. Ursa leaps forward 250 units and slams the earth, causing a powerful shock to damage and slow all enemy units in a nearby area for 4 seconds.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -4618,8 +4629,8 @@
       "name": "Flak Cannon",
       "kind": "ability",
       "parent": "Gyrocopter · 矮人直升机",
-      "status": "baseline-matches",
-      "currentText": "Flak Cannon. Gyrocopter's attacks hit all enemy units in an area around it for a limited number of attacks.  Only the main target of attacks will receive attack bonuses such as Critical Strike.  Lasts 12 seconds or until the attacks are used.",
+      "status": "baseline-changed",
+      "currentText": "Flak Cannon. Gyrocopter's attacks hit all enemy units in an area around it for a limited number of attacks.  The additional attacks can proc attack modifiers at reduced effectiveness, except for Lifesteal and Critical Strike.  Lasts 12 seconds or until the attacks are used.",
       "baselineText": "Flak Cannon. Gyrocopter's attacks hit all enemy units in an area around it for a limited number of attacks. Only the main target of attacks will receive attack bonuses such as Critical Strike. Lasts 12 seconds or until the attacks are used.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -5028,8 +5039,8 @@
       "name": "Feral Impulse",
       "kind": "ability",
       "parent": "Lycan · 狼人",
-      "status": "baseline-matches",
-      "currentText": "Feral Impulse. Increases the HP regeneration and damage of Lycan and all units under his control.",
+      "status": "baseline-changed",
+      "currentText": "Feral Impulse. Increases the HP regeneration and damage for Lycan and all units under his control.",
       "baselineText": "Feral Impulse. Increases the HP regeneration and damage of Lycan and all units under his control.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -5038,20 +5049,20 @@
       "name": "Wolf Bite",
       "kind": "ability",
       "parent": "Lycan · 狼人",
-      "status": "baseline-matches",
-      "currentText": "Wolf Bite. Lycan bites an allied hero or creep-hero, granting them Shapeshift properties. Lycan and the bitten target gain 40% Lifesteal and share the healing effect of Lifesteal with each other as long as they are within 1200 range of each other.",
+      "status": "baseline-changed",
+      "currentText": "Wolf Bite. Lycan bites an allied hero or creep-hero, granting them Shapeshift properties. While shapeshifted this way, the target counts as a unit under Lycan's control for Pack Hunter.",
       "baselineText": "Wolf Bite. Lycan bites an allied hero or creep-hero, granting them Shapeshift properties. Lycan and the bitten target gain 40% Lifesteal and share the healing effect of Lifesteal with each other as long as they are within 1200 range of each other.",
       "evidence": "Inferred from archived official export used by generation script"
     },
     {
-      "id": "ability:1339",
-      "name": "Apex Predator",
+      "id": "ability:1921",
+      "name": "Pack Hunter",
       "kind": "ability",
       "parent": "Lycan · 狼人",
-      "status": "baseline-matches",
-      "currentText": "Apex Predator. Lycan and units he controls deal extra damage to neutral creeps.",
-      "baselineText": "Apex Predator. Lycan and units he controls deal extra damage to neutral creeps.",
-      "evidence": "Inferred from archived official export used by generation script"
+      "status": "current-verified",
+      "currentText": "Pack Hunter. Lycan and units under his control mark units on attack for 6 seconds. When Lycan or a unit under his control attacks a marked unit, it deals bonus damage equal to 5% of its attack damage per stack, and heals the attacker for 3% of its attack damage per stack.",
+      "baselineText": "Pack Hunter. Lycan and units under his control mark units on attack for 6 seconds. When Lycan or a unit under his control attacks a marked unit, it deals bonus damage equal to 5% of its attack damage per stack, and heals the attacker for 3% of its attack damage per stack.",
+      "evidence": "generated-script"
     },
     {
       "id": "ability:5398",
@@ -5108,8 +5119,8 @@
       "name": "Liquid Courage",
       "kind": "ability",
       "parent": "Brewmaster · 酒仙",
-      "status": "baseline-matches",
-      "currentText": "Liquid Courage. When Brewmaster drops below 50% Health he gains a Status Resistance buff and his movement speed alternates every 1s between being faster and being slower. The effect becomes stronger at lower health, scaling from 0 up to max values at 20% Health.",
+      "status": "baseline-changed",
+      "currentText": "Liquid Courage. After taking 400 damage from player-controlled units, Brewmaster gains a Status Resistance buff for 5s and his movement speed alternates every 1s between being faster and being slower. Damage taken is reset if Brewmaster takes no damage for 7s. Can only trigger once every 15s.",
       "baselineText": "Liquid Courage. When Brewmaster drops below 50% Health he gains a Status Resistance buff and his movement speed alternates every 1s between being faster and being slower. The effect becomes stronger at lower health, scaling from 0 up to max values at 20% Health.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -5238,8 +5249,8 @@
       "name": "Summon Spirit Bear",
       "kind": "ability",
       "parent": "Lone Druid · 独行德鲁伊",
-      "status": "baseline-matches",
-      "currentText": "Summon Spirit Bear. Summons a powerful Spirit Bear companion that can equip items.\n\nIf the bear moves 1100 distance away from the Lone Druid, it cannot attack.  Lone Druid suffers 20% of his max health as backlash damage if the Spirit Bear dies.\nSpirit Bear has Demolish, Return, Entangling Claws, Savage Roar, and Spirit Link abilities.",
+      "status": "baseline-changed",
+      "currentText": "Summon Spirit Bear. Summons a powerful Spirit Bear companion that can equip items.\n\nIf the bear moves too far away from the Lone Druid, it cannot attack.  Lone Druid suffers 20% of his max health as backlash damage if the Spirit Bear dies.\nSpirit Bear has Demolish, Return, Entangling Claws, Savage Roar, and Spirit Link abilities.",
       "baselineText": "Summon Spirit Bear. Summons a powerful Spirit Bear companion that can equip items.If the bear moves 1100 distance away from the Lone Druid, it cannot attack. Lone Druid suffers 20% of his max health as backlash damage if the Spirit Bear dies. Spirit Bear has Demolish, Return, Entangling Claws, Savage Roar, and Spirit Link abilities.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -5288,20 +5299,20 @@
       "name": "Chaos Strike",
       "kind": "ability",
       "parent": "Chaos Knight · 混沌骑士",
-      "status": "baseline-matches",
-      "currentText": "Chaos Strike. Chaos Knight and his illusions' attacks have a chance to deal a critical strike of varying strength with bonus lifesteal. Lifesteal from creeps is reduced.",
+      "status": "baseline-extra-context",
+      "currentText": "Chaos Strike. Chaos Knight and his illusions' attacks have a chance to deal a critical strike of varying strength with bonus lifesteal.",
       "baselineText": "Chaos Strike. Chaos Knight and his illusions' attacks have a chance to deal a critical strike of varying strength with bonus lifesteal. Lifesteal from creeps is reduced.",
       "evidence": "Inferred from archived official export used by generation script"
     },
     {
-      "id": "ability:1556",
-      "name": "Fundamental Forging",
+      "id": "ability:1910",
+      "name": "Ahead, Armageddon",
       "kind": "ability",
       "parent": "Chaos Knight · 混沌骑士",
-      "status": "baseline-matches",
-      "currentText": "Fundamental Forging. Chaos Knight's Neutral Items get an additional random enchantment.",
-      "baselineText": "Fundamental Forging. Chaos Knight's Neutral Items get an additional random enchantment.",
-      "evidence": "Inferred from archived official export used by generation script"
+      "status": "current-verified",
+      "currentText": "Ahead, Armageddon. For each second Chaos Knight keeps moving without stopping or attacking, Armageddon gains bonus movement speed. The bonus drains away while stopping, and lost when attacking.\n\nWhile at least one of Chaos Knight's phantasms is alive, Ahead, Armageddon can be activated to charge over terrain, building up to a max speed before releasing.  Chaos Knight and the illusions will attack units they charge over.",
+      "baselineText": "Ahead, Armageddon. For each second Chaos Knight keeps moving without stopping or attacking, Armageddon gains bonus movement speed. The bonus drains away while stopping, and lost when attacking. While at least one of Chaos Knight's phantasms is alive, Ahead, Armageddon can be activated to charge over terrain, building up to a max speed before releasing. Chaos Knight and the illusions will attack units they charge over.",
+      "evidence": "generated-script"
     },
     {
       "id": "ability:5429",
@@ -5312,6 +5323,16 @@
       "currentText": "Phantasm. Summons several phantasmal copies of the Chaos Knight from alternate dimensions. The phantasms are illusions that deal 60 / 80 / 100% damage, but take 350% damage.\nDISPEL TYPE: Basic Dispel",
       "baselineText": "Phantasm. Summons several phantasmal copies of the Chaos Knight from alternate dimensions. The phantasms are illusions that deal 100% damage, but take 350% damage. DISPEL TYPE: Basic Dispel",
       "evidence": "Inferred from archived official export used by generation script"
+    },
+    {
+      "id": "ability:1900",
+      "name": "Heel, Armageddon",
+      "kind": "ability",
+      "parent": "Chaos Knight · 混沌骑士",
+      "status": "current-verified",
+      "currentText": "Heel, Armageddon",
+      "baselineText": "Heel, Armageddon",
+      "evidence": "generated-script"
     },
     {
       "id": "hero:82",
@@ -5358,29 +5379,9 @@
       "name": "Dig",
       "kind": "ability",
       "parent": "Meepo · 米波",
-      "status": "baseline-matches",
-      "currentText": "Dig. Digs into the ground for a short duration, dispelling Meepo and causing him to become invulnerable and untargetable for 3s. Restores 25% of his max health over that duration.\n\nDISPEL TYPE: Basic Dispel",
-      "baselineText": "Dig. Digs into the ground for a short duration, dispelling Meepo and causing him to become invulnerable and untargetable for 3s. Restores 25% of his max health over that duration.DISPEL TYPE: Basic Dispel",
-      "evidence": "Inferred from archived official export used by generation script"
-    },
-    {
-      "id": "ability:1109",
-      "name": "MegaMeepo",
-      "kind": "ability",
-      "parent": "Meepo · 米波",
-      "status": "baseline-matches",
-      "currentText": "MegaMeepo. Primary Meepo mounts all other Meepos in a 600 radius around him on top of his shoulders. While in this form, he gains 40% of the other Meepo stats and can Fling them at enemies, dealing damage and slowing them.\n\n When cast, Earthbind generates additional nets and Poof deals 50% more damage for each Meepo on top.",
-      "baselineText": "MegaMeepo. Primary Meepo mounts all other Meepos in a 600 radius around him on top of his shoulders. While in this form, he gains 40% of the other Meepo stats and can Fling them at enemies, dealing damage and slowing them. When cast, Earthbind generates additional nets and Poof deals 50% more damage for each Meepo on top.",
-      "evidence": "Inferred from archived official export used by generation script"
-    },
-    {
-      "id": "ability:5433",
-      "name": "Divided We Stand",
-      "kind": "ability",
-      "parent": "Meepo · 米波",
       "status": "baseline-changed",
-      "currentText": "Divided We Stand. Meepo summons another Meepo, which levels up and shares items and experience with the main Meepo. Ability cooldowns are independent, but items share cooldowns between Meepos, except Teleport Scrolls. \n\nDamage, attack speed, health, mana, regeneration, mana burn, and proc chance bonuses from items are distributed equally among the amount of Meepos, making them 50 / 66 / 75 / 80% less effective.\n\nIf any Meepo dies, they all die.",
-      "baselineText": "Divided We Stand. Meepo summons another Meepo, which levels up and shares items with the main Meepo. Ability cooldowns are independent, but items share cooldowns between Meepos. Damage, attack speed, health / mana regeneration, mana burn, and proc chance bonuses from items are distributed equally among the amount of Meepos.If any Meepo dies, they all die.",
+      "currentText": "Dig. Digs into the ground for a short duration, dispelling Meepo and causing him to become invulnerable and untargetable for 4s. Restores 50% of his max health over that duration.\n\nDISPEL TYPE: Basic Dispel",
+      "baselineText": "Dig. Digs into the ground for a short duration, dispelling Meepo and causing him to become invulnerable and untargetable for 3s. Restores 25% of his max health over that duration.DISPEL TYPE: Basic Dispel",
       "evidence": "Inferred from archived official export used by generation script"
     },
     {
@@ -5394,14 +5395,24 @@
       "evidence": "Inferred from archived official export used by generation script"
     },
     {
-      "id": "ability:329",
-      "name": "MegaMeepo Fling",
+      "id": "ability:5433",
+      "name": "Divided We Stand",
       "kind": "ability",
       "parent": "Meepo · 米波",
-      "status": "baseline-matches",
-      "currentText": "MegaMeepo Fling. In MegaMeepo form, Meepo flings the topmost meepo towards a target within a 900 range, dealing damage and slowing their movement speed.",
-      "baselineText": "MegaMeepo Fling. In MegaMeepo form, Meepo flings the topmost meepo towards a target within a 900 range, dealing damage and slowing their movement speed.",
+      "status": "baseline-changed",
+      "currentText": "Divided We Stand. Meepo summons another Meepo, which levels up and shares items with the main Meepo. Ability cooldowns are independent, but items share cooldowns between Meepos, except Teleport Scrolls. \n\nDamage, attack speed, health, mana, regeneration, mana burn, and proc chance bonuses from items are distributed equally among the amount of Meepos, making them 50 / 66 / 75 / 80% less effective.\n\nIf any Meepo dies, they all die.\n\nExperience gained by any Meepo is decreased proportionally by the number of Meepos that have gained experience in the last 5s.",
+      "baselineText": "Divided We Stand. Meepo summons another Meepo, which levels up and shares items with the main Meepo. Ability cooldowns are independent, but items share cooldowns between Meepos. Damage, attack speed, health / mana regeneration, mana burn, and proc chance bonuses from items are distributed equally among the amount of Meepos.If any Meepo dies, they all die.",
       "evidence": "Inferred from archived official export used by generation script"
+    },
+    {
+      "id": "ability:1762",
+      "name": "Fling",
+      "kind": "ability",
+      "parent": "Meepo · 米波",
+      "status": "current-verified",
+      "currentText": "Fling. Throws the Meepo or creep carried by Divided We Stand at the target, dealing damage in a 200 radius and slowing on impact.\n\nIf the carried target is a Meepo, it shares damage with the carrier. The carried target will be dropped after 5 seconds.",
+      "baselineText": "Fling. Throws the Meepo or creep carried by Divided We Stand at the target, dealing damage in a 200 radius and slowing on impact. If the carried target is a Meepo, it shares damage with the carrier. The carried target will be dropped after 5 seconds.",
+      "evidence": "generated-script"
     },
     {
       "id": "hero:83",
@@ -5418,8 +5429,8 @@
       "name": "Nature's Grasp",
       "kind": "ability",
       "parent": "Treant Protector · 树精卫士",
-      "status": "baseline-matches",
-      "currentText": "Nature's Grasp. Creates vines towards the target location. Vines slow down and deal damage to enemies that walk through. Does 35% less damage to creeps.",
+      "status": "baseline-extra-context",
+      "currentText": "Nature's Grasp. Creates vines towards the target location. Vines slow down and deal damage to enemies that walk through.",
       "baselineText": "Nature's Grasp. Creates vines towards the target location. Vines slow down and deal damage to enemies that walk through. Does 35% less damage to creeps.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -5594,12 +5605,22 @@
       "evidence": "Inferred from archived official export used by generation script"
     },
     {
+      "id": "ability:1913",
+      "name": "Zombie Bite",
+      "kind": "ability",
+      "parent": "Undying · 不朽尸王",
+      "status": "current-verified",
+      "currentText": "Zombie Bite. Undying sinks his teeth into his target, dealing his attack damage plus bonus physical damage and healing himself for the amount dealt.\n\nBiting a hero turns them into a zombie for 3s: becoming melee, silenced, 25% slowed, and dealing 40% less damage. Bitten creeps die and become a controllable zombie for 20s.",
+      "baselineText": "Zombie Bite. Undying sinks his teeth into his target, dealing his attack damage plus bonus physical damage and healing himself for the amount dealt. Biting a hero turns them into a zombie for 3s: becoming melee, silenced, 25% slowed, and dealing 40% less damage. Bitten creeps die and become a controllable zombie for 20s.",
+      "evidence": "generated-script"
+    },
+    {
       "id": "ability:1360",
       "name": "Ceaseless Dirge",
       "kind": "ability",
       "parent": "Undying · 不朽尸王",
-      "status": "baseline-matches",
-      "currentText": "Ceaseless Dirge. When Undying dies he will instantly respawn in the fountain. Begins the game on cooldown. Cannot be refreshed.",
+      "status": "baseline-changed",
+      "currentText": "Ceaseless Dirge. When Undying dies he will instantly respawn in the fountain. Begins the game on cooldown. Cannot be refreshed and is not affected by cooldown reduction.",
       "baselineText": "Ceaseless Dirge. When Undying dies he will instantly respawn in the fountain. Begins the game on cooldown. Cannot be refreshed.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -5718,8 +5739,8 @@
       "name": "Kinetic Fence",
       "kind": "ability",
       "parent": "Disruptor · 干扰者",
-      "status": "baseline-matches",
-      "currentText": "Kinetic Fence. After a short formation time, creates a wall out of kinetic energy that enemies cannot pass.",
+      "status": "baseline-changed",
+      "currentText": "Kinetic Fence. After a short formation time, creates a wall out of kinetic energy that enemies cannot pass.  Enemies touching the wall are struck by Electromagnetic Repulsion with 0% reduced knockback.",
       "baselineText": "Kinetic Fence. After a short formation time, creates a wall out of kinetic energy that enemies cannot pass.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -5768,8 +5789,8 @@
       "name": "Mind Flare",
       "kind": "ability",
       "parent": "Nyx Assassin · 司夜刺客",
-      "status": "baseline-matches",
-      "currentText": "Mind Flare. Deals damage equal to a percentage of the target's Max Mana and burns part of it away. Deals additional damage equal to a percentage of the damage the target has taken from Nyx Assassin in the last 15s. Resets accumulated damage before applying damage.",
+      "status": "baseline-extra-context",
+      "currentText": "Mind Flare. Deals damage equal to a percentage of the target's Max Mana and burns part of it away.",
       "baselineText": "Mind Flare. Deals damage equal to a percentage of the target's Max Mana and burns part of it away. Deals additional damage equal to a percentage of the damage the target has taken from Nyx Assassin in the last 15s. Resets accumulated damage before applying damage.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -5788,20 +5809,20 @@
       "name": "Burrow",
       "kind": "ability",
       "parent": "Nyx Assassin · 司夜刺客",
-      "status": "baseline-matches",
-      "currentText": "Burrow. Nyx Assassin buries himself beneath the battlefield over a short duration. Once burrowed, Spiked Carapace instantly stuns nearby enemies when cast, the range of Mind Flare and Impale is increased, and Impale's cooldown is decreased. While burrowed, Nyx Assassin is stationary, unable to attack, and invisible. Nyx Assassin gains damage reduction from all damage sources.",
+      "status": "baseline-changed",
+      "currentText": "Burrow. Nyx Assassin buries himself beneath the battlefield over a short duration. Once burrowed, Spiked Carapace instantly stuns nearby enemies when cast, the range of Mind Flare and Impale is increased, and Impale's cooldown is decreased. While burrowed, Nyx Assassin is stationary, unable to attack, and invisible. Nyx Assassin gains damage reduction from all damage sources, and Scarab Metabolism is always active at 3x strength.",
       "baselineText": "Burrow. Nyx Assassin buries himself beneath the battlefield over a short duration. Once burrowed, Spiked Carapace instantly stuns nearby enemies when cast, the range of Mind Flare and Impale is increased, and Impale's cooldown is decreased. While burrowed, Nyx Assassin is stationary, unable to attack, and invisible. Nyx Assassin gains damage reduction from all damage sources.",
       "evidence": "Inferred from archived official export used by generation script"
     },
     {
-      "id": "ability:1767",
-      "name": "Mana Burn",
+      "id": "ability:1901",
+      "name": "Scarab Metabolism",
       "kind": "ability",
       "parent": "Nyx Assassin · 司夜刺客",
-      "status": "baseline-matches",
-      "currentText": "Mana Burn. Nyx Assassin's damage on enemies also burns mana as a percentage of the damage dealt.",
-      "baselineText": "Mana Burn. Nyx Assassin's damage on enemies also burns mana as a percentage of the damage dealt.",
-      "evidence": "Inferred from archived official export used by generation script"
+      "status": "current-verified",
+      "currentText": "Scarab Metabolism. After 3s without taking damage, Nyx Assassin gains bonus movement speed and regenerates based on his max health and max mana per second.",
+      "baselineText": "Scarab Metabolism. After 3s without taking damage, Nyx Assassin gains bonus movement speed and regenerates based on his max health and max mana per second.",
+      "evidence": "generated-script"
     },
     {
       "id": "ability:5465",
@@ -6198,8 +6219,8 @@
       "name": "Gorgon's Grasp",
       "kind": "ability",
       "parent": "Medusa · 美杜莎",
-      "status": "baseline-matches",
-      "currentText": "Gorgon's Grasp. Medusa fires arrows in a line that land in 3 groups, with each grouping larger than the previous. Enemies struck by a volley of arrows take an initial burst of damage and then are rooted, cannot turn, are revealed to the enemy, and take damage per second.",
+      "status": "baseline-changed",
+      "currentText": "Gorgon's Grasp. Medusa fires arrows in a line that land in 3 groups, with each grouping larger than the previous. Enemies struck by a volley of arrows take an initial burst of magic damage and then are rooted, cannot turn, are revealed to the enemy, and take damage per second. An enemy can only be hit once per cast.",
       "baselineText": "Gorgon's Grasp. Medusa fires arrows in a line that land in 3 groups, with each grouping larger than the previous. Enemies struck by a volley of arrows take an initial burst of damage and then are rooted, cannot turn, are revealed to the enemy, and take damage per second.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -6299,7 +6320,7 @@
       "kind": "ability",
       "parent": "Troll Warlord · 巨魔战将",
       "status": "baseline-changed",
-      "currentText": "Battle Trance. Troll unleashes a powerful battle trance, that forces you to continuously attack the closest enemy unit within 900 range, prioritizing heroes. Damage does not kill you during this mode. Grants you bonus lifesteal, attack speed, slow resistance and movement speed. Applies a Basic Dispel.\n\nDISPEL TYPE: Basic Dispel",
+      "currentText": "Battle Trance. Troll unleashes a powerful battle trance, that forces you to continuously attack the closest enemy unit within 900 range, prioritizing heroes. Unslowable while attacking. Damage does not kill you during this mode. Grants you bonus lifesteal, attack speed, status resistance, and movement speed. Applies a Basic Dispel.\n\nDISPEL TYPE: Basic Dispel",
       "baselineText": "Battle Trance. Troll unleashes a powerful battle trance, that forces you to continuously attack the closest enemy unit within 900 range, prioritizing heroes. Damage does not kill you during this mode. Grants you bonus lifesteal, attack speed and movement speed. Applies a Basic Dispel. DISPEL TYPE: Basic Dispel",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -6708,8 +6729,8 @@
       "name": "Shield of the Scion",
       "kind": "ability",
       "parent": "Skywrath Mage · 天怒法师",
-      "status": "baseline-matches",
-      "currentText": "Shield of the Scion. Every time Skywrath Mage deals magical damage to an enemy hero with his abilities, he gains a small magic damage barrier. Each buff stacks independently.",
+      "status": "baseline-changed",
+      "currentText": "Shield of the Scion. Every time Skywrath Mage deals magical damage to an enemy hero with his abilities, he gains bonus intelligence and a small magic damage barrier. Each buff stacks independently.",
       "baselineText": "Shield of the Scion. Every time Skywrath Mage deals magical damage to an enemy hero with his abilities, he gains a small magic damage barrier. Each buff stacks independently.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -6738,8 +6759,8 @@
       "name": "Mist Coil",
       "kind": "ability",
       "parent": "Abaddon · 亚巴顿",
-      "status": "baseline-matches",
-      "currentText": "Mist Coil. Abaddon releases a coil of deathly mist that can damage an enemy unit or heal a friendly unit at the cost of some of Abaddon's health.",
+      "status": "baseline-changed",
+      "currentText": "Mist Coil. Abaddon releases a coil of deathly mist at the cost of Abaddon's health. Friendly units are healed and have their movement speed increased. Enemy units are damaged and slowed.\n\nHealth cost is 40% of the Damage/Heal amount.",
       "baselineText": "Mist Coil. Abaddon releases a coil of deathly mist that can damage an enemy unit or heal a friendly unit at the cost of some of Abaddon's health.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -6758,8 +6779,8 @@
       "name": "Curse of Avernus",
       "kind": "ability",
       "parent": "Abaddon · 亚巴顿",
-      "status": "baseline-matches",
-      "currentText": "Curse of Avernus. Abaddon strikes an enemy, affecting them by a chilling curse, slowing them, causing them to take damage over time, and all attacks against them gain an attack speed boost. Damage over time component to buildings is reduced by 100%.",
+      "status": "baseline-changed",
+      "currentText": "Curse of Avernus. Abaddon strikes an enemy, affecting them by a chilling curse, slowing them, causing them to take damage over time, and all attacks against them gain an attack speed boost. Abaddon gains 1.5x the attack speed boost. Damage over time component to buildings is reduced by 100%.",
       "baselineText": "Curse of Avernus. Abaddon strikes an enemy, affecting them by a chilling curse, slowing them, causing them to take damage over time, and all attacks against them gain an attack speed boost. Damage over time component to buildings is reduced by 100%.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -6769,7 +6790,7 @@
       "kind": "ability",
       "parent": "Abaddon · 亚巴顿",
       "status": "baseline-changed",
-      "currentText": "Withering Mist. Damaging enemies applies the Withering Mist debuff for 5s. Affected enemies have their Health Restoration reduced by 29.5% if they are below 40% HP.",
+      "currentText": "Withering Mist. Damaging enemies reduces their Health Restoration for 5s. The lower the enemy's HP, the stronger the Health restoration reduction effect. Minimum effect of 10% at full health. Maximum effect at zero health.\n\nDoes not apply from item damage.",
       "baselineText": "Withering Mist. Damaging enemies applies the Withering Mist debuff for 5s. Affected enemies have their Health Restoration reduced by 24.5% if they are below 40% HP.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -7178,8 +7199,8 @@
       "name": "Supernova",
       "kind": "ability",
       "parent": "Phoenix · 凤凰",
-      "status": "baseline-matches",
-      "currentText": "Supernova. The Phoenix willingly ends its current life for the chance to be reborn. Transforms into a burning sun that scorches enemies in a huge area. The sun can be destroyed by attacks from enemy Heroes. After 6 seconds the sun explodes, stunning all nearby enemies while restoring Phoenix to full health and mana with refreshed abilities.\n\nDISPEL TYPE: Strong Dispel",
+      "status": "baseline-changed",
+      "currentText": "Supernova. The Phoenix willingly ends its current life for the chance to be reborn. Transforms into a burning sun that scorches enemies in a huge area. The sun has pip health. Creeps and illusions deal 25% damage to the sun. After 6 seconds the sun explodes, stunning all nearby enemies while restoring Phoenix to full health and mana with refreshed abilities.\n\nDISPEL TYPE: Strong Dispel",
       "baselineText": "Supernova. The Phoenix willingly ends its current life for the chance to be reborn. Transforms into a burning sun that scorches enemies in a huge area. The sun can be destroyed by attacks from enemy Heroes. After 6 seconds the sun explodes, stunning all nearby enemies while restoring Phoenix to full health and mana with refreshed abilities. DISPEL TYPE: Strong Dispel",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -7488,8 +7509,8 @@
       "name": "Invading Force",
       "kind": "ability",
       "parent": "Underlord · 孽主",
-      "status": "baseline-matches",
-      "currentText": "Invading Force. After an allied hero Teleports, they temporarily gain Damage Reduction and Movement Speed. Allies receive 2x bonuses if teleporting via Fiend's Gate.",
+      "status": "baseline-changed",
+      "currentText": "Invading Force. After an allied hero Teleports, they temporarily gain a Physical Damage Barrier based on their max health and Movement Speed. Allies receive 2x bonuses if teleporting via Fiend's Gate.",
       "baselineText": "Invading Force. After an allied hero Teleports, they temporarily gain Damage Reduction and Movement Speed. Allies receive 2x bonuses if teleporting via Fiend's Gate.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -7498,8 +7519,8 @@
       "name": "Fiend's Gate",
       "kind": "ability",
       "parent": "Underlord · 孽主",
-      "status": "baseline-matches",
-      "currentText": "Fiend's Gate. Opens 2 portals, one next to Underlord and one in the target location. Heroes can channel a portal for 3.5 seconds to teleport to the other side. Portals have to be at least 1500 away from each other.",
+      "status": "baseline-changed",
+      "currentText": "Fiend's Gate. Opens 2 portals, one next to Underlord and one in the target location. Heroes can channel a portal for 3.5 / 3.25 / 3 seconds to teleport to the other side. Portals have to be at least 1500 away from each other.",
       "baselineText": "Fiend's Gate. Opens 2 portals, one next to Underlord and one in the target location. Heroes can channel a portal for 3.5 seconds to teleport to the other side. Portals have to be at least 1500 away from each other.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -7538,8 +7559,8 @@
       "name": "Jingu Mastery",
       "kind": "ability",
       "parent": "Monkey King · 齐天大圣",
-      "status": "baseline-matches",
-      "currentText": "Jingu Mastery. Monkey King's attacks awaken the Jingu Bang's power. Upon the fourth hit on the same enemy hero, Monkey King earns 4 charged attacks that have bonus damage and lifesteal.",
+      "status": "baseline-changed",
+      "currentText": "Jingu Mastery. Monkey King's attacks awaken the Jingu Bang's power. Upon the number of required hits on the same enemy hero, Monkey King earns 4 charged attacks that have bonus damage and lifesteal.",
       "baselineText": "Jingu Mastery. Monkey King's attacks awaken the Jingu Bang's power. Upon the fourth hit on the same enemy hero, Monkey King earns 4 charged attacks that have bonus damage and lifesteal.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -7588,8 +7609,8 @@
       "name": "Swashbuckle",
       "kind": "ability",
       "parent": "Pangolier · 石鳞剑士",
-      "status": "baseline-matches",
-      "currentText": "Swashbuckle. Pangolier dashes along the target line, then slashes and briefly slows all enemies in the drawn direction with several quick swipes.\n\nLucky Shot has a chance to activate from this damage.",
+      "status": "baseline-changed",
+      "currentText": "Swashbuckle. Pangolier dashes along the target line, then slashes and briefly slows all enemies in the drawn direction with several quick swipes. Attacks have decreased Item Potency.\n\nLucky Shot has a chance to activate from this damage.",
       "baselineText": "Swashbuckle. Pangolier dashes along the target line, then slashes and briefly slows all enemies in the drawn direction with several quick swipes. Lucky Shot has a chance to activate from this damage.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -7738,8 +7759,8 @@
       "name": "Phantom's Embrace",
       "kind": "ability",
       "parent": "Grimstroke · 天涯墨客",
-      "status": "baseline-matches",
-      "currentText": "Phantom's Embrace. Summons a phantom that moves quickly towards the target, latching to it when she arrives. Once latched, the phantom damages and silences. If she survives the full latch duration she rends her victim for heavy damage and refreshes Phantom's Embrace's cooldown.\n\nHero attacks against the phantom count as 3 attacks each.",
+      "status": "baseline-changed",
+      "currentText": "Phantom's Embrace. Summons a phantom that moves quickly towards the target, latching to it when she arrives. Once latched, the phantom damages and silences. If she survives the full latch duration she rends her victim for heavy damage and refreshes Phantom's Embrace's cooldown.\n\nCreeps and illusions deal 25% damage to the phantom.",
       "baselineText": "Phantom's Embrace. Summons a phantom that moves quickly towards the target, latching to it when she arrives. Once latched, the phantom damages and silences. If she survives the full latch duration she rends her victim for heavy damage and refreshes Phantom's Embrace's cooldown. Hero attacks against the phantom count as 3 attacks each.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -7898,8 +7919,8 @@
       "name": "Astral Step",
       "kind": "ability",
       "parent": "Void Spirit · 虚无之灵",
-      "status": "baseline-matches",
-      "currentText": "Astral Step. Void Spirit tears a rift through the astral plane to appear at the target location, attacking all enemies along the path. This attack inflicts a void mark that slows for 1.25 seconds and then detonates.",
+      "status": "baseline-changed",
+      "currentText": "Astral Step. Void Spirit tears a rift through the astral plane to appear at the target location, attacking all enemies along the path with bonus item potency. This attack inflicts a void mark that slows for 1.25 seconds and then detonates.",
       "baselineText": "Astral Step. Void Spirit tears a rift through the astral plane to appear at the target location, attacking all enemies along the path. This attack inflicts a void mark that slows for 1.25 seconds and then detonates.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -8018,8 +8039,8 @@
       "name": "Scurry",
       "kind": "ability",
       "parent": "Hoodwink · 森海飞霞",
-      "status": "baseline-matches",
-      "currentText": "Scurry. Hoodwink gains bonus movement speed, phased movement, and tree-walking for a brief time. While active, the redirect chance of Mistwoods Wayfarer is multiplied by 2.",
+      "status": "baseline-extra-context",
+      "currentText": "Scurry. Hoodwink gains bonus movement speed, phased movement, and tree-walking for a brief time.",
       "baselineText": "Scurry. Hoodwink gains bonus movement speed, phased movement, and tree-walking for a brief time. While active, the redirect chance of Mistwoods Wayfarer is multiplied by 2.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -8168,8 +8189,8 @@
       "name": "Special Delivery",
       "kind": "ability",
       "parent": "Marci · 玛西",
-      "status": "baseline-matches",
-      "currentText": "Special Delivery. Marci whistles to instantly summon her courier to her. If the courier started in the fountain, it will take items from Marci's stash. After teleporting it will transfer these items to Marci and head back to the fountain.\n\nPassively grants all allied couriers 3 bonus levels and 1 bonus health.",
+      "status": "baseline-changed",
+      "currentText": "Special Delivery. Marci whistles to instantly summon her courier to her. If the courier started in the fountain, it will take items from Marci's stash. After teleporting it will transfer these items to Marci and head back to the fountain.\n\nPassively grants all allied couriers 3 bonus levels and 1 extra pip.",
       "baselineText": "Special Delivery. Marci whistles to instantly summon her courier to her. If the courier started in the fountain, it will take items from Marci's stash. After teleporting it will transfer these items to Marci and head back to the fountain.Passively grants all allied couriers 3 bonus levels and 1 bonus health.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -8228,8 +8249,8 @@
       "name": "Rock Throw",
       "kind": "ability",
       "parent": "Primal Beast · 獸",
-      "status": "baseline-matches",
-      "currentText": "Rock Throw. Primal Beast throws a rock at the target location that stuns and damages enemies. The rock cannot be thrown within a minimum range of Primal Beast. After landing, the rock splits into 3 additional fragments that land behind the initial target location.\n\n Rock Throw increases stacks of Uproar for each hero hit.",
+      "status": "baseline-changed",
+      "currentText": "Rock Throw. Primal Beast throws a rock at the target location that stuns enemies and deals 300 + 100% STR damage. The rock cannot be thrown within a minimum range of Primal Beast. After landing, the rock splits into 3 additional fragments that land behind the initial target location.\n\n Rock Throw increases stacks of Uproar for each hero hit.",
       "baselineText": "Rock Throw. Primal Beast throws a rock at the target location that stuns and damages enemies. The rock cannot be thrown within a minimum range of Primal Beast. After landing, the rock splits into 3 additional fragments that land behind the initial target location. Rock Throw increases stacks of Uproar for each hero hit.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -8298,8 +8319,8 @@
       "name": "Spectral Slug",
       "kind": "ability",
       "parent": "Muerta · 琼英碧灵",
-      "status": "baseline-matches",
-      "currentText": "Spectral Slug. Muerta shoots a spectral bullet at an enemy, dealing damage, knocking them back, and turning them ethereal for 3s - rendering them immune to physical damage and unable to attack. The target is slowed and -20% more vulnerable to magic damage. Enemies will not be knocked out of Muerta's attack range.",
+      "status": "baseline-changed",
+      "currentText": "Spectral Slug. Muerta shoots a spectral bullet at an enemy, dealing damage, knocking them back, and turning them ethereal for 2.25s - rendering them immune to physical damage and unable to attack. The target is slowed and -20% more vulnerable to magic damage. Enemies will not be knocked out of Muerta's attack range.",
       "baselineText": "Spectral Slug. Muerta shoots a spectral bullet at an enemy, dealing damage, knocking them back, and turning them ethereal for 3s - rendering them immune to physical damage and unable to attack. The target is slowed and -20% more vulnerable to magic damage. Enemies will not be knocked out of Muerta's attack range.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -8419,7 +8440,7 @@
       "kind": "ability",
       "parent": "Ringmaster · 百戏大王",
       "status": "baseline-changed",
-      "currentText": "Whoopee Cushion. Use: Whoopsie\nPropels your hero forward 400 units. Leaves a 250 radius stink cloud behind for 3 seconds that slows enemies by -30%.",
+      "currentText": "Whoopee Cushion. Use: Whoopsie\nPropels your hero forward 400 units. Leaves a 300 radius stink cloud behind for 3 seconds that slows enemies by -35%.",
       "baselineText": "Whoopee Cushion. Use: WhoopsiePropels your hero forward 400 units. Leaves a 250 radius stink cloud behind for 3 seconds that slows enemies by -30%.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -8429,7 +8450,7 @@
       "kind": "ability",
       "parent": "Ringmaster · 百戏大王",
       "status": "baseline-changed",
-      "currentText": "Unicycle. Use: Saddle Up\nSummons a speedy unicycle to ride around on for 10 seconds. 1.5s after mounting the unicycle, taking damage from enemy hero sources greater than 20 dismounts the rider. Crashing into trees destroys them and slows the unicycle. Attacking, using channeled abilities, or crashing into units and other obstacles also dismounts the rider.",
+      "currentText": "Unicycle. Use: Saddle Up\nSummons a speedy unicycle to ride around on for 15 seconds. 1.5s after mounting the unicycle, taking damage from enemy hero sources greater than 20 dismounts the rider. Crashing into trees destroys them and slows the unicycle. Attacking, using channeled abilities, or crashing into units and other obstacles also dismounts the rider.",
       "baselineText": "Unicycle. Use: Saddle UpSummons a speedy unicycle to ride around on for 10 seconds. 1.5s after mounting the unicycle, taking damage from enemy hero sources greater than 20 dismounts the rider. Crashing into trees destroys them and slows the unicycle. Attacking, using channeled abilities, or crashing into units and other obstacles also dismounts the rider.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -8449,7 +8470,7 @@
       "kind": "ability",
       "parent": "Kez · 凯",
       "status": "baseline-changed",
-      "currentText": "Echo Slash. Kez slashes forward in a 800 distance line with his Katana, attacking enemies in an area and applying a brief 100% impact slow. After a short delay, the area is attacked again. Heroes take bonus damage.",
+      "currentText": "Echo Slash. Kez slashes forward in a 800 distance line with his Katana, attacking enemies in an area and applying a brief 100% impact slow. After a short delay, the area is attacked again.",
       "baselineText": "Echo Slash. Kez slashes forward in a 800 distance line with his Katana, attacking enemies in an area and applying a brief 100s impact slow. After a short delay, the area is attacked again. Heroes take bonus damage.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -8488,8 +8509,8 @@
       "name": "Raptor Dance",
       "kind": "ability",
       "parent": "Kez · 凯",
-      "status": "baseline-matches",
-      "currentText": "Raptor Dance. Kez enters into an uncontrollable state for 1 second, becoming invulnerable for 0.2s and receiving a basic dispel.\n\nIf the cast completes successfully, Kez performs a series of deadly radial slashes around him that deal damage based on the max health of the target and heal Kez for a percentage of all damage dealt.",
+      "status": "baseline-changed",
+      "currentText": "Raptor Dance. Kez enters into an uncontrollable state for 1 second, becoming invulnerable for 0.2s and receiving a basic dispel.\n\nIf the cast completes successfully, Kez performs a series of deadly radial slashes around him that deal a fixed damage attack based on the target's max health with enhanced lifesteal.",
       "baselineText": "Raptor Dance. Kez enters into an uncontrollable state for 1 second, becoming invulnerable for 0.2s and receiving a basic dispel.If the cast completes successfully, Kez performs a series of deadly radial slashes around him that deal damage based on the max health of the target and heal Kez for a percentage of all damage dealt.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -8498,8 +8519,8 @@
       "name": "Falcon Rush",
       "kind": "ability",
       "parent": "Kez · 凯",
-      "status": "baseline-matches",
-      "currentText": "Falcon Rush. Kez gains the ability to rush towards enemy targets to deliver echoing secondary attacks.  While in this state, Kez has phased collision and slow resistance.",
+      "status": "baseline-changed",
+      "currentText": "Falcon Rush. Kez gains the ability to rush towards enemy targets to deliver echoing secondary attacks with reduced damage and Item Potency.  While in this state, Kez has phased collision and slow resistance.",
       "baselineText": "Falcon Rush. Kez gains the ability to rush towards enemy targets to deliver echoing secondary attacks. While in this state, Kez has phased collision and slow resistance.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -8598,8 +8619,8 @@
       "name": "Bullbelly Blitz",
       "kind": "ability",
       "parent": "Largo · 朗戈",
-      "status": "baseline-matches",
-      "currentText": "Bullbelly Blitz. Largo plays a song that deals 20 / 30 / 40 magical damage to nearby enemies. The song also increases nearby allied heroes' spell amplification and grants their attacks additional magic damage.",
+      "status": "baseline-changed",
+      "currentText": "Bullbelly Blitz. Largo plays a song that deals 24 / 37 / 50 magical damage to nearby enemies. The song also increases nearby allied heroes' spell amplification and grants their attacks additional magic damage.",
       "baselineText": "Bullbelly Blitz. Largo plays a song that deals 20/30/40 magical damage to nearby enemies. The song also increases nearby allied heroes' spell amplification and grants their attacks additional magic damage.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -8638,8 +8659,8 @@
       "name": "Overwhelming Blink",
       "kind": "item",
       "parent": "",
-      "status": "baseline-extra-context",
-      "currentText": "Overwhelming Blink. Active: Overwhelming Blink\n Teleport to a target point up to 1200 units away.\n\nAfter teleportation, all enemies in a 800 AoE take damage equal to 100 + 50% of your strength and an additional 100% over time, and have 50% movement speed slow and 50 attack speed slow for 6 seconds. \n\nOverwhelming Blink cannot be used for 3 seconds after taking damage from an enemy hero or Roshan.",
+      "status": "baseline-changed",
+      "currentText": "Overwhelming Blink. Active: Overwhelming Blink\n Teleport to a target point up to 1200 units away.\n\nAfter teleportation, all enemies in a 800 AoE take damage equal to 100 + 50% of your strength and an additional 100% over time, and have 35% movement speed slow and 70 attack speed slow for 4.5 seconds. \n\nOverwhelming Blink cannot be used for 3 seconds after taking damage from an enemy hero or Roshan.",
       "baselineText": "Overwhelming Blink. +Strength: 25 Active: Overwhelming Blink: Teleport to a target point up to 1200 units away. After teleportation, all enemies in a 800 AoE take damage equal to 100 + 50% of your strength and an additional 100% over time, and have 50% movement speed slow and 50 attack speed slow for 6 seconds. Overwhelming Blink cannot be used for 3 seconds after taking damage from an enemy hero or Roshan. Self-casting will cause you to teleport in the direction of your team's fountain.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -9073,10 +9094,20 @@
       "name": "Blood Grenade",
       "kind": "item",
       "parent": "",
-      "status": "baseline-extra-context",
-      "currentText": "Blood Grenade. Use: Throw Grenade\n Throw a grenade at the target area. Enemies in the area will take 50 damage on impact, and be slowed by -15% and take 15 damage every 1s for 5 seconds. Radius 300.",
+      "status": "baseline-changed",
+      "currentText": "Blood Grenade. Use: Throw Grenade\n Throw a grenade at the target area. Enemies in the area will take 50 damage on impact, and be slowed by -15% and take 15 damage every 1s for 5s. Radius 300.",
       "baselineText": "Blood Grenade. +Health: 50 Use: Throw Grenade: Throw a grenade at the target area. Enemies in the area will take 50 damage on impact, and be slowed by -15% and take 15 damage every 1s for 5 seconds. Radius 300.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
+    },
+    {
+      "id": "item:1942",
+      "name": "Bloodslinger",
+      "kind": "item",
+      "parent": "",
+      "status": "current-verified",
+      "currentText": "Bloodslinger. Active: Sling Grenade\n Launch a grenade at the target area. Enemies in the area will take 50 damage on impact, and be slowed by -30% and take 15 damage every 1s for 5s. Movement slow decreases over time to -15%. Radius 300.",
+      "baselineText": "Bloodslinger. Active: Sling Grenade Launch a grenade at the target area. Enemies in the area will take 50 damage on impact, and be slowed by -30% and take 15 damage every 1s for 5s. Movement slow decreases over time to -15%. Radius 300.",
+      "evidence": "generated-script"
     },
     {
       "id": "item:1154",
@@ -9328,8 +9359,8 @@
       "name": "Phylactery",
       "kind": "item",
       "parent": "",
-      "status": "baseline-extra-context",
-      "currentText": "Phylactery. Passive: Empower Spell\n The next Unit Target spell you cast on an enemy deals a separate 150 bonus damage to the target and slows them by 30% for 3s.",
+      "status": "baseline-changed",
+      "currentText": "Phylactery. Passive: Empower Spell\nThe next Unit Target spell you cast on an enemy deals a separate 130 bonus damage to the target and slows them by 40% for 2s.",
       "baselineText": "Phylactery. +All Stats: 6, +HP Regen: 5.5, +Mana Regen: 2.25 Passive: Empower Spell: The next Unit Target spell you cast on an enemy deals a separate 150 bonus damage to the target and slows them by 30% for 3s.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -9342,6 +9373,16 @@
       "currentText": "Khanda. Passive: Empower Spell\n The next Unit Target spell you cast on an enemy deals a separate 250 additional damage, disables their passives, and slows their movement speed by 30% for 4s.",
       "baselineText": "Khanda. +Health: 450, +Mana: 450, +All Stats: 8, +HP Regen: 7, +Mana Regen: 3 Passive: Empower Spell: The next Unit Target spell you cast on an enemy deals a separate 250 additional damage, disables their passives, and slows their movement speed by 30% for 4s. The slow debuff is dispellable. The break debuff is not dispellable.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
+    },
+    {
+      "id": "item:1955",
+      "name": "Caduceus",
+      "kind": "item",
+      "parent": "",
+      "status": "current-verified",
+      "currentText": "Caduceus. Active: Force\nPushes any target unit 600 units in the direction it is facing, and applies one instance of Empower Spell to them.\nPassive: Empower Spell\nThe next Unit Target spell you cast on an enemy deals a separate 175 bonus damage to the target and slows them by 40% for 2s.\n\nThe next Unit Target spell you cast on an ally heals them for 200 and increases their movement speed by 20% for 2s.",
+      "baselineText": "Caduceus. Active: Force Pushes any target unit 600 units in the direction it is facing, and applies one instance of Empower Spell to them. Passive: Empower Spell The next Unit Target spell you cast on an enemy deals a separate 175 bonus damage to the target and slows them by 40% for 2s. The next Unit Target spell you cast on an ally heals them for 200 and increases their movement speed by 20% for 2s.",
+      "evidence": "generated-script"
     },
     {
       "id": "item:65",
@@ -9389,8 +9430,8 @@
       "name": "Poor Man's Shield",
       "kind": "item",
       "parent": "",
-      "status": "baseline-extra-context",
-      "currentText": "Poor Man's Shield. Passive: Damage Block\nGives a 100% chance to block 30 damage from incoming attacks on melee heroes, and 20 damage on ranged.\n\nHas a 50% chance to block damage from creeps.",
+      "status": "baseline-changed",
+      "currentText": "Poor Man's Shield. Passive: Damage Block\nGives a 100% chance to block 40 damage from incoming attacks on melee heroes, and 25 damage on ranged.\n\nHas a 50% chance to block damage from creeps.",
       "baselineText": "Poor Man's Shield. Passive: Damage Block: Gives a 100% chance to block 30 damage from incoming attacks on melee heroes, and 20 damage on ranged. Has a 50% chance to block damage from creeps. Multiple sources of damage block do not stack.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -9430,10 +9471,20 @@
       "name": "Vladmir's Offering",
       "kind": "item",
       "parent": "",
-      "status": "baseline-extra-context",
-      "currentText": "Vladmir's Offering. Passive: Vladmir's Aura\nGrants 20% lifesteal, 18% bonus damage, 1 mana regeneration, and 2 armor to nearby allies.\n\nRadius: 1200",
+      "status": "baseline-changed",
+      "currentText": "Vladmir's Offering. Passive: Vladmir's Aura\nGrants 20% lifesteal, 18% bonus damage, 1 mana regeneration, and 1 armor to nearby allies.\n\nRadius: 1200",
       "baselineText": "Vladmir's Offering. +Armor: 1, +Mana Regen: 0.75 Passive: Vladmir's Aura: Grants 20% lifesteal, 18% bonus damage, 1 mana regeneration, and 2 armor to nearby allies. Radius: 1200 Lifesteal on attacks against creeps is reduced to 12%.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
+    },
+    {
+      "id": "item:1944",
+      "name": "Ristul's Devotion",
+      "kind": "item",
+      "parent": "",
+      "status": "current-verified",
+      "currentText": "Ristul's Devotion. Passive: Ristul's Aura\nGrants 20% lifesteal, 18% spell lifesteal, 18% bonus damage, 1 mana regeneration, and 2 armor to nearby allies.\n\nRadius: 1200",
+      "baselineText": "Ristul's Devotion. Passive: Ristul's Aura Grants 20% lifesteal, 18% spell lifesteal, 18% bonus damage, 1 mana regeneration, and 2 armor to nearby allies. Radius: 1200",
+      "evidence": "generated-script"
     },
     {
       "id": "item:908",
@@ -9447,8 +9498,8 @@
       "name": "Buckler",
       "kind": "item",
       "parent": "",
-      "status": "baseline-extra-context",
-      "currentText": "Buckler. Passive: Buckler Aura\n Grants 2 armor to allied player units.\n\nRadius: 1200",
+      "status": "baseline-changed",
+      "currentText": "Buckler. Passive: Buckler Aura\n Grants 1 armor to allied player units.\n\nRadius: 1200",
       "baselineText": "Buckler. +Armor: 1 Passive: Buckler Aura: Grants 2 armor to allied player units. Radius: 1200",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -9497,8 +9548,8 @@
       "name": "Headdress",
       "kind": "item",
       "parent": "",
-      "status": "baseline-extra-context",
-      "currentText": "Headdress. Passive: Regeneration Aura\nGrants 2 health regeneration to allies.\n\nRadius: 1200",
+      "status": "baseline-changed",
+      "currentText": "Headdress. Passive: Regeneration Aura\nGrants 2 health regeneration to allied player units.\n\nRadius: 1200",
       "baselineText": "Headdress. +HP Regen: 0.5 Passive: Regeneration Aura: Grants 2 health regeneration to allies. Radius: 1200",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -9527,8 +9578,8 @@
       "name": "Bloodthorn",
       "kind": "item",
       "parent": "",
-      "status": "baseline-extra-context",
-      "currentText": "Bloodthorn. Active: Soul Rend\n Silences a target for 5 seconds. At the end of the silence, an additional 60% of all damage taken during the silence will be dealt to the target as magical damage.\n\nAll attacks on the silenced target will deal additional damage equal to 50 if the attacker is a hero, and 25, if the attacker is a creep. Provides True Strike for your attacks and attacks from your controlled units against the silenced target.\n\nPassive: Pierce\nGrants each attack a 40% chance to pierce through evasion and deal 60 bonus magical damage.",
+      "status": "baseline-changed",
+      "currentText": "Bloodthorn. Active: Soul Rend\n Silences a target for 5 seconds. At the end of the silence, an additional 60% of all damage taken during the silence will be dealt to the target as magical damage.\n\nAll attacks on the silenced target will deal additional damage equal to 50 if the attacker is a hero, and 20, if the attacker is a creep. Provides True Strike for your attacks and attacks from your controlled units against the silenced target.",
       "baselineText": "Bloodthorn. +Intelligence: 25, +Attack Speed: 70, +Mana Regen: 4, +Damage: 20 Active: Soul Rend: Silences a target for 5 seconds. At the end of the silence, an additional 60% of all damage taken during the silence will be dealt to the target as magical damage. All attacks on the silenced target will deal additional damage equal to 50 if the attacker is a hero, and 25, if the attacker is a creep. Provides True Strike for your attacks and attacks from your controlled units against the silenced target. Passive: Pierce: Grants each attack a 40% chance to pierce through evasion and deal 60 bonus magical damage.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -9753,7 +9804,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-changed",
-      "currentText": "Shiva's Guard. Active: Arctic Blast\n Emits a freezing wave that deals 225 magical damage to enemies and slows their movement by -40% for 4 seconds.\n\nRadius: 825\n\nPassive: Freezing Aura\n Reduces the attack speed of all enemies by -40. \n\nRadius: 1200",
+      "currentText": "Shiva's Guard. Active: Arctic Blast\n Emits a freezing wave that deals 225 magical damage to enemies and slows their movement by -30% for 4 seconds.\n\nRadius: 840\n\nPassive: Freezing Aura\n Reduces the attack speed of all enemies by -40. \n\nRadius: 1200",
       "baselineText": "Shiva's Guard. +Armor: 17, +AoE Bonus: 75 Active: Arctic Blast: Emits a freezing wave that deals 260 magical damage to enemies and slows their movement by -40% for 4 seconds. Radius: 825 Passive: Freezing Aura: Reduces the attack speed of all enemies by -45. Radius: 1200 The wave extends at a speed of 400 to a max size of 825. The Arctic Blast follows its caster. Multiple instances of Freezing Aura do not stack. AoE bonuses from multiple Chasm Stones or its upgrades do not stack.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -9763,7 +9814,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-changed",
-      "currentText": "Bloodstone. Active: Bloodpact\n Increases Bloodstone's Spell Lifesteal to 60%. Lasts 5 seconds. \n\nPassive: Spell Weakness Aura\n Enemy units take 10% increased damage from spells. \n\nRadius: 1200",
+      "currentText": "Bloodstone. Active: Bloodpact\n Increases Bloodstone's Spell Lifesteal to 70%. Lasts 5 seconds. \n\nPassive: Spell Weakness Aura\n Enemy units take 8% increased damage from spells. \n\nRadius: 1200",
       "baselineText": "Bloodstone. +Health: 650, +Mana: 450, +Intelligence: 15, +Spell Lifesteal: 20% Active: Bloodpact: Increases Bloodstone's Spell Lifesteal to 60%. Lasts 5 seconds. Passive: Spell Weakness Aura: Enemy units take 12% increased damage from spells. Radius: 1200 Spell Weakness Aura does not stack with Veil of Discord's Spell Weakness.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -9792,18 +9843,28 @@
       "name": "Meteor Hammer",
       "kind": "item",
       "parent": "",
-      "status": "baseline-extra-context",
-      "currentText": "Meteor Hammer. Active: Meteor Hammer\n CHANNELED - After a successful channel, summons a meteor that strikes a 400 AoE, stunning enemies for 0.75 seconds and dealing impact damage. Continues to deal damage over time to enemies units and buildings for 6 seconds. Non-building units are also slowed for 20% for the duration of the burn. \n\nBuilding Impact Damage: 90 \nBuilding Over Time Damage: 50 \n\nNon-Building Impact Damage: 130 \nNon-Building Over Time Damage: 50 \n\nChannel Duration: 2 seconds.\nLanding Time: 0.5 seconds.",
+      "status": "baseline-changed",
+      "currentText": "Meteor Hammer. Active: Meteor Hammer\n CHANNELED - After a 2s channel, summons a meteor after 0.5s that strikes a 400 AoE, stunning enemies for 0.75s and dealing 150 impact damage. Continues to deal 60 damage per second for 6s.\n\nNon-building units are also slowed by 15% for 6s.\n\nDeals 75% damage to buildings.",
       "baselineText": "Meteor Hammer. +Strength: 6, +Agility: 6, +Intelligence: 24, Spell Amp: 10%, Mana Regen Multiplier: 35% Active: Meteor Hammer: CHANNELED - After a successful channel, summons a meteor that strikes a 400 AoE, stunning enemies for 0.75 seconds and dealing impact damage. Continues to deal damage over time to enemies units and buildings for 6 seconds. Non-building units are also slowed for 20% for the duration of the burn. Building Impact Damage: 90 Building Over Time Damage: 50 Non-Building Impact Damage: 130 Non-Building Over Time Damage: 50 Channel Duration: 2 seconds. Landing Time: 0.5 seconds.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
+    },
+    {
+      "id": "item:1946",
+      "name": "Starforge",
+      "kind": "item",
+      "parent": "",
+      "status": "current-verified",
+      "currentText": "Starforge. Active: Meteor Hammer\n CHANNELED - After a 2s channel, summons a meteor after 0.5s that strikes a 400 AoE, stunning enemies for 0.75s and dealing 150 impact damage. Continues to deal 60 damage per second for 6s.\n\nNon-building units take an additional 15% max health impact damage and are slowed by 15% for 6s.\n\nDeals 75% damage to buildings.\n\nPassive: Celestial Flare\nAfter any of your disables ends on an enemy unit, they burn for 60 damage a second and move 15% slower for 3s.\nCelestial Flare can trigger from any of your abilities or items.\nCelestial Flare stacks with Meteor Hammer's Burn.",
+      "baselineText": "Starforge. Active: Meteor Hammer CHANNELED - After a 2s channel, summons a meteor after 0.5s that strikes a 400 AoE, stunning enemies for 0.75s and dealing 150 impact damage. Continues to deal 60 damage per second for 6s. Non-building units take an additional 15% max health impact damage and are slowed by 15% for 6s. Deals 75% damage to buildings. Passive: Celestial Flare After any of your disables ends on an enemy unit, they burn for 60 damage a second and move 15% slower for 3s. Celestial Flare can trigger from any of your abilities or items. Celestial Flare stacks with Meteor Hammer's Burn.",
+      "evidence": "generated-script"
     },
     {
       "id": "item:225",
       "name": "Nullifier",
       "kind": "item",
       "parent": "",
-      "status": "baseline-extra-context",
-      "currentText": "Nullifier. Active: Nullify\n Dispels the target and applies a debuff for 4 seconds. Continuously dispels and slows the target.\n\nDispel Type: Basic Dispel",
+      "status": "baseline-changed",
+      "currentText": "Nullifier. Active: Nullify\n Dispels the target and applies a debuff for 4 seconds. Continuously dispels and slows the target, and the target is less susceptible to forced movement effects applied by their allies.\n\nDispel Type: Basic Dispel",
       "baselineText": "Nullifier. +Damage: 75, +Armor: 10, Slow Pct: 10% Active: Nullify: Dispels the target and applies a debuff for 4 seconds. Continuously dispels and slows the target. Dispel Type: Basic Dispel Can be cast on invulnerable units.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -9876,8 +9937,8 @@
       "name": "Crimson Guard",
       "kind": "item",
       "parent": "",
-      "status": "baseline-extra-context",
-      "currentText": "Crimson Guard. Active: Guard\n For 7 seconds, grant nearby allied heroes and buildings a 100% chance to block damage equal to 70 plus 2% of the caster's max health value from each incoming attack.\n\nRadius: 1200\n\nPassive: Damage Block\n Grants a 60% chance to block 75 damage from incoming attacks on melee heroes, and 50 damage on ranged.",
+      "status": "baseline-changed",
+      "currentText": "Crimson Guard. Active: Guard\n For 7 seconds, grant nearby allied heroes and buildings a 100% chance to block damage equal to 70 plus 2% of the caster's max health value from each incoming attack.\n\nRadius: 1200\n\nPassive: Damage Block\n Grants a 60% chance to block 75 damage from incoming attacks on melee heroes, and 50 damage on ranged\n\nPassive: Buckler Aura\n Grants 2 armor to allied player units.\n\nRadius: 1200",
       "baselineText": "Crimson Guard. +Health: 250, +HP Regen: 12, +Armor: 6 Active: Guard: For 7 seconds, grant nearby allied heroes and buildings a 100% chance to block damage equal to 70 plus 2% of the caster's max health value from each incoming attack. Radius: 1200 Passive: Damage Block: Grants a 60% chance to block 75 damage from incoming attacks on melee heroes, and 50 damage on ranged. Multiple sources of damage block do not stack. When the Guard buff is applied to ranged heroes, Guard blocks 25 less damage. Guard does not affect units that have been affected by Guard within Crimson Guard's cooldown.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -9950,8 +10011,8 @@
       "name": "Monkey King Bar",
       "kind": "item",
       "parent": "",
-      "status": "baseline-extra-context",
-      "currentText": "Monkey King Bar. Passive: Pierce\nGrants each attack a 80% chance to pierce through evasion and deal 70 bonus magical damage.",
+      "status": "baseline-changed",
+      "currentText": "Monkey King Bar. Passive: Pierce\nGrants each attack a 80% chance to pierce through evasion and deal 70 bonus magical damage if the attacker is a hero or 30 if the attacker is an illusion.",
       "baselineText": "Monkey King Bar. +Damage: 50, +Attack Speed: 50, +Melee Attack Range: 50 Passive: Pierce: Grants each attack a 80% chance to pierce through evasion and deal 70 bonus magical damage.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -10008,7 +10069,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-changed",
-      "currentText": "Manta Style. Active: Mirror Image\nCreates 2 images of your hero that last 18 seconds. \n\nMelee images deal 33% damage, while Ranged images deal 25%. Illusions take 300% damage. \n\nDispel Type: Basic Dispel",
+      "currentText": "Manta Style. Active: Mirror Image\nCreates 2 images of your hero that last 18 seconds. \n\nMelee images deal 33% damage, while Ranged images deal 25%. Illusions take 300% damage and have 35% Item Potency. \n\nDispel Type: Basic Dispel",
       "baselineText": "Manta Style. +Strength: 10, +Agility: 26, +Intelligence: 10, +Attack Speed: 15, +Movement Speed: 10% Active: Mirror Image: Creates 2 images of your hero that last 18 seconds. Melee images deal 33% damage, while Ranged images deal 28%. Illusions take 300% damage. Dispel Type: Basic Dispel Has a 0.1 second cast time during which you are invulnerable. Many effects are removed upon using Manta. Yasha based movement speed bonuses from multiple items do not stack.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -10035,7 +10096,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-extra-context",
-      "currentText": "Armlet of Mordiggian. Toggle: Unholy Strength\nWhen active, Unholy Strength grants +35 damage, +25 strength and +4 armor, but drains 45 health per second.\n\n You cannot die from the health drain when Unholy Strength is activated, nor from the strength loss when Unholy Strength is deactivated.",
+      "currentText": "Armlet of Mordiggian. Toggle: Unholy Strength\nWhen active, Unholy Strength grants +35 damage, +25 Strength and +4 armor, but drains 45 health per second.\n\n You cannot die from the health drain when Unholy Strength is activated, nor from the strength loss when Unholy Strength is deactivated.",
       "baselineText": "Armlet of Mordiggian. +Damage: 15, +Attack Speed: 25, +Armor: 6, +HP Regen: 5 Toggle: Unholy Strength: When active, Unholy Strength grants +35 damage, +25 strength and +4 armor, but drains 45 health per second. You cannot die from the health drain when Unholy Strength is activated, nor from the strength loss when Unholy Strength is deactivated. The strength change will affect both maximum and current HP, but you cannot die from the change. The strength change occurs over 0.6 seconds. Activating or deactivating Unholy Strength does not interrupt channeling.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -10044,8 +10105,8 @@
       "name": "Shadow Blade",
       "kind": "item",
       "parent": "",
-      "status": "baseline-extra-context",
-      "currentText": "Shadow Blade. Active: Shadow Walk\nMakes you invisible for 17 seconds, or until you attack or cast a spell.  While Shadow Walk is active, you move 20% faster and can move through units.  \n\nIf attacking to end the invisibility, you gain 175 bonus physical damage on that attack.",
+      "status": "baseline-changed",
+      "currentText": "Shadow Blade. Active: Shadow Walk\nMakes you invisible for 17 seconds, or until you attack or cast a spell.  While Shadow Walk is active, you move 16% faster and can move through units.  \n\nIf attacking to end the invisibility, you gain 175 bonus physical damage on that attack.",
       "baselineText": "Shadow Blade. +Damage: 25, +Attack Speed: 35 Active: Shadow Walk: Makes you invisible for 17 seconds, or until you attack or cast a spell. While Shadow Walk is active, you move 20% faster and can move through units. If attacking to end the invisibility, you gain 175 bonus physical damage on that attack. Has a 0.3 second fade time. If the invisibility ends without attacking, the bonus damage is lost.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -10055,7 +10116,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-changed",
-      "currentText": "Silver Edge. Active: Shadow Walk\nMakes you invisible for 17 seconds, or until you attack or cast a spell.  While invisible, you move 20% faster and can move through units.  \n\nAttacking to end the invisibility will deal 300 bonus physical damage, disable their passive abilities for 5 seconds, and cap their movement speed to 200.",
+      "currentText": "Silver Edge. Active: Shadow Walk\nMakes you invisible for 17 seconds, or until you attack or cast a spell.  While invisible, you move 18% faster and can move through units.  \n\nAttacking to end the invisibility will deal 300 bonus physical damage, disable their passive abilities for 5 seconds, and cap their movement speed to 200.",
       "baselineText": "Silver Edge. +Damage: 70, +Attack Speed: 35 Active: Shadow Walk: Makes you invisible for 17 seconds, or until you attack or cast a spell. While invisible, you move 25% faster and can move through units. Attacking to end the invisibility will deal 300 bonus physical damage, disable their passive abilities for 5 seconds, and cap their movement speed to 200.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -10106,7 +10167,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-changed",
-      "currentText": "Eye of Skadi. Passive: Cold Attack\n Attacks lower enemy movement by -25% if they are melee and -50% if they are ranged. Attacks also lower enemy attack speed by -25% and Health Restoration by 50%. Lasts for 3 seconds.",
+      "currentText": "Eye of Skadi. Passive: Cold Attack\n Attacks lower enemy movement by -20% if they are melee and -40% if they are ranged. Attacks also lower enemy attack speed by -25% and Health Restoration by 50%. Lasts for 3 seconds.",
       "baselineText": "Eye of Skadi. +All Stats: 35 Passive: Cold Attack: Attacks lower enemy movement by -25% if they are melee and -50% if they are ranged. Attacks also lower enemy attack speed by -20% and Health Restoration by 50%. Lasts for 3 seconds.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -10153,7 +10214,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-changed",
-      "currentText": "Gleipnir. Active: Eternal Chains\nRoots all enemies in a 400 radius for 2 seconds.",
+      "currentText": "Gleipnir. Active: Eternal Chains\nRoots all enemies in the target area for 2s.\n\nRadius: 400",
       "baselineText": "Gleipnir. +Health: 450, +Mana: 200, +Intelligence: 12, +AoE Bonus: 75 Active: Eternal Chains: Roots all enemies in a 350 radius for 2 seconds. AoE bonuses from multiple Chasm Stones or its upgrades do not stack.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -10190,7 +10251,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-extra-context",
-      "currentText": "Diffusal Blade. Active: Inhibit\n Targets an enemy, slowing it for 4 seconds.\n\nPassive: Manabreak\nEach attack burns 40 mana from the target, and deals 1 physical damage per burned mana. \n\nIllusions do not burn mana.",
+      "currentText": "Diffusal Blade. Active: Inhibit\n Targets an enemy, slowing it for 4 seconds.\n\nPassive: Manabreak\nEach attack burns 40 mana from the target, and deals 1 physical damage per burned mana.",
       "baselineText": "Diffusal Blade. +Agility: 15, +Intelligence: 10 Active: Inhibit: Targets an enemy, slowing it for 4 seconds. Passive: Manabreak: Each attack burns 40 mana from the target, and deals 1 physical damage per burned mana. Illusions do not burn mana. Does not stack with other diffusal blades.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -10200,7 +10261,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-changed",
-      "currentText": "Disperser. Active: Suppress\n Dispels both the wearer and the target. Enemy targets are slowed for 4 seconds. Allied targets gain bonus movespeed and 40% slow resistance for 4 seconds. Caster is always granted the ally benefit on cast.\n\nBoth movement speed reduction and increase start at 100% and gradually decrease to 0% over the course of the buff duration.\nDispel Type: Basic Dispel\n\nPassive: Manabreak\nEach attack burns 40 mana from the target, and deals 1 physical damage per burned mana. \n\nIllusions do not burn mana.",
+      "currentText": "Disperser. Active: Suppress\n Dispels both the wearer and the target. Enemy targets are slowed for 4 seconds. Allied targets gain bonus movespeed and 40% slow resistance for 4 seconds. Caster is always granted the ally benefit on cast.\n\nBoth movement speed reduction and increase start at 100% and gradually decrease to 0% over the course of the buff duration.\nDispel Type: Basic Dispel\n\nPassive: Manabreak\nEach attack burns 40 mana from the target, and deals 1 physical damage per burned mana.",
       "baselineText": "Disperser. +Agility: 40, +Intelligence: 10 Active: Suppress: Dispels both the wearer and the target. Enemy targets are slowed for 5 seconds. Allied targets gain bonus movespeed and 40% slow resistance for 5 seconds. Caster is always granted the ally benefit on cast. Both movement speed reduction and increase start at 100% and gradually decrease to 0% over the course of the buff duration. Dispel Type: Basic Dispel Passive: Manabreak: Each attack burns 40 mana from the target, and deals 1 physical damage per burned mana. Illusions do not burn mana.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -10247,7 +10308,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-changed",
-      "currentText": "Orb of Venom. Passive: Poison Attack\nPoisons the target, dealing 12 magical damage per second. Lasts for 3 seconds.",
+      "currentText": "Orb of Venom. Passive: Poison Attack\nPoisons the target hero, dealing 12 magical damage per second. Lasts for 3 seconds.",
       "baselineText": "Orb of Venom. Passive: Poison Attack: Poisons the target, dealing 10 magical damage per second. Lasts for 3 seconds. Does not stack with its upgrades.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -10324,7 +10385,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-changed",
-      "currentText": "Medallion of Courage. Active: Valor\nIncreases armor by 7 or decreases armor by -4 for 8s depending on if cast on an ally or enemy. Cannot be cast on self.",
+      "currentText": "Medallion of Courage. Active: Valor\nIncreases armor by 10 or decreases armor by -6 for 8s depending on if cast on an ally or enemy. Cannot be cast on self.",
       "baselineText": "Medallion of Courage. Active: ValorIncreases armor by 7 or decreases armor by -4 for 8s depending on if cast on an ally or enemy. Cannot be cast on self.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -10333,8 +10394,8 @@
       "name": "Solar Crest",
       "kind": "item",
       "parent": "",
-      "status": "baseline-extra-context",
-      "currentText": "Solar Crest. Active: Shine\nWhen cast on an ally, grants them 5 armor, 60 attack speed, 15% movement speed and a 350 physical damage barrier. \n\nDoes not grant bonus armor, movement or attack speed if used on self. \n\nDuration: 7",
+      "status": "baseline-changed",
+      "currentText": "Solar Crest. Active: Shine\nWhen cast on an ally, grants them 5 armor, 60 attack speed, 15% movement speed and a 350 physical damage barrier. \n\nBonus armor, movement and attack speed have 50% effectiveness when cast on self. \n\nDuration: 7",
       "baselineText": "Solar Crest. +Armor: 7, +Movement Speed: 25, +Mana: 200, +Health: 200 Active: Shine: When cast on an ally, grants them 5 armor, 60 attack speed, 15% movement speed and a 350 physical damage barrier. Does not grant bonus armor, movement or attack speed if used on self. Duration: 7 Shares cooldown with Pavise.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -10354,7 +10415,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-changed",
-      "currentText": "Smoke of Deceit. Use: Disguise\n Turns the caster and all allied player-controlled targets in a 1200 radius invisible, and grants 15% bonus movement speed for 45 seconds. \n\n While the caster is still disguised, any allies that come within 300 range of them will also get the buff applied to them. Each smoke can only be applied once to allies. \n\nAttacking or moving within 1025 range of an enemy hero or tower, will break the invisibility. \n\nDisguise grants invisibility that is immune to True Sight. \n\nSmoke of Deceit is usable from the backpack and has no cooldown when swapped into the main inventory.",
+      "currentText": "Smoke of Deceit. Use: Disguise\n Turns the caster and all allied player-controlled targets in a 1200 radius invisible, and grants 25% bonus movement speed for 50 seconds. \n\n While the caster is still disguised, any allies that come within 300 range of them will also get the buff applied to them. Each smoke can only be applied once to allies. \n\nAttacking or moving within 1025 range of an enemy hero or tower, will break the invisibility. \n\nDisguise grants invisibility that is immune to True Sight. \n\nSmoke of Deceit is usable from the backpack and has no cooldown when swapped into the main inventory.",
       "baselineText": "Smoke of Deceit. Use: Disguise: Turns the caster and all allied player-controlled units in a 1200 radius invisible, and grants 15% bonus movement speed for 45 seconds. While the caster is still disguised, any allies that come within 300 range of them will also get the buff applied to them. Each smoke can only be applied once to allies. Attacking or moving within 1025 range of an enemy hero or tower, will break the invisibility. Disguise grants invisibility that is immune to True Sight. Smoke of Deceit is usable from the backpack and has no cooldown when swapped into the main inventory.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -10370,19 +10431,9 @@
       "name": "Veil of Discord",
       "kind": "item",
       "parent": "",
-      "status": "baseline-extra-context",
-      "currentText": "Veil of Discord. Active: Spell Weakness\n Cast a 900 radius blast that causes enemy heroes to take 10% increased damage from spells.\n\nCan be cast while channeling.\n\nDuration: 16 seconds.",
+      "status": "baseline-changed",
+      "currentText": "Veil of Discord. Active: Spell Weakness\n Cast a 900 radius blast that causes enemy heroes to take 8% increased damage from spells.\n\nCan be cast while channeling.\n\nDuration: 16 seconds.",
       "baselineText": "Veil of Discord. +Health: 175, +Intelligence: 10, +Spell Lifesteal: 18% Active: Spell Weakness: Cast a 900 radius blast that causes enemy heroes to take 10% increased damage from spells. Can be cast while channeling. Duration: 16 seconds. Spell Weakness does not stack with Bloodstone's Spell Weakness Aura.",
-      "evidence": "Inferred from archived data/items.ts used by generation script"
-    },
-    {
-      "id": "item:911",
-      "name": "Revenant's Brooch",
-      "kind": "item",
-      "parent": "",
-      "status": "baseline-extra-context",
-      "currentText": "Revenant's Brooch. Passive: Phantom Critical\nGrants each attack a 30% chance to deal an additional 80% of the attack's damage as bonus magic damage.",
-      "baselineText": "Revenant's Brooch. +Damage: 35, +Spell Lifesteal: 15% Passive: Phantom Critical: Grants each attack a 30% chance to deal an additional 80% of the attack's damage as bonus magic damage. Counts as a Critical Strike for purposes of stacking with other sources of Critical Strike. Phantom Critical does not work against buildings.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
     {
@@ -10390,8 +10441,8 @@
       "name": "Parasma",
       "kind": "item",
       "parent": "",
-      "status": "baseline-extra-context",
-      "currentText": "Parasma. Passive: Witch Blade\n Causes your next attack to have true strike, apply a poison for 4 seconds, slowing by 25% and dealing 0.75x your intelligence as damage every second.\n\nPassive: Magic Corruption\n Your attacks reduce the enemy's Magic resistance by 20% for 4 seconds.",
+      "status": "baseline-changed",
+      "currentText": "Parasma. Passive: Witch Blade\n Causes your next attack to apply a poison for 4 seconds, slowing by 25% and dealing 0.85x your intelligence as damage every second. This attack has True Strike and can affect buildings. Deals 40% damage to buildings. \n\nPassive: Magic Corruption\n Your attacks reduce the enemy's Magic resistance by 15% for 4 seconds.",
       "baselineText": "Parasma. +Intelligence: 40, +Attack Speed: 40, +Armor: 7, +Mana Regen: 1.5, +Projectile Speed: 300 Passive: Witch Blade: Causes your next attack to have true strike, apply a poison for 4 seconds, slowing by 25% and dealing 0.75x your intelligence as damage every second. Passive: Magic Corruption: Your attacks reduce the enemy's Magic resistance by 20% for 4 seconds.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -10400,8 +10451,8 @@
       "name": "Guardian Greaves",
       "kind": "item",
       "parent": "",
-      "status": "baseline-extra-context",
-      "currentText": "Guardian Greaves. Active: Mend\nRestores 325 health and 200 mana to nearby allies, and removes most negative effects from the caster.\n\nRadius: 1200\nDispel Type: Basic Dispel\n\nPassive: Guardian Aura\n Grants 2.5 health regeneration and 1.5 mana regeneration to allied units. If the wearer's health falls below 25%, their health regeneration is increased to 14.5. \n\nRadius: 1200 \nMovement speed bonuses from multiple pairs of boots do not stack.",
+      "status": "baseline-changed",
+      "currentText": "Guardian Greaves. Active: Mend\nRestores 325 health and 200 mana to nearby allies, and removes most negative effects from the caster.\n\nRadius: 1200\nDispel Type: Basic Dispel\n\nPassive: Guardian Aura\n Grants 2.5 health regeneration and 1.5 mana regeneration to allied units.\n\nRadius: 1200 \nMovement speed bonuses from multiple pairs of boots do not stack.",
       "baselineText": "Guardian Greaves. +Movement Speed: 50, +Armor: 5, +Mana: 150, +Mana Regen: 1 Active: Mend: Restores 325 health and 200 mana to nearby allies, and removes most negative effects from the caster. Radius: 1200 Dispel Type: Basic Dispel Passive: Guardian Aura: Grants 2.5 health regeneration and 1.5 mana regeneration to allied units. If the wearer's health falls below 25%, their health regeneration is increased to 14.5. Radius: 1200 Movement speed bonuses from multiple pairs of boots do not stack. Mend does not affect units that have been affected by Mend or Mekansm Restore within Guardian Greaves' cooldown.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -10428,7 +10479,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-extra-context",
-      "currentText": "Abyssal Blade. Active: Overwhelm\n Stuns a target enemy unit for 1.6 seconds. \n\nPierces Debuff Immunity.\n\nPassive: Bash\n Grants melee heroes a 25% chance on hit to stun the target for 1.2 seconds and deal 120 bonus physical damage.  Bash chance for ranged heroes is 10%.",
+      "currentText": "Abyssal Blade. Active: Overwhelm\n Stuns a target enemy unit for 1.6 seconds. \n\nPierces Debuff Immunity.\n\nPassive: Bash\n Grants melee heroes a 25% chance on hit to stun the target for 1.2 seconds and deal 120 bonus physical damage. Bash chance for ranged heroes is 10%.",
       "baselineText": "Abyssal Blade. +Damage: 35, +Strength: 26, Slow Resistance: 30%, +Restore Amplification: 20% Active: Overwhelm: Stuns a target enemy unit for 1.6 seconds. Pierces Debuff Immunity. Passive: Bash: Grants melee heroes a 25% chance on hit to stun the target for 1.2 seconds and deal 120 bonus physical damage. Bash chance for ranged heroes is 10%. The stun is melee range. Does not stack with other bashes, and does not grant bash to Clones and Tempest Doubles. Multiple sources of damage block do not stack. The following heroes cannot trigger Bash on this item: Spirit Breaker, Faceless Void, Slardar, and Kez while in Sai mode.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -10437,10 +10488,20 @@
       "name": "Heaven's Halberd",
       "kind": "item",
       "parent": "",
-      "status": "baseline-extra-context",
-      "currentText": "Heaven's Halberd. Active: Disarm\nPrevents a target from attacking for 3.5 seconds.",
+      "status": "baseline-changed",
+      "currentText": "Heaven's Halberd. Active: Disarm\nPrevents a target from attacking for 3 seconds.",
       "baselineText": "Heaven's Halberd. +Armor: 9, +HP Regen: 6, +Evasion: 25% Active: Disarm: Prevents a target from attacking for 3.5 seconds.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
+    },
+    {
+      "id": "item:1948",
+      "name": "Skypiercer",
+      "kind": "item",
+      "parent": "",
+      "status": "current-verified",
+      "currentText": "Skypiercer. Active: Disarm\nPrevents a target from attacking for 3 seconds.\n\nPassive: Riposte\n Whenever you are within 500 range of an enemy hero, Disarm gains 125% cooldown acceleration.",
+      "baselineText": "Skypiercer. Active: Disarm Prevents a target from attacking for 3 seconds. Passive: Riposte Whenever you are within 500 range of an enemy hero, Disarm gains 125% cooldown acceleration.",
+      "evidence": "generated-script"
     },
     {
       "id": "item:212",
@@ -10454,8 +10515,8 @@
       "name": "Tranquil Boots",
       "kind": "item",
       "parent": "",
-      "status": "baseline-extra-context",
-      "currentText": "Tranquil Boots. Passive: Break\n Whenever you attack a hero or are attacked by any unit, the bonus 14 HP regen is lost and the movement speed bonus is reduced to 40 for 13 seconds.\nMovement speed bonuses from multiple pairs of boots do not stack.",
+      "status": "baseline-changed",
+      "currentText": "Tranquil Boots. Passive: Respite\n Whenever you attack a hero or are attacked by any unit, the health regen bonus is reduced to 2 and the movement speed bonus is reduced to 40 for 13 seconds.\nMovement speed bonuses from multiple pairs of boots do not stack.",
       "baselineText": "Tranquil Boots. +Movement Speed: 65, +HP Regen: 14 Passive: Break: Whenever you attack a hero or are attacked by any unit, the bonus 14 HP regen is lost and the movement speed bonus is reduced to 40 for 13 seconds. Movement speed bonuses from multiple pairs of boots do not stack.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -10768,7 +10829,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-changed",
-      "currentText": "Spider Legs. Active: Skitter\n Grants you 20% bonus movement speed, 50% improved turn rate, and free pathing for 12 seconds. Walking over trees causes them to be destroyed.",
+      "currentText": "Spider Legs. Active: Skitter\n Grants you 25% bonus movement speed, 50% improved turn rate, and free pathing for 12 seconds. Walking over trees causes them to be destroyed.",
       "baselineText": "Spider Legs. Active: Skitter: Grants you 20% bonus movement speed, 50% improved turn rate, and free pathing for 14 seconds. Walking over trees causes them to be destroyed.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -10841,8 +10902,8 @@
       "name": "Essence Ring",
       "kind": "item",
       "parent": "",
-      "status": "baseline-matches",
-      "currentText": "Essence Ring. Active: Life Essence\n Increases your current and max health by 240 for 10 seconds.",
+      "status": "baseline-changed",
+      "currentText": "Essence Ring. Active: Life Essence\n Increases your current and max health by 240 for 14 seconds.",
       "baselineText": "Essence Ring. Active: Life Essence: Increases your current and max health by 240 for 10 seconds.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -10963,7 +11024,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-changed",
-      "currentText": "Minotaur Horn. Active: Lesser Avatar\nApplies a basic dispel. Grants 60% magic resistance and immunity to reflected and pure damage for 2s. For the duration of the effect, any negative effect from enemy spells has no effect.\n\nDispel Type: Basic Dispel",
+      "currentText": "Minotaur Horn. Active: Lesser Avatar\nApplies a basic dispel. Grants 60% magic resistance and immunity to reflected and pure damage for 3s. For the duration of the effect, any negative effect from enemy spells has no effect.\n\nDispel Type: Basic Dispel",
       "baselineText": "Minotaur Horn. Active: Lesser Avatar: Applies a basic dispel. Grants 50% magic resistance and immunity to reflected and pure damage for 2s. For the duration of the effect, any negative effect from enemy spells has no effect. Dispel Type: Basic Dispel",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11000,8 +11061,8 @@
       "name": "Chipped Vest",
       "kind": "item",
       "parent": "",
-      "status": "baseline-extra-context",
-      "currentText": "Chipped Vest. Passive: Chipper\nEvery time you are attacked, you return 30 damage to heroes and 15 damage to creeps.",
+      "status": "baseline-changed",
+      "currentText": "Chipped Vest. Passive: Chipper\nEvery time you are attacked, you return 40 damage to heroes and 20 damage to creeps.",
       "baselineText": "Chipped Vest. Passive: Chipper: Every time you are attacked, you return 30 damage to heroes and 15 damage to creeps. Damage done by this item is considered reflected damage. Reflected damage does not provide any lifesteal and cannot be reflected.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11035,7 +11096,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-changed",
-      "currentText": "Possessed Mask. Passive: Lifesteal\nHeals the attacker for 5 HP on each attack.",
+      "currentText": "Possessed Mask. Passive: Lifesteal\nHeals the attacker for 7 HP on each attack.",
       "baselineText": "Possessed Mask. Passive: LifestealHeals the attacker for 5 HP on each attack.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -11096,8 +11157,8 @@
       "name": "Stormcrafter",
       "kind": "item",
       "parent": "",
-      "status": "baseline-matches",
-      "currentText": "Stormcrafter. Passive: Bottled Lightning\n Zaps 2 enemy targets within 700 range, dealing 70 damage and a 40% slow for 0.4 seconds.",
+      "status": "baseline-changed",
+      "currentText": "Stormcrafter. Passive: Bottled Lightning\n Zaps 2 enemy targets within 700 range, dealing 90 damage and a 40% slow for 0.4 seconds.",
       "baselineText": "Stormcrafter. Passive: Bottled Lightning Zaps 2 enemy targets within 700 range, dealing 70 damage and a 40% slow for 0.4 seconds.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -11144,8 +11205,8 @@
       "name": "Tumbler's Toy",
       "kind": "item",
       "parent": "",
-      "status": "baseline-matches",
-      "currentText": "Tumbler's Toy. Active: Vault\nPropels your hero forward 300 units. Tumbler's Toy gets disabled for 3 seconds if its owner receives damage from a player source.",
+      "status": "baseline-changed",
+      "currentText": "Tumbler's Toy. Active: Vault\nPropels your hero forward 350 units. Tumbler's Toy gets disabled for 3 seconds if its owner receives damage from a player source.",
       "baselineText": "Tumbler's Toy. Active: Vault: Propels your hero forward 300 units. Tumbler's Toy gets disabled for 3 seconds if its owner receives damage from a player source.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11161,8 +11222,8 @@
       "name": "Seeds of Serenity",
       "kind": "item",
       "parent": "",
-      "status": "baseline-matches",
-      "currentText": "Seeds of Serenity. Active: Verdurous Dale\n  Target the ground with a 400 radius. Provides health regeneration to all allied units while they are in the area of effect equal to 8 + 25% of the caster's health regeneration at the time of casting. Lasts 8 seconds.",
+      "status": "baseline-changed",
+      "currentText": "Seeds of Serenity. Active: Verdurous Dale\n  Target the ground with a 400 radius. Provides health regeneration to all allied units while they are in the area of effect equal to 3 + 25% of the caster's health regeneration at the time of casting. Lasts 8 seconds.",
       "baselineText": "Seeds of Serenity. Active: Verdurous Dale Target the ground with a 400 radius. Provides health regeneration to all allied units while they are in the area of effect equal to 8 + 25% of the caster's health regeneration at the time of casting. Lasts 8 seconds.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -11178,8 +11239,8 @@
       "name": "Occult Bracelet",
       "kind": "item",
       "parent": "",
-      "status": "baseline-matches",
-      "currentText": "Occult Bracelet. Passive: Rites of Eloshar\nEach time the wearer is attacked, they gain a stack of 0.4 mana regen, up to 5 stacks. Stacks last for 5 seconds.",
+      "status": "baseline-changed",
+      "currentText": "Occult Bracelet. Passive: Rites of Eloshar\nEach time the wearer is attacked, they gain a stack of 0.4 mana regen, up to 8 stacks. Stacks last for 6 seconds.",
       "baselineText": "Occult Bracelet. Passive: Rites of Eloshar: Each time the wearer is attacked, they gain a stack of 0.4 mana regen, up to 5 stacks. Stacks last for 5 seconds.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11222,8 +11283,8 @@
       "name": "Dagger of Ristul",
       "kind": "item",
       "parent": "",
-      "status": "baseline-matches",
-      "currentText": "Dagger of Ristul. Active: Imbrue\n Consume health to temporarily gain 25 damage for 8 seconds.",
+      "status": "baseline-changed",
+      "currentText": "Dagger of Ristul. Active: Imbrue\n Consume health to temporarily gain 30 damage for 10 seconds.",
       "baselineText": "Dagger of Ristul. Active: Imbrue Consume health to temporarily gain 25 damage for 8 seconds.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -11298,12 +11359,22 @@
       "status": "missing"
     },
     {
+      "id": "item:911",
+      "name": "Revenant's Brooch",
+      "kind": "item",
+      "parent": "",
+      "status": "baseline-changed",
+      "currentText": "Revenant's Brooch. Passive: Ghastly Strike\nGrants each attack a 15% chance to deal an additional 50% of the attack's damage as bonus magical damage.",
+      "baselineText": "Revenant's Brooch. +Damage: 35, +Spell Lifesteal: 15% Passive: Phantom Critical: Grants each attack a 30% chance to deal an additional 80% of the attack's damage as bonus magic damage. Counts as a Critical Strike for purposes of stacking with other sources of Critical Strike. Phantom Critical does not work against buildings.",
+      "evidence": "Inferred from archived data/items.ts used by generation script"
+    },
+    {
       "id": "item:2097",
       "name": "Duelist Gloves",
       "kind": "item",
       "parent": "",
-      "status": "baseline-matches",
-      "currentText": "Duelist Gloves. Passive: Boldness\n Grants 20 attack speed as long as there are enemy heroes within 1200 units.",
+      "status": "baseline-changed",
+      "currentText": "Duelist Gloves. Passive: Boldness\n Grants 26 attack speed as long as there are enemy heroes within 1200 units.",
       "baselineText": "Duelist Gloves. Passive: Boldness: Grants 20 attack speed as long as there are enemy heroes within 1200 units.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11355,8 +11426,8 @@
       "name": "Dandelion Amulet",
       "kind": "item",
       "parent": "",
-      "status": "baseline-matches",
-      "currentText": "Dandelion Amulet. Passive: Magical Damage Block\n Every 12s, blocks up to 300 magic damage from damage instances over 75 damage.",
+      "status": "baseline-changed",
+      "currentText": "Dandelion Amulet. Passive: Magical Damage Block\n Every 10s, blocks up to 300 magic damage from damage instances over 75 damage.",
       "baselineText": "Dandelion Amulet. Passive: Magical Damage Block Every 12s, blocks up to 300 magic damage from damage instances over 75 damage.",
       "evidence": "Inferred from archived official export used by generation script"
     },
@@ -11386,8 +11457,8 @@
       "name": "Rattlecage",
       "kind": "item",
       "parent": "",
-      "status": "baseline-changed",
-      "currentText": "Rattlecage. Passive: Reverberate\n After taking 220 damage from any source, the wearer fires a projectile at up to 2 random enemies in a 600 radius, prioritizing heroes, that deal 90 physical damage and slow the targets movement and attack speed by 100% for 0.2s.",
+      "status": "baseline-extra-context",
+      "currentText": "Rattlecage. Passive: Reverberate\n After taking 220 damage from any source, the wearer fires a projectile at up to 2 random enemies in a 600 radius, prioritizing heroes, that deal 110 physical damage and slow the targets movement and attack speed by 100% for 0.2s.",
       "baselineText": "Rattlecage. Passive: Reverberate: After taking 220 damage from any source, the wearer fires a projectile at up to 2 random enemies in a 600 radius, prioritizing heroes, that deal 110 physical damage and slow the targets movement and attack speed by 100% for 0.2s. Damage done by this item is considered reflected damage. Reflected damage does not provide any lifesteal and cannot be reflected.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11404,6 +11475,36 @@
       "kind": "item",
       "parent": "",
       "status": "missing"
+    },
+    {
+      "id": "item:1949",
+      "name": "Stone of Recall",
+      "kind": "item",
+      "parent": "",
+      "status": "current-verified",
+      "currentText": "Stone of Recall. Use: Place Stone\nPlants a Stone of Recall at the target location, active the moment it lands. Allied heroes anywhere on the map can channel on the stone to teleport to it.\n\nThe stone lasts 60 seconds. It is immune to spells and has 6 pip health. Creeps and illusions deal 25% damage to it.",
+      "baselineText": "Stone of Recall. Use: Place Stone Plants a Stone of Recall at the target location, active the moment it lands. Allied heroes anywhere on the map can channel on the stone to teleport to it. The stone lasts 60 seconds. It is immune to spells and has 6 pip health. Creeps and illusions deal 25% damage to it.",
+      "evidence": "generated-script"
+    },
+    {
+      "id": "item:1950",
+      "name": "Horn of Battle",
+      "kind": "item",
+      "parent": "",
+      "status": "current-verified",
+      "currentText": "Horn of Battle. Use: Call to Arms\nTarget an allied barracks anywhere on the map to summon a wave of mega creeps, including a catapult and a flagbearer, in that lane for your team. Can be used from the backpack.",
+      "baselineText": "Horn of Battle. Use: Call to Arms Target an allied barracks anywhere on the map to summon a wave of mega creeps, including a catapult and a flagbearer, in that lane for your team. Can be used from the backpack.",
+      "evidence": "generated-script"
+    },
+    {
+      "id": "item:1951",
+      "name": "Greater Horn of Battle",
+      "kind": "item",
+      "parent": "",
+      "status": "current-verified",
+      "currentText": "Greater Horn of Battle. Use: Grand Call to Arms\nSummons a wave of mega creeps, including a catapult and a flagbearer, in every lane for your team. Can be used from the backpack.",
+      "baselineText": "Greater Horn of Battle. Use: Grand Call to Arms Summons a wave of mega creeps, including a catapult and a flagbearer, in every lane for your team. Can be used from the backpack.",
+      "evidence": "generated-script"
     },
     {
       "id": "item:1440",
@@ -11550,8 +11651,8 @@
       "name": "Unrelenting Eye",
       "kind": "item",
       "parent": "",
-      "status": "baseline-matches",
-      "currentText": "Unrelenting Eye. Passive: Relentless\nIncreases slow resistance by 50%. This bonus is reduced by 10% for every enemy hero within the wearer's attack radius.",
+      "status": "baseline-changed",
+      "currentText": "Unrelenting Eye. Passive: Relentless\nIncreases slow resistance by 60%. This bonus is reduced by 12% for every enemy hero within the wearer's attack radius.",
       "baselineText": "Unrelenting Eye. Passive: Relentless: Increases slow resistance by 50%. This bonus is reduced by 10% for every enemy hero within the wearer's attack radius.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11560,8 +11661,8 @@
       "name": "Mana Draught",
       "kind": "item",
       "parent": "",
-      "status": "baseline-matches",
-      "currentText": "Mana Draught. Active: Bottoms Up\nRestores 70 + 3% of the caster's maximum mana over 6 seconds. If the hero is attacked by an enemy hero or Roshan, the effect is lost.\n\nHold Control to use on an allied hero.\n\nPassive: Fill Up\nCooldown Speed of Mana Draught is increased by 30% while in water.",
+      "status": "baseline-changed",
+      "currentText": "Mana Draught. Active: Bottoms Up\nRestores 90 + 3% of the caster's maximum mana over 6 seconds. If the hero is attacked by an enemy hero or Roshan, the effect is lost.\n\nHold Control to use on an allied hero.\n\nPassive: Fill Up\nCooldown Speed of Mana Draught is increased by 30% while in water.",
       "baselineText": "Mana Draught. Active: Bottoms Up: Restores 70 + 3% of the caster's maximum mana over 6 seconds. If the hero is attacked by an enemy hero or Roshan, the effect is lost. Hold Control to use on an allied hero. Passive: Fill Up: Cooldown Speed of Mana Draught is increased by 30% while in water.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11578,8 +11679,8 @@
       "name": "Crippling Crossbow",
       "kind": "item",
       "parent": "",
-      "status": "baseline-matches",
-      "currentText": "Crippling Crossbow. Active: Hobble\nHits an enemy for 25 damage, then slows them by 50% and reduces Health Restoration by 40% for 4 seconds. The slow gradually fades over the duration of the spell.",
+      "status": "baseline-changed",
+      "currentText": "Crippling Crossbow. Active: Hobble\nHits an enemy for 25 damage, then slows them by 65% and reduces Health Restoration by 40% for 4 seconds. The slow gradually fades over the duration of the spell.",
       "baselineText": "Crippling Crossbow. Active: Hobble: Hits an enemy for 25 damage, then slows them by 50% and reduces Health Restoration by 40% for 4 seconds. The slow gradually fades over the duration of the spell.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11595,8 +11696,8 @@
       "name": "Gunpowder Gauntlet",
       "kind": "item",
       "parent": "",
-      "status": "baseline-matches",
-      "currentText": "Gunpowder Gauntlet. Passive: Beat the Crowd\n Your next attack deals an additional 120 magic damage and splashes to units within 250 units for 50% of the original attack's damage plus the additional magic damage.",
+      "status": "baseline-changed",
+      "currentText": "Gunpowder Gauntlet. Passive: Beat the Crowd\n Your next attack deals an additional 40 magic damage and splashes to units within 250 units for 60% of the original attack's damage plus the additional magic damage.",
       "baselineText": "Gunpowder Gauntlet. Passive: Beat the Crowd: Your next attack deals an additional 120 magic damage and splashes to units within 250 units for 50% of the original attack's damage plus the additional magic damage.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11605,8 +11706,8 @@
       "name": "Searing Signet",
       "kind": "item",
       "parent": "",
-      "status": "baseline-extra-context",
-      "currentText": "Searing Signet. Passive: Burn Through\n Instances of magic damage from spells over 60 ignites enemies, causing them to take 80 magic damage over 6 seconds. Burn damage against non-hero targets is decreased by 50%.",
+      "status": "baseline-changed",
+      "currentText": "Searing Signet. Passive: Burn Through\n Instances of magic damage from spells over 60 ignites enemies, causing them to take 75 magic damage over 6 seconds. Burn damage against non-hero targets is decreased by 50%.",
       "baselineText": "Searing Signet. Passive: Burn Through: Instances of magic damage from spells over 60 ignites enemies, causing them to take 80 magic damage over 6 seconds. Burn damage against non-hero targets is decreased by 50%. Will not ignite enemies that are more than 2000 range away.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11615,8 +11716,8 @@
       "name": "Serrated Shiv",
       "kind": "item",
       "parent": "",
-      "status": "baseline-matches",
-      "currentText": "Serrated Shiv. Passive: Gut 'Em\n Attacks have a 20% chance to have True Strike and deal 8% of the target's current health as bonus physical damage. Deals a flat bonus of 200 against Roshan.",
+      "status": "baseline-changed",
+      "currentText": "Serrated Shiv. Passive: Gut 'Em\n Attacks have a 30% chance to have True Strike and deal 10% of the target's current health as bonus physical damage. Deals a flat bonus of 200 against Roshan.",
       "baselineText": "Serrated Shiv. Passive: Gut 'Em: Attacks have a 20% chance to have True Strike and deal 8% of the target's current health as bonus physical damage. Deals a flat bonus of 200 against Roshan.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11656,8 +11757,8 @@
       "name": "Kobold Cup",
       "kind": "item",
       "parent": "",
-      "status": "baseline-matches",
-      "currentText": "Kobold Cup. Active: One for the Road\nIncreases movement speed of all allied units by 10% in a 1000 unit radius around the caster for 6 seconds.",
+      "status": "baseline-changed",
+      "currentText": "Kobold Cup. Active: One for the Road\nIncreases movement speed of all allied units by 10% in a 1000 unit radius around the caster for 8 seconds.",
       "baselineText": "Kobold Cup. Active: One for the Road: Increases movement speed of all allied units by 10% in a 1000 unit radius around the caster for 6 seconds.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11684,7 +11785,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-changed",
-      "currentText": "Jidi Pollen Bag. Active: Pollinate\nSpreads pollen on all enemy units in a 900 unit radius for 9 seconds, decreasing their health restoration by 50% and dealing damage per second, the total equal to 9% of their maximum health.",
+      "currentText": "Jidi Pollen Bag. Active: Pollinate\nSpreads pollen on all enemy units in a 900 unit radius for 9 seconds, decreasing their health restoration by 65% and dealing damage per second, the total equal to 9% of their maximum health.",
       "baselineText": "Jidi Pollen Bag. Active: Pollinate: Spreads pollen on all enemy units in a 700 unit radius for 9 seconds, decreasing their health restoration by 50% and dealing damage equal to 9% of their maximum health per second. Damage is non-lethal and classified as HP Loss.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11701,7 +11802,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-changed",
-      "currentText": "Dezun Bloodrite. Passive: Blood Invocation\n Spells have a 20% larger Area of Effect, but now additionally cost health equal to 35% of their mana cost.",
+      "currentText": "Dezun Bloodrite. Passive: Blood Invocation\n Spells have a 20% larger Area of Effect, but now additionally cost health equal to 25% of their mana cost.",
       "baselineText": "Dezun Bloodrite. Passive: Blood Invocation: Spells have a 16% larger Area of Effect, but now additionally cost health equal to 35% of their mana cost.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11720,8 +11821,8 @@
       "name": "Divine Regalia",
       "kind": "item",
       "parent": "",
-      "status": "baseline-matches",
-      "currentText": "Divine Regalia. Passive: Exalted\n Increases outgoing damage by 20%. Dying permanently disables this Neutral Item and the current Enchantment is lost.",
+      "status": "baseline-changed",
+      "currentText": "Divine Regalia. Passive: Exalted\n Increases outgoing damage by 25%. Dying permanently disables this Neutral Item and the current Enchantment is lost.",
       "baselineText": "Divine Regalia. Passive: Exalted: Increases outgoing damage by 20%. Dying permanently disables this Neutral Item and the current Enchantment is lost.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11799,8 +11900,8 @@
       "name": "Weighted Dice",
       "kind": "item",
       "parent": "",
-      "status": "baseline-matches",
-      "currentText": "Weighted Dice. Passive: Loaded\nIncreases your base damage maximum by 6. When calculating your base damage or creep bounty from last hits, the value is computed 2 times and the highest value is taken.",
+      "status": "baseline-changed",
+      "currentText": "Weighted Dice. Passive: Loaded\nIncreases your base damage maximum by 8. When calculating your base damage or creep bounty from last hits, the value is computed 2 times and the highest value is taken.",
       "baselineText": "Weighted Dice. Passive: Loaded: Increases your base damage maximum by 6. When calculating your base damage or creep bounty from last hits, the value is computed 2 times and the highest value is taken.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11810,7 +11911,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-changed",
-      "currentText": "Ash Legion Shield. Active: Shield Wall\nReduce your own movement speed by 20 to provide a 160 physical damage barrier to allied player controlled targets in a 800 unit radius. Lasts for 6 seconds.",
+      "currentText": "Ash Legion Shield. Active: Shield Wall\nReduce your own movement speed by 20 to provide a 180 physical damage barrier to allied player controlled targets in a 800 unit radius. Lasts for 6 seconds.",
       "baselineText": "Ash Legion Shield. Active: Shield Wall: Reduce your own movement speed by 20 to provide a 160 physical damage barrier to allied player controlled units in a 800 unit radius. Lasts for 6 seconds.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11820,7 +11921,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-changed",
-      "currentText": "Riftshadow Prism. Active: Refract\n Spend 8% of your current life total to create a full health illusion that lasts for 20 seconds. The illusion has 60% outgoing damage and takes 200% of incoming damage.",
+      "currentText": "Riftshadow Prism. Active: Refract\n Spend 4% of your current life total to create a full health strong illusion that lasts for 20 seconds. The illusion has 60% outgoing damage, takes 200% of incoming damage, and has 100% Item Potency.",
       "baselineText": "Riftshadow Prism. Active: Refract: Spend 8% of your current life total to create a full health illusion that lasts for 20 seconds. The illusion has 50% outgoing damage and takes 200% of incoming damage.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11830,7 +11931,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-changed",
-      "currentText": "Metamorphic Mandible. Active: Pupate\n Enter into an insect form for 5 seconds, increasing magic resistance by 50% and movement speed by 20%. While an insect, your size is decreased and your armor is reduced by 45%.",
+      "currentText": "Metamorphic Mandible. Active: Pupate\n Enter into an insect form for 5 seconds, increasing magic resistance by 40% and movement speed by 15%. While an insect, your size is decreased and your armor is reduced by 30%.",
       "baselineText": "Metamorphic Mandible. Active: Pupate: Enter into an insect form for 5 seconds, increasing magic resistance by 50% and movement speed by 15%. While an insect, your size is decreased and your armor is reduced by 45%.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11840,7 +11941,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-changed",
-      "currentText": "Idol of Scree'auk. Active: False Flight\n Gain 50% slow resistance, phased movement, and 35% evasion for 6.5 seconds.",
+      "currentText": "Idol of Scree'auk. Active: False Flight\n Gain 60% slow resistance, phased movement, and 40% evasion for 6.5 seconds.",
       "baselineText": "Idol of Scree'auk. Active: False Flight: Gain 50% slow resistance, phased movement, and 25% evasion for 5 seconds.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11850,7 +11951,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-changed",
-      "currentText": "Flayer's Bota. Active: Bloodthirst\n Gain 15% base damage and 30 attack speed for 6 seconds.\n\nPassive: Bloodrush\nEnemy heroes dying within 1500 units reset the cooldown of Bloodthirst.",
+      "currentText": "Flayer's Bota. Active: Bloodthirst\n Gain 15% base damage and 30 attack speed for 9 seconds.\n\nPassive: Bloodrush\nEnemy heroes dying within 1500 units reset the cooldown of Bloodthirst.",
       "baselineText": "Flayer's Bota. Active: Bloodthirst: Gain 15% base damage and 30 attack speed for 6 seconds. Passive: Bloodrush: Enemy heroes dying within 1200 units reset the cooldown of Bloodthirst.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11859,8 +11960,8 @@
       "name": "Spellslinger",
       "kind": "item",
       "parent": "",
-      "status": "baseline-matches",
-      "currentText": "Spellslinger. Passive: Salvo\n20% of the mana used to cast abilities is recovered over 10 seconds.",
+      "status": "baseline-changed",
+      "currentText": "Spellslinger. Passive: Salvo\n20% of the mana used to cast abilities is recovered over 8 seconds.",
       "baselineText": "Spellslinger. Passive: Salvo: 20% of the mana used to cast abilities is recovered over 10 seconds.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11869,8 +11970,8 @@
       "name": "Prophet's Pendulum",
       "kind": "item",
       "parent": "",
-      "status": "baseline-matches",
-      "currentText": "Prophet's Pendulum. Passive: Linger\n 30% of incoming damage is delayed over 5 seconds.",
+      "status": "baseline-changed",
+      "currentText": "Prophet's Pendulum. Passive: Linger\n 30% of incoming damage is delayed over 8 seconds.",
       "baselineText": "Prophet's Pendulum. Passive: Linger: 30% of incoming damage is delayed over 5 seconds.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11879,8 +11980,8 @@
       "name": "Stonefeather Satchel",
       "kind": "item",
       "parent": "",
-      "status": "baseline-matches",
-      "currentText": "Stonefeather Satchel. Toggle: Transmogrify\n Toggle to switch the contents of the Satchel between a pound of Feathers or Rocks.\n\nFeathers: increase movement speed by 12 and distance of forced movement effects applied to the wearer by 30%.\n\nRocks: increase armor by 3 and decrease the distance of forced movement effects applied to the wearer by 30%.",
+      "status": "baseline-changed",
+      "currentText": "Stonefeather Satchel. Toggle: Transmogrify\n Toggle to switch the contents of the Satchel between a pound of Feathers or Rocks.\n\nFeathers: increase movement speed by 15 and distance of forced movement effects applied to the wearer by 30%.\n\nRocks: increase armor by 5 and decrease the distance of forced movement effects applied to the wearer by 30%.",
       "baselineText": "Stonefeather Satchel. Toggle: Transmogrify: Toggle to switch the contents of the Satchel between a pound of Feathers or Rocks. Feathers: increase movement speed by 12 and distance of forced movement effects applied to the wearer by 30%. Rocks: increase armor by 3 and decrease the distance of forced movement effects applied to the wearer by 30%.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11900,9 +12001,49 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-changed",
-      "currentText": "Harmonizer. Passive: Balance\n Gain 7% spell mana cost reduction for every ability off cooldown and 6% spell amplification for every ability on cooldown.",
+      "currentText": "Harmonizer. Passive: Balance\n Gain 7% spell mana cost reduction for every ability off cooldown and 9% Spell Lifesteal for every ability on cooldown.",
       "baselineText": "Harmonizer. Passive: Balance: Gain 5% spell manacost reduction for every spell off cooldown and 6% spell amplification for every spell on cooldown. Only considers abilities that are visible and have a cooldown",
       "evidence": "Inferred from archived data/items.ts used by generation script"
+    },
+    {
+      "id": "item:1911",
+      "name": "Helm of the Hivemind",
+      "kind": "item",
+      "parent": "",
+      "status": "current-verified",
+      "currentText": "Helm of the Hivemind. Passive: Brood Awakening\nMerge consciousness with an unknown monarch, gaining 120 cast range. Bonus cast range is increased by 80 and maximum health is decreased by 8% for every assimilated hero on both teams.",
+      "baselineText": "Helm of the Hivemind. Passive: Brood Awakening Merge consciousness with an unknown monarch, gaining 120 cast range. Bonus cast range is increased by 80 and maximum health is decreased by 8% for every assimilated hero on both teams.",
+      "evidence": "generated-script"
+    },
+    {
+      "id": "item:1884",
+      "name": "Claszian Timepiece",
+      "kind": "item",
+      "parent": "",
+      "status": "current-verified",
+      "currentText": "Claszian Timepiece. Passive: Compress Time\nIncreases Casting Speed by 25%. Whenever you cast a spell with a non-zero cast time, your Cooldown Speed is reduced by 10% for 8 seconds. This debuff stacks.",
+      "baselineText": "Claszian Timepiece. Passive: Compress Time Increases Casting Speed by 25%. Whenever you cast a spell with a non-zero cast time, your Cooldown Speed is reduced by 10% for 8 seconds. This debuff stacks.",
+      "evidence": "generated-script"
+    },
+    {
+      "id": "item:1916",
+      "name": "Brick",
+      "kind": "item",
+      "parent": "",
+      "status": "current-verified",
+      "currentText": "Brick. Active: Brick\nTosses a brick at the target enemy, removing 200 from any active barrier and dealing 150 physical damage.",
+      "baselineText": "Brick. Active: Brick Tosses a brick at the target enemy, removing 200 from any active barrier and dealing 150 physical damage.",
+      "evidence": "generated-script"
+    },
+    {
+      "id": "item:1917",
+      "name": "Balmhook",
+      "kind": "item",
+      "parent": "",
+      "status": "current-verified",
+      "currentText": "Balmhook. Passive: Shepherd's Protection\nTargeting a friendly unit with a spell increases their Health Regeneration by 12 for 12 seconds.",
+      "baselineText": "Balmhook. Passive: Shepherd's Protection Targeting a friendly unit with a spell increases their Health Regeneration by 12 for 12 seconds.",
+      "evidence": "generated-script"
     },
     {
       "id": "item:1864",
@@ -11910,7 +12051,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-changed",
-      "currentText": "Conjurer's Catalyst. Passive: Spellover\n Dealing 200 spell damage to an enemy causes them to overheat and deal damage to their allies in a 300 unit radius. Hero targets deal 80 damage to their allies, other targets deal 20 damage.",
+      "currentText": "Conjurer's Catalyst. Passive: Spellover\n Dealing 150 spell damage to an enemy causes them to overheat and deal damage to their allies in a 300 unit radius. Hero targets deal 80 damage to their allies, other targets deal 20 damage.",
       "baselineText": "Conjurer's Catalyst. Passive: Spellover: Dealing 100 spell damage to an enemy causes them to overheat and deal damage to their allies in a 300 unit radius. Hero targets deal 40 damage to their allies, other targets deal 15 damage.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11979,7 +12120,7 @@
       "kind": "item",
       "parent": "",
       "status": "baseline-changed",
-      "currentText": "Partisan's Brand. Passive: Brand\n Increases spell damage dealt to player controlled targets by 9%.",
+      "currentText": "Partisan's Brand. Passive: Brand\n Increases spell damage dealt to player controlled targets by 7%.",
       "baselineText": "Partisan's Brand. Passive: Brand: Increases spell damage dealt to player controlled units by 9%. Player controlled units includes heroes and any creep summoned or converted by them.",
       "evidence": "Inferred from archived data/items.ts used by generation script"
     },
@@ -11996,6 +12137,56 @@
       "kind": "item",
       "parent": "",
       "status": "missing"
+    },
+    {
+      "id": "item:1880",
+      "name": "Red Ledger",
+      "kind": "item",
+      "parent": "",
+      "status": "current-verified",
+      "currentText": "Red Ledger. Active: Most Wanted\nGenerates a list of hero bounties. Killing a hero on the list grants 50 gold plus an additional 12 for every level higher the target is than you. Assists award 75% of the bounty.",
+      "baselineText": "Red Ledger. Active: Most Wanted Generates a list of hero bounties. Killing a hero on the list grants 50 gold plus an additional 12 for every level higher the target is than you. Assists award 75% of the bounty.",
+      "evidence": "generated-script"
+    },
+    {
+      "id": "item:1881",
+      "name": "Berserker's Hood",
+      "kind": "item",
+      "parent": "",
+      "status": "current-verified",
+      "currentText": "Berserker's Hood. Active: Rage\nRestricts vision to a 30-degree cone in front for 7s. While enraged, you gain 30% Status Resistance and 25 Attack Speed.",
+      "baselineText": "Berserker's Hood. Active: Rage Restricts vision to a 30-degree cone in front for 7s. While enraged, you gain 30% Status Resistance and 25 Attack Speed.",
+      "evidence": "generated-script"
+    },
+    {
+      "id": "item:1882",
+      "name": "Vile Phial",
+      "kind": "item",
+      "parent": "",
+      "status": "current-verified",
+      "currentText": "Vile Phial. Passive: Toxic Tincture\nAttacking the same enemy 4 times within 10 seconds poisons them for 5 seconds, reducing their Health Restoration by 35% and dealing 40 damage per second.",
+      "baselineText": "Vile Phial. Passive: Toxic Tincture Attacking the same enemy 4 times within 10 seconds poisons them for 5 seconds, reducing their Health Restoration by 35% and dealing 40 damage per second.",
+      "evidence": "generated-script"
+    },
+    {
+      "id": "item:1883",
+      "name": "Nothl Sigil",
+      "kind": "item",
+      "parent": "",
+      "status": "current-verified",
+      "currentText": "Nothl Sigil. Passive: Blood from Stone\nReduces the mana cost of your spells by 30%, and increases their health cost by 150% of the mana saved.",
+      "baselineText": "Nothl Sigil. Passive: Blood from Stone Reduces the mana cost of your spells by 30%, and increases their health cost by 150% of the mana saved.",
+      "evidence": "generated-script"
+    },
+    {
+      "id": "item:1953",
+      "name": "Sabatons of Mordiggian",
+      "kind": "item",
+      "parent": "",
+      "status": "current-verified",
+      "currentText": "Sabatons of Mordiggian. Toggle: Mordiggian's Oath\n While active, grants +40 damage, +30 Strength, and +5 armor, and lets you move through units and turn more quickly with 20% increased movement speed on melee heroes and 10% on ranged heroes. Also grants up to 40% slow resistance, scaling down with your current health percentage. Drains 45 health per second.\n\nYou cannot die from the health drain, nor from the strength loss when deactivated. Movement speed bonuses from multiple pairs of boots do not stack.",
+      "baselineText": "Sabatons of Mordiggian. Toggle: Mordiggian's Oath While active, grants +40 damage, +30 Strength, and +5 armor, and lets you move through units and turn more quickly with 20% increased movement speed on melee heroes and 10% on ranged heroes. Also grants up to 40% slow resistance, scaling down with your current health percentage. Drains 45 health per second. You cannot die from the health drain, nor from the strength loss when deactivated. Movement speed bonuses from multiple pairs of boots do not stack.",
+      "evidence": "generated-script"
     },
     {
       "id": "phrase:R29vZCBnYW1lLCB3ZWxsIHBsYXllZA",

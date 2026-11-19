@@ -46,7 +46,14 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
         },
       ]),
   );
-  const audio = read(path.join(rendererDirectory, '../learning/audio-manifest.json'), { entries: {}, missing: [] });
+  const rawAudio = read(path.join(rendererDirectory, '../learning/audio-manifest.json'), { entries: {}, missing: [] });
+  const audioDir = path.join(rendererDirectory, 'assets/learning-audio');
+  const audio = {
+    ...rawAudio,
+    entries: Object.fromEntries(
+      Object.entries(rawAudio.entries || {}).filter(([, entry]) => entry?.file && (!entry.localOnly || fs.existsSync(path.join(audioDir, entry.file)))),
+    ),
+  };
   const itemImages = read(path.join(rendererDirectory, '../learning/item-images.json'), { entries: {}, missing: [] });
   const itemShopCategories = read(path.join(rendererDirectory, '../learning/item-shop-categories.json'), { entries: {} });
   const itemDetails = read(path.join(rendererDirectory, '../learning/item-details.json'), { entries: {} });
