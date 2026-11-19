@@ -55,7 +55,24 @@ export async function runStarterPathSmoke({ page, controlCenter, nativeImage, ou
     if (byId('practice').hidden || !byId('guided-lesson').hidden) throw new Error('Learning did not lead to recall');
     const active = (await window.learningAPI.load()).study.active;
     if (active.options.direction !== 'zh' || active.options.scope !== 'starter-lane') throw new Error('Starter recall lost its English direction or collection');
-    for (const item of active.items) {
+    // Answer the first item (Tango) and verify Play + Next remain visible above the fold with zero scrolling.
+    [...document.querySelectorAll('#answers button')].find(button => button.textContent === active.items[0].question.answer).click();
+    for (let i = 0; i < 100 && byId('next').hidden; i++) await new Promise(resolve => setTimeout(resolve, 20));
+    if (byId('next').hidden) throw new Error('Starter answer was not saved');
+    window.scrollTo(0, 0);
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+    const nextRect = byId('next').getBoundingClientRect();
+    const audioRect = document.querySelector('#quiz-audio button')?.getBoundingClientRect();
+    if (!audioRect || nextRect.bottom > window.innerHeight || audioRect.bottom > window.innerHeight) {
+      throw new Error('Quiz feedback actions pushed below fold: next=' + Math.round(nextRect.bottom) + ', audio=' + Math.round(audioRect?.bottom || 0) + ', vh=' + window.innerHeight);
+    }
+  })()`);
+  fs.writeFileSync(path.join(outputDirectory, 'learning-quiz-feedback.png'), (await captureHub(controlCenter, nativeImage)).toPNG());
+  await page.executeJavaScript(`(async () => {
+    const byId = id => document.getElementById(id);
+    const active = (await window.learningAPI.load()).study.active;
+    byId('next').click();
+    for (const item of active.items.slice(1)) {
       [...document.querySelectorAll('#answers button')].find(button => button.textContent === item.question.answer).click();
       for (let i = 0; i < 100 && byId('next').hidden; i++) await new Promise(resolve => setTimeout(resolve, 20));
       if (byId('next').hidden) throw new Error('Starter answer was not saved');

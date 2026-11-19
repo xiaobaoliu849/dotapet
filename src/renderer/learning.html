@@ -119,14 +119,43 @@
     <section id="mastery-strip" class="mastery-strip" aria-label="Mastery by category"></section>
   </section>
   <section id="guided-lesson" class="practice" hidden aria-labelledby="guide-heading">
-    <p id="guide-counter"></p><h2 id="guide-heading">Learn first</h2>
+    <div class="quiz-top">
+      <p id="guide-counter"></p>
+      <h2 id="guide-heading" class="guide-title-tag">Learn first</h2>
+    </div>
     <progress id="guide-progress" value="0" max="5" aria-label="Learning card progress"></progress>
     <div id="guide-card" translate="no"></div>
-    <p id="guide-help">Look at the picture, read the meaning, and say the match sentence aloud. Choose Next when you are ready to recall it.</p>
+    <div class="guide-footer">
+      <p id="guide-help">Look at the picture, read the meaning, and say the match sentence aloud. Choose Next when you are ready to recall it.</p>
+      <button id="guide-next" type="button">Next learning card →</button>
+    </div>
     <p id="guide-status" role="status" aria-live="polite"></p>
-    <button id="guide-next" type="button">Next learning card →</button>
   </section>
-  <section id="practice" class="practice" hidden aria-label="Quiz"><p id="quiz-counter"></p><progress id="session-progress" value="0" max="5" aria-label="Session progress"></progress><p id="quiz-context" translate="no"></p><div id="quiz-picture"></div><h2 id="question" translate="no"></h2><p id="recall-help">Say your answer aloud before choosing. The picture is your memory cue.</p><div id="answers" translate="no"></div><p id="result" role="status" aria-live="polite"></p><p id="quiz-explanation" translate="no"></p><div id="quiz-audio" class="actions" translate="no"></div><button id="next">Next question →</button></section>
+  <section id="practice" class="practice" hidden aria-label="Quiz">
+    <div class="quiz-top">
+      <p id="quiz-counter"></p>
+      <p id="quiz-context" translate="no"></p>
+    </div>
+    <progress id="session-progress" value="0" max="5" aria-label="Session progress"></progress>
+    <div class="quiz-prompt-row">
+      <div id="quiz-picture"></div>
+      <div class="quiz-prompt-copy">
+        <h2 id="question" translate="no"></h2>
+        <p id="recall-help">Say your answer aloud before choosing. The picture is your memory cue.</p>
+      </div>
+    </div>
+    <div id="answers" translate="no"></div>
+    <div id="quiz-feedback" class="quiz-feedback" hidden>
+      <div class="quiz-feedback-bar">
+        <p id="result" role="status" aria-live="polite"></p>
+        <div class="quiz-feedback-actions">
+          <div id="quiz-audio" class="quiz-audio-slot" translate="no"></div>
+          <button id="next" type="button">Next question →</button>
+        </div>
+      </div>
+      <div id="quiz-explanation" class="quiz-explanation" translate="no"></div>
+    </div>
+  </section>
   <section id="session-summary" class="practice" hidden aria-labelledby="summary-heading"><h2 id="summary-heading">Session complete</h2><p id="summary-score" role="status"></p><p id="summary-tip"></p><h3 id="mistakes-heading">Words to revisit</h3><div id="session-mistakes" translate="no"></div><button id="new-session">Plan another session →</button></section>
   <section id="library" aria-label="Bilingual lessons"><div id="lessons" class="lessons" translate="no"></div></section>
   <button id="more" hidden>Load more</button>

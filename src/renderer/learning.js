@@ -1162,14 +1162,17 @@ function renderStudy() {
   $('practice').hidden = false;
   $('quiz-counter').textContent = text('Lesson ', '第 ') + (index + 1) + ' / ' + active.items.length;
   $('session-progress').max = active.items.length; $('session-progress').value = active.answers.length;
-  $('quiz-context').textContent = labels[item.lesson.kind] + ' · ' + (item.lesson.parent || '');
+  $('quiz-context').textContent = item.lesson.parent ? `${labels[item.lesson.kind]} · ${item.lesson.parent}` : labels[item.lesson.kind];
   $('question').textContent = item.question.prompt;
   $('quiz-picture').replaceChildren();
   if (item.lesson.kind === 'item') $('quiz-picture').append(itemImageNode(item.lesson, true));
   $('recall-help').textContent = item.lesson.kind === 'item'
     ? text('Say your answer aloud before choosing. The picture is your memory cue.', '先大声说出答案，再选择。物品图片可以帮助你回忆。')
     : text('Try saying your answer aloud before choosing.', '先尝试大声说出答案，再选择。');
-  $('answers').replaceChildren(); $('quiz-audio').replaceChildren(); $('result').textContent = ''; $('quiz-explanation').textContent = '';
+  $('answers').replaceChildren(); $('quiz-audio').replaceChildren(); $('result').textContent = ''; $('quiz-explanation').replaceChildren();
+  const feedbackBox = $('quiz-feedback');
+  feedbackBox.hidden = !showFeedback;
+  feedbackBox.dataset.outcome = showFeedback ? (showFeedback.correct ? 'correct' : 'wrong') : '';
   $('next').hidden = !showFeedback;
   $('next').textContent = active.completedAt ? text('See session summary →', '查看学习总结 →') : text('Next question →', '下一题 →');
   for (const option of item.question.options) {
@@ -1184,16 +1187,48 @@ function renderStudy() {
         receive(await api.answerSession(active.id, item.lesson.id, option));
         feedbackIndex = index;
         if (mode === 'quiz') render();
-      } catch (error) { $('result').textContent = error.message; for (const control of $('answers').children) control.disabled = false; }
+      } catch (error) {
+        feedbackBox.hidden = false;
+        feedbackBox.dataset.outcome = 'wrong';
+        $('result').textContent = error.message;
+        for (const control of $('answers').children) control.disabled = false;
+      }
       finally { pendingAnswer = false; }
     };
     $('answers').append(button);
   }
   if (showFeedback) {
-    $('result').textContent = showFeedback.correct ? text('Correct! Scheduled for a later review.', '答对了！已安排后续复习。') : text('Answer: ', '正确答案：') + item.question.answer;
-    const cue = itemCoaching(item.lesson);
-    $('quiz-explanation').textContent = (cue ? cue.en + '\n' + cue.zh + '\n\n' : '') + item.lesson.descriptionEn + '\n' + item.lesson.descriptionZh;
+    $('result').textContent = showFeedback.correct
+      ? text('✓ Correct! Scheduled for a later review.', '✓ 答对了！已安排后续复习。')
+      : text('✕ Answer: ', '✕ 正确答案：') + item.question.answer;
     $('quiz-audio').append(audioButton(item.lesson));
+    const explanation = $('quiz-explanation');
+    const cue = itemCoaching(item.lesson);
+    if (cue) {
+      const coach = node('div', '', 'quiz-coach');
+      coach.append(
+        node('span', text('Say it in a match', '实战这样说'), 'quiz-coach-label'),
+        node('p', cue.en, 'quiz-coach-en'),
+        node('p', cue.zh, 'quiz-coach-zh'),
+      );
+      explanation.append(coach);
+    }
+    if (item.lesson.descriptionEn || item.lesson.descriptionZh) {
+      if (cue) {
+        const details = node('details', '', 'quiz-details');
+        details.append(node('summary', text('Full bilingual details', '查看完整双语说明')));
+        const body = node('div', '', 'quiz-details-body');
+        if (item.lesson.descriptionEn) body.append(node('p', item.lesson.descriptionEn, 'quiz-desc-en'));
+        if (item.lesson.descriptionZh) body.append(node('p', item.lesson.descriptionZh, 'quiz-desc-zh'));
+        details.append(body);
+        explanation.append(details);
+      } else {
+        const box = node('div', '', 'quiz-bilingual-box');
+        if (item.lesson.descriptionEn) box.append(node('p', item.lesson.descriptionEn, 'quiz-desc-en'));
+        if (item.lesson.descriptionZh) box.append(node('p', item.lesson.descriptionZh, 'quiz-desc-zh'));
+        explanation.append(box);
+      }
+    }
   }
 }
 function renderSummary(active) {
