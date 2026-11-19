@@ -24,6 +24,9 @@ test('archive classifications never certify an inferred MP3 transcript', () => {
   assert.equal(audioFreshness({ ...entry, name: 'Old name' }, lesson, baseline).status, 'missing');
   assert.equal(audioFreshness(entry, { ...lesson, descriptionEn: 'Deals %damage%.' }, baseline).status, 'unresolved-current');
   assert.equal(audioFreshness(entry, { ...lesson, descriptionEn: '' }, baseline).status, 'needs-stats-template');
+  assert.equal(audioFreshness({ ...entry, script: 'Test. Deals 65% damage.' }, lesson, {}).status, 'current-verified');
+  assert.equal(audioFreshness({ ...entry, script: 'Test. Deals 60% damage.' }, lesson, {}).status, 'baseline-changed');
+  assert.equal(audioFreshness({ ...entry, content: 'name', script: 'Test' }, { ...lesson, descriptionEn: '' }, {}).status, 'current-verified');
 });
 
 test('biography narration compares the biography rather than the short hero summary', () => {
