@@ -4,6 +4,10 @@ import { createLearningAudio } from './learning-audio.js';
 import { filterLessons } from '../learning/model.js';
 import { itemImageSources } from '../learning/itemImages.js';
 import { itemCoaching } from '../learning/itemCoaching.js';
+import {
+  SHOP_REALMS, SHOP_SHELVES, SHOP_CATEGORIES, CATEGORY_BY_KEY,
+  isActiveItem, classifyItem, realmCounts, groupItemsByCategory, searchShopItems,
+} from '../learning/itemShop.js';
 import { summarizeMastery } from '../learning/mastery.js';
 import { SPOKEN_CATEGORIES, SPOKEN_PHRASES } from '../learning/spokenPhrases.js';
 import { buildHeroPracticePersona, buildPhrasePracticePersona } from '../learning/voicePractice.js';
@@ -36,9 +40,12 @@ if (chinese) {
   $('search').placeholder = '搜索英文 / 中文 / 英雄名…';
 }
 let catalog, heroMeta = {}, progress = {}, study = { preferences: STUDY_DEFAULTS, active: null, history: [] }, mode = 'starter', limit = 24;
-let selectedHeroId = null, attrFilter = 'all', itemFilter = 'all', spokenFilter = 'all';
+let selectedHeroId = null, attrFilter = 'all', spokenFilter = 'all';
+let itemRealm = 'shop', itemCategory = 'all', itemQuickFilter = 'all', itemViewMode = 'grid', selectedItemId = null;
+let visibleShopItems = [];
 let audioManifest = { entries: {} };
 let itemImages = { entries: {} };
+let itemShopCategories = { entries: {} };
 let starterEvidence = { entries: {} };
 let audioBaseline = { entries: {} };
 let pendingAnswer = false, starting = false, feedbackIndex = null, planning = false, advancing = false;
@@ -328,11 +335,84 @@ function renderSpokenBrowser() {
     list.append(card);
   }
 }
-function isActiveItem(item) {
-  const cds = item.mechanics?.cooldowns?.some(n => n > 0);
-  const manas = item.mechanics?.mana_costs?.some(n => n > 0);
-  const desc = `${item.descriptionEn || ''} ${item.descriptionZh || ''}`;
-  return Boolean(cds || manas || /\bActive:|主动[:：]/i.test(desc));
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const SHOP_ICON_PATHS = {
+  consumables: 'M9 3h6m-5 0v4.2L6.2 14.5A2.5 2.5 0 0 0 8.4 18h7.2a2.5 2.5 0 0 0 2.2-3.5L14 7.2V3M8.5 13h7',
+  attributes: 'M12 3l7 6-7 12L5 9l7-6zm0 0v18M5 9h14',
+  equipment: 'M14.5 4.5l5 5-9.5 9.5H5v-5l9.5-9.5zM12 7l5 5',
+  miscellaneous: 'M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zm0 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8z',
+  secret: 'M9.2 8.8a3 3 0 1 1 4.6 2.5c-.9.6-1.8 1.2-1.8 2.4v.8M12 18h.01',
+  accessories: 'M6 17h12v2H6v-2zm2-2l1.5-8h4l1 4 3 1.2V15H8z',
+  support: 'M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z',
+  magical: 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3zM5 17l1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2z',
+  armor: 'M12 3l7 3v5c0 4.6-3 8.4-7 10-4-1.6-7-5.4-7-10V6l7-3z',
+  weapons: 'M5 19l4-4m-2-2l9-9 3 3-9 9m-4-1l-1 4 4-1m6-1l4 4m-1-5l-3 3',
+  artifacts: 'M4 16l2-8 6 4 6-4 2 8H4zm2 3h12',
+  tier: 'M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.9L12 16.5 6.8 19.2l1-5.9-4.3-4.1 5.9-.9L12 3z',
+  roshan: 'M7 4h10v5a5 5 0 0 1-10 0V4zm-3 1h3v3a3 3 0 0 1-3-3zm13 0h3a3 3 0 0 1-3 3V5zm-5 9v5m-3 0h6',
+  variants: 'M12 4l8 4-8 4-8-4 8-4zm-8 8l8 4 8-4m-8 8l8-4M4 16l8 4',
+  archive: 'M5 5h14v4H5V5zm1 4h12v10H6V9zm4 3h4',
+  store: 'M4 9l1.5-5h13L20 9v2a2 2 0 0 1-2 2h-1v7H7v-7H6a2 2 0 0 1-2-2V9zm6 4v7h4v-7h-4z',
+  neutral: 'M12 3c4 3 6 7 6 11a6 6 0 1 1-12 0c0-4 2-8 6-11zm0 6v9m0-5l3-2m-3 4l-3-2',
+};
+function shopIconSvg(iconKey, size = 15) {
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('width', String(size));
+  svg.setAttribute('height', String(size));
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '2');
+  svg.setAttribute('stroke-linecap', 'round');
+  svg.setAttribute('stroke-linejoin', 'round');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.classList.add('shop-cat-svg');
+  const path = document.createElementNS(SVG_NS, 'path');
+  path.setAttribute('d', SHOP_ICON_PATHS[iconKey] || SHOP_ICON_PATHS.artifacts);
+  svg.append(path);
+  return svg;
+}
+function hideShopHoverTip() {
+  const tip = $('shop-hover-tip');
+  if (tip) tip.hidden = true;
+}
+function showShopHoverTip(lesson, anchor) {
+  const tip = $('shop-hover-tip');
+  if (!tip || !anchor) return;
+  const info = classifyItem(lesson, itemShopCategories);
+  const cat = CATEGORY_BY_KEY[info.category];
+  const cue = itemCoaching(lesson);
+  const cost = lesson.mechanics?.item_cost || 0;
+  tip.replaceChildren();
+  const top = node('div', '', 'shop-tip-top');
+  top.append(itemImageNode(lesson));
+  const meta = node('div', '', 'shop-tip-meta');
+  meta.append(node('strong', lesson.en), node('span', lesson.zh, 'shop-tip-zh'));
+  const badges = node('div', '', 'shop-tip-badges');
+  if (cat) badges.append(node('span', text(cat.en, cat.zh), 'shop-tip-cat'));
+  if (cost > 0) badges.append(node('span', `🪙 ${cost}g`, 'shop-tip-cost'));
+  meta.append(badges);
+  top.append(meta);
+  tip.append(top);
+  if (cue?.aliases?.length) {
+    tip.append(node('p', text('Aliases: ', '简称：') + cue.aliases.slice(0, 4).join(' · '), 'shop-tip-aliases'));
+  }
+  if (cue?.en) {
+    tip.append(node('p', `“${cue.en}”`, 'shop-tip-cue'));
+  }
+  tip.append(node('p', text('Click to study details & hear audio', '点击查看双语详情与发音'), 'shop-tip-hint'));
+  tip.hidden = false;
+  const rect = anchor.getBoundingClientRect();
+  const tipRect = tip.getBoundingClientRect();
+  const pad = 12;
+  let left = rect.right + 10;
+  if (left + tipRect.width > window.innerWidth - pad) left = rect.left - tipRect.width - 10;
+  if (left < pad) left = Math.max(pad, Math.min(window.innerWidth - tipRect.width - pad, rect.left + (rect.width - tipRect.width) / 2));
+  let topPos = rect.top - 8;
+  if (topPos + tipRect.height > window.innerHeight - pad) topPos = window.innerHeight - tipRect.height - pad;
+  if (topPos < pad) topPos = pad;
+  tip.style.left = `${Math.round(left)}px`;
+  tip.style.top = `${Math.round(topPos)}px`;
 }
 function itemImageNode(lesson, recall = false) {
   const wrap = node('span', '', 'item-picture');
@@ -471,38 +551,386 @@ function buildLessonCard(lesson, onUpdated) {
   card.append(actions);
   return card;
 }
+function formatGold(cost) {
+  return cost > 0 ? `${cost}g` : text('Free', '免费');
+}
+function selectShopItem(itemId, { scroll = true } = {}) {
+  hideShopHoverTip();
+  player.stop();
+  selectedItemId = itemId;
+  renderItemBrowser();
+  if (scroll && itemId && !$('item-inspector').hidden) {
+    $('item-inspector').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+}
+function buildShopIconTile(lesson, cat) {
+  const tile = node('button', '', 'shop-icon-tile');
+  tile.type = 'button';
+  tile.dataset.itemId = lesson.id;
+  const cost = lesson.mechanics?.item_cost || 0;
+  tile.setAttribute('aria-label', `${lesson.en} · ${lesson.zh}${cost > 0 ? ` · ${cost}g` : ''}`);
+  tile.setAttribute('aria-pressed', String(selectedItemId === lesson.id));
+  if (selectedItemId === lesson.id) tile.classList.add('is-selected');
+  if (cat?.accent) tile.style.setProperty('--tile-accent', cat.accent);
+  const artWrap = node('span', '', 'shop-icon-art');
+  artWrap.append(itemImageNode(lesson));
+  if (progress[lesson.id]?.saved) artWrap.append(node('span', '★', 'shop-tile-star'));
+  tile.append(artWrap);
+  tile.append(node('span', cost > 0 ? `${cost}g` : text('Free', '免费'), `shop-icon-cost${cost > 0 ? '' : ' is-free'}`));
+  tile.onmouseenter = () => showShopHoverTip(lesson, tile);
+  tile.onmouseleave = hideShopHoverTip;
+  tile.onfocus = () => showShopHoverTip(lesson, tile);
+  tile.onblur = hideShopHoverTip;
+  tile.onclick = () => selectShopItem(selectedItemId === lesson.id ? null : lesson.id);
+  return tile;
+}
+function buildItemNameTile(lesson, { showCategory = false } = {}) {
+  const info = classifyItem(lesson, itemShopCategories);
+  const cat = CATEGORY_BY_KEY[info.category];
+  const cost = lesson.mechanics?.item_cost || 0;
+  const tile = node('button', '', 'item-name-tile');
+  tile.type = 'button';
+  tile.dataset.itemId = lesson.id;
+  tile.setAttribute('aria-pressed', String(selectedItemId === lesson.id));
+  if (selectedItemId === lesson.id) tile.classList.add('is-selected');
+  if (cat?.accent) tile.style.setProperty('--tile-accent', cat.accent);
+  tile.append(itemImageNode(lesson));
+  const body = node('span', '', 'item-name-info');
+  body.append(node('strong', lesson.en), node('span', lesson.zh, 'item-name-zh'));
+  const meta = node('span', '', 'item-name-meta');
+  if (cost > 0) meta.append(node('span', `🪙 ${cost}g`, 'item-mini-cost'));
+  if (showCategory && cat) meta.append(node('span', text(cat.en, cat.zh), 'item-mini-cat'));
+  if (meta.childElementCount) body.append(meta);
+  tile.append(body);
+  if (progress[lesson.id]?.saved) tile.append(node('span', '★', 'item-name-saved'));
+  tile.onclick = () => selectShopItem(selectedItemId === lesson.id ? null : lesson.id);
+  return tile;
+}
+function renderItemInspector(lesson) {
+  const host = $('item-inspector');
+  if (!lesson) {
+    host.hidden = true;
+    host.replaceChildren();
+    return;
+  }
+  host.hidden = false;
+  const info = classifyItem(lesson, itemShopCategories);
+  const cat = CATEGORY_BY_KEY[info.category];
+  const realm = SHOP_REALMS.find(r => r.key === info.realm);
+  const shelf = SHOP_SHELVES[info.shelf];
+  const idx = visibleShopItems.findIndex(item => item.id === lesson.id);
+  const card = node('article', '', 'lesson item-inspector-card');
+  card.dataset.lessonId = lesson.id;
+  if (cat?.accent) card.style.setProperty('--cat-accent', cat.accent);
+  if (cat?.tint) card.style.setProperty('--cat-tint', cat.tint);
+
+  const bar = node('div', '', 'item-inspector-bar');
+  const crumbBtn = node('button', '', 'item-crumb-btn');
+  crumbBtn.type = 'button';
+  if (cat) crumbBtn.append(shopIconSvg(cat.icon, 13));
+  const crumbParts = [
+    realm ? text(realm.en, realm.zh) : '',
+    info.realm === 'shop' && shelf ? text(shelf.en, shelf.zh) : '',
+    cat ? text(cat.en, cat.zh) : '',
+  ].filter(Boolean);
+  crumbBtn.append(node('span', crumbParts.join(' › ')));
+  crumbBtn.title = text('Filter to this category', '筛选该分类');
+  crumbBtn.onclick = () => {
+    $('search').value = '';
+    itemRealm = info.realm;
+    itemCategory = info.category;
+    renderItemBrowser();
+  };
+  const nav = node('div', '', 'item-inspector-nav');
+  if (visibleShopItems.length > 1 && idx >= 0) {
+    const prevBtn = node('button', '←', 'item-nav-btn');
+    prevBtn.type = 'button';
+    prevBtn.title = text('Previous item (←)', '上一件物品 (←)');
+    prevBtn.setAttribute('aria-label', text('Previous item', '上一件物品'));
+    prevBtn.onclick = () => selectShopItem(visibleShopItems[(idx - 1 + visibleShopItems.length) % visibleShopItems.length].id, { scroll: false });
+    const counter = node('span', `${idx + 1} / ${visibleShopItems.length}`, 'item-nav-count');
+    const nextBtn = node('button', '→', 'item-nav-btn');
+    nextBtn.type = 'button';
+    nextBtn.title = text('Next item (→)', '下一件物品 (→)');
+    nextBtn.setAttribute('aria-label', text('Next item', '下一件物品'));
+    nextBtn.onclick = () => selectShopItem(visibleShopItems[(idx + 1) % visibleShopItems.length].id, { scroll: false });
+    nav.append(prevBtn, counter, nextBtn);
+  }
+  const closeBtn = node('button', '×', 'item-close-btn');
+  closeBtn.type = 'button';
+  closeBtn.title = text('Close details (Esc)', '关闭详情 (Esc)');
+  closeBtn.setAttribute('aria-label', text('Close item details', '关闭物品详情'));
+  closeBtn.onclick = () => selectShopItem(null, { scroll: false });
+  nav.append(closeBtn);
+  bar.append(crumbBtn, nav);
+  card.append(bar);
+
+  const head = node('div', '', 'item-inspector-head');
+  head.append(itemImageNode(lesson));
+  const titleWrap = node('div', '', 'lesson-title');
+  const nameRow = node('div', '', 'item-inspector-title-row');
+  nameRow.append(node('h2', lesson.en));
+  if (lesson.mechanics?.item_cost) {
+    nameRow.append(node('span', `🪙 ${lesson.mechanics.item_cost}g`, 'item-cost-pill'));
+  }
+  titleWrap.append(nameRow, node('p', lesson.zh, 'zh'));
+  const cue = itemCoaching(lesson);
+  if (cue?.aliases?.length) {
+    titleWrap.append(node('p', text('Also called: ', '常用叫法：') + cue.aliases.join(' · '), 'item-aliases'));
+  }
+  const cds = lesson.mechanics?.cooldowns?.filter(n => n > 0);
+  const manas = lesson.mechanics?.mana_costs?.filter(n => n > 0);
+  if (cds?.length || manas?.length) {
+    const pills = node('div', '', 'ability-pills');
+    if (cds?.length) pills.append(node('span', `CD: ${[...new Set(cds)].join(' / ')}s`, 'mech-pill'));
+    if (manas?.length) pills.append(node('span', `Mana: ${[...new Set(manas)].join(' / ')}`, 'mech-pill'));
+    titleWrap.append(pills);
+  }
+  head.append(titleWrap);
+  card.append(head);
+
+  const body = node('div', '', 'item-inspector-body');
+  const leftCol = node('div', '', 'item-inspector-col');
+  leftCol.append(itemCoachNode(lesson));
+  const actions = node('div', '', 'actions');
+  actions.append(audioButton(lesson), saveButton(lesson, () => { stats(); renderItemBrowser(); }));
+  const practiceBtn = node('button', text('🎯 Practice this item', '🎯 练习此物品'), 'item-practice-btn');
+  practiceBtn.type = 'button';
+  practiceBtn.onclick = async () => {
+    $('search').value = lesson.en;
+    enterPractice('all');
+    if (study.active && !study.active.completedAt) return;
+    $('kind').value = 'item'; $('session-size').value = '5'; $('session-scope').value = 'all';
+    await beginSession();
+  };
+  actions.append(practiceBtn);
+  leftCol.append(actions);
+
+  const rightCol = node('div', '', 'item-inspector-col');
+  if (lesson.descriptionEn) rightCol.append(node('p', lesson.descriptionEn, 'description'));
+  if (lesson.descriptionZh) rightCol.append(node('p', lesson.descriptionZh, 'description zh-block'));
+  body.append(leftCol, rightCol);
+  card.append(body);
+
+  host.replaceChildren(card);
+}
 function renderItemBrowser() {
+  hideShopHoverTip();
   const allItems = catalog.lessons.filter(l => l.kind === 'item');
-  const matching = filterLessons(allItems, { search: $('search').value }).filter(item => {
-    const cost = item.mechanics?.item_cost || 0;
-    if (itemFilter === 'active' && !isActiveItem(item)) return false;
-    if (itemFilter === 'early' && (cost <= 0 || cost >= 2000)) return false;
-    if (itemFilter === 'core' && cost < 2000) return false;
+  const rawQuery = $('search').value.trim();
+  const counts = realmCounts(allItems, itemShopCategories);
+
+  // 1. Realm switcher tabs
+  const realmsEl = $('item-realms');
+  realmsEl.replaceChildren();
+  for (const realm of SHOP_REALMS) {
+    const btn = node('button', '', 'realm-tab');
+    btn.type = 'button';
+    btn.role = 'tab';
+    btn.dataset.realm = realm.key;
+    const isActive = !rawQuery && itemRealm === realm.key;
+    btn.setAttribute('aria-selected', String(isActive));
+    btn.setAttribute('aria-pressed', String(isActive));
+    btn.append(shopIconSvg(realm.icon, 14), node('span', text(realm.en, realm.zh)), node('span', String(counts[realm.key] || 0), 'realm-count'));
+    btn.onclick = () => {
+      if (rawQuery) $('search').value = '';
+      itemRealm = realm.key;
+      itemCategory = 'all';
+      selectedItemId = null;
+      renderItemBrowser();
+    };
+    realmsEl.append(btn);
+  }
+
+  // 2. Quick filter & view controls
+  const quickEl = $('item-quick-controls');
+  quickEl.replaceChildren();
+  const activeToggle = node('button', text('⚡ Active', '⚡ 主动'), 'shop-toggle-pill');
+  activeToggle.type = 'button';
+  activeToggle.setAttribute('aria-pressed', String(itemQuickFilter === 'active'));
+  activeToggle.onclick = () => { itemQuickFilter = itemQuickFilter === 'active' ? 'all' : 'active'; renderItemBrowser(); };
+
+  const savedToggle = node('button', text('★ Saved', '★ 已收藏'), 'shop-toggle-pill');
+  savedToggle.type = 'button';
+  savedToggle.setAttribute('aria-pressed', String(itemQuickFilter === 'saved'));
+  savedToggle.onclick = () => { itemQuickFilter = itemQuickFilter === 'saved' ? 'all' : 'saved'; renderItemBrowser(); };
+
+  const viewWrap = node('div', '', 'shop-view-toggle');
+  const gridBtn = node('button', text('▦ Grid', '▦ 网格'), 'shop-view-btn');
+  gridBtn.type = 'button';
+  gridBtn.dataset.view = 'grid';
+  gridBtn.setAttribute('aria-pressed', String(itemViewMode === 'grid'));
+  gridBtn.onclick = () => { itemViewMode = 'grid'; renderItemBrowser(); };
+  const namesBtn = node('button', text('☰ Names', '☰ 名称'), 'shop-view-btn');
+  namesBtn.type = 'button';
+  namesBtn.dataset.view = 'names';
+  namesBtn.setAttribute('aria-pressed', String(itemViewMode === 'names'));
+  namesBtn.onclick = () => { itemViewMode = 'names'; renderItemBrowser(); };
+  viewWrap.append(gridBtn, namesBtn);
+  const showViewToggle = !rawQuery && itemRealm === 'shop' && itemCategory === 'all';
+  quickEl.append(activeToggle, savedToggle);
+  if (showViewToggle) quickEl.append(viewWrap);
+
+  const applyQuickFilter = list => list.filter(item => {
+    if (itemQuickFilter === 'active' && !isActiveItem(item)) return false;
+    if (itemQuickFilter === 'saved' && !progress[item.id]?.saved) return false;
     return true;
   });
-  $('message').textContent = matching.length
-    ? text(`${matching.length} items · Read bilingual descriptions, listen to recordings, or save to your wordbook.`, `共 ${matching.length} 件物品 · 查看双语说明、听发音或收藏到词本。`)
-    : text('No matching items found.', '未找到匹配的物品，请更换搜索词或筛选条件。');
-  const filters = $('item-filters');
-  filters.replaceChildren();
-  const itemCats = [
-    { key: 'all', label: text(`All (${allItems.length})`, `全部物品 (${allItems.length})`) },
-    { key: 'active', label: text('⚡ Active Items', '⚡ 主动技能物品') },
-    { key: 'early', label: text('🌱 Early (<2000g)', '🌱 基础/过渡 (<2000g)') },
-    { key: 'core', label: text('👑 Core (≥2000g)', '👑 核心大件 (≥2000g)') },
-  ];
-  for (const cat of itemCats) {
-    const btn = node('button', cat.label, 'attr-pill');
-    btn.setAttribute('aria-pressed', String(itemFilter === cat.key));
-    btn.onclick = () => { itemFilter = cat.key; limit = 24; render(); };
-    filters.append(btn);
+
+  const filtersEl = $('item-filters');
+  const board = $('item-list');
+  filtersEl.replaceChildren();
+  board.replaceChildren();
+  $('more').hidden = true;
+
+  // 3. Cross-catalog instant search mode
+  if (rawQuery) {
+    const matches = applyQuickFilter(searchShopItems(allItems, rawQuery, itemShopCategories));
+    visibleShopItems = matches;
+    const clearBtn = node('button', text(`× Clear “${rawQuery}”`, `× 清除搜索「${rawQuery}」`), 'attr-pill shop-clear-pill');
+    clearBtn.type = 'button';
+    clearBtn.onclick = () => { $('search').value = ''; selectedItemId = null; renderItemBrowser(); };
+    filtersEl.append(clearBtn);
+    $('message').textContent = matches.length
+      ? text(`${matches.length} matching items across Shop, Neutral & Archive · Click any item to study.`, `在全部 ${allItems.length} 件物品中找到 ${matches.length} 件 · 点击即可查看双语详情与发音。`)
+      : text('No matching items found. Try English name, Chinese name, alias (BKB, TP, Blink) or category (Armor, Support).', '未找到匹配物品，可尝试英文名、中文名、简称（bkb / 跳刀 / 羊刀）或分类（防具 / 辅助）。');
+
+    // Auto-open inspector when search narrows to 1 exact item (e.g. "bkb") or preserve selected match.
+    const activeLesson = matches.find(i => i.id === selectedItemId) || (matches.length === 1 ? matches[0] : null);
+    renderItemInspector(activeLesson);
+
+    if (!matches.length) {
+      board.append(node('p', text('No items match your search and filters.', '当前搜索和筛选条件下没有匹配物品。'), 'shop-empty'));
+      return;
+    }
+    if (matches.length === 1 && activeLesson) return;
+    const grid = node('div', '', 'item-name-grid');
+    for (const item of matches) grid.append(buildItemNameTile(item, { showCategory: true }));
+    board.append(grid);
+    return;
   }
-  const list = $('item-list');
-  list.replaceChildren();
-  for (const item of matching.slice(0, limit)) {
-    list.append(buildLessonCard(item, () => { stats(); renderItemBrowser(); }));
+
+  // 4. Realm & official subcategory browse mode
+  const realmItems = applyQuickFilter(allItems.filter(item => classifyItem(item, itemShopCategories).realm === itemRealm));
+  const groups = groupItemsByCategory(realmItems, itemShopCategories, itemRealm);
+
+  const allRealmBtn = node('button', text(`All (${realmItems.length})`, `全部 (${realmItems.length})`), 'attr-pill');
+  allRealmBtn.type = 'button';
+  allRealmBtn.setAttribute('aria-pressed', String(itemCategory === 'all'));
+  allRealmBtn.onclick = () => { itemCategory = 'all'; renderItemBrowser(); };
+  filtersEl.append(allRealmBtn);
+
+  let lastShelf = null;
+  for (const { category, items } of groups) {
+    if (itemRealm === 'shop' && category.shelf !== lastShelf) {
+      lastShelf = category.shelf;
+      const shelfMeta = SHOP_SHELVES[category.shelf];
+      filtersEl.append(node('span', text(shelfMeta.en, shelfMeta.zh), 'shop-cat-group-label'));
+    }
+    const btn = node('button', '', 'attr-pill shop-cat-pill');
+    btn.type = 'button';
+    btn.dataset.category = category.key;
+    btn.style.setProperty('--cat-accent', category.accent);
+    btn.setAttribute('aria-pressed', String(itemCategory === category.key));
+    const dot = node('span', '', 'cat-dot');
+    btn.append(dot, node('span', `${text(category.en, category.zh)} (${items.length})`));
+    btn.onclick = () => { itemCategory = itemCategory === category.key ? 'all' : category.key; renderItemBrowser(); };
+    filtersEl.append(btn);
   }
-  $('more').hidden = matching.length <= limit;
+
+  const activeGroups = itemCategory === 'all' ? groups : groups.filter(g => g.category.key === itemCategory);
+  visibleShopItems = activeGroups.flatMap(g => g.items);
+
+  const activeLesson = visibleShopItems.find(i => i.id === selectedItemId) || null;
+  if (!activeLesson) selectedItemId = null;
+  renderItemInspector(activeLesson);
+
+  const realmLabel = SHOP_REALMS.find(r => r.key === itemRealm);
+  const catObj = itemCategory !== 'all' ? CATEGORY_BY_KEY[itemCategory] : null;
+  $('message').textContent = visibleShopItems.length
+    ? catObj
+      ? text(`${visibleShopItems.length} items in ${catObj.en} · Click any item for bilingual coaching and audio.`, `${catObj.zh}分类共 ${visibleShopItems.length} 件物品 · 点击查看实战例句与发音。`)
+      : text(`${visibleShopItems.length} items in ${realmLabel.en} · Hover to preview, click any item to study or hear audio.`, `${realmLabel.zh}共 ${visibleShopItems.length} 件 · 悬停预览中英名称与价格，点击展开双语学习卡。`)
+    : text('No items match the current filter.', '当前筛选条件下暂无物品。');
+
+  if (!visibleShopItems.length) {
+    board.append(node('p', text('Try clearing the Active/Saved toggle or switching shop sections.', '可取消「主动 / 已收藏」筛选或切换商店分类。'), 'shop-empty'));
+    return;
+  }
+
+  // Official Two-Shelf Dota 2 Shop Grid (Basics 5 columns + Upgrades 6 columns)
+  if (itemRealm === 'shop' && itemCategory === 'all' && itemViewMode === 'grid') {
+    for (const shelfKey of ['basic', 'upgrade']) {
+      const shelfMeta = SHOP_SHELVES[shelfKey];
+      const shelfGroups = groups.filter(g => g.category.shelf === shelfKey);
+      const shelfCount = shelfGroups.reduce((sum, g) => sum + g.items.length, 0);
+      if (!shelfCount) continue;
+      const shelfEl = node('section', '', `shop-shelf shop-shelf-${shelfKey}`);
+      shelfEl.id = `shop-shelf-${shelfKey}`;
+      const shelfHead = node('div', '', 'shop-shelf-head');
+      const titleGroup = node('div', '', 'shop-shelf-titles');
+      titleGroup.append(
+        node('h2', `${text(shelfMeta.en, shelfMeta.zh)}`),
+        node('span', text(shelfMeta.zh, shelfMeta.en), 'shop-shelf-sub'),
+      );
+      const shelfRight = node('div', '', 'shop-shelf-right');
+      const jumpTarget = shelfKey === 'basic' ? 'shop-shelf-upgrade' : 'shop-shelf-basic';
+      const jumpBtn = node('button', shelfKey === 'basic' ? text('↓ Upgrades', '↓ 跳到合成分类') : text('↑ Basics', '↑ 回到基础分类'), 'shop-jump-btn');
+      jumpBtn.type = 'button';
+      jumpBtn.onclick = () => { $(jumpTarget)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+      shelfRight.append(jumpBtn, node('span', text(`${shelfCount} items`, `${shelfCount} 件`), 'hero-category-count'));
+      shelfHead.append(titleGroup, shelfRight);
+      shelfEl.append(shelfHead);
+
+      const cols = node('div', '', `shop-columns shop-columns-${shelfKey}`);
+      for (const { category, items } of shelfGroups) {
+        const col = node('div', '', 'shop-column');
+        col.dataset.category = category.key;
+        col.style.setProperty('--cat-accent', category.accent);
+        col.style.setProperty('--cat-tint', category.tint);
+        const colHead = node('button', '', 'shop-col-head');
+        colHead.type = 'button';
+        colHead.title = text(`Focus ${category.en} (${items.length})`, `展开查看${category.zh} (${items.length})`);
+        const iconBadge = node('span', '', 'shop-col-icon');
+        iconBadge.append(shopIconSvg(category.icon, 14));
+        const colTitles = node('span', '', 'shop-col-titles');
+        colTitles.append(node('strong', text(category.en, category.zh)), node('span', text(category.zh, category.en), 'shop-col-sub'));
+        colHead.append(iconBadge, colTitles, node('span', String(items.length), 'shop-col-count'));
+        colHead.onclick = () => { itemCategory = category.key; renderItemBrowser(); };
+        col.append(colHead);
+
+        const iconGrid = node('div', '', 'shop-col-icons');
+        for (const item of items) iconGrid.append(buildShopIconTile(item, category));
+        col.append(iconGrid);
+        cols.append(col);
+      }
+      shelfEl.append(cols);
+      board.append(shelfEl);
+    }
+    return;
+  }
+
+  // Focused category, Names mode, Neutral Tiers, or Special & Archive shelves
+  for (const { category, items } of activeGroups) {
+    if (!items.length) continue;
+    const section = node('section', '', 'shop-band');
+    section.dataset.category = category.key;
+    section.style.setProperty('--cat-accent', category.accent);
+    section.style.setProperty('--cat-tint', category.tint);
+    const head = node('div', '', 'shop-band-head');
+    const headLeft = node('div', '', 'shop-band-title');
+    const badge = node('span', '', 'shop-col-icon');
+    badge.append(shopIconSvg(category.icon, 15));
+    headLeft.append(badge, node('h2', `${text(category.en, category.zh)}`), node('span', text(category.zh, category.en), 'shop-shelf-sub'));
+    if (category.hintEn) headLeft.append(node('span', text(category.hintEn, category.hintZh), 'shop-tier-hint'));
+    head.append(headLeft, node('span', text(`${items.length} items`, `${items.length} 件`), 'hero-category-count'));
+    section.append(head);
+
+    const grid = node('div', '', 'item-name-grid');
+    for (const item of items) grid.append(buildItemNameTile(item));
+    section.append(grid);
+    board.append(section);
+  }
 }
 function render() {
   player.stop();
@@ -548,7 +976,12 @@ function render() {
     else renderHeroBrowser();
     return;
   }
-  if (mode === 'items') { renderItemBrowser(); return; }
+  if (mode === 'items') {
+    $('search').placeholder = text('Search item, alias or category (BKB, Blink, Armor)…', '搜索物品名、简称或分类（如 bkb、跳刀、防具、羊刀）…');
+    renderItemBrowser();
+    return;
+  }
+  $('search').placeholder = text('Search English or Chinese…', '搜索英文 / 中文 / 英雄名…');
   if (mode === 'phrases') { $('more').hidden = true; renderSpokenBrowser(); return; }
   const rows = selection();
   $('message').textContent = rows.length ? text(`${rows.length} lessons · Read, listen, then save a word to practice.`, `${rows.length} 条课程 · 阅读、听发音、收藏后练习。`) : text('No lessons found. Try another topic or save some words.', '暂无课程，请更换筛选条件或先收藏词条。');
@@ -682,13 +1115,28 @@ for (const [id, m] of [['starter-tab', 'starter'], ['heroes-tab', 'heroes'], ['i
   if (m === 'quiz') enterPractice();
   else {
     if (m === 'heroes' && mode === 'heroes') selectedHeroId = null;
+    if (m === 'items' && mode === 'items') { itemCategory = 'all'; selectedItemId = null; }
     if (m === 'saved' && mode !== 'saved') $('kind').value = 'all';
     if (m === 'browse' && mode !== 'browse') $('kind').value = 'all';
     mode = m; limit = 24; render();
   }
 };
 $('hero-back').onclick = () => { player.stop(); selectedHeroId = null; render(); };
-for (const id of ['search', 'kind', 'direction']) $(id).addEventListener(id === 'search' ? 'input' : 'change', () => { player.stop(); if (id === 'search') selectedHeroId = null; limit = 24; render(); });
+for (const id of ['search', 'kind', 'direction']) $(id).addEventListener(id === 'search' ? 'input' : 'change', () => { player.stop(); hideShopHoverTip(); if (id === 'search') { selectedHeroId = null; selectedItemId = null; } limit = 24; render(); });
+window.addEventListener('scroll', hideShopHoverTip, { passive: true });
+window.addEventListener('keydown', event => {
+  if (mode !== 'items' || !selectedItemId) return;
+  const tag = document.activeElement?.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+  if (event.key === 'Escape') { selectShopItem(null, { scroll: false }); return; }
+  if ((event.key === 'ArrowLeft' || event.key === 'ArrowRight') && visibleShopItems.length > 1) {
+    const idx = visibleShopItems.findIndex(item => item.id === selectedItemId);
+    if (idx < 0) return;
+    event.preventDefault();
+    const step = event.key === 'ArrowRight' ? 1 : -1;
+    selectShopItem(visibleShopItems[(idx + step + visibleShopItems.length) % visibleShopItems.length].id, { scroll: false });
+  }
+});
 $('practice-saved').onclick = () => { enterPractice('saved'); };
 $('quick-practice').onclick = async () => {
   if (mode === 'starter') {
@@ -778,5 +1226,5 @@ api.onHidden(() => player.stop());
 window.addEventListener('pagehide', () => player.stop());
 try {
   const response = await api.load(); if (!response.ok) throw new Error(response.error);
-  catalog = response.catalog; heroMeta = response.heroMeta || {}; itemImages = response.itemImages || { entries: {} }; starterEvidence = response.starterEvidence || { entries: {} }; audioManifest = response.audio; audioBaseline = response.audioBaseline; receive(response); $('session-size').value = study.preferences.size; $('session-scope').value = study.preferences.scope; render();
+  catalog = response.catalog; heroMeta = response.heroMeta || {}; itemImages = response.itemImages || { entries: {} }; itemShopCategories = response.itemShopCategories || { entries: {} }; starterEvidence = response.starterEvidence || { entries: {} }; audioManifest = response.audio; audioBaseline = response.audioBaseline; receive(response); $('session-size').value = study.preferences.size; $('session-scope').value = study.preferences.scope; render();
 } catch (error) { $('message').textContent = error.message; for (const button of document.querySelectorAll('button')) button.disabled = true; }

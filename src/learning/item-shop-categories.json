@@ -1,0 +1,2459 @@
+{
+  "schema": 1,
+  "fetchedAt": "2026-11-19T06:01:38.390Z",
+  "sourceUrl": "https://www.dota2.com.cn/itemscategory/json",
+  "sha256": "f724fe9789a5fd5ae79808d137cc78a580572a9f2ba7f6c5fe36bd783e2af1cd",
+  "count": 245,
+  "entries": {
+    "item:46": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "consumables",
+      "order": 0,
+      "sortValue": 0,
+      "shopCost": 100,
+      "internalName": "item_tpscroll",
+      "zh": "回城卷轴"
+    },
+    "item:38": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "consumables",
+      "order": 1,
+      "sortValue": 1,
+      "shopCost": 60,
+      "internalName": "item_clarity",
+      "zh": "净化药水"
+    },
+    "item:237": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "consumables",
+      "order": 2,
+      "sortValue": 2,
+      "shopCost": 65,
+      "internalName": "item_faerie_fire",
+      "zh": "仙灵之火"
+    },
+    "item:188": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "consumables",
+      "order": 3,
+      "sortValue": 3,
+      "shopCost": 50,
+      "internalName": "item_smoke_of_deceit",
+      "zh": "诡计之雾"
+    },
+    "item:42": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "consumables",
+      "order": 4,
+      "sortValue": 4,
+      "shopCost": 0,
+      "internalName": "item_ward_observer",
+      "zh": "侦查守卫"
+    },
+    "item:43": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "consumables",
+      "order": 5,
+      "sortValue": 5,
+      "shopCost": 50,
+      "internalName": "item_ward_sentry",
+      "zh": "岗哨守卫"
+    },
+    "item:216": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "consumables",
+      "order": 6,
+      "sortValue": 6,
+      "shopCost": 65,
+      "internalName": "item_enchanted_mango",
+      "zh": "魔法芒果"
+    },
+    "item:39": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "consumables",
+      "order": 7,
+      "sortValue": 7,
+      "shopCost": 100,
+      "internalName": "item_flask",
+      "zh": "治疗药膏"
+    },
+    "item:44": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "consumables",
+      "order": 8,
+      "sortValue": 8,
+      "shopCost": 90,
+      "internalName": "item_tango",
+      "zh": "树之祭祀"
+    },
+    "item:1123": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "consumables",
+      "order": 9,
+      "sortValue": 9,
+      "shopCost": 50,
+      "internalName": "item_blood_grenade",
+      "zh": "血腥榴弹"
+    },
+    "item:40": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "consumables",
+      "order": 10,
+      "sortValue": 10,
+      "shopCost": 80,
+      "internalName": "item_dust",
+      "zh": "显影之尘"
+    },
+    "item:41": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "consumables",
+      "order": 11,
+      "sortValue": 11,
+      "shopCost": 675,
+      "internalName": "item_bottle",
+      "zh": "魔瓶"
+    },
+    "item:609": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "consumables",
+      "order": 12,
+      "sortValue": 12,
+      "shopCost": 1400,
+      "internalName": "item_aghanims_shard",
+      "zh": "阿哈利姆魔晶"
+    },
+    "item:16": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "attributes",
+      "order": 0,
+      "sortValue": 13,
+      "shopCost": 55,
+      "internalName": "item_branches",
+      "zh": "铁树枝干"
+    },
+    "item:13": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "attributes",
+      "order": 1,
+      "sortValue": 14,
+      "shopCost": 140,
+      "internalName": "item_gauntlets",
+      "zh": "力量手套"
+    },
+    "item:14": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "attributes",
+      "order": 2,
+      "sortValue": 15,
+      "shopCost": 140,
+      "internalName": "item_slippers",
+      "zh": "敏捷便鞋"
+    },
+    "item:15": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "attributes",
+      "order": 3,
+      "sortValue": 16,
+      "shopCost": 140,
+      "internalName": "item_mantle",
+      "zh": "智力斗篷"
+    },
+    "item:20": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "attributes",
+      "order": 4,
+      "sortValue": 17,
+      "shopCost": 155,
+      "internalName": "item_circlet",
+      "zh": "圆环"
+    },
+    "item:17": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "attributes",
+      "order": 5,
+      "sortValue": 18,
+      "shopCost": 450,
+      "internalName": "item_belt_of_strength",
+      "zh": "力量腰带"
+    },
+    "item:18": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "attributes",
+      "order": 6,
+      "sortValue": 19,
+      "shopCost": 450,
+      "internalName": "item_boots_of_elves",
+      "zh": "精灵布带"
+    },
+    "item:19": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "attributes",
+      "order": 7,
+      "sortValue": 20,
+      "shopCost": 450,
+      "internalName": "item_robe",
+      "zh": "法师长袍"
+    },
+    "item:261": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "attributes",
+      "order": 8,
+      "sortValue": 21,
+      "shopCost": 450,
+      "internalName": "item_crown",
+      "zh": "王冠"
+    },
+    "item:21": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "attributes",
+      "order": 9,
+      "sortValue": 22,
+      "shopCost": 1000,
+      "internalName": "item_ogre_axe",
+      "zh": "食人魔之斧"
+    },
+    "item:22": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "attributes",
+      "order": 10,
+      "sortValue": 23,
+      "shopCost": 1000,
+      "internalName": "item_blade_of_alacrity",
+      "zh": "欢欣之刃"
+    },
+    "item:23": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "attributes",
+      "order": 11,
+      "sortValue": 24,
+      "shopCost": 1000,
+      "internalName": "item_staff_of_wizardry",
+      "zh": "魔力法杖"
+    },
+    "item:1122": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "attributes",
+      "order": 12,
+      "sortValue": 25,
+      "shopCost": 1000,
+      "internalName": "item_diadem",
+      "zh": "宝冕"
+    },
+    "item:1575": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "equipment",
+      "order": 0,
+      "sortValue": 0,
+      "shopCost": 300,
+      "internalName": "item_orb_of_frost",
+      "zh": "冰霜之珠"
+    },
+    "item:10": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "equipment",
+      "order": 1,
+      "sortValue": 0,
+      "shopCost": 900,
+      "internalName": "item_quarterstaff",
+      "zh": "短棍"
+    },
+    "item:1847": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "equipment",
+      "order": 2,
+      "sortValue": 0,
+      "shopCost": 950,
+      "internalName": "item_splintmail",
+      "zh": "片甲"
+    },
+    "item:11": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "equipment",
+      "order": 3,
+      "sortValue": 25,
+      "shopCost": 100,
+      "internalName": "item_quelling_blade",
+      "zh": "压制之刃"
+    },
+    "item:12": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "equipment",
+      "order": 4,
+      "sortValue": 26,
+      "shopCost": 175,
+      "internalName": "item_ring_of_protection",
+      "zh": "守护指环"
+    },
+    "item:265": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "equipment",
+      "order": 5,
+      "sortValue": 27,
+      "shopCost": 225,
+      "internalName": "item_infused_raindrop",
+      "zh": "凝魂之露"
+    },
+    "item:181": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "equipment",
+      "order": 6,
+      "sortValue": 28,
+      "shopCost": 350,
+      "internalName": "item_orb_of_venom",
+      "zh": "淬毒之珠"
+    },
+    "item:240": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "equipment",
+      "order": 7,
+      "sortValue": 29,
+      "shopCost": 300,
+      "internalName": "item_blight_stone",
+      "zh": "枯萎之石"
+    },
+    "item:2": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "equipment",
+      "order": 8,
+      "sortValue": 30,
+      "shopCost": 450,
+      "internalName": "item_blades_of_attack",
+      "zh": "攻击之爪"
+    },
+    "item:25": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "equipment",
+      "order": 9,
+      "sortValue": 31,
+      "shopCost": 450,
+      "internalName": "item_gloves",
+      "zh": "加速手套"
+    },
+    "item:4": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "equipment",
+      "order": 10,
+      "sortValue": 32,
+      "shopCost": 500,
+      "internalName": "item_chainmail",
+      "zh": "锁子甲"
+    },
+    "item:6": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "equipment",
+      "order": 11,
+      "sortValue": 34,
+      "shopCost": 975,
+      "internalName": "item_helm_of_iron_will",
+      "zh": "铁意头盔"
+    },
+    "item:3": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "equipment",
+      "order": 12,
+      "sortValue": 35,
+      "shopCost": 1000,
+      "internalName": "item_broadsword",
+      "zh": "阔剑"
+    },
+    "item:485": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "equipment",
+      "order": 13,
+      "sortValue": 36,
+      "shopCost": 1000,
+      "internalName": "item_blitz_knuckles",
+      "zh": "闪电指套"
+    },
+    "item:7": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "equipment",
+      "order": 14,
+      "sortValue": 37,
+      "shopCost": 900,
+      "internalName": "item_javelin",
+      "zh": "标枪"
+    },
+    "item:5": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "equipment",
+      "order": 15,
+      "sortValue": 38,
+      "shopCost": 1350,
+      "internalName": "item_claymore",
+      "zh": "大剑"
+    },
+    "item:8": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "equipment",
+      "order": 16,
+      "sortValue": 39,
+      "shopCost": 1600,
+      "internalName": "item_mithril_hammer",
+      "zh": "秘银锤"
+    },
+    "item:1849": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "miscellaneous",
+      "order": 0,
+      "sortValue": 0,
+      "shopCost": 250,
+      "internalName": "item_wizard_hat",
+      "zh": "巫师帽"
+    },
+    "item:1848": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "miscellaneous",
+      "order": 1,
+      "sortValue": 0,
+      "shopCost": 450,
+      "internalName": "item_shawl",
+      "zh": "披巾"
+    },
+    "item:1872": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "miscellaneous",
+      "order": 2,
+      "sortValue": 0,
+      "shopCost": 900,
+      "internalName": "item_chasm_stone",
+      "zh": "裂隙之石"
+    },
+    "item:27": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "miscellaneous",
+      "order": 3,
+      "sortValue": 40,
+      "shopCost": 175,
+      "internalName": "item_ring_of_regen",
+      "zh": "回复戒指"
+    },
+    "item:28": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "miscellaneous",
+      "order": 4,
+      "sortValue": 41,
+      "shopCost": 175,
+      "internalName": "item_sobi_mask",
+      "zh": "贤者面罩"
+    },
+    "item:34": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "miscellaneous",
+      "order": 5,
+      "sortValue": 42,
+      "shopCost": 200,
+      "internalName": "item_magic_stick",
+      "zh": "魔棒"
+    },
+    "item:593": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "miscellaneous",
+      "order": 6,
+      "sortValue": 43,
+      "shopCost": 250,
+      "internalName": "item_fluffy_hat",
+      "zh": "毛毛帽"
+    },
+    "item:244": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "miscellaneous",
+      "order": 7,
+      "sortValue": 44,
+      "shopCost": 225,
+      "internalName": "item_wind_lace",
+      "zh": "风灵之纹"
+    },
+    "item:31": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "miscellaneous",
+      "order": 8,
+      "sortValue": 45,
+      "shopCost": 900,
+      "internalName": "item_cloak",
+      "zh": "抗魔斗篷"
+    },
+    "item:29": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "miscellaneous",
+      "order": 9,
+      "sortValue": 46,
+      "shopCost": 500,
+      "internalName": "item_boots",
+      "zh": "速度之靴"
+    },
+    "item:30": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "miscellaneous",
+      "order": 10,
+      "sortValue": 47,
+      "shopCost": 900,
+      "internalName": "item_gem",
+      "zh": "真视宝石"
+    },
+    "item:26": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "miscellaneous",
+      "order": 11,
+      "sortValue": 48,
+      "shopCost": 900,
+      "internalName": "item_lifesteal",
+      "zh": "吸血面具"
+    },
+    "item:473": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "miscellaneous",
+      "order": 12,
+      "sortValue": 49,
+      "shopCost": 650,
+      "internalName": "item_voodoo_mask",
+      "zh": "巫毒面具"
+    },
+    "item:215": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "miscellaneous",
+      "order": 13,
+      "sortValue": 50,
+      "shopCost": 900,
+      "internalName": "item_shadow_amulet",
+      "zh": "暗影护符"
+    },
+    "item:37": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "miscellaneous",
+      "order": 14,
+      "sortValue": 51,
+      "shopCost": 1500,
+      "internalName": "item_ghost",
+      "zh": "幽魂权杖"
+    },
+    "item:1": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "miscellaneous",
+      "order": 15,
+      "sortValue": 52,
+      "shopCost": 2250,
+      "internalName": "item_blink",
+      "zh": "闪烁匕首"
+    },
+    "item:56": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "miscellaneous",
+      "order": 16,
+      "sortValue": 53,
+      "shopCost": 700,
+      "internalName": "item_ring_of_health",
+      "zh": "治疗指环"
+    },
+    "item:57": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "miscellaneous",
+      "order": 17,
+      "sortValue": 54,
+      "shopCost": 700,
+      "internalName": "item_void_stone",
+      "zh": "虚无宝石"
+    },
+    "item:279": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "secret",
+      "order": 0,
+      "sortValue": 53,
+      "shopCost": 1700,
+      "internalName": "item_ring_of_tarrasque",
+      "zh": "恐鳌之戒"
+    },
+    "item:1802": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "secret",
+      "order": 1,
+      "sortValue": 54,
+      "shopCost": 1700,
+      "internalName": "item_tiara_of_selemene",
+      "zh": "赛莉蒙妮之冠"
+    },
+    "item:1125": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "secret",
+      "order": 2,
+      "sortValue": 55,
+      "shopCost": 1200,
+      "internalName": "item_cornucopia",
+      "zh": "丰饶之环"
+    },
+    "item:59": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "secret",
+      "order": 3,
+      "sortValue": 56,
+      "shopCost": 800,
+      "internalName": "item_energy_booster",
+      "zh": "能量之球"
+    },
+    "item:61": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "secret",
+      "order": 4,
+      "sortValue": 57,
+      "shopCost": 1000,
+      "internalName": "item_vitality_booster",
+      "zh": "活力之球"
+    },
+    "item:60": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "secret",
+      "order": 5,
+      "sortValue": 58,
+      "shopCost": 1200,
+      "internalName": "item_point_booster",
+      "zh": "精气之球"
+    },
+    "item:32": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "secret",
+      "order": 6,
+      "sortValue": 59,
+      "shopCost": 1300,
+      "internalName": "item_talisman_of_evasion",
+      "zh": "闪避护符"
+    },
+    "item:9": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "secret",
+      "order": 7,
+      "sortValue": 60,
+      "shopCost": 1400,
+      "internalName": "item_platemail",
+      "zh": "板甲"
+    },
+    "item:55": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "secret",
+      "order": 8,
+      "sortValue": 61,
+      "shopCost": 2000,
+      "internalName": "item_hyperstone",
+      "zh": "振奋宝石"
+    },
+    "item:24": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "secret",
+      "order": 9,
+      "sortValue": 62,
+      "shopCost": 2800,
+      "internalName": "item_ultimate_orb",
+      "zh": "极限法球"
+    },
+    "item:51": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "secret",
+      "order": 10,
+      "sortValue": 63,
+      "shopCost": 2200,
+      "internalName": "item_demon_edge",
+      "zh": "恶魔刀锋"
+    },
+    "item:58": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "secret",
+      "order": 11,
+      "sortValue": 64,
+      "shopCost": 2800,
+      "internalName": "item_mystic_staff",
+      "zh": "神秘法杖"
+    },
+    "item:53": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "secret",
+      "order": 12,
+      "sortValue": 65,
+      "shopCost": 2800,
+      "internalName": "item_reaver",
+      "zh": "掠夺者之斧"
+    },
+    "item:52": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "secret",
+      "order": 13,
+      "sortValue": 66,
+      "shopCost": 2800,
+      "internalName": "item_eagle",
+      "zh": "鹰歌弓"
+    },
+    "item:54": {
+      "realm": "shop",
+      "shelf": "basic",
+      "category": "secret",
+      "order": 14,
+      "sortValue": 67,
+      "shopCost": 3400,
+      "internalName": "item_relic",
+      "zh": "圣者遗物"
+    },
+    "item:1942": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "accessories",
+      "order": 0,
+      "sortValue": 0,
+      "shopCost": 925,
+      "internalName": "item_bloodslinger",
+      "zh": "Bloodslinger"
+    },
+    "item:36": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "accessories",
+      "order": 1,
+      "sortValue": 67,
+      "shopCost": 460,
+      "internalName": "item_magic_wand",
+      "zh": "魔杖"
+    },
+    "item:77": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "accessories",
+      "order": 2,
+      "sortValue": 68,
+      "shopCost": 505,
+      "internalName": "item_null_talisman",
+      "zh": "空灵挂件"
+    },
+    "item:75": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "accessories",
+      "order": 3,
+      "sortValue": 69,
+      "shopCost": 505,
+      "internalName": "item_wraith_band",
+      "zh": "怨灵系带"
+    },
+    "item:73": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "accessories",
+      "order": 4,
+      "sortValue": 70,
+      "shopCost": 505,
+      "internalName": "item_bracer",
+      "zh": "护腕"
+    },
+    "item:178": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "accessories",
+      "order": 5,
+      "sortValue": 71,
+      "shopCost": 805,
+      "internalName": "item_soul_ring",
+      "zh": "灵魂之戒"
+    },
+    "item:569": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "accessories",
+      "order": 6,
+      "sortValue": 72,
+      "shopCost": 880,
+      "internalName": "item_orb_of_corrosion",
+      "zh": "腐蚀之球"
+    },
+    "item:596": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "accessories",
+      "order": 7,
+      "sortValue": 73,
+      "shopCost": 1125,
+      "internalName": "item_falcon_blade",
+      "zh": "猎鹰战刃"
+    },
+    "item:63": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "accessories",
+      "order": 8,
+      "sortValue": 74,
+      "shopCost": 1400,
+      "internalName": "item_power_treads",
+      "zh": "动力鞋"
+    },
+    "item:50": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "accessories",
+      "order": 9,
+      "sortValue": 75,
+      "shopCost": 1450,
+      "internalName": "item_phase_boots",
+      "zh": "相位鞋"
+    },
+    "item:67": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "accessories",
+      "order": 10,
+      "sortValue": 76,
+      "shopCost": 1625,
+      "internalName": "item_oblivion_staff",
+      "zh": "空明杖"
+    },
+    "item:69": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "accessories",
+      "order": 11,
+      "sortValue": 77,
+      "shopCost": 1400,
+      "internalName": "item_pers",
+      "zh": "坚韧球"
+    },
+    "item:172": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "accessories",
+      "order": 12,
+      "sortValue": 78,
+      "shopCost": 1800,
+      "internalName": "item_mask_of_madness",
+      "zh": "疯狂面具"
+    },
+    "item:65": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "accessories",
+      "order": 13,
+      "sortValue": 79,
+      "shopCost": 2200,
+      "internalName": "item_hand_of_midas",
+      "zh": "迈达斯之手"
+    },
+    "item:164": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "accessories",
+      "order": 14,
+      "sortValue": 80,
+      "shopCost": 2550,
+      "internalName": "item_helm_of_the_dominator",
+      "zh": "支配头盔"
+    },
+    "item:48": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "accessories",
+      "order": 15,
+      "sortValue": 81,
+      "shopCost": 2500,
+      "internalName": "item_travel_boots",
+      "zh": "远行鞋"
+    },
+    "item:247": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "accessories",
+      "order": 16,
+      "sortValue": 82,
+      "shopCost": 4000,
+      "internalName": "item_moon_shard",
+      "zh": "银月之晶"
+    },
+    "item:1852": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "support",
+      "order": 0,
+      "sortValue": 0,
+      "shopCost": 1775,
+      "internalName": "item_essence_distiller",
+      "zh": "精之灵器"
+    },
+    "item:1955": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "support",
+      "order": 1,
+      "sortValue": 0,
+      "shopCost": 5400,
+      "internalName": "item_caduceus",
+      "zh": "双蛇杖"
+    },
+    "item:86": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "support",
+      "order": 2,
+      "sortValue": 84,
+      "shopCost": 425,
+      "internalName": "item_buckler",
+      "zh": "玄冥盾牌"
+    },
+    "item:88": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "support",
+      "order": 3,
+      "sortValue": 85,
+      "shopCost": 425,
+      "internalName": "item_ring_of_basilius",
+      "zh": "王者之戒"
+    },
+    "item:94": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "support",
+      "order": 4,
+      "sortValue": 86,
+      "shopCost": 425,
+      "internalName": "item_headdress",
+      "zh": "恢复头巾"
+    },
+    "item:92": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "support",
+      "order": 5,
+      "sortValue": 87,
+      "shopCost": 875,
+      "internalName": "item_urn_of_shadows",
+      "zh": "影之灵龛"
+    },
+    "item:214": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "support",
+      "order": 6,
+      "sortValue": 88,
+      "shopCost": 900,
+      "internalName": "item_tranquil_boots",
+      "zh": "静谧之鞋"
+    },
+    "item:1128": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "support",
+      "order": 7,
+      "sortValue": 300,
+      "shopCost": 1250,
+      "internalName": "item_pavise",
+      "zh": "长盾"
+    },
+    "item:180": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "support",
+      "order": 8,
+      "sortValue": 400,
+      "shopCost": 1500,
+      "internalName": "item_arcane_boots",
+      "zh": "奥术鞋"
+    },
+    "item:185": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "support",
+      "order": 9,
+      "sortValue": 500,
+      "shopCost": 1625,
+      "internalName": "item_ancient_janggo",
+      "zh": "韧鼓"
+    },
+    "item:79": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "support",
+      "order": 10,
+      "sortValue": 520,
+      "shopCost": 1775,
+      "internalName": "item_mekansm",
+      "zh": "梅肯斯姆"
+    },
+    "item:269": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "support",
+      "order": 11,
+      "sortValue": 530,
+      "shopCost": 2250,
+      "internalName": "item_holy_locket",
+      "zh": "圣洁吊坠"
+    },
+    "item:81": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "support",
+      "order": 12,
+      "sortValue": 565,
+      "shopCost": 2200,
+      "internalName": "item_vladmir",
+      "zh": "弗拉迪米尔的祭品"
+    },
+    "item:267": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "support",
+      "order": 13,
+      "sortValue": 567,
+      "shopCost": 2725,
+      "internalName": "item_spirit_vessel",
+      "zh": "魂之灵瓮"
+    },
+    "item:90": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "support",
+      "order": 14,
+      "sortValue": 589,
+      "shopCost": 3725,
+      "internalName": "item_pipe",
+      "zh": "洞察烟斗"
+    },
+    "item:231": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "support",
+      "order": 15,
+      "sortValue": 600,
+      "shopCost": 4350,
+      "internalName": "item_guardian_greaves",
+      "zh": "卫士胫甲"
+    },
+    "item:931": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "support",
+      "order": 16,
+      "sortValue": 612,
+      "shopCost": 4225,
+      "internalName": "item_boots_of_bearing",
+      "zh": "宽容之靴"
+    },
+    "item:1806": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "support",
+      "order": 17,
+      "sortValue": 613,
+      "shopCost": 5975,
+      "internalName": "item_devastator",
+      "zh": "圣斧"
+    },
+    "item:1856": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "magical",
+      "order": 0,
+      "sortValue": 0,
+      "shopCost": 4800,
+      "internalName": "item_crellas_crozier",
+      "zh": "克莱拉牧杖"
+    },
+    "item:1946": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "magical",
+      "order": 1,
+      "sortValue": 0,
+      "shopCost": 6000,
+      "internalName": "item_starforge",
+      "zh": "Starforge"
+    },
+    "item:190": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "magical",
+      "order": 2,
+      "sortValue": 98,
+      "shopCost": 1700,
+      "internalName": "item_veil_of_discord",
+      "zh": "纷争面纱"
+    },
+    "item:254": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "magical",
+      "order": 3,
+      "sortValue": 99,
+      "shopCost": 2150,
+      "internalName": "item_glimmer_cape",
+      "zh": "微光披风"
+    },
+    "item:102": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "magical",
+      "order": 4,
+      "sortValue": 100,
+      "shopCost": 2200,
+      "internalName": "item_force_staff",
+      "zh": "原力法杖"
+    },
+    "item:232": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "magical",
+      "order": 5,
+      "sortValue": 101,
+      "shopCost": 2100,
+      "internalName": "item_aether_lens",
+      "zh": "以太透镜"
+    },
+    "item:534": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "magical",
+      "order": 6,
+      "sortValue": 102,
+      "shopCost": 2775,
+      "internalName": "item_witch_blade",
+      "zh": "巫师之刃"
+    },
+    "item:100": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "magical",
+      "order": 7,
+      "sortValue": 103,
+      "shopCost": 2600,
+      "internalName": "item_cyclone",
+      "zh": "Eul的神圣法杖"
+    },
+    "item:206": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "magical",
+      "order": 8,
+      "sortValue": 104,
+      "shopCost": 2250,
+      "internalName": "item_rod_of_atos",
+      "zh": "阿托斯之棍"
+    },
+    "item:104": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "magical",
+      "order": 9,
+      "sortValue": 105,
+      "shopCost": 3000,
+      "internalName": "item_dagon",
+      "zh": "达贡之神力"
+    },
+    "item:98": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "magical",
+      "order": 10,
+      "sortValue": 106,
+      "shopCost": 3275,
+      "internalName": "item_orchid",
+      "zh": "紫怨"
+    },
+    "item:229": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "magical",
+      "order": 11,
+      "sortValue": 107,
+      "shopCost": 2575,
+      "internalName": "item_solar_crest",
+      "zh": "炎阳纹章"
+    },
+    "item:108": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "magical",
+      "order": 12,
+      "sortValue": 108,
+      "shopCost": 4200,
+      "internalName": "item_ultimate_scepter",
+      "zh": "阿哈利姆神杖"
+    },
+    "item:110": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "magical",
+      "order": 13,
+      "sortValue": 109,
+      "shopCost": 5000,
+      "internalName": "item_refresher",
+      "zh": "刷新球"
+    },
+    "item:235": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "magical",
+      "order": 14,
+      "sortValue": 110,
+      "shopCost": 5100,
+      "internalName": "item_octarine_core",
+      "zh": "玲珑心"
+    },
+    "item:96": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "magical",
+      "order": 15,
+      "sortValue": 111,
+      "shopCost": 5200,
+      "internalName": "item_sheepstick",
+      "zh": "邪恶镰刀"
+    },
+    "item:1466": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "magical",
+      "order": 16,
+      "sortValue": 112,
+      "shopCost": 4650,
+      "internalName": "item_gungir",
+      "zh": "缚灵索"
+    },
+    "item:610": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "magical",
+      "order": 17,
+      "sortValue": 113,
+      "shopCost": 6800,
+      "internalName": "item_wind_waker",
+      "zh": "风之杖"
+    },
+    "item:1854": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "armor",
+      "order": 0,
+      "sortValue": 0,
+      "shopCost": 2600,
+      "internalName": "item_consecrated_wraps",
+      "zh": "圣化护服"
+    },
+    "item:1944": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "armor",
+      "order": 1,
+      "sortValue": 0,
+      "shopCost": 3800,
+      "internalName": "item_ristuls_devotion",
+      "zh": "Ristul's Devotion"
+    },
+    "item:1953": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "armor",
+      "order": 2,
+      "sortValue": 0,
+      "shopCost": 5950,
+      "internalName": "item_berserkers_sabatons",
+      "zh": "莫尔迪基安的护足"
+    },
+    "item:125": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "armor",
+      "order": 3,
+      "sortValue": 115,
+      "shopCost": 1700,
+      "internalName": "item_vanguard",
+      "zh": "先锋盾"
+    },
+    "item:127": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "armor",
+      "order": 4,
+      "sortValue": 116,
+      "shopCost": 2350,
+      "internalName": "item_blade_mail",
+      "zh": "刃甲"
+    },
+    "item:256": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "armor",
+      "order": 5,
+      "sortValue": 117,
+      "shopCost": 3000,
+      "internalName": "item_aeon_disk",
+      "zh": "永恒之盘"
+    },
+    "item:129": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "armor",
+      "order": 6,
+      "sortValue": 118,
+      "shopCost": 3000,
+      "internalName": "item_soul_booster",
+      "zh": "振魂石"
+    },
+    "item:242": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "armor",
+      "order": 7,
+      "sortValue": 120,
+      "shopCost": 3725,
+      "internalName": "item_crimson_guard",
+      "zh": "赤红甲"
+    },
+    "item:226": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "armor",
+      "order": 8,
+      "sortValue": 121,
+      "shopCost": 3850,
+      "internalName": "item_lotus_orb",
+      "zh": "清莲宝珠"
+    },
+    "item:116": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "armor",
+      "order": 9,
+      "sortValue": 122,
+      "shopCost": 4050,
+      "internalName": "item_black_king_bar",
+      "zh": "黑皇杖"
+    },
+    "item:263": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "armor",
+      "order": 10,
+      "sortValue": 123,
+      "shopCost": 4550,
+      "internalName": "item_hurricane_pike",
+      "zh": "飓风长戟"
+    },
+    "item:147": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "armor",
+      "order": 11,
+      "sortValue": 124,
+      "shopCost": 4550,
+      "internalName": "item_manta",
+      "zh": "幻影斧"
+    },
+    "item:123": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "armor",
+      "order": 12,
+      "sortValue": 125,
+      "shopCost": 4800,
+      "internalName": "item_sphere",
+      "zh": "林肯法球"
+    },
+    "item:119": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "armor",
+      "order": 13,
+      "sortValue": 126,
+      "shopCost": 4500,
+      "internalName": "item_shivas_guard",
+      "zh": "希瓦的守护"
+    },
+    "item:114": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "armor",
+      "order": 14,
+      "sortValue": 127,
+      "shopCost": 5300,
+      "internalName": "item_heart",
+      "zh": "恐鳌之心"
+    },
+    "item:112": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "armor",
+      "order": 15,
+      "sortValue": 128,
+      "shopCost": 5125,
+      "internalName": "item_assault",
+      "zh": "强袭胸甲"
+    },
+    "item:121": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "armor",
+      "order": 16,
+      "sortValue": 129,
+      "shopCost": 4700,
+      "internalName": "item_bloodstone",
+      "zh": "血精石"
+    },
+    "item:635": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "armor",
+      "order": 17,
+      "sortValue": 131,
+      "shopCost": 5650,
+      "internalName": "item_helm_of_the_overlord",
+      "zh": "统御头盔"
+    },
+    "item:1076": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "weapons",
+      "order": 0,
+      "sortValue": 0,
+      "shopCost": 2550,
+      "internalName": "item_specialists_array",
+      "zh": "行家阵列"
+    },
+    "item:1858": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "weapons",
+      "order": 1,
+      "sortValue": 0,
+      "shopCost": 5900,
+      "internalName": "item_hydras_breath",
+      "zh": "怪蛇之息"
+    },
+    "item:1948": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "weapons",
+      "order": 2,
+      "sortValue": 0,
+      "shopCost": 6000,
+      "internalName": "item_skypiercer",
+      "zh": "Skypiercer"
+    },
+    "item:149": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "weapons",
+      "order": 3,
+      "sortValue": 130,
+      "shopCost": 2000,
+      "internalName": "item_lesser_crit",
+      "zh": "水晶剑"
+    },
+    "item:223": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "weapons",
+      "order": 4,
+      "sortValue": 131,
+      "shopCost": 2750,
+      "internalName": "item_meteor_hammer",
+      "zh": "陨星锤"
+    },
+    "item:151": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "weapons",
+      "order": 5,
+      "sortValue": 132,
+      "shopCost": 2500,
+      "internalName": "item_armlet",
+      "zh": "莫尔迪基安的臂章"
+    },
+    "item:143": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "weapons",
+      "order": 6,
+      "sortValue": 133,
+      "shopCost": 2875,
+      "internalName": "item_basher",
+      "zh": "碎颅锤"
+    },
+    "item:152": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "weapons",
+      "order": 7,
+      "sortValue": 134,
+      "shopCost": 3250,
+      "internalName": "item_invis_sword",
+      "zh": "影刃"
+    },
+    "item:168": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "weapons",
+      "order": 8,
+      "sortValue": 135,
+      "shopCost": 3500,
+      "internalName": "item_desolator",
+      "zh": "黯灭"
+    },
+    "item:145": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "weapons",
+      "order": 9,
+      "sortValue": 136,
+      "shopCost": 3900,
+      "internalName": "item_bfury",
+      "zh": "狂战斧"
+    },
+    "item:176": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "weapons",
+      "order": 10,
+      "sortValue": 137,
+      "shopCost": 5200,
+      "internalName": "item_ethereal_blade",
+      "zh": "虚灵之刃"
+    },
+    "item:225": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "weapons",
+      "order": 11,
+      "sortValue": 138,
+      "shopCost": 4350,
+      "internalName": "item_nullifier",
+      "zh": "否决坠饰"
+    },
+    "item:135": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "weapons",
+      "order": 12,
+      "sortValue": 139,
+      "shopCost": 5000,
+      "internalName": "item_monkey_king_bar",
+      "zh": "金箍棒"
+    },
+    "item:139": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "weapons",
+      "order": 13,
+      "sortValue": 140,
+      "shopCost": 5000,
+      "internalName": "item_butterfly",
+      "zh": "蝴蝶"
+    },
+    "item:137": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "weapons",
+      "order": 14,
+      "sortValue": 141,
+      "shopCost": 4700,
+      "internalName": "item_radiance",
+      "zh": "辉耀"
+    },
+    "item:141": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "weapons",
+      "order": 15,
+      "sortValue": 142,
+      "shopCost": 5200,
+      "internalName": "item_greater_crit",
+      "zh": "代达罗斯之殇"
+    },
+    "item:249": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "weapons",
+      "order": 16,
+      "sortValue": 143,
+      "shopCost": 5700,
+      "internalName": "item_silver_edge",
+      "zh": "白银之锋"
+    },
+    "item:133": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "weapons",
+      "order": 17,
+      "sortValue": 144,
+      "shopCost": 5600,
+      "internalName": "item_rapier",
+      "zh": "圣剑"
+    },
+    "item:250": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "weapons",
+      "order": 18,
+      "sortValue": 145,
+      "shopCost": 6250,
+      "internalName": "item_bloodthorn",
+      "zh": "血棘"
+    },
+    "item:208": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "weapons",
+      "order": 19,
+      "sortValue": 146,
+      "shopCost": 6150,
+      "internalName": "item_abyssal_blade",
+      "zh": "深渊之刃"
+    },
+    "item:1097": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "weapons",
+      "order": 20,
+      "sortValue": 666,
+      "shopCost": 6100,
+      "internalName": "item_disperser",
+      "zh": "散魂剑"
+    },
+    "item:1808": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "weapons",
+      "order": 21,
+      "sortValue": 777,
+      "shopCost": 5600,
+      "internalName": "item_angels_demise",
+      "zh": "绝刃"
+    },
+    "item:236": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "artifacts",
+      "order": 0,
+      "sortValue": 147,
+      "shopCost": 2000,
+      "internalName": "item_dragon_lance",
+      "zh": "魔龙枪"
+    },
+    "item:162": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "artifacts",
+      "order": 1,
+      "sortValue": 148,
+      "shopCost": 2000,
+      "internalName": "item_sange",
+      "zh": "散华"
+    },
+    "item:170": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "artifacts",
+      "order": 2,
+      "sortValue": 149,
+      "shopCost": 2000,
+      "internalName": "item_yasha",
+      "zh": "夜叉"
+    },
+    "item:259": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "artifacts",
+      "order": 3,
+      "sortValue": 150,
+      "shopCost": 2000,
+      "internalName": "item_kaya",
+      "zh": "慧光"
+    },
+    "item:252": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "artifacts",
+      "order": 4,
+      "sortValue": 151,
+      "shopCost": 2700,
+      "internalName": "item_echo_sabre",
+      "zh": "回音战刃"
+    },
+    "item:166": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "artifacts",
+      "order": 5,
+      "sortValue": 152,
+      "shopCost": 2950,
+      "internalName": "item_maelstrom",
+      "zh": "漩涡"
+    },
+    "item:174": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "artifacts",
+      "order": 6,
+      "sortValue": 153,
+      "shopCost": 2500,
+      "internalName": "item_diffusal_blade",
+      "zh": "净魂之刃"
+    },
+    "item:598": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "artifacts",
+      "order": 7,
+      "sortValue": 154,
+      "shopCost": 3100,
+      "internalName": "item_mage_slayer",
+      "zh": "法师克星"
+    },
+    "item:1107": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "artifacts",
+      "order": 8,
+      "sortValue": 155,
+      "shopCost": 2600,
+      "internalName": "item_phylactery",
+      "zh": "灵匣"
+    },
+    "item:210": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "artifacts",
+      "order": 9,
+      "sortValue": 1550,
+      "shopCost": 2400,
+      "internalName": "item_heavens_halberd",
+      "zh": "天堂之戟"
+    },
+    "item:273": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "artifacts",
+      "order": 10,
+      "sortValue": 1560,
+      "shopCost": 4000,
+      "internalName": "item_kaya_and_sange",
+      "zh": "散慧对剑"
+    },
+    "item:154": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "artifacts",
+      "order": 11,
+      "sortValue": 1570,
+      "shopCost": 4000,
+      "internalName": "item_sange_and_yasha",
+      "zh": "散夜对剑"
+    },
+    "item:277": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "artifacts",
+      "order": 12,
+      "sortValue": 1580,
+      "shopCost": 4000,
+      "internalName": "item_yasha_and_kaya",
+      "zh": "慧夜对剑"
+    },
+    "item:156": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "artifacts",
+      "order": 13,
+      "sortValue": 1590,
+      "shopCost": 5050,
+      "internalName": "item_satanic",
+      "zh": "撒旦之邪力"
+    },
+    "item:160": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "artifacts",
+      "order": 14,
+      "sortValue": 1600,
+      "shopCost": 5900,
+      "internalName": "item_skadi",
+      "zh": "斯嘉蒂之眼"
+    },
+    "item:158": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "artifacts",
+      "order": 15,
+      "sortValue": 1610,
+      "shopCost": 5500,
+      "internalName": "item_mjollnir",
+      "zh": "雷神之锤"
+    },
+    "item:600": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "artifacts",
+      "order": 16,
+      "sortValue": 1620,
+      "shopCost": 6800,
+      "internalName": "item_overwhelming_blink",
+      "zh": "盛势闪光"
+    },
+    "item:603": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "artifacts",
+      "order": 17,
+      "sortValue": 1630,
+      "shopCost": 6800,
+      "internalName": "item_swift_blink",
+      "zh": "迅疾闪光"
+    },
+    "item:604": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "artifacts",
+      "order": 18,
+      "sortValue": 1640,
+      "shopCost": 6800,
+      "internalName": "item_arcane_blink",
+      "zh": "秘奥闪光"
+    },
+    "item:939": {
+      "realm": "shop",
+      "shelf": "upgrade",
+      "category": "artifacts",
+      "order": 19,
+      "sortValue": 1655,
+      "shopCost": 4700,
+      "internalName": "item_harpoon",
+      "zh": "鱼叉"
+    },
+    "item:947": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier1",
+      "order": 0,
+      "sortValue": 11,
+      "shopCost": 0,
+      "internalName": "item_occult_bracelet",
+      "zh": "玄奥手镯"
+    },
+    "item:1637": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier1",
+      "order": 1,
+      "sortValue": 12,
+      "shopCost": 0,
+      "internalName": "item_kobold_cup",
+      "zh": "狗头人酒杯"
+    },
+    "item:565": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier1",
+      "order": 2,
+      "sortValue": 13,
+      "shopCost": 0,
+      "internalName": "item_chipped_vest",
+      "zh": "碎裂背心"
+    },
+    "item:1606": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier1",
+      "order": 3,
+      "sortValue": 14,
+      "shopCost": 0,
+      "internalName": "item_polliwog_charm",
+      "zh": "蝌蚪护符"
+    },
+    "item:1638": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier1",
+      "order": 4,
+      "sortValue": 15,
+      "shopCost": 0,
+      "internalName": "item_dormant_curio",
+      "zh": "休眠珍品"
+    },
+    "item:2097": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier1",
+      "order": 5,
+      "sortValue": 16,
+      "shopCost": 0,
+      "internalName": "item_duelist_gloves",
+      "zh": "决斗家手套"
+    },
+    "item:1716": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier1",
+      "order": 6,
+      "sortValue": 17,
+      "shopCost": 0,
+      "internalName": "item_weighted_dice",
+      "zh": "加重骰子"
+    },
+    "item:1717": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier1",
+      "order": 7,
+      "sortValue": 18,
+      "shopCost": 0,
+      "internalName": "item_ash_legion_shield",
+      "zh": "余烬军团战盾"
+    },
+    "item:1861": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier1",
+      "order": 8,
+      "sortValue": 19,
+      "shopCost": 0,
+      "internalName": "item_stonefeather_satchel",
+      "zh": "石羽小包"
+    },
+    "item:1868": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier1",
+      "order": 9,
+      "sortValue": 20,
+      "shopCost": 0,
+      "internalName": "item_foragers_kit",
+      "zh": "采菌套具"
+    },
+    "item:577": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier1",
+      "order": 10,
+      "sortValue": 110,
+      "shopCost": 0,
+      "internalName": "item_possessed_mask",
+      "zh": "附魂面具"
+    },
+    "item:1077": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier1",
+      "order": 11,
+      "sortValue": 112,
+      "shopCost": 0,
+      "internalName": "item_dagger_of_ristul",
+      "zh": "瑞斯图尔尖匕"
+    },
+    "item:359": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 0,
+      "sortValue": 21,
+      "shopCost": 0,
+      "internalName": "item_essence_ring",
+      "zh": "精华指环"
+    },
+    "item:1599": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 1,
+      "sortValue": 22,
+      "shopCost": 0,
+      "internalName": "item_mana_draught",
+      "zh": "魔力药水"
+    },
+    "item:71": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 2,
+      "sortValue": 23,
+      "shopCost": 0,
+      "internalName": "item_poor_mans_shield",
+      "zh": "穷鬼盾"
+    },
+    "item:1604": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 3,
+      "sortValue": 24,
+      "shopCost": 0,
+      "internalName": "item_searing_signet",
+      "zh": "炽热纹章"
+    },
+    "item:840": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 4,
+      "sortValue": 25,
+      "shopCost": 0,
+      "internalName": "item_pogo_stick",
+      "zh": "杂技玩具"
+    },
+    "item:950": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 5,
+      "sortValue": 26,
+      "shopCost": 0,
+      "internalName": "item_defiant_shell",
+      "zh": "不羁甲壳"
+    },
+    "item:1603": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 6,
+      "sortValue": 32,
+      "shopCost": 0,
+      "internalName": "item_gunpowder_gauntlets",
+      "zh": "火药手套"
+    },
+    "item:1640": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 7,
+      "sortValue": 34,
+      "shopCost": 0,
+      "internalName": "item_jidi_pollen_bag",
+      "zh": "基迪花粉袋"
+    },
+    "item:675": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 8,
+      "sortValue": 35,
+      "shopCost": 0,
+      "internalName": "item_psychic_headband",
+      "zh": "通灵头带"
+    },
+    "item:1719": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 9,
+      "sortValue": 46,
+      "shopCost": 0,
+      "internalName": "item_metamorphic_mandible",
+      "zh": "变态上颚"
+    },
+    "item:334": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 10,
+      "sortValue": 222,
+      "shopCost": 0,
+      "internalName": "item_imp_claw",
+      "zh": "魔童之爪"
+    },
+    "item:945": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 11,
+      "sortValue": 223,
+      "shopCost": 0,
+      "internalName": "item_seeds_of_serenity",
+      "zh": "宁静种籽"
+    },
+    "item:1157": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 12,
+      "sortValue": 224,
+      "shopCost": 0,
+      "internalName": "item_safety_bubble",
+      "zh": "安全泡泡"
+    },
+    "item:1601": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 13,
+      "sortValue": 230,
+      "shopCost": 0,
+      "internalName": "item_crippling_crossbow",
+      "zh": "致残之弩"
+    },
+    "item:1859": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 14,
+      "sortValue": 231,
+      "shopCost": 0,
+      "internalName": "item_spellslinger",
+      "zh": "咏咒之坠"
+    },
+    "item:1873": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier2",
+      "order": 15,
+      "sortValue": 233,
+      "shopCost": 0,
+      "internalName": "item_partisans_brand",
+      "zh": "天游烙印"
+    },
+    "item:1605": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier3",
+      "order": 0,
+      "sortValue": 31,
+      "shopCost": 0,
+      "internalName": "item_serrated_shiv",
+      "zh": "锯齿短刀"
+    },
+    "item:585": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier3",
+      "order": 1,
+      "sortValue": 37,
+      "shopCost": 0,
+      "internalName": "item_stormcrafter",
+      "zh": "风暴宝器"
+    },
+    "item:1168": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier3",
+      "order": 2,
+      "sortValue": 43,
+      "shopCost": 0,
+      "internalName": "item_rattlecage",
+      "zh": "回响之笼"
+    },
+    "item:1720": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier3",
+      "order": 3,
+      "sortValue": 44,
+      "shopCost": 0,
+      "internalName": "item_idol_of_screeauk",
+      "zh": "丝奎奥克神像"
+    },
+    "item:676": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier3",
+      "order": 4,
+      "sortValue": 310,
+      "shopCost": 0,
+      "internalName": "item_ceremonial_robe",
+      "zh": "祭礼长袍"
+    },
+    "item:1860": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier3",
+      "order": 5,
+      "sortValue": 311,
+      "shopCost": 0,
+      "internalName": "item_prophets_pendulum",
+      "zh": "先知灵摆"
+    },
+    "item:1862": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier3",
+      "order": 6,
+      "sortValue": 312,
+      "shopCost": 0,
+      "internalName": "item_enchanters_bauble",
+      "zh": "附魔师之椟"
+    },
+    "item:1863": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier3",
+      "order": 7,
+      "sortValue": 313,
+      "shopCost": 0,
+      "internalName": "item_harmonizer",
+      "zh": "协和"
+    },
+    "item:1882": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier3",
+      "order": 8,
+      "sortValue": 314,
+      "shopCost": 0,
+      "internalName": "item_vile_phial",
+      "zh": "Vile Phial"
+    },
+    "item:2190": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier3",
+      "order": 9,
+      "sortValue": 315,
+      "shopCost": 0,
+      "internalName": "item_dandelion_amulet",
+      "zh": "蒲公英护符"
+    },
+    "item:911": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier3",
+      "order": 10,
+      "sortValue": 333,
+      "shopCost": 0,
+      "internalName": "item_revenants_brooch",
+      "zh": "英灵胸针"
+    },
+    "item:1917": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier3",
+      "order": 11,
+      "sortValue": 365,
+      "shopCost": 0,
+      "internalName": "item_balmhook",
+      "zh": "Balmhook"
+    },
+    "item:1643": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier4",
+      "order": 0,
+      "sortValue": 42,
+      "shopCost": 0,
+      "internalName": "item_giant_maul",
+      "zh": "巨人之槌"
+    },
+    "item:1721": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier4",
+      "order": 1,
+      "sortValue": 45,
+      "shopCost": 0,
+      "internalName": "item_flayers_bota",
+      "zh": "剥皮血囊"
+    },
+    "item:371": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier4",
+      "order": 2,
+      "sortValue": 52,
+      "shopCost": 0,
+      "internalName": "item_fallen_sky",
+      "zh": "天崩"
+    },
+    "item:370": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier4",
+      "order": 3,
+      "sortValue": 53,
+      "shopCost": 0,
+      "internalName": "item_demonicon",
+      "zh": "冥灵书"
+    },
+    "item:377": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier4",
+      "order": 4,
+      "sortValue": 54,
+      "shopCost": 0,
+      "internalName": "item_minotaur_horn",
+      "zh": "恶牛角"
+    },
+    "item:1718": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier4",
+      "order": 5,
+      "sortValue": 56,
+      "shopCost": 0,
+      "internalName": "item_riftshadow_prism",
+      "zh": "影墟棱晶"
+    },
+    "item:1642": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier4",
+      "order": 6,
+      "sortValue": 57,
+      "shopCost": 0,
+      "internalName": "item_dezun_bloodrite",
+      "zh": "德尊血式"
+    },
+    "item:1644": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier4",
+      "order": 7,
+      "sortValue": 58,
+      "shopCost": 0,
+      "internalName": "item_divine_regalia",
+      "zh": "天赐华冠"
+    },
+    "item:837": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier4",
+      "order": 8,
+      "sortValue": 59,
+      "shopCost": 0,
+      "internalName": "item_heavy_blade",
+      "zh": "行巫之祸"
+    },
+    "item:309": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier4",
+      "order": 9,
+      "sortValue": 410,
+      "shopCost": 0,
+      "internalName": "item_mind_breaker",
+      "zh": "智灭"
+    },
+    "item:335": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier4",
+      "order": 10,
+      "sortValue": 411,
+      "shopCost": 0,
+      "internalName": "item_flicker",
+      "zh": "闪灵"
+    },
+    "item:678": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier4",
+      "order": 11,
+      "sortValue": 412,
+      "shopCost": 0,
+      "internalName": "item_giants_ring",
+      "zh": "巨人之戒"
+    },
+    "item:1864": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier4",
+      "order": 12,
+      "sortValue": 413,
+      "shopCost": 0,
+      "internalName": "item_conjurers_catalyst",
+      "zh": "咒术师触媒"
+    },
+    "item:1911": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier4",
+      "order": 13,
+      "sortValue": 414,
+      "shopCost": 0,
+      "internalName": "item_helm_of_the_hivemind",
+      "zh": "虫巢思维头盔"
+    },
+    "item:292": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier5",
+      "order": 0,
+      "sortValue": 51,
+      "shopCost": 0,
+      "internalName": "item_desolator_2",
+      "zh": "寂灭"
+    },
+    "item:326": {
+      "realm": "neutral",
+      "shelf": "neutral",
+      "category": "tier5",
+      "order": 1,
+      "sortValue": 55,
+      "shopCost": 0,
+      "internalName": "item_spider_legs",
+      "zh": "网虫腿"
+    }
+  }
+}

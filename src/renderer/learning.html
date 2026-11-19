@@ -43,8 +43,14 @@
     <p id="starter-status" role="status" aria-live="polite"></p>
   </section>
   <section id="item-browser" hidden aria-label="Dota 2 items">
-    <div id="item-filters" class="attr-filters" role="group" aria-label="Item categories"></div>
-    <div id="item-list" class="lessons" translate="no"></div>
+    <div id="item-shop-bar" class="item-shop-bar">
+      <div id="item-realms" class="item-realms" role="tablist" aria-label="Shop sections"></div>
+      <div id="item-quick-controls" class="item-quick-controls"></div>
+    </div>
+    <div id="item-filters" class="attr-filters item-cat-filters" role="group" aria-label="Item categories"></div>
+    <div id="item-inspector" class="item-inspector" hidden aria-live="polite" translate="no"></div>
+    <div id="item-list" class="item-shop-board" translate="no"></div>
+    <div id="shop-hover-tip" class="shop-hover-tip" role="tooltip" hidden translate="no"></div>
   </section>
   <section id="spoken-browser" hidden aria-label="Spoken Dota 2 phrases">
     <div id="spoken-filters" class="attr-filters" role="group" aria-label="Match situations"></div>
