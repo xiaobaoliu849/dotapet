@@ -54,14 +54,25 @@ export function filterLessons(lessons, { kind = 'all', search = '', saved = fals
       .some(s => (s || '').toLocaleLowerCase().includes(query)));
 }
 
-export function recordAnswer(previous = {}, correct, now = Date.now()) {
+export function recordAnswer(previous = {}, correct, now = Date.now(), { earlyReview = false } = {}) {
+  if (earlyReview && correct && (previous.attempts || 0) > 0 && previous.due && previous.due > now) {
+    return {
+      ...previous,
+      attempts: (previous.attempts || 0) + 1,
+      correct: (previous.correct || 0) + 1,
+    };
+  }
   const box = correct ? Math.min((previous.box || 0) + 1, 5) : 0;
   return { ...previous, box, attempts: (previous.attempts || 0) + 1, correct: (previous.correct || 0) + Number(correct),
     due: now + (correct ? [0, 1, 3, 7, 14, 30][box] * 86400000 : 60000) };
 }
 
+export function canQuizLesson(lesson) {
+  return Boolean(lesson?.en && lesson?.zh && lesson.en.trim().toLowerCase() !== lesson.zh.trim().toLowerCase());
+}
+
 export function makeQuestion(lesson, lessons, direction = 'en', random = Math.random) {
-  if (!lesson?.en || !lesson?.zh || lesson.en.trim().toLowerCase() === lesson.zh.trim().toLowerCase()) return null;
+  if (!canQuizLesson(lesson)) return null;
   const field = direction === 'en' ? 'zh' : 'en';
   const pool = [...new Set(lessons.filter(r => r.kind === lesson.kind && r[field] !== lesson[field]).map(r => r[field]))];
   const shuffle = array => {

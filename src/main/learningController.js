@@ -6,7 +6,7 @@ import { isTrustedSettingsSender } from './aiSettingsIpc.js';
 import { recordAnswer } from '../learning/model.js';
 import { SPOKEN_PHRASES, learningCollection } from '../learning/spokenPhrases.js';
 import { fetchCatalog } from '../learning/update.js';
-import { planStudy, studyOptions, studySummary, STUDY_DEFAULTS } from '../learning/study.js';
+import { planStudy, planFocusedLesson, studyOptions, studySummary, STUDY_DEFAULTS } from '../learning/study.js';
 import { diffCatalog } from '../learning/contentAudit.js';
 import { buildPatchChangesManifest } from '../learning/patchChanges.js';
 import { starterUnit, starterAvailability, isLearningStep } from '../learning/starterPath.js';
@@ -72,12 +72,14 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
   let legacyProgress = read(progressFile, {});
   if (!legacyProgress || typeof legacyProgress !== 'object' || Array.isArray(legacyProgress)) legacyProgress = {};
   const saved = read(stateFile, null);
-  let state = saved?.schema === 1 ? saved : { schema: 1, progress: legacyProgress, preferences: STUDY_DEFAULTS, active: null, history: [] };
+  let state = saved?.schema === 1
+    ? { paused: null, ...saved }
+    : { schema: 1, progress: legacyProgress, preferences: STUDY_DEFAULTS, active: null, paused: null, history: [] };
   let updating = false;
   const write = (file, data) => { fs.mkdirSync(dataDirectory, { recursive: true }); fs.writeFileSync(file + '.tmp', JSON.stringify(data)); fs.renameSync(file + '.tmp', file); };
   // Progress, session cursor and completion history commit together, including migration from the old progress file.
   const commit = next => { write(stateFile, next); state = next; };
-  const snapshot = () => ({ progress: state.progress, study: { preferences: state.preferences, active: state.active, history: state.history } });
+  const snapshot = () => ({ progress: state.progress, study: { preferences: state.preferences, active: state.active, paused: state.paused || null, history: state.history } });
   const lessonCatalog = () => ({ ...catalog, lessons: learningCollection(catalog.lessons) });
   const url = pathToFileURL(path.join(rendererDirectory, 'learning.html')).href;
   const trusted = event => isTrustedSettingsSender(event, hub.contents('learning'), url);
@@ -105,7 +107,43 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
     const planned = planStudy(learningCollection(catalog.lessons), state.progress, preferences);
     if (!planned.items.length) return { ...snapshot(), empty: true };
     const active = { id: randomUUID(), startedAt: Date.now(), options: planned.options, items: planned.items, answers: [], ...(unit ? { guideIndex: 0 } : {}) };
-    commit({ ...state, preferences, active });
+    commit({ ...state, preferences, active, paused: null });
+    return snapshot();
+  }));
+  ipcMain.handle('learning:practice-lesson', respond(options => {
+    const request = options && typeof options === 'object' && !Array.isArray(options)
+      ? { direction: state.preferences?.direction || 'en', ...options }
+      : options;
+    const planned = planFocusedLesson(learningCollection(catalog.lessons), state.progress, request);
+    if (planned.unquizzable || !planned.items.length) {
+      return { ...snapshot(), empty: true, unquizzable: Boolean(planned.unquizzable) };
+    }
+    const existing = state.active;
+    const keepInPaused = Boolean(
+      existing
+      && !existing.completedAt
+      && existing.options?.scope !== 'focus'
+      && (existing.answers.length > 0 || existing.items.length > 1 || Number.isInteger(existing.guideIndex)),
+    );
+    const paused = keepInPaused ? existing : (state.paused || null);
+    const active = { id: randomUUID(), startedAt: Date.now(), options: planned.options, items: planned.items, answers: [] };
+    commit({ ...state, active, paused });
+    return snapshot();
+  }));
+  ipcMain.handle('learning:abandon-session', respond((target = 'active') => {
+    if (target !== 'active' && target !== 'paused') throw new Error('Invalid abandon target');
+    if (target === 'paused') {
+      if (!state.paused) return snapshot();
+      commit({ ...state, paused: null });
+      return snapshot();
+    }
+    if (!state.active || state.active.completedAt) return snapshot();
+    commit({ ...state, active: null });
+    return snapshot();
+  }));
+  ipcMain.handle('learning:resume-paused', respond(() => {
+    if (!state.paused || state.paused.completedAt) return snapshot();
+    commit({ ...state, active: state.paused, paused: null });
     return snapshot();
   }));
   ipcMain.handle('learning:advance-guide', respond((sessionId, lessonId) => {
@@ -130,7 +168,7 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
     const next = { ...active, answers, ...(answers.length === active.items.length ? { completedAt: Date.now() } : {}) };
     const history = next.completedAt ? [...state.history, studySummary(next)].slice(-180) : state.history;
     commit({ ...state, active: next, history,
-      progress: { ...state.progress, [lessonId]: recordAnswer(state.progress[lessonId], correct) } });
+      progress: { ...state.progress, [lessonId]: recordAnswer(state.progress[lessonId], correct, Date.now(), { earlyReview: Boolean(item.earlyReview) }) } });
     return snapshot();
   }));
   ipcMain.handle('learning:sources', respond(async () => { await shell.openExternal('https://www.dota2.com/patches/'); return {}; }));

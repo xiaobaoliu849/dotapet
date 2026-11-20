@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { planStudy, studyOptions, localDay, studySummary } from '../src/learning/study.js';
+import { planStudy, planFocusedLesson, studyOptions, localDay, studySummary } from '../src/learning/study.js';
 import fs from 'node:fs';
 import { STARTER_UNITS, STARTER_ITEMS, starterAvailability } from '../src/learning/starterPath.js';
 
@@ -74,4 +74,31 @@ test('options reject invalid limits, scope and direction; summaries use the loca
   assert.equal(localDay(completedAt), '2026-11-15');
   assert.deepEqual(studySummary({ id: 'test', completedAt, options: { scope: 'saved' }, answers: [{ id: 'a', correct: true }, { id: 'b', correct: false }] }),
     { id: 'test', day: '2026-11-15', completedAt, total: 2, correct: 1, scope: 'saved', mistakes: ['b'] });
+});
+
+test('planFocusedLesson targets exact ID without name collisions, allows early drills, and flags unquizzable items', () => {
+  const catalog = JSON.parse(fs.readFileSync(new URL('../src/learning/catalog.json', import.meta.url)));
+  // Horn of Battle (item:1950) previously collided with Greater Horn of Battle (item:1951) via substring search.
+  const horn = planFocusedLesson(catalog.lessons, {}, { lessonId: 'item:1950', direction: 'en' }, 1000, () => 0.5);
+  assert.equal(horn.unquizzable, false);
+  assert.deepEqual(horn.items.map(i => i.lesson.id), ['item:1950']);
+  assert.equal(horn.items[0].earlyReview, false);
+  assert.equal(horn.items[0].question.options.length, 4);
+
+  // Sabatons of Mordiggian (item:1953) can still be practiced directly even when scheduled for tomorrow.
+  const progress = { 'item:1953': { box: 1, attempts: 1, correct: 1, due: 90_000_000 } };
+  const sabatons = planFocusedLesson(catalog.lessons, progress, { lessonId: 'item:1953', direction: 'zh' }, 1000, () => 0.5);
+  assert.equal(sabatons.items.length, 1);
+  assert.equal(sabatons.items[0].lesson.id, 'item:1953');
+  assert.equal(sabatons.items[0].earlyReview, true);
+  assert.equal(sabatons.items[0].question.prompt, '莫尔迪基安的护足');
+  assert.equal(sabatons.items[0].question.answer, 'Sabatons of Mordiggian');
+
+  // Identical English/Chinese archive items report unquizzable instead of throwing.
+  const unquizzable = planFocusedLesson(catalog.lessons, {}, { lessonId: 'item:1949', direction: 'en' }, 1000);
+  assert.equal(unquizzable.unquizzable, true);
+  assert.equal(unquizzable.items.length, 0);
+
+  assert.throws(() => planFocusedLesson(catalog.lessons, {}, { lessonId: 'item:does-not-exist' }), /Unknown lesson/);
+  assert.throws(() => planFocusedLesson(catalog.lessons, {}, { lessonId: 'item:1953', direction: 'fr' }), /Invalid/);
 });

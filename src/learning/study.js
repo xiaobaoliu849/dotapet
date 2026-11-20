@@ -1,4 +1,4 @@
-import { filterLessons, makeQuestion } from './model.js';
+import { canQuizLesson, filterLessons, makeQuestion } from './model.js';
 import { starterUnit } from './starterPath.js';
 
 export const STUDY_DEFAULTS = { size: 5, scope: 'all', kind: 'all', search: '', direction: 'en' };
@@ -49,6 +49,23 @@ export function planStudy(lessons, progress, value = {}, now = Date.now(), rando
   return { options, items };
 }
 
+/** Direct single-lesson drill by exact ID (works even when scheduled for a future review; never collides by name). */
+export function planFocusedLesson(lessons, progress, value = {}, now = Date.now(), random = Math.random) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Invalid focused lesson options');
+  const lessonId = typeof value.lessonId === 'string' ? value.lessonId.trim() : '';
+  const direction = value.direction || 'en';
+  if (!lessonId || !['en', 'zh'].includes(direction)) throw new Error('Invalid focused lesson options');
+  const lesson = lessons.find(row => row.id === lessonId);
+  if (!lesson) throw new Error('Unknown lesson');
+  const options = { size: 1, scope: 'focus', kind: lesson.kind, search: '', direction, focusId: lesson.id };
+  if (!canQuizLesson(lesson)) return { options, items: [], unquizzable: true };
+  const question = makeQuestion(lesson, lessons, direction, random);
+  if (!question) return { options, items: [], unquizzable: true };
+  const record = progress[lesson.id];
+  const earlyReview = Boolean(record?.attempts && record.due && record.due > now);
+  return { options, items: [{ lesson: { ...lesson }, question, earlyReview }], unquizzable: false };
+}
+
 export function localDay(timestamp = Date.now()) {
   const date = new Date(timestamp);
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
@@ -58,5 +75,6 @@ export function studySummary(session) {
   const correct = session.answers.filter(answer => answer.correct).length;
   return { id: session.id, day: localDay(session.completedAt), completedAt: session.completedAt,
     total: session.answers.length, correct, scope: session.options.scope,
+    ...(session.options.focusId ? { focusId: session.options.focusId } : {}),
     mistakes: session.answers.filter(answer => !answer.correct).map(answer => answer.id) };
 }

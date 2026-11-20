@@ -99,6 +99,13 @@ input:focus,select:focus{border-color:#5b8267;box-shadow:0 0 0 3px rgba(63,106,8
 #study-status:empty{display:none}
 .study-switch-btn{padding:5px 12px;border-radius:8px;border:1px solid #b7cca9;background:#fff;color:#29502d;font-size:12px;font-weight:600;flex-shrink:0}
 .study-switch-btn:hover{background:#f3f8ee;border-color:#8cab7c}
+.paused-banner{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:9px 12px;margin:0 0 12px;border-radius:10px;background:#fff;border:1px solid #c5d9b8;font-size:12.5px;color:#2c472f}
+.paused-banner[hidden]{display:none}
+.paused-banner-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.paused-resume-btn{padding:5px 11px;border-radius:8px;border:0;background:#3f6a52;color:#fff;font-size:12px;font-weight:600}
+.paused-resume-btn:hover{background:#325844}
+.paused-discard-btn{padding:5px 10px;border-radius:8px;border:1px solid #cfd9c5;background:#f8faf6;color:#546750;font-size:12px;font-weight:600}
+.paused-discard-btn:hover{background:#eef3ea;color:#293c2b}
 
 .progress-overview{margin:0 0 18px}
 .progress-heading{font-size:12.5px;font-weight:700;letter-spacing:.3px;color:#5b6d54;margin:0 0 10px}
@@ -111,17 +118,21 @@ input:focus,select:focus{border-color:#5b8267;box-shadow:0 0 0 3px rgba(63,106,8
 .mastery-card[aria-pressed=true]{background:#eef5e6;border-color:#6b8e4e;box-shadow:0 0 0 2px rgba(107,142,78,.18)}
 .mastery-card-top{display:flex;justify-content:space-between;align-items:center;gap:6px;width:100%}
 .mastery-title{font-size:12px;font-weight:700;color:#283c2b}
-.mastery-count{font-size:11px;font-weight:700;color:#5a7248}
-.mastery-bar{width:100%;height:6px;border-radius:999px;background:#e8efe0;overflow:hidden}
-.mastery-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#6b8e4e,#3f6a52);transition:width .25s ease}
+.mastery-count{font-size:11px;font-weight:700;color:#5a7248;font-variant-numeric:tabular-nums}
+.mastery-bar{position:relative;width:100%;height:6px;border-radius:999px;background:#e8efe0;overflow:hidden}
+.mastery-fill-practiced{position:absolute;inset:0 auto 0 0;height:100%;border-radius:999px;background:#c4dbb3;transition:width .25s ease}
+.mastery-fill{position:relative;height:100%;border-radius:999px;background:linear-gradient(90deg,#6b8e4e,#3f6a52);transition:width .25s ease}
 .mastery-sub{font-size:10px;color:#738067}
 
 /* === Guided Lesson, Quiz & Summary === */
 .practice{background:#fff;border:1px solid #d7e1cc;border-radius:16px;padding:20px 22px;margin:4px 0 18px}
 .practice h2{font-size:24px;margin:6px 0 8px;color:#213426}
 .quiz-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 8px}
+.quiz-top-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 #quiz-counter,#guide-counter{font-size:12px;font-weight:700;color:#4f664b;margin:0;font-variant-numeric:tabular-nums}
 #quiz-context,.practice .guide-title-tag{font-size:11.5px;font-weight:600;line-height:1.4;color:#52694d;background:#eef4e7;border:1px solid #d7e2cc;padding:2px 10px;border-radius:999px;margin:0}
+.quiz-end-btn{padding:3px 9px;border-radius:999px;border:1px solid #d5dfd0;background:#fff;color:#5b6e57;font-size:11.5px;font-weight:600;line-height:1.4}
+.quiz-end-btn:hover:not(:disabled){background:#f5f8f2;border-color:#b2c4aa;color:#2b412e}
 #session-progress,#guide-progress{width:100%;height:7px;accent-color:#3f6a52;display:block;margin:0 0 14px}
 
 .quiz-prompt-row{display:flex;align-items:center;gap:14px;margin:0 0 14px}
@@ -172,6 +183,21 @@ input:focus,select:focus{border-color:#5b8267;box-shadow:0 0 0 3px rgba(63,106,8
 
 #summary-score{font-size:20px;font-weight:700;margin:8px 0}
 #summary-tip{font-size:13px;color:#607253;line-height:1.6}
+.summary-focus-card{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 14px;margin:12px 0;border-radius:12px;background:#f5f9f0;border:1px solid #dce6d2}
+.summary-focus-card[hidden]{display:none}
+.summary-focus-info{display:flex;align-items:center;gap:12px;min-width:0}
+.summary-focus-info .item-picture{width:64px;height:47px;border-radius:8px;flex-shrink:0}
+.summary-focus-names{display:flex;flex-direction:column;gap:2px;min-width:0}
+.summary-focus-names strong{font-size:15px;color:#1f3323;overflow-wrap:anywhere}
+.summary-focus-names span{font-size:12.5px;color:#607253}
+.summary-focus-card .actions{margin-top:0}
+.summary-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:14px}
+.summary-extra-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.summary-extra-actions:empty{display:none}
+.summary-action-btn{height:36px;padding:0 14px;border-radius:9px;border:1px solid #c3d5b7;background:#fff;color:#27462b;font-size:12.5px;font-weight:600}
+.summary-action-btn:hover:not(:disabled){background:#f2f7ec;border-color:#90ae7e}
+.summary-action-btn.is-primary{background:#3f6a52;border-color:#3f6a52;color:#fff}
+.summary-action-btn.is-primary:hover:not(:disabled){background:#325844}
 .review-word{padding:12px 0;border-top:1px solid #e0e7d8;overflow-wrap:anywhere}
 #session-mistakes{margin:14px 0}
 .guide-footer{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid #e6ede0}
@@ -185,7 +211,6 @@ input:focus,select:focus{border-color:#5b8267;box-shadow:0 0 0 3px rgba(63,106,8
 .guide-translation{font-size:13.5px;color:#607253;margin:0 0 10px}
 .guided-card .item-coach{padding:12px 14px}
 #guide-next,#new-session{background:#3f6a52;color:#fff;border:0;font-weight:600;padding:8px 16px;height:36px;border-radius:9px;margin:0;flex-shrink:0}
-#new-session{margin-top:10px}
 #guide-next:hover:not(:disabled),#new-session:hover:not(:disabled){background:#325844}
 
 /* === Lesson Cards & Explore / Saved Library === */
@@ -403,7 +428,11 @@ input:focus,select:focus{border-color:#5b8267;box-shadow:0 0 0 3px rgba(63,106,8
 .item-inspector-col .description{margin:0 0 10px;font-size:12.5px;line-height:1.7}
 .item-inspector-col .zh-block{margin-top:0}
 .item-practice-btn{background:#3f6a52;color:#fff;border-color:#3f6a52;font-weight:600}
-.item-practice-btn:hover{background:#325844}
+.item-practice-btn:hover:not(:disabled){background:#325844}
+.item-practice-btn:disabled{background:#e7ece3;color:#6b7c65;border-color:#d6dfd0;cursor:not-allowed}
+.item-bar-left{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0}
+.item-patch-back-btn{display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:999px;border:1px solid #b5d6be;background:#edf7f0;color:#1f5834;font-size:11.5px;font-weight:700}
+.item-patch-back-btn:hover{background:#def1e4;border-color:#88bf98}
 
 .item-modal-backdrop{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:18px;background:rgba(21,33,24,.36);backdrop-filter:blur(4px)}
 .item-modal-dialog{width:min(740px,100%);max-height:calc(100vh - 36px);overflow-y:auto;border-radius:18px;box-shadow:0 24px 56px rgba(14,26,17,.3);animation:modalPop .14s cubic-bezier(.2,.8,.2,1)}

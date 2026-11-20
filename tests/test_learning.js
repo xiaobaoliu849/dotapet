@@ -4,8 +4,8 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { filterLessons, recordAnswer, makeQuestion, pairRecords, describe, itemImageUrl } from '../src/learning/model.js';
-import { summarizeMastery } from '../src/learning/mastery.js';
+import { filterLessons, recordAnswer, canQuizLesson, makeQuestion, pairRecords, describe, itemImageUrl } from '../src/learning/model.js';
+import { MASTERY_BOX_THRESHOLD, summarizeMastery } from '../src/learning/mastery.js';
 import { buildHeroPracticePersona, buildPhrasePracticePersona } from '../src/learning/voicePractice.js';
 import { createLearningController } from '../src/main/learningController.js';
 import { fetchCatalog } from '../src/learning/update.js';
@@ -154,8 +154,10 @@ test('failed updater retries and returns no partial catalog', async () => {
 });
 
 test('summarizeMastery computes practiced, mastered, and saved counts per category', () => {
+  assert.equal(MASTERY_BOX_THRESHOLD, 3);
   const sampleProgress = {
     'hero:1': { saved: true, attempts: 2, correct: 2, box: 2 },
+    'hero:2': { saved: false, attempts: 3, correct: 3, box: 3 },
     'ability:5003': { saved: false, attempts: 1, correct: 1, box: 1 },
     'spoken:smoke-triangle': { saved: true, attempts: 3, correct: 3, box: 3 },
   };
@@ -164,14 +166,29 @@ test('summarizeMastery computes practiced, mastered, and saved counts per catego
   const hero = summary.find(s => s.key === 'hero');
   const ability = summary.find(s => s.key === 'ability');
   const phrase = summary.find(s => s.key === 'phrase');
-  assert.equal(hero.practiced, 1);
-  assert.equal(hero.mastered, 1);
+  assert.equal(hero.practiced, 2);
+  assert.equal(hero.mastered, 1, 'box 2 is still in review; box 3+ counts as mastered');
   assert.equal(hero.saved, 1);
   assert.equal(ability.practiced, 1);
   assert.equal(ability.mastered, 0);
   assert.equal(phrase.practiced, 1);
   assert.equal(phrase.mastered, 1);
   assert.equal(phrase.saved, 1);
+});
+
+test('early voluntary drills record accuracy without inflating future SRS boxes, but still reset on mistakes', () => {
+  const scheduled = recordAnswer({}, true, 1000);
+  assert.equal(scheduled.box, 1);
+  const earlyCorrect = recordAnswer(scheduled, true, 2000, { earlyReview: true });
+  assert.equal(earlyCorrect.box, 1);
+  assert.equal(earlyCorrect.due, scheduled.due);
+  assert.equal(earlyCorrect.attempts, 2);
+  assert.equal(earlyCorrect.correct, 2);
+  const earlyWrong = recordAnswer(earlyCorrect, false, 3000, { earlyReview: true });
+  assert.equal(earlyWrong.box, 0);
+  assert.equal(earlyWrong.due, 63000);
+  assert.equal(earlyWrong.attempts, 3);
+  assert.equal(earlyWrong.correct, 2);
 });
 
 test('voicePractice builds hero-ability and spoken-phrase personas and dispatches via IPC', async t => {
@@ -202,8 +219,10 @@ test('voicePractice builds hero-ability and spoken-phrase personas and dispatche
   assert.equal(received.id, heroPersona.id);
 });
 
-test('makeQuestion skips lessons whose English and Chinese names are identical', () => {
+test('makeQuestion and canQuizLesson skip lessons whose English and Chinese names are identical', () => {
   const identical = { id: 'item:test', kind: 'item', en: 'Black Grimoire\n(Warlock)', zh: 'Black Grimoire\n(Warlock)' };
+  assert.equal(canQuizLesson(identical), false);
+  assert.equal(canQuizLesson(catalog.lessons.find(row => row.id === 'item:1953')), true);
   assert.equal(makeQuestion(identical, catalog.lessons, 'en'), null);
   assert.equal(makeQuestion(identical, catalog.lessons, 'zh'), null);
 });

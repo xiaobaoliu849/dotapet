@@ -128,5 +128,137 @@ export async function runLearningSmoke({ controlCenter, nativeImage, outputDirec
   controlCenter.window.setSize(1060, 820);
   const { runStarterPathSmoke } = await import('./starterPathSmoke.js');
   await runStarterPathSmoke({ page, controlCenter, nativeImage, outputDirectory });
-  console.log('[Learning] PASS: search, saved-only practice, daily session, reload recovery, mistakes, history, desktop companion, responsive layout');
+
+  // End-to-end verification of Patch 7.42 -> item detail -> focused practice, re-practice after completion,
+  // switching from unanswered drills without cross-tab search pollution, pause/resume, and honest mastery display.
+  await page.executeJavaScript(`(async () => {
+    const byId = id => document.getElementById(id);
+    const wait = async (pred, label) => {
+      for (let i = 0; i < 120; i++) {
+        if (await pred()) return;
+        await new Promise(r => setTimeout(r, 20));
+      }
+      throw new Error('Timed out waiting for: ' + label);
+    };
+
+    // 1. starter-team is currently active; open Patch 7.42 -> Sabatons of Mordiggian -> Practice this item.
+    byId('patch-pill').click();
+    await wait(() => !byId('patch-modal').hidden, 'patch modal open');
+    const sabatonsCard = [...document.querySelectorAll('#patch-modal .patch-spotlight-card')]
+      .find(el => el.textContent.includes('Sabatons of Mordiggian'));
+    if (!sabatonsCard) throw new Error('Sabatons of Mordiggian missing from Patch 7.42 modal');
+    sabatonsCard.click();
+    await wait(() => !byId('item-modal').hidden && document.querySelector('#item-modal .item-practice-btn'), 'Sabatons modal');
+    if (!document.querySelector('#item-modal .item-patch-back-btn')) throw new Error('Back to Patch 7.42 chip missing in item modal');
+
+    document.querySelector('#item-modal .item-practice-btn').click();
+    await wait(() => !byId('practice').hidden && document.querySelectorAll('#answers button').length === 4, 'Sabatons focused quiz');
+    let snap = await window.learningAPI.load();
+    if (snap.study.active?.options?.scope !== 'focus' || snap.study.active.items[0]?.lesson.id !== 'item:1953') {
+      throw new Error('Focused practice did not launch exact Sabatons of Mordiggian item');
+    }
+    if (snap.study.paused?.options?.scope !== 'starter-team') {
+      throw new Error('In-progress starter session was not preserved in paused state');
+    }
+    if (byId('search').value !== '') throw new Error('Focused item practice polluted #search: ' + byId('search').value);
+
+    // Answer Sabatons correctly and check contextual summary actions.
+    [...document.querySelectorAll('#answers button')].find(b => b.textContent === snap.study.active.items[0].question.answer).click();
+    await wait(() => !byId('next').hidden, 'Sabatons feedback');
+    byId('next').click();
+    await wait(() => !byId('session-summary').hidden, 'Sabatons summary');
+    if (byId('summary-focus-card').hidden) throw new Error('Focused summary card missing');
+    const extraBtns = [...document.querySelectorAll('#summary-extra-actions button')];
+    if (extraBtns.length < 4) throw new Error('Expected reverse, back-to-item, back-to-patch, and resume-paused buttons, got ' + extraBtns.length);
+
+    // 2. Return to Patch 7.42 -> click Sabatons AGAIN -> Practice this item AGAIN even though due is tomorrow.
+    extraBtns[2].click();
+    await wait(() => !byId('patch-modal').hidden, 'reopen Patch 7.42 from summary');
+    const sabatonsCard2 = [...document.querySelectorAll('#patch-modal .patch-spotlight-card')]
+      .find(el => el.textContent.includes('Sabatons of Mordiggian'));
+    sabatonsCard2.click();
+    await wait(() => !byId('item-modal').hidden, 'Sabatons modal second time');
+    document.querySelector('#item-modal .item-practice-btn').click();
+    await wait(() => !byId('practice').hidden && document.querySelectorAll('#answers button').length === 4, 'Sabatons re-practice');
+    snap = await window.learningAPI.load();
+    if (snap.study.active?.items[0]?.lesson.id !== 'item:1953' || !snap.study.active.items[0].earlyReview) {
+      throw new Error('Re-practicing already-scheduled Sabatons did not launch earlyReview focus quiz');
+    }
+    [...document.querySelectorAll('#answers button')].find(b => b.textContent === snap.study.active.items[0].question.answer).click();
+    await wait(() => !byId('next').hidden, 'Sabatons early feedback');
+    byId('next').click();
+    await wait(() => !byId('session-summary').hidden, 'Sabatons early summary');
+    snap = await window.learningAPI.load();
+    if (snap.progress['item:1953']?.box !== 1 || snap.progress['item:1953']?.attempts !== 2) {
+      throw new Error('Early voluntary drill inflated SRS box or dropped attempt count');
+    }
+
+    // 3. Practice reverse direction from summary, then click Back (#quiz-end) to return to item modal.
+    const prevDir = snap.study.active.options.direction;
+    const expectedReverseDir = prevDir === 'en' ? 'zh' : 'en';
+    const expectedReversePrompt = expectedReverseDir === 'zh' ? '莫尔迪基安的护足' : 'Sabatons of Mordiggian';
+    document.querySelector('#summary-extra-actions .is-primary').click();
+    await wait(() => !byId('practice').hidden && byId('question').textContent === expectedReversePrompt, 'Sabatons reverse direction quiz');
+    snap = await window.learningAPI.load();
+    if (snap.study.active?.options?.direction !== expectedReverseDir) {
+      throw new Error('Reverse practice did not flip direction to ' + expectedReverseDir);
+    }
+    byId('quiz-end').click();
+    await wait(() => !byId('item-modal').hidden && document.querySelector('#item-modal h2')?.textContent === 'Sabatons of Mordiggian', 'Back returned to Sabatons modal');
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+
+    // 4. Colliding item name (Cloak vs Cloak of Flames / Trickster Cloak), leave unanswered, switch tabs cleanly, then switch to Bloodslinger.
+    const cloakTile = document.querySelector('.shop-icon-tile[data-item-id="item:31"]');
+    if (!cloakTile) throw new Error('Cloak tile missing from Shop Grid');
+    cloakTile.click();
+    await wait(() => !byId('item-modal').hidden, 'Cloak modal');
+    document.querySelector('#item-modal .item-practice-btn').click();
+    await wait(() => !byId('practice').hidden, 'Cloak quiz');
+    snap = await window.learningAPI.load();
+    if (snap.study.active?.items[0]?.lesson.id !== 'item:31') {
+      throw new Error('Cloak collided with another item: ' + snap.study.active?.items[0]?.lesson.id);
+    }
+
+    // Switch to Heroes without answering Cloak: Heroes must not be poisoned by search.
+    byId('heroes-tab').click();
+    if (byId('search').value !== '' || !document.querySelector('#hero-categories .hero-tile')) {
+      throw new Error('Switching to Heroes left stale search or empty hero wall');
+    }
+
+    // Open Bloodslinger from Patch 7.42 while Cloak is still unanswered: must switch cleanly to Bloodslinger!
+    byId('patch-pill').click();
+    await wait(() => !byId('patch-modal').hidden, 'patch modal for Bloodslinger');
+    const bloodCard = [...document.querySelectorAll('#patch-modal .patch-spotlight-card')]
+      .find(el => el.querySelector('strong')?.textContent === 'Bloodslinger');
+    if (!bloodCard) throw new Error('Bloodslinger missing from Patch 7.42 modal');
+    bloodCard.click();
+    await wait(() => !byId('item-modal').hidden, 'Bloodslinger modal');
+    document.querySelector('#item-modal .item-practice-btn').click();
+    await wait(async () => (await window.learningAPI.load()).study.active?.items[0]?.lesson.id === 'item:1942', 'Bloodslinger replaced unanswered Cloak');
+    byId('quiz-end').click();
+    await wait(() => !byId('item-modal').hidden, 'Returned to Bloodslinger modal');
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+
+    // 5. Untranslated archive item (Stone of Recall) must disable its Practice button cleanly.
+    document.querySelector('[data-realm="archive"]').click();
+    await wait(() => document.querySelector('[data-item-id="item:1949"]'), 'Stone of Recall tile in Archive');
+    document.querySelector('[data-item-id="item:1949"]').click();
+    await wait(() => !byId('item-modal').hidden, 'Stone of Recall modal');
+    if (!document.querySelector('#item-modal .item-practice-btn')?.disabled) {
+      throw new Error('Unquizzable archive item Practice button was not disabled');
+    }
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    document.querySelector('[data-realm="shop"]').click();
+
+    // 6. Practice tab shows paused starter banner + honest Hero mastery (0 mastered), resume + end session cleanly.
+    byId('quiz').click();
+    await wait(() => !byId('study-setup').hidden && !byId('paused-banner').hidden, 'Practice setup with paused banner');
+    const heroMastery = document.querySelector('[data-mastery-key="hero"] .mastery-count')?.textContent || '';
+    if (!heroMastery.startsWith('0/')) throw new Error('Heroes mastery inflated with <3 streak: ' + heroMastery);
+    byId('resume-paused').click();
+    await wait(() => !byId('guided-lesson').hidden, 'Resumed paused starter-team session');
+    byId('guide-end').click();
+    await wait(() => !byId('study-setup').hidden && byId('paused-banner').hidden, 'Ended session back to clean Practice setup');
+  })()`);
+  console.log('[Learning] PASS: search, saved-only practice, daily session, reload recovery, mistakes, history, focused Patch 7.42 item practice/re-practice, pause/resume, honest mastery, desktop companion, responsive layout');
 }
