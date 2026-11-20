@@ -7,6 +7,8 @@ export async function runLearningSmoke({ controlCenter, nativeImage, outputDirec
   const page = controlCenter.contents('learning'); await pageLoaded(page);
   const { runLearningImagesSmoke } = await import('./learningImagesSmoke.js');
   await runLearningImagesSmoke({ page, controlCenter, nativeImage, outputDirectory });
+  const { runLearningPatchSmoke } = await import('./learningPatchSmoke.js');
+  await runLearningPatchSmoke({ page, controlCenter, nativeImage, outputDirectory });
   await page.executeJavaScript(`(async () => {
     const byId = id => document.getElementById(id);
     for (let i=0;i<100 && !document.querySelector('#lessons .lesson');i++) await new Promise(r=>setTimeout(r,30));
