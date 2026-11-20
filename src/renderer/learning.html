@@ -110,6 +110,13 @@
     <div id="hero-abilities" class="hero-abilities" translate="no"></div>
   </section>
   <section id="study-setup" class="study-setup" hidden aria-labelledby="study-heading">
+    <div id="paused-banner" class="paused-banner" hidden>
+      <span id="paused-banner-text"></span>
+      <div class="paused-banner-actions">
+        <button id="resume-paused" class="paused-resume-btn" type="button">Resume paused session →</button>
+        <button id="discard-paused" class="paused-discard-btn" type="button">Discard</button>
+      </div>
+    </div>
     <div class="study-setup-head">
       <div>
         <h2 id="study-heading">Your daily practice</h2>
@@ -131,7 +138,10 @@
   <section id="guided-lesson" class="practice" hidden aria-labelledby="guide-heading">
     <div class="quiz-top">
       <p id="guide-counter"></p>
-      <h2 id="guide-heading" class="guide-title-tag">Learn first</h2>
+      <div class="quiz-top-right">
+        <h2 id="guide-heading" class="guide-title-tag">Learn first</h2>
+        <button id="guide-end" class="quiz-end-btn" type="button">× End session</button>
+      </div>
     </div>
     <progress id="guide-progress" value="0" max="5" aria-label="Learning card progress"></progress>
     <div id="guide-card" translate="no"></div>
@@ -144,7 +154,10 @@
   <section id="practice" class="practice" hidden aria-label="Quiz">
     <div class="quiz-top">
       <p id="quiz-counter"></p>
-      <p id="quiz-context" translate="no"></p>
+      <div class="quiz-top-right">
+        <p id="quiz-context" translate="no"></p>
+        <button id="quiz-end" class="quiz-end-btn" type="button">× End session</button>
+      </div>
     </div>
     <progress id="session-progress" value="0" max="5" aria-label="Session progress"></progress>
     <div class="quiz-prompt-row">
@@ -166,7 +179,18 @@
       <div id="quiz-explanation" class="quiz-explanation" translate="no"></div>
     </div>
   </section>
-  <section id="session-summary" class="practice" hidden aria-labelledby="summary-heading"><h2 id="summary-heading">Session complete</h2><p id="summary-score" role="status"></p><p id="summary-tip"></p><h3 id="mistakes-heading">Words to revisit</h3><div id="session-mistakes" translate="no"></div><button id="new-session">Plan another session →</button></section>
+  <section id="session-summary" class="practice" hidden aria-labelledby="summary-heading">
+    <h2 id="summary-heading">Session complete</h2>
+    <p id="summary-score" role="status"></p>
+    <p id="summary-tip"></p>
+    <div id="summary-focus-card" class="summary-focus-card" hidden translate="no"></div>
+    <h3 id="mistakes-heading">Words to revisit</h3>
+    <div id="session-mistakes" translate="no"></div>
+    <div class="summary-actions">
+      <div id="summary-extra-actions" class="summary-extra-actions"></div>
+      <button id="new-session" type="button">Plan another session →</button>
+    </div>
+  </section>
   <section id="library" aria-label="Bilingual lessons"><div id="lessons" class="lessons" translate="no"></div></section>
   <button id="more" hidden>Load more</button>
   <footer>

@@ -163,3 +163,66 @@ test('foreign IPC and invalid options cannot create sessions; failed disk writes
   const loaded = await f.call('load');
   assert.equal(loaded.study.active.answers.length, 0); assert.equal(loaded.progress[item.lesson.id], undefined);
 });
+
+test('focused item practice targets exact ID, supports immediate re-practice, pauses/resumes active sessions, and preserves preferences', async t => {
+  const f = fixture(t);
+  // Start a normal 5-hero session and answer 1 question.
+  const daily = await f.call('start-session', { size: 5, kind: 'hero', direction: 'en' });
+  const dailyActive = daily.study.active;
+  assert.equal((await f.call('answer-session', dailyActive.id, dailyActive.items[0].lesson.id, dailyActive.items[0].question.answer)).ok, true);
+
+  // Launch focused practice on Sabatons of Mordiggian (item:1953): pauses the daily session without overwriting preferences.
+  const focus1 = await f.call('practice-lesson', { lessonId: 'item:1953', direction: 'en' });
+  assert.equal(focus1.ok, true);
+  assert.equal(focus1.study.active.options.scope, 'focus');
+  assert.equal(focus1.study.active.options.focusId, 'item:1953');
+  assert.deepEqual(focus1.study.active.items.map(i => i.lesson.id), ['item:1953']);
+  assert.equal(focus1.study.paused.id, dailyActive.id);
+  assert.equal(focus1.study.paused.answers.length, 1);
+  assert.equal(focus1.study.preferences.kind, 'hero');
+  assert.equal(focus1.study.preferences.search, '');
+
+  // Switching to another focused item (Horn of Battle) before answering replaces the focus drill while keeping the paused daily session.
+  const focus2 = await f.call('practice-lesson', { lessonId: 'item:1950', direction: 'en' });
+  assert.equal(focus2.ok, true);
+  assert.deepEqual(focus2.study.active.items.map(i => i.lesson.id), ['item:1950']);
+  assert.equal(focus2.study.paused.id, dailyActive.id);
+
+  // Answer Horn of Battle correctly (first time -> box 1), then immediately drill it again in reverse direction (earlyReview -> box stays 1).
+  const hornItem = focus2.study.active.items[0];
+  const ans1 = await f.call('answer-session', focus2.study.active.id, 'item:1950', hornItem.question.answer);
+  assert.equal(ans1.ok, true);
+  assert.ok(ans1.study.active.completedAt);
+  assert.equal(ans1.progress['item:1950'].box, 1);
+
+  const focus3 = await f.call('practice-lesson', { lessonId: 'item:1950', direction: 'zh' });
+  assert.equal(focus3.ok, true);
+  assert.equal(focus3.study.active.items[0].lesson.id, 'item:1950');
+  assert.equal(focus3.study.active.items[0].earlyReview, true);
+  const ans2 = await f.call('answer-session', focus3.study.active.id, 'item:1950', focus3.study.active.items[0].question.answer);
+  assert.equal(ans2.progress['item:1950'].box, 1, 'early voluntary drill preserves SRS tier');
+  assert.equal(ans2.progress['item:1950'].attempts, 2);
+
+  // Resume the paused multi-lesson daily session and verify state survives controller reload.
+  const resumed = await f.call('resume-paused');
+  assert.equal(resumed.ok, true);
+  assert.equal(resumed.study.active.id, dailyActive.id);
+  assert.equal(resumed.study.active.answers.length, 1);
+  assert.equal(resumed.study.paused, null);
+
+  // Abandoning an unfinished session clears active while preserving saved progress.
+  const abandoned = await f.call('abandon-session', 'active');
+  assert.equal(abandoned.ok, true);
+  assert.equal(abandoned.study.active, null);
+  f.reload();
+  const afterReload = await f.call('load');
+  assert.equal(afterReload.study.active, null);
+  assert.equal(afterReload.progress['item:1950'].attempts, 2);
+  assert.equal(afterReload.progress[dailyActive.items[0].lesson.id].attempts, 1);
+
+  // Foreign IPC callers are rejected on all new endpoints.
+  const foreign = { sender: {}, senderFrame: f.event.senderFrame };
+  assert.equal((await f.handlers.get('learning:practice-lesson')(foreign, { lessonId: 'item:1953' })).ok, false);
+  assert.equal((await f.handlers.get('learning:abandon-session')(foreign, 'active')).ok, false);
+  assert.equal((await f.handlers.get('learning:resume-paused')(foreign)).ok, false);
+});

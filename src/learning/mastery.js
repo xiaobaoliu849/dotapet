@@ -1,5 +1,8 @@
 import { SPOKEN_PHRASES } from './spokenPhrases.js';
 
+/** Require 3 consecutive correct recalls (7-day Leitner tier) before counting a lesson as mastered. */
+export const MASTERY_BOX_THRESHOLD = 3;
+
 export const MASTERY_PILLARS = [
   { key: 'hero', en: 'Heroes', zh: '英雄', icon: '🦸' },
   { key: 'ability', en: 'Hero Abilities', zh: '英雄技能', icon: '🔮' },
@@ -24,7 +27,7 @@ export function summarizeMastery(lessons = [], progress = {}) {
       if (!entry) continue;
       if (entry.saved) saved++;
       if ((entry.attempts || 0) > 0) practiced++;
-      if ((entry.box || 0) >= 2) mastered++;
+      if ((entry.box || 0) >= MASTERY_BOX_THRESHOLD) mastered++;
     }
     const total = ids.length;
     const pct = total ? Math.round((practiced / total) * 100) : 0;
