@@ -12,6 +12,7 @@
   <header class="academy-topbar">
     <div class="topbar-title-group">
       <h1 id="heading">Dota English</h1>
+      <button id="patch-pill" class="patch-pill" type="button" hidden></button>
       <button id="path-status" class="topbar-status" type="button" disabled></button>
     </div>
     <button id="quick-practice" class="quick-practice-btn" type="button">Practice 5 lessons →</button>
@@ -38,7 +39,10 @@
   </div>
   <div id="status-row" class="status-row">
     <p id="message" role="status" aria-live="polite"></p>
-    <button id="practice-saved" class="practice-saved-btn" type="button" hidden>Practice my saved words →</button>
+    <div class="status-row-actions">
+      <button id="browse-patch-toggle" class="shop-toggle-pill patch-filter-pill" type="button" hidden></button>
+      <button id="practice-saved" class="practice-saved-btn" type="button" hidden>Practice my saved words →</button>
+    </div>
   </div>
   <p id="audio-status" class="audio-status" role="status" aria-live="polite" hidden></p>
   <section id="voice-practice-bar" class="voice-practice-bar" hidden aria-label="Live voice practice">
@@ -99,7 +103,10 @@
   <section id="hero-detail" class="hero-detail" hidden aria-label="Hero bilingual abilities">
     <button id="hero-back" class="hero-back-btn" type="button">← Back to Heroes</button>
     <div id="hero-detail-header" class="hero-detail-header" translate="no"></div>
-    <h3 id="hero-abilities-heading" class="hero-abilities-heading">Abilities (bilingual)</h3>
+    <div class="hero-abilities-head-row">
+      <h3 id="hero-abilities-heading" class="hero-abilities-heading">Abilities (bilingual)</h3>
+      <button id="hero-abilities-patch-toggle" class="shop-toggle-pill patch-filter-pill" type="button" hidden></button>
+    </div>
     <div id="hero-abilities" class="hero-abilities" translate="no"></div>
   </section>
   <section id="study-setup" class="study-setup" hidden aria-labelledby="study-heading">
@@ -170,5 +177,8 @@
     <p id="update-status" role="status" aria-live="polite"></p>
     <details class="footer-notes"><summary id="footer-notes-label">Data &amp; audio notes</summary><p id="freshness">Descriptions are a dated snapshot. Check official patch notes before relying on balance values.</p><p id="audio-source">Audio uses your bilingual library's AI recordings at their original speed. Archive recordings can differ from current lesson text. Missing recordings are marked explicitly.</p></details>
   </footer>
+  <div id="patch-modal" class="item-modal-backdrop patch-modal-backdrop" hidden role="dialog" aria-modal="true" aria-label="Patch changes">
+    <div id="patch-modal-dialog" class="patch-modal-dialog" translate="no"></div>
+  </div>
 </main>
 </body></html>

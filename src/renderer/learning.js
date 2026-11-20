@@ -9,6 +9,9 @@ import {
   SHOP_REALMS, SHOP_SHELVES, SHOP_CATEGORIES, CATEGORY_BY_KEY,
   isActiveItem, classifyItem, realmCounts, groupItemsByCategory, searchShopItems,
 } from '../learning/itemShop.js';
+import {
+  getLessonPatchChange, getHeroPatchSummary, summarizePatchChanges, formatPatchStatLabel,
+} from '../learning/patchChanges.js';
 import { summarizeMastery } from '../learning/mastery.js';
 import { SPOKEN_CATEGORIES, SPOKEN_PHRASES } from '../learning/spokenPhrases.js';
 import { buildHeroPracticePersona, buildPhrasePracticePersona } from '../learning/voicePractice.js';
@@ -43,14 +46,16 @@ if (chinese) {
   $('search').placeholder = '搜索英文 / 中文 / 英雄名…';
 }
 let catalog, heroMeta = {}, progress = {}, study = { preferences: STUDY_DEFAULTS, active: null, history: [] }, mode = 'starter', limit = 24;
-let selectedHeroId = null, attrFilter = 'all', spokenFilter = 'all';
+let selectedHeroId = null, attrFilter = 'all', spokenFilter = 'all', heroPatchOnly = false, heroDetailPatchOnly = false, browsePatchOnly = false;
 let itemRealm = 'shop', itemCategory = 'all', itemQuickFilter = 'all', itemViewMode = 'grid', selectedItemId = null;
 let visibleShopItems = [], lastShopTrigger = null;
+let patchModalTab = 'highlights', patchModalItemRealm = 'all', lastPatchTrigger = null;
 let audioManifest = { entries: {} };
 let itemImages = { entries: {} };
 let itemShopCategories = { entries: {} };
 let itemDetails = { entries: {} };
 let starterEvidence = { entries: {} };
+let patchChanges = { schema: 1, patch: null, removed: [], entries: {} };
 let audioBaseline = { entries: {} };
 let pendingAnswer = false, starting = false, feedbackIndex = null, planning = false, advancing = false;
 const ATTR_GROUPS = [
@@ -79,7 +84,111 @@ function heroAvatarNode(hero, large = false) {
   return wrap;
 }
 const node = (tag, value, className) => { const element = document.createElement(tag); element.textContent = value; if (className) element.className = className; return element; };
-function selection() { return filterLessons(catalog.lessons, { kind: $('kind').value, search: $('search').value, saved: mode === 'saved', progress }); }
+const currentPatch = () => catalog?.patch || patchChanges?.patch || null;
+const hasPatchDiff = () => Boolean(currentPatch() && (Object.keys(patchChanges?.entries || {}).length || (patchChanges?.removed?.length || 0)));
+function formatPatchReleaseDate() {
+  const iso = patchChanges?.releasedAt || catalog?.patchDate;
+  if (!iso) return '';
+  const dt = new Date(iso);
+  if (Number.isNaN(dt.getTime())) return '';
+  return chinese
+    ? dt.toLocaleDateString('zh-CN', { year: 'numeric', month: 'numeric', day: 'numeric' })
+    : dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+function patchBadgeNode(change, { compact = false } = {}) {
+  if (!change) return null;
+  const ver = currentPatch();
+  if (change.type === 'added') {
+    const label = compact
+      ? (ver ? text(`${ver} NEW`, `${ver} 新增`) : text('NEW', '新增'))
+      : (ver ? text(`✨ NEW in ${ver}`, `✨ ${ver} 新增`) : text('✨ NEW', '✨ 新增'));
+    return node('span', label, `patch-badge is-new${compact ? ' is-compact' : ''}`);
+  }
+  if (change.type === 'changed') {
+    const label = compact
+      ? (ver ? text(`${ver} Updated`, `${ver} 改动`) : text('Updated', '改动'))
+      : (ver ? text(`↻ Updated in ${ver}`, `↻ ${ver} 改动`) : text('↻ Updated', '↻ 改动'));
+    return node('span', label, `patch-badge is-changed${compact ? ' is-compact' : ''}`);
+  }
+  return null;
+}
+function buildPatchDiffBox(change, { compact = false } = {}) {
+  if (!change) return null;
+  const ver = currentPatch() || '';
+  const prev = patchChanges?.previousPatch;
+  if (change.type === 'added') {
+    if (compact) return null;
+    const box = node('section', '', 'patch-callout is-new');
+    const head = node('div', '', 'patch-callout-head');
+    head.append(node('span', text(`✨ New in Patch ${ver}`, `✨ ${ver} 版本全新加入`), 'patch-callout-title'));
+    const dateStr = formatPatchReleaseDate();
+    if (dateStr) head.append(node('span', dateStr, 'patch-callout-meta'));
+    box.append(head, node('p', text(
+      'Brand-new addition synced from Valve’s latest official bilingual data feed.',
+      '同步自 Valve 最新官方中英双语数据的新增内容。',
+    ), 'patch-callout-desc'));
+    return box;
+  }
+  if (change.type !== 'changed') return null;
+  const stats = Array.isArray(change.stats) ? change.stats : [];
+  if (compact && !stats.length) return null;
+
+  const box = node('section', '', `patch-callout is-changed${compact ? ' is-compact' : ''}`);
+  const head = node('div', '', 'patch-callout-head');
+  head.append(node('span', text(`↻ Patch ${ver} Changes`, `↻ ${ver} 版本改动`), 'patch-callout-title'));
+  if (prev) head.append(node('span', text(`vs. ${prev}`, `对比 ${prev}`), 'patch-callout-meta'));
+  box.append(head);
+
+  if (stats.length) {
+    const list = node('div', '', 'patch-diff-list');
+    const limitRows = compact ? 3 : stats.length;
+    for (const st of stats.slice(0, limitRows)) {
+      const row = node('div', '', 'patch-diff-row');
+      const labelWrap = node('span', '', 'patch-diff-label');
+      labelWrap.append(node('span', chinese ? (st.zh || st.en) : (st.en || st.zh)));
+      if (st.scope === 'shard' || st.scope === 'scepter') {
+        labelWrap.append(node('span', st.scope === 'shard' ? text('Shard', '魔晶') : text('Scepter', '神杖'), `patch-scope-tag is-${st.scope}`));
+      }
+      const values = node('span', '', 'patch-diff-values');
+      values.append(
+        node('span', st.before, 'diff-before'),
+        node('span', '→', 'diff-arrow'),
+        node('strong', st.after, 'diff-after'),
+      );
+      row.append(labelWrap, values);
+      list.append(row);
+    }
+    if (compact && stats.length > limitRows) {
+      list.append(node('span', text(`+${stats.length - limitRows} more changes`, `还有 ${stats.length - limitRows} 项改动`), 'patch-diff-more'));
+    }
+    box.append(list);
+  } else if (change.textChanged) {
+    box.append(node('p', text(
+      `Description or mechanics wording updated in Patch ${ver}.`,
+      `${ver} 版本更新了文字说明或机制描述。`,
+    ), 'patch-callout-desc'));
+  }
+
+  if (!compact && (change.beforeDescEn || change.beforeDescZh)) {
+    const details = node('details', '', 'patch-before-details');
+    details.append(node('summary', prev
+      ? text(`Compare previous ${prev} description`, `对比 ${prev} 旧版说明`)
+      : text('Compare previous description', '对比改动前旧版说明')));
+    const body = node('div', '', 'patch-before-body');
+    if (change.beforeDescEn) body.append(node('p', change.beforeDescEn, 'patch-before-en'));
+    if (change.beforeDescZh) body.append(node('p', change.beforeDescZh, 'patch-before-zh'));
+    details.append(body);
+    box.append(details);
+  }
+  return box;
+}
+function selection() {
+  const rows = filterLessons(catalog.lessons, { kind: $('kind').value, search: $('search').value, saved: mode === 'saved', progress });
+  if (mode === 'browse' && browsePatchOnly && hasPatchDiff()) {
+    return rows.filter(lesson => Boolean(getLessonPatchChange(patchChanges, lesson.id)));
+  }
+  return rows;
+}
 function syncMasteryActive() {
   const strip = $('mastery-strip');
   if (!strip) return;
@@ -112,7 +221,27 @@ function stats() {
   quickLabel();
   const records = Object.values(progress), attempts = records.reduce((n, r) => n + (r.attempts || 0), 0);
   $('accuracy').textContent = attempts ? Math.round(records.reduce((n, r) => n + (r.correct || 0), 0) / attempts * 100) + '%' : '—';
-  $('source').textContent = `${catalog.sourceLabel} · ${new Date(catalog.fetchedAt).toLocaleString()} · ${catalog.patch || text('Patch number unverified', '未核验版本号')}`;
+  const ver = currentPatch();
+  const patchPill = $('patch-pill');
+  if (patchPill) {
+    if (ver) {
+      patchPill.hidden = false;
+      patchPill.replaceChildren(
+        node('span', '', 'patch-pill-dot'),
+        node('span', text(`Patch ${ver}`, `${ver} 最新`), 'patch-pill-ver'),
+        node('span', hasPatchDiff() ? text('What’s new', '看更新') : text('Latest', '最新版本'), 'patch-pill-cta'),
+      );
+      patchPill.title = text(
+        `Synced to Dota 2 Patch ${ver} — click to inspect new items, hero changes, and stat diffs`,
+        `已同步 Dota 2 最新 ${ver} 版本 — 点击查看新增物品、英雄改动与数值对比`,
+      );
+      patchPill.setAttribute('aria-label', text(`Dota 2 Patch ${ver} — What’s new`, `Dota 2 ${ver} 最新版本 — 查看更新内容`));
+    } else {
+      patchPill.hidden = true;
+    }
+  }
+  const patchText = ver ? text(`Patch ${ver} · Latest`, `${ver} 最新版本`) : text('Patch number unverified', '未核验版本号');
+  $('source').textContent = `${catalog.sourceLabel} · ${patchText} · ${new Date(catalog.fetchedAt).toLocaleString()}`;
   const strip = $('mastery-strip');
   if (strip) {
     strip.replaceChildren();
@@ -188,20 +317,26 @@ function saveButton(lesson, onUpdated) {
 function renderHeroBrowser() {
   const query = $('search').value.trim().toLocaleLowerCase();
   const allHeroes = catalog.lessons.filter(l => l.kind === 'hero');
+  const patchByHero = new Map(allHeroes.map(h => [h.id, getHeroPatchSummary(patchChanges, h, heroAbilities(h))]));
+  const patchHeroesCount = allHeroes.filter(h => patchByHero.get(h.id)?.totalCount > 0).length;
   const matching = allHeroes.filter(h => {
     if (attrFilter !== 'all' && heroAttr(h) !== attrFilter) return false;
+    if (heroPatchOnly && !(patchByHero.get(h.id)?.totalCount > 0)) return false;
     if (!query) return true;
     return [h.en, h.zh, h.descriptionEn, h.descriptionZh].some(s => (s || '').toLocaleLowerCase().includes(query))
       || heroAbilities(h).some(a => [a.en, a.zh].some(s => (s || '').toLocaleLowerCase().includes(query)));
   });
+  const ver = currentPatch();
   $('message').textContent = matching.length
-    ? text(`${matching.length} heroes across 4 attributes · Click any hero to view bilingual abilities.`, `共 ${matching.length} 位英雄 · 点击任意英雄查看中英双语技能与发音。`)
+    ? heroPatchOnly && ver
+      ? text(`${matching.length} heroes changed in Patch ${ver} · Click any hero to inspect exact ability diffs.`, `${ver} 版本共 ${matching.length} 位英雄有技能改动 · 点击查看具体新旧数值对比。`)
+      : text(`${matching.length} heroes across 4 attributes · Click any hero to view bilingual abilities.`, `共 ${matching.length} 位英雄 · 点击任意英雄查看中英双语技能与发音。`)
     : text('No matching heroes found.', '未找到匹配的英雄，请更换搜索词。');
   const filters = $('attr-filters');
   filters.replaceChildren();
   const allBtn = node('button', text(`All (${allHeroes.length})`, `全部 (${allHeroes.length})`), 'attr-pill');
-  allBtn.setAttribute('aria-pressed', String(attrFilter === 'all'));
-  allBtn.onclick = () => { attrFilter = 'all'; render(); };
+  allBtn.setAttribute('aria-pressed', String(attrFilter === 'all' && !heroPatchOnly));
+  allBtn.onclick = () => { attrFilter = 'all'; heroPatchOnly = false; render(); };
   filters.append(allBtn);
   for (const group of ATTR_GROUPS) {
     const count = allHeroes.filter(h => heroAttr(h) === group.key).length;
@@ -209,6 +344,13 @@ function renderHeroBrowser() {
     btn.setAttribute('aria-pressed', String(attrFilter === group.key));
     btn.onclick = () => { attrFilter = group.key; render(); };
     filters.append(btn);
+  }
+  if (ver && patchHeroesCount > 0) {
+    const patchBtn = node('button', text(`✨ ${ver} Changes (${patchHeroesCount})`, `✨ ${ver} 改动 (${patchHeroesCount})`), 'attr-pill patch-filter-pill');
+    patchBtn.type = 'button';
+    patchBtn.setAttribute('aria-pressed', String(heroPatchOnly));
+    patchBtn.onclick = () => { heroPatchOnly = !heroPatchOnly; render(); };
+    filters.append(patchBtn);
   }
   const container = $('hero-categories');
   container.replaceChildren();
@@ -221,13 +363,21 @@ function renderHeroBrowser() {
     const grid = node('div', '', 'hero-grid');
     for (const hero of groupHeroes) {
       const abilitiesCount = heroAbilities(hero).length;
-      const tile = node('button', '', `hero-tile attr-${group.key}`);
+      const heroPatch = patchByHero.get(hero.id);
+      const tile = node('button', '', `hero-tile attr-${group.key}${heroPatch?.addedCount ? ' is-patch-new' : ''}`);
       tile.type = 'button';
       const info = node('span', '', 'hero-tile-info');
-      info.append(node('strong', hero.en), node('span', hero.zh, 'hero-tile-zh'), node('span', text(`${abilitiesCount} abilities`, `${abilitiesCount} 个技能`), 'hero-tile-meta'));
+      const metaRow = node('span', '', 'hero-tile-meta-row');
+      metaRow.append(node('span', text(`${abilitiesCount} abilities`, `${abilitiesCount} 个技能`), 'hero-tile-meta'));
+      if (ver && heroPatch?.addedCount > 0) {
+        metaRow.append(node('span', text(`${ver} NEW`, `${ver} 新技能`), 'hero-patch-chip is-new'));
+      } else if (ver && heroPatch?.totalCount > 0) {
+        metaRow.append(node('span', text(`${ver} · ${heroPatch.totalCount}`, `${ver} 改${heroPatch.totalCount}`), 'hero-patch-chip is-changed'));
+      }
+      info.append(node('strong', hero.en), node('span', hero.zh, 'hero-tile-zh'), metaRow);
       tile.append(heroAvatarNode(hero, false), info);
       if (progress[hero.id]?.saved) tile.append(node('span', '★', 'hero-tile-saved'));
-      tile.onclick = () => { selectedHeroId = hero.id; render(); $('hero-detail').scrollIntoView({ block: 'start' }); };
+      tile.onclick = () => { selectedHeroId = hero.id; heroDetailPatchOnly = false; render(); $('hero-detail').scrollIntoView({ block: 'start' }); };
       grid.append(tile);
     }
     section.append(head, grid);
@@ -238,12 +388,31 @@ function renderHeroDetail(hero) {
   const attrKey = heroAttr(hero);
   const group = ATTR_GROUPS.find(g => g.key === attrKey) || ATTR_GROUPS[2];
   const abilities = heroAbilities(hero);
+  const heroPatch = getHeroPatchSummary(patchChanges, hero, abilities);
+  const ver = currentPatch();
   $('message').textContent = text(`${hero.en} (${hero.zh}) · ${abilities.length} bilingual abilities`, `${hero.zh} (${hero.en}) · 共 ${abilities.length} 个双语技能`);
   const header = $('hero-detail-header');
   header.replaceChildren();
   const topRow = node('div', '', 'hero-detail-top');
   const titleWrap = node('div', '', 'hero-detail-title');
-  titleWrap.append(node('span', `${group.icon} ${group.en} · ${group.zh}`, `topic attr-badge-${attrKey}`), node('h2', `${hero.en} · ${hero.zh}`));
+  const badgeRow = node('div', '', 'hero-detail-badges');
+  badgeRow.append(node('span', `${group.icon} ${group.en} · ${group.zh}`, `topic attr-badge-${attrKey}`));
+  if (ver && heroPatch.totalCount > 0) {
+    const parts = [];
+    if (heroPatch.addedCount) parts.push(text(`+${heroPatch.addedCount} New`, `新增 ${heroPatch.addedCount}`));
+    if (heroPatch.changedCount) parts.push(text(`${heroPatch.changedCount} Updated`, `调整 ${heroPatch.changedCount}`));
+    if (heroPatch.removedAbilities.length) parts.push(text(`-${heroPatch.removedAbilities.length} Removed`, `移除 ${heroPatch.removedAbilities.length}`));
+    const jumpPill = node('button', `${text(`Patch ${ver}`, `${ver} 版本`)} · ${parts.join(' · ')} ↓`, `patch-badge hero-patch-jump ${heroPatch.addedCount ? 'is-new' : 'is-changed'}`);
+    jumpPill.type = 'button';
+    jumpPill.title = text(`Show only Patch ${ver} ability changes`, `筛选并定位到 ${ver} 版本变动技能`);
+    jumpPill.onclick = () => {
+      heroDetailPatchOnly = true;
+      renderHeroDetail(hero);
+      $('hero-abilities-heading')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    badgeRow.append(jumpPill);
+  }
+  titleWrap.append(badgeRow, node('h2', `${hero.en} · ${hero.zh}`));
   topRow.append(heroAvatarNode(hero, true), titleWrap);
   header.append(topRow);
   if (hero.descriptionEn) header.append(node('p', hero.descriptionEn, 'description'));
@@ -270,12 +439,38 @@ function renderHeroDetail(hero) {
   heroActions.append(audioButton(hero), saveButton(hero, render), talkBtn);
   header.append(heroActions);
 
+  const patchToggle = $('hero-abilities-patch-toggle');
+  if (patchToggle) {
+    const hasHeroChanges = Boolean(ver && heroPatch.totalCount > 0);
+    if (!hasHeroChanges) heroDetailPatchOnly = false;
+    patchToggle.hidden = !hasHeroChanges;
+    if (hasHeroChanges) {
+      patchToggle.textContent = text(`✨ ${ver} changes only (${heroPatch.totalCount})`, `✨ 仅看 ${ver} 改动 (${heroPatch.totalCount})`);
+      patchToggle.setAttribute('aria-pressed', String(heroDetailPatchOnly));
+      patchToggle.onclick = () => { heroDetailPatchOnly = !heroDetailPatchOnly; renderHeroDetail(hero); };
+    }
+  }
+
   const list = $('hero-abilities');
   list.replaceChildren();
-  for (const ability of abilities) {
-    const card = node('article', '', 'lesson ability-bilingual-card');
+  const visibleAbilities = heroDetailPatchOnly
+    ? abilities
+      .filter(ab => Boolean(getLessonPatchChange(patchChanges, ab.id)))
+      .sort((a, b) => {
+        const ta = getLessonPatchChange(patchChanges, a.id)?.type === 'added' ? 0 : 1;
+        const tb = getLessonPatchChange(patchChanges, b.id)?.type === 'added' ? 0 : 1;
+        return ta - tb;
+      })
+    : abilities;
+  for (const ability of visibleAbilities) {
+    const abChange = getLessonPatchChange(patchChanges, ability.id);
+    const card = node('article', '', `lesson ability-bilingual-card${abChange?.type === 'added' ? ' is-patch-new' : abChange?.type === 'changed' ? ' is-patch-changed' : ''}`);
     const cardHead = node('div', '', 'ability-card-head');
-    cardHead.append(node('h4', ability.en), node('span', ability.zh, 'ability-zh-name'));
+    const titleGroup = node('div', '', 'ability-head-title');
+    titleGroup.append(node('h4', ability.en));
+    const badge = patchBadgeNode(abChange);
+    if (badge) titleGroup.append(badge);
+    cardHead.append(titleGroup, node('span', ability.zh, 'ability-zh-name'));
     const pills = node('div', '', 'ability-pills');
     const cds = ability.mechanics?.cooldowns?.filter(n => n > 0);
     const manas = ability.mechanics?.mana_costs?.filter(n => n > 0);
@@ -283,12 +478,25 @@ function renderHeroDetail(hero) {
     if (manas?.length) pills.append(node('span', `Mana: ${[...new Set(manas)].join(' / ')}`, 'mech-pill'));
     card.append(cardHead);
     if (pills.childElementCount) card.append(pills);
+    const diffBox = buildPatchDiffBox(abChange);
+    if (diffBox) card.append(diffBox);
     if (ability.descriptionEn) card.append(node('p', ability.descriptionEn, 'description'));
     if (ability.descriptionZh) card.append(node('p', ability.descriptionZh, 'description zh-block'));
     const actions = node('div', '', 'actions');
     actions.append(audioButton(ability), saveButton(ability, render));
     card.append(actions);
     list.append(card);
+  }
+  if (heroPatch.removedAbilities.length) {
+    const removedBox = node('article', '', 'ability-removed-card');
+    removedBox.append(node('h4', text(`Removed in Patch ${ver || ''}`, `${ver || ''} 版本已移除技能`)));
+    const chips = node('div', '', 'removed-ability-list');
+    for (const rem of heroPatch.removedAbilities) {
+      const chip = node('span', rem.zh && rem.zh !== rem.en ? `${rem.en} · ${rem.zh}` : rem.en, 'removed-ability-chip');
+      chips.append(chip);
+    }
+    removedBox.append(chips);
+    list.append(removedBox);
   }
 }
 function renderSpokenBrowser() {
@@ -399,6 +607,8 @@ function showShopHoverTip(lesson, anchor) {
   const cat = CATEGORY_BY_KEY[info.category];
   const cue = itemCoaching(lesson);
   const cost = lesson.mechanics?.item_cost || 0;
+  const change = getLessonPatchChange(patchChanges, lesson.id);
+  const ver = currentPatch();
   tip.replaceChildren();
   const top = node('div', '', 'shop-tip-top');
   top.append(itemImageNode(lesson));
@@ -407,9 +617,28 @@ function showShopHoverTip(lesson, anchor) {
   const badges = node('div', '', 'shop-tip-badges');
   if (cat) badges.append(node('span', text(cat.en, cat.zh), 'shop-tip-cat'));
   if (cost > 0) badges.append(node('span', `🪙 ${cost}g`, 'shop-tip-cost'));
+  if (ver && change?.type === 'added') badges.append(node('span', text(`✨ ${ver} NEW`, `✨ ${ver} 新增`), 'shop-tip-patch is-new'));
+  else if (ver && change?.type === 'changed') badges.append(node('span', text(`↻ ${ver}`, `↻ ${ver} 改动`), 'shop-tip-patch is-changed'));
   meta.append(badges);
   top.append(meta);
   tip.append(top);
+  if (change?.type === 'added') {
+    tip.append(node('p', text(`New item introduced in Patch ${ver || ''}.`, `${ver || ''} 版本全新加入物品。`), 'shop-tip-patch-note'));
+  } else if (change?.type === 'changed' && change.stats?.length) {
+    const diffWrap = node('div', '', 'shop-tip-diffs');
+    for (const st of change.stats.slice(0, 2)) {
+      const row = node('div', '', 'shop-tip-diff-row');
+      row.append(
+        node('span', formatPatchStatLabel(st, chinese), 'shop-tip-diff-label'),
+        node('span', `${st.before} → ${st.after}`, 'shop-tip-diff-val'),
+      );
+      diffWrap.append(row);
+    }
+    if (change.stats.length > 2) {
+      diffWrap.append(node('span', text(`+${change.stats.length - 2} more in ${ver || ''}`, `还有 ${change.stats.length - 2} 项改动`), 'shop-tip-diff-more'));
+    }
+    tip.append(diffWrap);
+  }
   if (cue?.aliases?.length) {
     tip.append(node('p', text('Aliases: ', '简称：') + cue.aliases.slice(0, 4).join(' · '), 'shop-tip-aliases'));
   }
@@ -540,13 +769,16 @@ function renderGuide(active) {
   $('guide-next').textContent = index === active.items.length - 1 ? text('Ready: recall in English →', '准备好了，回忆英文 →') : text('Next learning card →', '下一张学习卡 →');
 }
 function buildLessonCard(lesson, onUpdated) {
-  const card = node('article', '', 'lesson');
+  const change = getLessonPatchChange(patchChanges, lesson.id);
+  const card = node('article', '', `lesson${change?.type === 'added' ? ' is-patch-new' : ''}`);
   card.dataset.lessonId = lesson.id;
-  const topicWrap = node('div', '', '');
+  const topicWrap = node('div', '', 'lesson-topic-row');
   topicWrap.append(node('span', labels[lesson.kind], 'topic'));
   if (lesson.kind === 'item' && lesson.mechanics?.item_cost) {
     topicWrap.append(node('span', `🪙 ${lesson.mechanics.item_cost}g`, 'item-cost-pill'));
   }
+  const badge = patchBadgeNode(change, { compact: true });
+  if (badge) topicWrap.append(badge);
   card.append(topicWrap);
   if (lesson.parent) card.append(node('p', lesson.parent, 'parent'));
   const title = node('div', '', 'lesson-title');
@@ -579,6 +811,8 @@ function buildLessonCard(lesson, onUpdated) {
   }
   if (lesson.descriptionEn) card.append(node('p', lesson.descriptionEn, 'description'));
   else if (extra?.loreEn) card.append(node('p', extra.loreEn, 'description item-lore-inline'));
+  const compactDiff = buildPatchDiffBox(change, { compact: true });
+  if (compactDiff) card.append(compactDiff);
   const translation = node('details', '', 'translation');
   const zhText = lesson.descriptionZh || extra?.loreZh || (extra?.stats?.length ? extra.stats.map(s => `${s.value} ${s.zh}`).join('，') : lesson.zh);
   translation.append(node('summary', text('Chinese explanation', '中文说明')), node('p', zhText, 'description'));
@@ -640,16 +874,25 @@ function openItemModal(itemId, trigger = null) {
   dialog.focus({ preventScroll: true });
 }
 function buildShopIconTile(lesson, cat) {
-  const tile = node('button', '', 'shop-icon-tile');
+  const change = getLessonPatchChange(patchChanges, lesson.id);
+  const tile = node('button', '', `shop-icon-tile${change?.type === 'added' ? ' is-patch-new' : change?.type === 'changed' ? ' is-patch-changed' : ''}`);
   tile.type = 'button';
   tile.dataset.itemId = lesson.id;
   const cost = lesson.mechanics?.item_cost || 0;
-  tile.setAttribute('aria-label', `${lesson.en} · ${lesson.zh}${cost > 0 ? ` · ${cost}g` : ''}`);
+  const ver = currentPatch();
+  const patchAria = change?.type === 'added' ? ` · ${ver || ''} NEW` : change?.type === 'changed' ? ` · ${ver || ''} Updated` : '';
+  tile.setAttribute('aria-label', `${lesson.en} · ${lesson.zh}${cost > 0 ? ` · ${cost}g` : ''}${patchAria}`);
   tile.setAttribute('aria-pressed', String(selectedItemId === lesson.id));
   if (selectedItemId === lesson.id) tile.classList.add('is-selected');
   if (cat?.accent) tile.style.setProperty('--tile-accent', cat.accent);
   const artWrap = node('span', '', 'shop-icon-art');
   artWrap.append(itemImageNode(lesson));
+  if (change?.type === 'added') artWrap.append(node('span', text('NEW', '新'), 'shop-tile-new'));
+  else if (change?.type === 'changed') {
+    const dot = node('span', '', 'shop-tile-updated-dot');
+    dot.setAttribute('aria-hidden', 'true');
+    artWrap.append(dot);
+  }
   if (progress[lesson.id]?.saved) artWrap.append(node('span', '★', 'shop-tile-star'));
   tile.append(artWrap);
   tile.append(node('span', cost > 0 ? `${cost}g` : text('Free', '免费'), `shop-icon-cost${cost > 0 ? '' : ' is-free'}`));
@@ -664,7 +907,9 @@ function buildItemNameTile(lesson, { showCategory = false } = {}) {
   const info = classifyItem(lesson, itemShopCategories);
   const cat = CATEGORY_BY_KEY[info.category];
   const cost = lesson.mechanics?.item_cost || 0;
-  const tile = node('button', '', 'item-name-tile');
+  const change = getLessonPatchChange(patchChanges, lesson.id);
+  const ver = currentPatch();
+  const tile = node('button', '', `item-name-tile${change?.type === 'added' ? ' is-patch-new' : ''}`);
   tile.type = 'button';
   tile.dataset.itemId = lesson.id;
   tile.setAttribute('aria-pressed', String(selectedItemId === lesson.id));
@@ -676,6 +921,8 @@ function buildItemNameTile(lesson, { showCategory = false } = {}) {
   const meta = node('span', '', 'item-name-meta');
   if (cost > 0) meta.append(node('span', `🪙 ${cost}g`, 'item-mini-cost'));
   if (showCategory && cat) meta.append(node('span', text(cat.en, cat.zh), 'item-mini-cat'));
+  if (ver && change?.type === 'added') meta.append(node('span', text(`${ver} NEW`, `${ver} 新增`), 'patch-mini-badge is-new'));
+  else if (ver && change?.type === 'changed') meta.append(node('span', text(`${ver} Updated`, `${ver} 改动`), 'patch-mini-badge is-changed'));
   if (meta.childElementCount) body.append(meta);
   tile.append(body);
   if (progress[lesson.id]?.saved) tile.append(node('span', '★', 'item-name-saved'));
@@ -746,6 +993,9 @@ function buildItemStudyCard(lesson, { inModal = false } = {}) {
   if (lesson.mechanics?.item_cost) {
     nameRow.append(node('span', `🪙 ${lesson.mechanics.item_cost}g`, 'item-cost-pill'));
   }
+  const itemChange = getLessonPatchChange(patchChanges, lesson.id);
+  const itemBadge = patchBadgeNode(itemChange);
+  if (itemBadge) nameRow.append(itemBadge);
   titleWrap.append(nameRow, node('p', lesson.zh, 'zh'));
   const cue = itemCoaching(lesson);
   if (cue?.aliases?.length) {
@@ -794,6 +1044,8 @@ function buildItemStudyCard(lesson, { inModal = false } = {}) {
   leftCol.append(actions);
 
   const rightCol = node('div', '', 'item-inspector-col');
+  const itemDiffBox = buildPatchDiffBox(itemChange);
+  if (itemDiffBox) rightCol.append(itemDiffBox);
   const details = resolveItemDetails(lesson, itemDetails);
   if (details.stats.length) {
     const statSection = node('section', '', 'item-detail-section item-stats-section');
@@ -875,6 +1127,16 @@ function renderItemBrowser() {
   // 2. Quick filter & view controls
   const quickEl = $('item-quick-controls');
   quickEl.replaceChildren();
+  const ver = currentPatch();
+  if (ver && hasPatchDiff()) {
+    const patchToggle = node('button', text(`✨ ${ver}`, `✨ ${ver}`), 'shop-toggle-pill patch-filter-pill');
+    patchToggle.type = 'button';
+    patchToggle.dataset.filter = 'patch';
+    patchToggle.title = text(`Show only new & changed items in Patch ${ver}`, `仅显示 ${ver} 版本新增或改动的物品`);
+    patchToggle.setAttribute('aria-pressed', String(itemQuickFilter === 'patch'));
+    patchToggle.onclick = () => { itemQuickFilter = itemQuickFilter === 'patch' ? 'all' : 'patch'; renderItemBrowser(); };
+    quickEl.append(patchToggle);
+  }
   const activeToggle = node('button', text('⚡ Active', '⚡ 主动'), 'shop-toggle-pill');
   activeToggle.type = 'button';
   activeToggle.setAttribute('aria-pressed', String(itemQuickFilter === 'active'));
@@ -902,6 +1164,7 @@ function renderItemBrowser() {
   if (showViewToggle) quickEl.append(viewWrap);
 
   const applyQuickFilter = list => list.filter(item => {
+    if (itemQuickFilter === 'patch' && !getLessonPatchChange(patchChanges, item.id)) return false;
     if (itemQuickFilter === 'active' && !isActiveItem(item)) return false;
     if (itemQuickFilter === 'saved' && !progress[item.id]?.saved) return false;
     return true;
@@ -1011,12 +1274,13 @@ function renderItemBrowser() {
 
       const cols = node('div', '', `shop-columns shop-columns-${shelfKey}`);
       for (const { category, items } of shelfGroups) {
-        const col = node('div', '', 'shop-column');
+        const col = node('div', '', `shop-column${items.length ? '' : ' is-empty'}`);
         col.dataset.category = category.key;
         col.style.setProperty('--cat-accent', category.accent);
         col.style.setProperty('--cat-tint', category.tint);
         const colHead = node('button', '', 'shop-col-head');
         colHead.type = 'button';
+        colHead.disabled = !items.length;
         colHead.title = text(`Focus ${category.en} (${items.length})`, `展开查看${category.zh} (${items.length})`);
         const iconBadge = node('span', '', 'shop-col-icon');
         iconBadge.append(shopIconSvg(category.icon, 14));
@@ -1026,9 +1290,13 @@ function renderItemBrowser() {
         colHead.onclick = () => { itemCategory = category.key; renderItemBrowser(); };
         col.append(colHead);
 
-        const iconGrid = node('div', '', 'shop-col-icons');
-        for (const item of items) iconGrid.append(buildShopIconTile(item, category));
-        col.append(iconGrid);
+        if (items.length) {
+          const iconGrid = node('div', '', 'shop-col-icons');
+          for (const item of items) iconGrid.append(buildShopIconTile(item, category));
+          col.append(iconGrid);
+        } else {
+          col.append(node('p', '—', 'shop-col-empty'));
+        }
         cols.append(col);
       }
       shelfEl.append(cols);
@@ -1070,6 +1338,396 @@ function renderItemBrowser() {
     board.append(section);
   }
 }
+function closePatchModal({ restoreFocus = true } = {}) {
+  const modal = $('patch-modal');
+  if (!modal || modal.hidden) return;
+  modal.hidden = true;
+  $('patch-modal-dialog').replaceChildren();
+  if (restoreFocus && lastPatchTrigger?.isConnected) {
+    lastPatchTrigger.focus({ preventScroll: true });
+  }
+  lastPatchTrigger = null;
+}
+function jumpToItemFromPatch(item) {
+  const info = classifyItem(item, itemShopCategories);
+  closePatchModal({ restoreFocus: false });
+  $('search').value = '';
+  itemRealm = info.realm;
+  itemCategory = 'all';
+  itemQuickFilter = 'all';
+  mode = 'items';
+  render();
+  openItemModal(item.id, null);
+}
+function jumpToHeroFromPatch(heroId) {
+  if (!heroId) return;
+  closePatchModal({ restoreFocus: false });
+  $('search').value = '';
+  attrFilter = 'all';
+  heroPatchOnly = false;
+  heroDetailPatchOnly = false;
+  selectedHeroId = heroId;
+  mode = 'heroes';
+  render();
+  $('hero-detail')?.scrollIntoView({ block: 'start' });
+}
+function openPatchModal(trigger = null, tab = null) {
+  if (!catalog || !currentPatch()) return;
+  hideShopHoverTip();
+  closeItemModal({ restoreFocus: false });
+  if (trigger) lastPatchTrigger = trigger;
+  if (tab) patchModalTab = tab;
+  renderPatchModal();
+  const modal = $('patch-modal');
+  const dialog = $('patch-modal-dialog');
+  modal.hidden = false;
+  dialog.scrollTop = 0;
+  dialog.tabIndex = -1;
+  dialog.focus({ preventScroll: true });
+}
+function renderPatchModal() {
+  const dialog = $('patch-modal-dialog');
+  if (!dialog || !catalog) return;
+  const ver = currentPatch();
+  const summary = summarizePatchChanges(patchChanges, catalog.lessons, itemShopCategories);
+  const dateStr = formatPatchReleaseDate();
+  const prev = summary.previousPatch;
+  const activeNewItemsCount = summary.newShopItems.length + summary.newNeutralItems.length;
+  const heroesByParent = new Map(
+    catalog.lessons.filter(l => l.kind === 'hero').map(h => [`${h.en} · ${h.zh}`, h]),
+  );
+
+  dialog.replaceChildren();
+  const shell = node('article', '', 'patch-modal-card');
+
+  // 1. Emerald Hero Banner
+  const hero = node('header', '', 'patch-modal-hero');
+  const heroTop = node('div', '', 'patch-modal-hero-top');
+  const heroCopy = node('div', '', 'patch-modal-hero-copy');
+  const eyebrow = node('span', '', 'patch-modal-eyebrow');
+  eyebrow.append(node('span', '', 'patch-live-dot'), node('span', text('LATEST VERSION', '当前最新版本')));
+  const metaParts = [
+    text('Synced from Valve official bilingual feed', '已同步 Valve 官方中英双语数据'),
+    prev ? text(`vs. ${prev}`, `对比 ${prev}`) : '',
+    dateStr ? text(`Released ${dateStr}`, `${dateStr} 发布`) : '',
+  ].filter(Boolean);
+  heroCopy.append(
+    eyebrow,
+    node('h2', text(`Dota 2 Patch ${ver} — What Changed`, `Dota 2 ${ver} 版本更新速览`)),
+    node('p', metaParts.join(' · '), 'patch-modal-subtitle'),
+  );
+  const closeBtn = node('button', '×', 'patch-modal-close');
+  closeBtn.type = 'button';
+  closeBtn.title = text('Close (Esc)', '关闭 (Esc)');
+  closeBtn.setAttribute('aria-label', text('Close patch overview', '关闭版本更新速览'));
+  closeBtn.onclick = () => closePatchModal();
+  heroTop.append(heroCopy, closeBtn);
+  hero.append(heroTop);
+
+  const statGrid = node('div', '', 'patch-stat-grid');
+  const makeStatTile = (value, label, sub, targetTab, anchorId = null) => {
+    const btn = node('button', '', 'patch-stat-tile');
+    btn.type = 'button';
+    btn.append(node('strong', value), node('span', label, 'patch-stat-label'), node('span', sub, 'patch-stat-sub'));
+    btn.onclick = () => {
+      patchModalTab = targetTab;
+      renderPatchModal();
+      if (anchorId) {
+        requestAnimationFrame(() => { $(anchorId)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+      }
+    };
+    return btn;
+  };
+  statGrid.append(
+    makeStatTile(
+      `+${activeNewItemsCount}`,
+      text('New Active Items', '新增可用物品'),
+      text(`${summary.newShopItems.length} Shop · ${summary.newNeutralItems.length} Neutral`, `商店 ${summary.newShopItems.length} · 中立 ${summary.newNeutralItems.length}`),
+      'highlights',
+    ),
+    makeStatTile(
+      String(summary.changedItems.length),
+      text('Items Updated', '物品数值改动'),
+      text(`${summary.changedByRealm.shop.length} Shop · ${summary.changedByRealm.neutral.length} Neutral`, `商店 ${summary.changedByRealm.shop.length} · 中立 ${summary.changedByRealm.neutral.length}`),
+      'items',
+    ),
+    makeStatTile(
+      `+${summary.newAbilities.length} / -${summary.removedAbilities.length}`,
+      text('Abilities Added / Removed', '英雄技能增删'),
+      text(`${summary.changedAbilities.length} abilities tweaked`, `另有 ${summary.changedAbilities.length} 个技能调整`),
+      'highlights',
+      'patch-sec-abilities',
+    ),
+    makeStatTile(
+      String(summary.affectedHeroes.length),
+      text('Heroes Updated', '涉及改动英雄'),
+      text(`of ${catalog.lessons.filter(l => l.kind === 'hero').length} total heroes`, `共 ${catalog.lessons.filter(l => l.kind === 'hero').length} 位英雄`),
+      'heroes',
+    ),
+  );
+  hero.append(statGrid);
+  shell.append(hero);
+
+  // 2. Modal Tab Bar
+  const tabBar = node('div', '', 'patch-modal-tabs');
+  tabBar.setAttribute('role', 'tablist');
+  for (const [key, enLabel, zhLabel] of [
+    ['highlights', '✨ Highlights', '✨ 核心亮点'],
+    ['items', `🛡️ Changed Items (${summary.changedItems.length})`, `🛡️ 物品改动 (${summary.changedItems.length})`],
+    ['heroes', `⚔️ Changed Heroes (${summary.affectedHeroes.length})`, `⚔️ 英雄改动 (${summary.affectedHeroes.length})`],
+  ]) {
+    const tabBtn = node('button', text(enLabel, zhLabel), 'patch-modal-tab');
+    tabBtn.type = 'button';
+    tabBtn.role = 'tab';
+    tabBtn.dataset.patchTab = key;
+    tabBtn.setAttribute('aria-selected', String(patchModalTab === key));
+    tabBtn.setAttribute('aria-pressed', String(patchModalTab === key));
+    tabBtn.onclick = () => { patchModalTab = key; renderPatchModal(); };
+    tabBar.append(tabBtn);
+  }
+  shell.append(tabBar);
+
+  // 3. Scrollable Tab Body
+  const body = node('div', '', 'patch-modal-body');
+
+  if (patchModalTab === 'highlights') {
+    if (summary.newShopItems.length) {
+      const sec = node('section', '', 'patch-section');
+      sec.append(node('h3', text(`New Shop Items (${summary.newShopItems.length})`, `商店全新物品 (${summary.newShopItems.length})`)));
+      const grid = node('div', '', 'patch-spotlight-grid');
+      for (const item of summary.newShopItems) {
+        const info = classifyItem(item, itemShopCategories);
+        const cat = CATEGORY_BY_KEY[info.category];
+        const card = node('button', '', 'patch-spotlight-card');
+        card.type = 'button';
+        card.append(itemImageNode(item));
+        const copy = node('span', '', 'patch-spotlight-copy');
+        copy.append(node('strong', item.en));
+        if (item.zh && item.zh !== item.en) copy.append(node('span', item.zh, 'patch-spotlight-zh'));
+        const meta = node('span', '', 'patch-spotlight-meta');
+        if (item.mechanics?.item_cost) meta.append(node('span', `🪙 ${item.mechanics.item_cost}g`, 'item-mini-cost'));
+        if (cat) meta.append(node('span', text(cat.en, cat.zh), 'item-mini-cat'));
+        meta.append(node('span', text('NEW', '新增'), 'patch-mini-badge is-new'));
+        copy.append(meta);
+        card.append(copy, node('span', '→', 'patch-spotlight-arrow'));
+        card.onclick = () => jumpToItemFromPatch(item);
+        grid.append(card);
+      }
+      sec.append(grid);
+      body.append(sec);
+    }
+
+    if (summary.newNeutralItems.length) {
+      const sec = node('section', '', 'patch-section');
+      sec.append(node('h3', text(`New Neutral Items (${summary.newNeutralItems.length})`, `全新中立物品 (${summary.newNeutralItems.length})`)));
+      const grid = node('div', '', 'patch-spotlight-grid');
+      for (const item of summary.newNeutralItems) {
+        const info = classifyItem(item, itemShopCategories);
+        const cat = CATEGORY_BY_KEY[info.category];
+        const card = node('button', '', 'patch-spotlight-card');
+        card.type = 'button';
+        card.append(itemImageNode(item));
+        const copy = node('span', '', 'patch-spotlight-copy');
+        copy.append(node('strong', item.en));
+        if (item.zh && item.zh !== item.en) copy.append(node('span', item.zh, 'patch-spotlight-zh'));
+        const meta = node('span', '', 'patch-spotlight-meta');
+        if (cat) meta.append(node('span', `${text(cat.en, cat.zh)}${cat.hintEn ? ` · ${text(cat.hintEn, cat.hintZh)}` : ''}`, 'item-mini-cat'));
+        meta.append(node('span', text('NEW', '新增'), 'patch-mini-badge is-new'));
+        copy.append(meta);
+        card.append(copy, node('span', '→', 'patch-spotlight-arrow'));
+        card.onclick = () => jumpToItemFromPatch(item);
+        grid.append(card);
+      }
+      sec.append(grid);
+      body.append(sec);
+    }
+
+    // Neutral Tier 5 → 4 Rework callout
+    const neutralCallout = node('div', '', 'patch-rework-banner');
+    const neutralCopy = node('div', '', 'patch-rework-copy');
+    neutralCopy.append(
+      node('strong', text('Neutral Items streamlined to 4 Tiers', '中立物品精简为 4 个等级')),
+      node('p', text(
+        '0:00 / 15:00 / 30:00 / 50:00 peak tier (surviving Tier 5 artifacts moved into Tier 4) + 19 Neutral Enchantments.',
+        '0:00 / 15:00 / 30:00 / 50:00 终极档位（保留的原 5 级圣物合并至第 4 级），同步 19 项活跃中立附魔。',
+      )),
+    );
+    const neutralBtn = node('button', text('View Neutral Tiers →', '查看中立物品 →'), 'patch-rework-btn');
+    neutralBtn.type = 'button';
+    neutralBtn.onclick = () => {
+      closePatchModal({ restoreFocus: false });
+      $('search').value = '';
+      itemRealm = 'neutral';
+      itemCategory = 'all';
+      itemQuickFilter = 'all';
+      mode = 'items';
+      render();
+      window.scrollTo(0, 0);
+    };
+    neutralCallout.append(neutralCopy, neutralBtn);
+    body.append(neutralCallout);
+
+    if (summary.newAbilities.length) {
+      const sec = node('section', '', 'patch-section');
+      sec.id = 'patch-sec-abilities';
+      sec.append(node('h3', text(`New Hero Abilities (${summary.newAbilities.length})`, `新增英雄技能 (${summary.newAbilities.length})`)));
+      const grid = node('div', '', 'patch-spotlight-grid');
+      for (const ability of summary.newAbilities) {
+        const parentHero = heroesByParent.get(ability.parent);
+        const card = node('button', '', 'patch-spotlight-card');
+        card.type = 'button';
+        if (parentHero) card.append(heroAvatarNode(parentHero, false));
+        const copy = node('span', '', 'patch-spotlight-copy');
+        copy.append(node('strong', ability.en));
+        if (ability.zh && ability.zh !== ability.en) copy.append(node('span', ability.zh, 'patch-spotlight-zh'));
+        const meta = node('span', '', 'patch-spotlight-meta');
+        if (parentHero) meta.append(node('span', text(parentHero.en, `${parentHero.zh} · ${parentHero.en}`), 'item-mini-cat'));
+        meta.append(node('span', text('NEW', '新增'), 'patch-mini-badge is-new'));
+        copy.append(meta);
+        card.append(copy, node('span', '→', 'patch-spotlight-arrow'));
+        card.onclick = () => { if (parentHero) jumpToHeroFromPatch(parentHero.id); };
+        grid.append(card);
+      }
+      sec.append(grid);
+      body.append(sec);
+    }
+
+    if (summary.removedAbilities.length) {
+      const sec = node('section', '', 'patch-section');
+      sec.append(node('h3', text(`Removed Abilities (${summary.removedAbilities.length})`, `已移除技能 (${summary.removedAbilities.length})`)));
+      const list = node('div', '', 'patch-removed-grid');
+      for (const rem of summary.removedAbilities) {
+        const btn = node('button', '', 'patch-removed-pill');
+        btn.type = 'button';
+        const heroName = rem.parent ? rem.parent.split(' · ')[chinese ? 1 : 0] || rem.parent : '';
+        btn.append(
+          node('strong', rem.en),
+          node('span', rem.zh && rem.zh !== rem.en ? rem.zh : '', 'patch-removed-zh'),
+          heroName ? node('span', heroName, 'patch-removed-hero') : node('span', '', ''),
+        );
+        btn.disabled = !rem.heroId;
+        btn.onclick = () => { if (rem.heroId) jumpToHeroFromPatch(rem.heroId); };
+        list.append(btn);
+      }
+      sec.append(list);
+      body.append(sec);
+    }
+  } else if (patchModalTab === 'items') {
+    const realmBar = node('div', '', 'patch-subfilters');
+    for (const [key, en, zh, count] of [
+      ['all', 'All', '全部', summary.changedItems.length],
+      ['shop', 'Shop', '商店', summary.changedByRealm.shop.length],
+      ['neutral', 'Neutral', '中立', summary.changedByRealm.neutral.length],
+      ['archive', 'Special & Archive', '肉山与历史', summary.changedByRealm.archive.length],
+    ]) {
+      const btn = node('button', `${text(en, zh)} (${count})`, 'attr-pill');
+      btn.type = 'button';
+      btn.setAttribute('aria-pressed', String(patchModalItemRealm === key));
+      btn.onclick = () => { patchModalItemRealm = key; renderPatchModal(); };
+      realmBar.append(btn);
+    }
+    body.append(realmBar);
+
+    const rows = patchModalItemRealm === 'all' ? summary.changedItems : (summary.changedByRealm[patchModalItemRealm] || []);
+    const list = node('div', '', 'patch-changed-list');
+    for (const { lesson, change } of rows) {
+      const info = classifyItem(lesson, itemShopCategories);
+      const cat = CATEGORY_BY_KEY[info.category];
+      const card = node('button', '', 'patch-diff-card');
+      card.type = 'button';
+      const left = node('div', '', 'patch-diff-card-head');
+      left.append(itemImageNode(lesson));
+      const names = node('div', '', 'patch-spotlight-copy');
+      names.append(node('strong', lesson.en));
+      if (lesson.zh && lesson.zh !== lesson.en) names.append(node('span', lesson.zh, 'patch-spotlight-zh'));
+      const meta = node('span', '', 'patch-spotlight-meta');
+      if (cat) meta.append(node('span', text(cat.en, cat.zh), 'item-mini-cat'));
+      if (lesson.mechanics?.item_cost) meta.append(node('span', `🪙 ${lesson.mechanics.item_cost}g`, 'item-mini-cost'));
+      if (meta.childElementCount) names.append(meta);
+      left.append(names);
+
+      const right = node('div', '', 'patch-diff-chips');
+      if (change.stats?.length) {
+        for (const st of change.stats.slice(0, 3)) {
+          const chip = node('span', '', 'patch-mini-diff');
+          chip.append(
+            node('span', formatPatchStatLabel(st, chinese), 'patch-mini-diff-key'),
+            node('span', `${st.before} → ${st.after}`, 'patch-mini-diff-val'),
+          );
+          right.append(chip);
+        }
+        if (change.stats.length > 3) {
+          right.append(node('span', `+${change.stats.length - 3}`, 'patch-mini-diff-more'));
+        }
+      } else {
+        right.append(node('span', text('Wording updated', '说明文本更新'), 'patch-mini-diff'));
+      }
+      card.append(left, right);
+      card.onclick = () => jumpToItemFromPatch(lesson);
+      list.append(card);
+    }
+    body.append(list);
+  } else if (patchModalTab === 'heroes') {
+    const grid = node('div', '', 'patch-heroes-grid');
+    for (const { hero: heroLesson, summary: hs } of summary.affectedHeroes) {
+      const card = node('button', '', `patch-hero-card${hs.addedCount ? ' is-patch-new' : ''}`);
+      card.type = 'button';
+      card.append(heroAvatarNode(heroLesson, false));
+      const copy = node('span', '', 'patch-spotlight-copy');
+      copy.append(node('strong', heroLesson.en), node('span', heroLesson.zh, 'patch-spotlight-zh'));
+      const pills = node('span', '', 'patch-spotlight-meta');
+      if (hs.addedCount) pills.append(node('span', text(`+${hs.addedCount} New`, `新增 ${hs.addedCount}`), 'patch-mini-badge is-new'));
+      if (hs.changedCount) pills.append(node('span', text(`${hs.changedCount} Updated`, `调整 ${hs.changedCount}`), 'patch-mini-badge is-changed'));
+      if (hs.removedAbilities.length) pills.append(node('span', text(`-${hs.removedAbilities.length} Removed`, `移除 ${hs.removedAbilities.length}`), 'patch-mini-badge is-removed'));
+      copy.append(pills);
+      card.append(copy);
+      card.onclick = () => jumpToHeroFromPatch(heroLesson.id);
+      grid.append(card);
+    }
+    body.append(grid);
+  }
+  shell.append(body);
+
+  // 4. Sticky Footer Actions
+  const foot = node('footer', '', 'patch-modal-footer');
+  const leftActions = node('div', '', 'patch-modal-footer-actions');
+  const shopFilterBtn = node('button', text(`Filter ${ver} in Shop →`, `在商店中筛选 ${ver} 物品 →`), 'patch-footer-primary');
+  shopFilterBtn.type = 'button';
+  shopFilterBtn.onclick = () => {
+    closePatchModal({ restoreFocus: false });
+    $('search').value = '';
+    itemRealm = 'shop';
+    itemCategory = 'all';
+    itemQuickFilter = 'patch';
+    mode = 'items';
+    render();
+    window.scrollTo(0, 0);
+  };
+  const heroFilterBtn = node('button', text(`Filter ${ver} Heroes →`, `筛选 ${ver} 改动英雄 →`), 'patch-footer-secondary');
+  heroFilterBtn.type = 'button';
+  heroFilterBtn.onclick = () => {
+    closePatchModal({ restoreFocus: false });
+    $('search').value = '';
+    attrFilter = 'all';
+    selectedHeroId = null;
+    heroPatchOnly = true;
+    mode = 'heroes';
+    render();
+    window.scrollTo(0, 0);
+  };
+  leftActions.append(shopFilterBtn, heroFilterBtn);
+
+  const officialBtn = node('button', text('Official patch notes ↗', '官方更新日志 ↗'), 'patch-footer-link');
+  officialBtn.type = 'button';
+  officialBtn.onclick = async () => {
+    const response = await api.sources();
+    if (!response.ok) $('update-status').textContent = response.error;
+  };
+  foot.append(leftActions, officialBtn);
+  shell.append(foot);
+
+  dialog.append(shell);
+}
 function render() {
   player.stop();
   closeItemModal({ restoreFocus: false });
@@ -1096,6 +1754,16 @@ function render() {
   $('study-setup').hidden = !showStudySetup;
   $('progress-overview').hidden = !showStudySetup;
   $('practice-saved').hidden = mode !== 'saved';
+  const browsePatchBtn = $('browse-patch-toggle');
+  if (browsePatchBtn) {
+    const showBrowsePatch = mode === 'browse' && hasPatchDiff();
+    browsePatchBtn.hidden = !showBrowsePatch;
+    if (showBrowsePatch) {
+      const ver = currentPatch();
+      browsePatchBtn.textContent = text(`✨ ${ver} Changes`, `✨ 仅看 ${ver} 改动`);
+      browsePatchBtn.setAttribute('aria-pressed', String(browsePatchOnly));
+    }
+  }
   $('practice').hidden = true; $('session-summary').hidden = true; $('guided-lesson').hidden = true;
   const tools = $('tools');
   const kindLabel = $('kind').closest('label');
@@ -1421,11 +2089,21 @@ $('path-status').onclick = async () => {
 $('item-modal').addEventListener('click', event => {
   if (event.target === $('item-modal')) closeItemModal();
 });
+$('patch-pill').onclick = () => openPatchModal($('patch-pill'));
+$('patch-modal').addEventListener('click', event => {
+  if (event.target === $('patch-modal')) closePatchModal();
+});
+$('browse-patch-toggle').onclick = () => {
+  browsePatchOnly = !browsePatchOnly;
+  limit = 24;
+  render();
+};
 window.addEventListener('scroll', hideShopHoverTip, { passive: true });
 window.addEventListener('keydown', event => {
-  if (mode !== 'items' || $('item-modal').hidden || !selectedItemId) return;
   const tag = document.activeElement?.tagName;
   if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+  if (event.key === 'Escape' && !$('patch-modal').hidden) { closePatchModal(); return; }
+  if (mode !== 'items' || $('item-modal').hidden || !selectedItemId) return;
   if (event.key === 'Escape') { closeItemModal(); return; }
   if ((event.key === 'ArrowLeft' || event.key === 'ArrowRight') && visibleShopItems.length > 1) {
     const idx = visibleShopItems.findIndex(item => item.id === selectedItemId);
@@ -1478,7 +2156,9 @@ $('refresh').onclick = async () => {
   $('refresh').disabled = true; $('update-status').textContent = text('Fetching bilingual lessons from Valve. This can take a few minutes…', '正在从 Valve 获取双语课程，可能需要几分钟…');
   try {
     const response = await api.update(); if (!response.ok) throw new Error(response.error);
-    catalog = response.catalog; stats(); render();
+    catalog = response.catalog;
+    if (response.patchChanges) patchChanges = response.patchChanges;
+    stats(); render();
     $('update-status').textContent = text('Catalog updated. Your learning progress is preserved.', '课程已更新，学习进度已保留。');
   } catch (error) { $('update-status').textContent = text('Update failed; offline lessons remain available. ', '更新失败，仍可使用离线课程。') + error.message; }
   finally { $('refresh').disabled = false; }
@@ -1532,5 +2212,5 @@ api.onHidden(() => player.stop());
 window.addEventListener('pagehide', () => player.stop());
 try {
   const response = await api.load(); if (!response.ok) throw new Error(response.error);
-  catalog = response.catalog; heroMeta = response.heroMeta || {}; itemImages = response.itemImages || { entries: {} }; itemShopCategories = response.itemShopCategories || { entries: {} }; itemDetails = response.itemDetails || { entries: {} }; starterEvidence = response.starterEvidence || { entries: {} }; audioManifest = response.audio; audioBaseline = response.audioBaseline; receive(response); $('session-size').value = study.preferences.size; $('session-scope').value = study.preferences.scope; render();
+  catalog = response.catalog; heroMeta = response.heroMeta || {}; itemImages = response.itemImages || { entries: {} }; itemShopCategories = response.itemShopCategories || { entries: {} }; itemDetails = response.itemDetails || { entries: {} }; starterEvidence = response.starterEvidence || { entries: {} }; patchChanges = response.patchChanges || { schema: 1, patch: null, removed: [], entries: {} }; audioManifest = response.audio; audioBaseline = response.audioBaseline; receive(response); $('session-size').value = study.preferences.size; $('session-scope').value = study.preferences.scope; render();
 } catch (error) { $('message').textContent = error.message; for (const button of document.querySelectorAll('button')) button.disabled = true; }

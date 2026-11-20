@@ -8,11 +8,13 @@ import { SPOKEN_PHRASES, learningCollection } from '../learning/spokenPhrases.js
 import { fetchCatalog } from '../learning/update.js';
 import { planStudy, studyOptions, studySummary, STUDY_DEFAULTS } from '../learning/study.js';
 import { diffCatalog } from '../learning/contentAudit.js';
+import { buildPatchChangesManifest } from '../learning/patchChanges.js';
 import { starterUnit, starterAvailability, isLearningStep } from '../learning/starterPath.js';
 
 export function createLearningController({ electron, hub, rendererDirectory, dataDirectory, refreshCatalog = fetchCatalog, onPracticeVoice = null, onStopVoice = null }) {
   const { ipcMain, shell } = electron;
   const catalogFile = path.join(dataDirectory, 'learning-catalog.json');
+  const patchChangesFile = path.join(dataDirectory, 'learning-patch-changes.json');
   const progressFile = path.join(dataDirectory, 'learning-progress.json');
   const stateFile = path.join(dataDirectory, 'learning-state.json');
   const read = (file, fallback) => { try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch { return fallback; } };
@@ -58,13 +60,15 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
   const itemShopCategories = read(path.join(rendererDirectory, '../learning/item-shop-categories.json'), { entries: {} });
   const itemDetails = read(path.join(rendererDirectory, '../learning/item-details.json'), { entries: {} });
   const starterEvidence = read(path.join(rendererDirectory, '../learning/starter-shop-evidence.json'), { entries: {} });
+  const bundledPatchChanges = read(path.join(rendererDirectory, '../learning/patch-changes.json'), { schema: 1, patch: null, removed: [], entries: {} });
   const baseline = read(path.join(rendererDirectory, '../learning/audio-baseline.json'), { entries: {} });
   const audioBaseline = { entries: Object.fromEntries(Object.entries(baseline.entries).map(([id, entry]) => [id, { candidateSpeech: entry.candidateSpeech, evidence: entry.evidence }])) };
   const cached = read(catalogFile, null);
-  let catalog = withBundledImages(
-    cached?.schema === 1 && Array.isArray(cached.lessons)
-      && Date.parse(cached.fetchedAt) > Date.parse(bundled.fetchedAt) ? cached : bundled,
-  );
+  const usingCachedCatalog = cached?.schema === 1 && Array.isArray(cached.lessons)
+    && Date.parse(cached.fetchedAt) > Date.parse(bundled.fetchedAt);
+  let catalog = withBundledImages(usingCachedCatalog ? cached : bundled);
+  const cachedPatchChanges = usingCachedCatalog ? read(patchChangesFile, null) : null;
+  let patchChanges = cachedPatchChanges?.schema === 1 && cachedPatchChanges.entries ? cachedPatchChanges : bundledPatchChanges;
   let legacyProgress = read(progressFile, {});
   if (!legacyProgress || typeof legacyProgress !== 'object' || Array.isArray(legacyProgress)) legacyProgress = {};
   const saved = read(stateFile, null);
@@ -81,7 +85,7 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
     if (!trusted(event)) return { ok: false, error: 'Untrusted learning page' };
     try { return { ok: true, ...await fn(...args) }; } catch (error) { return { ok: false, error: error.message }; }
   };
-  ipcMain.handle('learning:load', respond(() => ({ catalog: lessonCatalog(), heroMeta, itemImages, itemShopCategories, itemDetails, starterEvidence, audio, audioBaseline, ...snapshot() })));
+  ipcMain.handle('learning:load', respond(() => ({ catalog: lessonCatalog(), heroMeta, itemImages, itemShopCategories, itemDetails, starterEvidence, patchChanges, audio, audioBaseline, ...snapshot() })));
   ipcMain.handle('learning:progress', respond((id, action, value) => {
     const known = catalog.lessons.some(r => r.id === id) || SPOKEN_PHRASES.some(p => p.id === id);
     if (!known) throw new Error('Unknown lesson');
@@ -153,8 +157,21 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
       const changes = diffCatalog(catalog, fresh);
       write(path.join(dataDirectory, 'learning-catalog.previous.json'), catalog);
       write(path.join(dataDirectory, 'learning-catalog-changes.json'), changes);
+      if (changes.changes.length) {
+        const nextPatchChanges = buildPatchChangesManifest({
+          diff: changes,
+          beforeCatalog: catalog,
+          afterCatalog: fresh,
+          shopCategories: itemShopCategories,
+          patch: fresh.patch,
+          previousPatch: catalog.patch && catalog.patch !== fresh.patch ? catalog.patch : null,
+          releasedAt: fresh.patchDate || null,
+        });
+        write(patchChangesFile, nextPatchChanges);
+        patchChanges = nextPatchChanges;
+      }
       write(catalogFile, fresh); catalog = fresh;
-      return { catalog: lessonCatalog(), changes };
+      return { catalog: lessonCatalog(), changes, patchChanges };
     } finally { updating = false; }
   }));
   hub.register('learning', { file: 'learning.html', preload: '../preload/learning.js', background: '#f6f7f2',
