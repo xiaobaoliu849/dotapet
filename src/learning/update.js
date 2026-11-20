@@ -1,6 +1,27 @@
 import { pairRecords } from './model.js';
 
 const BASE = 'https://www.dota2.com/datafeed/';
+
+export async function fetchLatestPatch(fetcher = fetch) {
+  try {
+    const url = new URL('patchnoteslist', BASE);
+    url.search = new URLSearchParams({ language: 'english' });
+    const response = await fetcher(url, { signal: AbortSignal.timeout(12000) });
+    if (!response?.ok) return { patch: null, patchDate: null, previousPatch: null };
+    const json = await response.json();
+    const list = Array.isArray(json?.patches) ? json.patches : Array.isArray(json?.result?.data?.patches) ? json.result.data.patches : [];
+    const latest = list.at(-1);
+    const previous = list.length >= 2 ? list.at(-2) : null;
+    const patch = typeof latest?.patch_number === 'string' && latest.patch_number.trim() ? latest.patch_number.trim() : null;
+    const previousPatch = typeof previous?.patch_number === 'string' && previous.patch_number.trim() ? previous.patch_number.trim() : null;
+    const ts = Number(latest?.patch_timestamp);
+    const patchDate = Number.isFinite(ts) && ts > 0 ? new Date(ts * 1000).toISOString() : null;
+    return { patch, patchDate, previousPatch };
+  } catch {
+    return { patch: null, patchDate: null, previousPatch: null };
+  }
+}
+
 export async function fetchCatalog({ fetcher = fetch, onProgress = () => {} } = {}) {
   let done = 0;
   async function get(endpoint, language, params = {}) {
@@ -51,5 +72,6 @@ export async function fetchCatalog({ fetcher = fetch, onProgress = () => {} } = 
   const failure = workers.find(result => result.status === 'rejected');
   if (failure) throw failure.reason;
   const lessons = [...new Map(output.flat().map(r => [r.id, r])).values()];
-  return { schema: 1, fetchedAt: new Date().toISOString(), source: BASE, sourceLabel: 'Valve official bilingual data feed', patch: null, omitted, lessons };
+  const { patch, patchDate } = await fetchLatestPatch(fetcher);
+  return { schema: 1, fetchedAt: new Date().toISOString(), source: BASE, sourceLabel: 'Valve official bilingual data feed', patch, ...(patchDate ? { patchDate } : {}), omitted, lessons };
 }
