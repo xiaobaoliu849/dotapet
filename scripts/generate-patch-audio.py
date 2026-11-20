@@ -128,7 +128,6 @@ async def main():
             'generatedAt': datetime.now(timezone.utc).isoformat(),
             'catalogFetchedAt': catalog['fetchedAt'],
             'patch': PATCH,
-            'localOnly': True,
             'provider': 'Microsoft Edge online speech via edge-tts',
             'edgeTtsVersion': edge_version,
             'voice': VOICE,
