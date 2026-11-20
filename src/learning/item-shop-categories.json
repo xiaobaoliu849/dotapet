@@ -777,7 +777,7 @@
       "sortValue": 0,
       "shopCost": 925,
       "internalName": "item_bloodslinger",
-      "zh": "Bloodslinger"
+      "zh": "血腥投带"
     },
     "item:36": {
       "realm": "shop",
@@ -1137,7 +1137,7 @@
       "sortValue": 0,
       "shopCost": 6000,
       "internalName": "item_starforge",
-      "zh": "Starforge"
+      "zh": "锻星炉"
     },
     "item:190": {
       "realm": "shop",
@@ -1317,7 +1317,7 @@
       "sortValue": 0,
       "shopCost": 3800,
       "internalName": "item_ristuls_devotion",
-      "zh": "Ristul's Devotion"
+      "zh": "瑞斯图尔的奉献"
     },
     "item:1953": {
       "realm": "shop",
@@ -1507,7 +1507,7 @@
       "sortValue": 0,
       "shopCost": 6000,
       "internalName": "item_skypiercer",
-      "zh": "Skypiercer"
+      "zh": "破天之矛"
     },
     "item:149": {
       "realm": "shop",
@@ -2327,7 +2327,7 @@
       "sortValue": 2,
       "shopCost": 0,
       "internalName": "item_balmhook",
-      "zh": "Balmhook"
+      "zh": "镇痛之钩"
     },
     "item:1864": {
       "realm": "neutral",
@@ -2377,7 +2377,7 @@
       "sortValue": 2,
       "shopCost": 0,
       "internalName": "item_vile_phial",
-      "zh": "Vile Phial"
+      "zh": "邪恶药瓶"
     },
     "item:1865": {
       "realm": "neutral",

@@ -48,6 +48,8 @@ const ROSHAN_MAP_IDS = new Set([
   'item:260',  // Refresher Shard
   'item:1804', // Roshan's Banner
   'item:727',  // Aghanim's Blessing - Roshan
+  'item:1951', // Greater Horn of Battle (Tormentor drop, Patch 7.42)
+  'item:1950', // Horn of Battle
   'item:4204', // Healing Lotus
   'item:4205', // Great Healing Lotus
   'item:4206', // Greater Healing Lotus

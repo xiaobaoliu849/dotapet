@@ -52373,9 +52373,9 @@
       "kind": "ability",
       "parent": "Lycan · 狼人",
       "en": "Pack Hunter",
-      "zh": "Pack Hunter",
+      "zh": "狼群猎手",
       "descriptionEn": "Lycan and units under his control mark units on attack for 6 seconds. When Lycan or a unit under his control attacks a marked unit, it deals bonus damage equal to 5% of its attack damage per stack, and heals the attacker for 3% of its attack damage per stack.",
-      "descriptionZh": "狼人及其控制的单位在攻击时会标记目标，持续6秒。狼人或其控制的单位攻击被标记的单位时，每层叠加效果会造成相当于其攻击力5%的额外伤害，并为攻击者恢复相当于其攻击力3%的生命值。",
+      "descriptionZh": "狼人及其控制的单位攻击时会标记敌人，持续6秒，使其显形（即使是处于隐身状态或战争迷雾中），并对被标记的单位拥有额外的伤害和吸血。效果可以叠加，但每个单位对每个敌人只能施加1个标记。",
       "mechanics": {
         "cooldowns": [
           0
@@ -56145,7 +56145,7 @@
       "en": "Fling",
       "zh": "摔扔",
       "descriptionEn": "Throws the Meepo or creep carried by Divided We Stand at the target, dealing damage in a 200 radius and slowing on impact.\n\nIf the carried target is a Meepo, it shares damage with the carrier. The carried target will be dropped after 5 seconds.",
-      "descriptionZh": "Throws the Meepo or creep carried by Divided We Stand at the target, dealing damage in a 200 radius and slowing on impact.\n\nIf the carried target is a Meepo, it shares damage with the carrier. The carried target will be dropped after 5 seconds.",
+      "descriptionZh": "把分则能成抓起的米波或友方非英雄单位向目标敌人、自己的米波之一或者指定地点扔出，对撞击点200范围内的敌人造成伤害和减速。抓起的米波会和携带者共享伤害。被抓的单位会在5秒后被放下。",
       "mechanics": {
         "cooldowns": [
           0
@@ -95791,7 +95791,7 @@
       "kind": "item",
       "parent": "",
       "en": "Bloodslinger",
-      "zh": "Bloodslinger",
+      "zh": "血腥投带",
       "descriptionEn": "Active: Sling Grenade\n Launch a grenade at the target area. Enemies in the area will take 50 damage on impact, and be slowed by -30% and take 15 damage every 1s for 5s. Movement slow decreases over time to -15%. Radius 300.",
       "descriptionZh": "主动：抛掷榴弹\n向目标区域投掷一枚榴弹。区域内敌人被击中时受到50点伤害，减速-30%并且每1秒受到15点伤害，持续5秒。移动速度减缓效果会逐渐减少至-15%。作用范围为300。",
       "imageUrl": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/bloodslinger.png",
@@ -99187,9 +99187,9 @@
       "kind": "item",
       "parent": "",
       "en": "Ristul's Devotion",
-      "zh": "Ristul's Devotion",
+      "zh": "瑞斯图尔的奉献",
       "descriptionEn": "Passive: Ristul's Aura\nGrants 20% lifesteal, 18% spell lifesteal, 18% bonus damage, 1 mana regeneration, and 2 armor to nearby allies.\n\nRadius: 1200",
-      "descriptionZh": "Passive: Ristul's Aura\nGrants 20% lifesteal, 18% spell lifesteal, 18% bonus damage, 1 mana regeneration, and 2 armor to nearby allies.\n\nRadius: 1200",
+      "descriptionZh": "被动：瑞斯图尔光环\n对附近友军提供20%吸血，18%技能吸血，18%攻击力加成，1点/秒魔法恢复和2点护甲。\n\n作用范围：1200。攻击非英雄单位的吸血效果减少至12%。对非英雄单位的技能吸血减少至3.6%。不与玄冥盾牌光环叠加。",
       "imageUrl": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/ristuls_devotion.png",
       "internalName": "item_ristuls_devotion",
       "mechanics": {
@@ -103646,9 +103646,9 @@
       "kind": "item",
       "parent": "",
       "en": "Starforge",
-      "zh": "Starforge",
+      "zh": "锻星炉",
       "descriptionEn": "Active: Meteor Hammer\n CHANNELED - After a 2s channel, summons a meteor after 0.5s that strikes a 400 AoE, stunning enemies for 0.75s and dealing 150 impact damage. Continues to deal 60 damage per second for 6s.\n\nNon-building units take an additional 15% max health impact damage and are slowed by 15% for 6s.\n\nDeals 75% damage to buildings.\n\nPassive: Celestial Flare\nAfter any of your disables ends on an enemy unit, they burn for 60 damage a second and move 15% slower for 3s.\nCelestial Flare can trigger from any of your abilities or items.\nCelestial Flare stacks with Meteor Hammer's Burn.",
-      "descriptionZh": "Active: Meteor Hammer\n CHANNELED - After a 2s channel, summons a meteor after 0.5s that strikes a 400 AoE, stunning enemies for 0.75s and dealing 150 impact damage. Continues to deal 60 damage per second for 6s.\n\nNon-building units take an additional 15% max health impact damage and are slowed by 15% for 6s.\n\nDeals 75% damage to buildings.\n\nPassive: Celestial Flare\nAfter any of your disables ends on an enemy unit, they burn for 60 damage a second and move 15% slower for 3s.\nCelestial Flare can trigger from any of your abilities or items.\nCelestial Flare stacks with Meteor Hammer's Burn.",
+      "descriptionZh": "主动：陨星锤\n持续施法 - 持续施法2秒后，在0.5秒延迟后召唤一颗陨星，冲击400范围区域，使敌人眩晕0.5秒并持续烧灼6秒。受到冲击的每个单位还会受到相当于其最大生命值15%的伤害（对建筑无效）。\n\n被动：天界光耀\n佩戴者的任意控制效果在敌方单位身上结束时，他们都会被烧灼，受到每秒60点伤害，移动速度减缓15%，持续3秒。烧灼伤害可以和主动技能的烧灼伤害叠加。对建筑无效。",
       "imageUrl": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/starforge.png",
       "internalName": "item_starforge",
       "mechanics": {
@@ -110968,9 +110968,9 @@
       "kind": "item",
       "parent": "",
       "en": "Skypiercer",
-      "zh": "Skypiercer",
+      "zh": "破天之矛",
       "descriptionEn": "Active: Disarm\nPrevents a target from attacking for 3 seconds.\n\nPassive: Riposte\n Whenever you are within 500 range of an enemy hero, Disarm gains 125% cooldown acceleration.",
-      "descriptionZh": "主动：缴械\n阻止目标在%disarm_melee%秒内进行攻击。\n\n被动：还击\n只要处于敌方英雄的500范围内，缴械就获得125%冷却速度加快。",
+      "descriptionZh": "主动：缴械\n阻止目标在3秒内进行攻击。\n\n被动：还击\n只要处于敌方英雄的500范围内，缴械就获得125%冷却速度加快。",
       "imageUrl": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/skypiercer.png",
       "internalName": "item_skypiercer",
       "mechanics": {
@@ -119940,9 +119940,9 @@
       "kind": "item",
       "parent": "",
       "en": "Greater Horn of Battle",
-      "zh": "Greater Horn of Battle",
+      "zh": "大战斗号角",
       "descriptionEn": "Use: Grand Call to Arms\nSummons a wave of mega creeps, including a catapult and a flagbearer, in every lane for your team. Can be used from the backpack.",
-      "descriptionZh": "Use: Grand Call to Arms\nSummons a wave of mega creeps, including a catapult and a flagbearer, in every lane for your team. Can be used from the backpack.",
+      "descriptionZh": "使用：征召群兵\n己方每条兵线上召唤一波超级士兵。士兵数量取决于当前每波小兵数，但是每条兵线始终至少有1个攻城单位和1个士兵旗手。可以在背包中使用。",
       "imageUrl": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/horn_of_battle_greater.png",
       "internalName": "item_horn_of_battle_greater",
       "mechanics": {
@@ -124051,7 +124051,7 @@
       "en": "Helm of the Hivemind",
       "zh": "虫巢思维头盔",
       "descriptionEn": "Passive: Brood Awakening\nMerge consciousness with an unknown monarch, gaining 120 cast range. Bonus cast range is increased by 80 and maximum health is decreased by 8% for every assimilated hero on both teams.",
-      "descriptionZh": "Passive: Brood Awakening\nMerge consciousness with an unknown monarch, gaining 120 cast range. Bonus cast range is increased by 80 and maximum health is decreased by 8% for every assimilated hero on both teams.",
+      "descriptionZh": "被动：巢群觉醒\n与一位未知的君主融合意识，获得120施法距离。双方每有一名同化的英雄（包括自身）都会使这个加成提升80，但所有持有者的最大生命值减少8%。",
       "imageUrl": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/helm_of_the_hivemind.png",
       "internalName": "item_helm_of_the_hivemind",
       "mechanics": {
@@ -124173,7 +124173,7 @@
       "en": "Brick",
       "zh": "板砖",
       "descriptionEn": "Active: Brick\nTosses a brick at the target enemy, removing 200 from any active barrier and dealing 150 physical damage.",
-      "descriptionZh": "Active: Brick\nTosses a brick at the target enemy, removing 200 from any active barrier and dealing 150 physical damage.",
+      "descriptionZh": "主动：板砖\n向目标敌人投掷一块砖头，移除护盾的200点生命并造成150点物理伤害。",
       "imageUrl": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/brick.png",
       "internalName": "item_brick",
       "mechanics": {
@@ -124248,9 +124248,9 @@
       "kind": "item",
       "parent": "",
       "en": "Balmhook",
-      "zh": "Balmhook",
+      "zh": "镇痛之钩",
       "descriptionEn": "Passive: Shepherd's Protection\nTargeting a friendly unit with a spell increases their Health Regeneration by 12 for 12 seconds.",
-      "descriptionZh": "Passive: Shepherd's Protection\nTargeting a friendly unit with a spell increases their Health Regeneration by 12 for 12 seconds.",
+      "descriptionZh": "被动：牧羊人保护\n对友方单位施放法术会使他们的生命恢复提升12，持续12秒。",
       "imageUrl": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/balmhook.png",
       "internalName": "item_balmhook",
       "mechanics": {
@@ -125072,7 +125072,7 @@
       "en": "Red Ledger",
       "zh": "悬红",
       "descriptionEn": "Active: Most Wanted\nGenerates a list of hero bounties. Killing a hero on the list grants 50 gold plus an additional 12 for every level higher the target is than you. Assists award 75% of the bounty.",
-      "descriptionZh": "Active: Most Wanted\nGenerates a list of hero bounties. Killing a hero on the list grants 50 gold plus an additional 12 for every level higher the target is than you. Assists award 75% of the bounty.",
+      "descriptionZh": "主动：悬赏\n生成一个名单，上面是具有共同特征的2-5名敌方英雄。击杀这些英雄会产生额外50金 + 12 * 阵亡英雄高出自身的等级。助攻会提供75%的赏金，并且仍视为拿到悬赏。名单上的所有英雄都已击杀，或者技能重新激活时，都会生成一个新名单。每个英雄的赏金只能领取一次，直到产生新的名单。",
       "imageUrl": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/red_ledger.png",
       "internalName": "item_red_ledger",
       "mechanics": {
@@ -125224,9 +125224,9 @@
       "kind": "item",
       "parent": "",
       "en": "Vile Phial",
-      "zh": "Vile Phial",
+      "zh": "邪恶药瓶",
       "descriptionEn": "Passive: Toxic Tincture\nAttacking the same enemy 4 times within 10 seconds poisons them for 5 seconds, reducing their Health Restoration by 35% and dealing 40 damage per second.",
-      "descriptionZh": "Passive: Toxic Tincture\nAttacking the same enemy 4 times within 10 seconds poisons them for 5 seconds, reducing their Health Restoration by 35% and dealing 40 damage per second.",
+      "descriptionZh": "被动：毒性酊剂\n攻击敌人会对其施加一层叠加效果。如果目标在10秒内获得4层叠加效果，则会中毒5秒：其生命回复降低35%，并且每秒受到40点伤害。",
       "imageUrl": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/vile_phial.png",
       "internalName": "item_vile_phial",
       "mechanics": {

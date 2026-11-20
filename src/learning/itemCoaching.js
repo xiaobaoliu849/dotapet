@@ -70,6 +70,14 @@ const cues = {
   'Eternal Shroud': { aliases: ['shroud', '永世法衣'], en: 'Building Eternal Shroud against magic damage.', zh: '对面法系爆发高，我出永世法衣。' },
   'Cheese': { aliases: ['奶酪'], en: 'Take the Cheese before we push high ground.', zh: '上高地前把奶酪拿上。' },
   'Refresher Shard': { aliases: ['刷新碎片'], en: 'Give the Refresher Shard to our initiator.', zh: '把刷新碎片给先手英雄。' },
+  // Patch 7.42 new items (official dota2.com.cn Chinese names & player nicknames)
+  'Bloodslinger': { aliases: ['大榴弹', '血腥投带'], en: 'I upgraded to Bloodslinger to slow them in lane.', zh: '我合了血腥投带（大榴弹）用来对线减速。' },
+  'Caduceus': { aliases: ['双蛇杖', '大推推', '法系推推'], en: 'I have Caduceus ready to push and heal you.', zh: '我的双蛇杖好了，可以推你顺便回血。' },
+  "Ristul's Devotion": { aliases: ['大祭品', '瑞斯图尔的奉献'], en: 'Group up around me for Ristul’s Devotion aura.', zh: '靠近我，吃瑞斯图尔的奉献（大祭品）光环。' },
+  'Sabatons of Mordiggian': { aliases: ['大相位', '大臂章', '莫尔迪基安的护足'], en: 'Careful, their core finished Sabatons of Mordiggian.', zh: '小心，对面大哥已经出了莫尔迪基安的护足（大相位）。' },
+  'Skypiercer': { aliases: ['大天堂', '破天之矛'], en: 'I will disarm their carry with Skypiercer.', zh: '我用破天之矛（大天堂）缴械对面大哥。' },
+  'Starforge': { aliases: ['大陨星锤', '锻星炉'], en: 'Chain your stun and I will drop Starforge.', zh: '你接控制，我来砸锻星炉（大陨星锤）。' },
+  'Greater Horn of Battle': { aliases: ['大战斗号角', '大号角'], en: 'Take Tormentor and use Greater Horn of Battle to push all lanes.', zh: '打掉痛苦魔方，吹响大战斗号角三路推进。' },
 };
 
 const vocabulary = [
