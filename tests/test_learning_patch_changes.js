@@ -14,10 +14,13 @@ import {
 } from '../src/learning/patchChanges.js';
 import { fetchCatalog, fetchLatestPatch } from '../src/learning/update.js';
 import { createLearningController } from '../src/main/learningController.js';
+import { searchShopItems } from '../src/learning/itemShop.js';
+import { createHash } from 'node:crypto';
 
 const catalog = JSON.parse(fs.readFileSync(new URL('../src/learning/catalog.json', import.meta.url), 'utf8'));
 const shopCategories = JSON.parse(fs.readFileSync(new URL('../src/learning/item-shop-categories.json', import.meta.url), 'utf8'));
 const patchChanges = JSON.parse(fs.readFileSync(new URL('../src/learning/patch-changes.json', import.meta.url), 'utf8'));
+const audioManifest = JSON.parse(fs.readFileSync(new URL('../src/learning/audio-manifest.json', import.meta.url), 'utf8'));
 
 test('bundled catalog records verified Patch 7.42 metadata and release timestamp', () => {
   assert.equal(catalog.patch, '7.42');
@@ -184,4 +187,50 @@ test('buildPatchChangesManifest gracefully handles empty diffs', () => {
   assert.equal(empty.patch, '7.42');
   assert.deepEqual(empty.removed, []);
   assert.deepEqual(empty.entries, {});
+});
+
+test('all shipped Patch 7.42 items and abilities have official Chinese names, clean descriptions, aliases, and bundled MP3 audio', () => {
+  const expectedZh = {
+    'item:1942': '血腥投带',
+    'item:1955': '双蛇杖',
+    'item:1944': '瑞斯图尔的奉献',
+    'item:1946': '锻星炉',
+    'item:1948': '破天之矛',
+    'item:1953': '莫尔迪基安的护足',
+    'item:1880': '悬红',
+    'item:1916': '板砖',
+    'item:1917': '镇痛之钩',
+    'item:1882': '邪恶药瓶',
+    'item:1911': '虫巢思维头盔',
+    'item:1951': '大战斗号角',
+    'ability:1921': '狼群猎手',
+    'ability:1762': '摔扔',
+  };
+  for (const [id, zh] of Object.entries(expectedZh)) {
+    const lesson = catalog.lessons.find(l => l.id === id);
+    assert.ok(lesson, `Missing lesson ${id}`);
+    assert.equal(lesson.zh, zh, `${id} Chinese name mismatch`);
+    assert.ok(lesson.descriptionZh && /[\u4e00-\u9fff]/.test(lesson.descriptionZh), `${id} missing Chinese description`);
+    assert.doesNotMatch(lesson.descriptionZh, /%\w+%/, `${id} unresolved placeholder in Chinese description`);
+  }
+
+  const items = catalog.lessons.filter(l => l.kind === 'item');
+  for (const [alias, expectedEn] of [['大榴弹', 'Bloodslinger'], ['大祭品', "Ristul's Devotion"], ['大相位', 'Sabatons of Mordiggian'], ['大天堂', 'Skypiercer'], ['大陨星锤', 'Starforge'], ['大战斗号角', 'Greater Horn of Battle']]) {
+    assert.equal(searchShopItems(items, alias, shopCategories)[0]?.en, expectedEn, `Alias search failed for ${alias}`);
+  }
+
+  const patchAudioEntries = Object.entries(audioManifest.entries).filter(([, e]) => e.patch === '7.42');
+  assert.equal(patchAudioEntries.length, 26);
+  for (const [id, entry] of patchAudioEntries) {
+    assert.ok(!entry.localOnly, `${id} must be bundled (not localOnly)`);
+    const file = new URL('../src/renderer/assets/learning-audio/' + entry.file, import.meta.url);
+    assert.ok(fs.existsSync(file), `Missing bundled MP3 for ${id}: ${entry.file}`);
+    const bytes = fs.readFileSync(file);
+    assert.equal(bytes.length, entry.bytes, id);
+    assert.equal(createHash('sha256').update(bytes).digest('hex'), entry.audioSha256, id);
+    if (id.startsWith('item:')) {
+      assert.equal(entry.content, 'explanation', `${id} audio should include both item name and description`);
+      assert.ok(entry.script.length > entry.name.length + 20, `${id} script should contain full description`);
+    }
+  }
 });

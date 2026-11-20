@@ -22,6 +22,9 @@ export async function runLearningPatchSmoke({ page, controlCenter, nativeImage, 
     await Promise.all(imgs.map(img => img.decode().catch(() => {})));
     const newCards = modal.querySelectorAll('.patch-spotlight-card').length;
     if (newCards < 15) throw new Error('Patch modal Highlights missing spotlight cards: ' + newCards);
+    for (const zhName of ['血腥投带', '瑞斯图尔的奉献', '锻星炉', '破天之矛', '镇痛之钩', '邪恶药瓶']) {
+      if (!modal.textContent.includes(zhName)) throw new Error('Patch modal missing official Chinese item name: ' + zhName);
+    }
     if (modal.querySelectorAll('.patch-removed-pill').length !== 7) {
       throw new Error('Patch modal Highlights missing removed abilities');
     }
@@ -109,15 +112,22 @@ export async function runLearningPatchSmoke({ page, controlCenter, nativeImage, 
   })()`);
   fs.writeFileSync(path.join(outputDirectory, 'learning-patch-item-changed.png'), (await captureHub(controlCenter, nativeImage)).toPNG());
 
-  // 6. Open a brand-new 7.42 Shop item (Caduceus / item:1955)
+  // 6. Open a brand-new 7.42 Shop item (Starforge / 锻星炉 / item:1946) and verify Chinese name + playable AI audio
   await page.executeJavaScript(`(async () => {
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
-    const cadTile = document.querySelector('.shop-icon-tile[data-item-id="item:1955"]');
-    if (!cadTile) throw new Error('Caduceus tile missing in 7.42 shop filter');
-    cadTile.click();
+    const starTile = document.querySelector('.shop-icon-tile[data-item-id="item:1946"]');
+    if (!starTile) throw new Error('Starforge tile missing in 7.42 shop filter');
+    starTile.click();
     const modal = document.getElementById('item-modal');
     if (modal.hidden || !modal.querySelector('.patch-callout.is-new')) {
       throw new Error('New item study card missing Patch 7.42 NEW callout');
+    }
+    if (!modal.textContent.includes('锻星炉')) {
+      throw new Error('Starforge study card missing official Chinese name 锻星炉');
+    }
+    const audioBtn = modal.querySelector('.recording-button');
+    if (!audioBtn || audioBtn.disabled || audioBtn.dataset.audioFreshness !== 'current-verified') {
+      throw new Error('New Patch 7.42 item audio button is disabled or unverified: ' + audioBtn?.textContent);
     }
     const img = modal.querySelector('.item-picture img');
     if (img) await img.decode().catch(() => {});
@@ -157,6 +167,10 @@ export async function runLearningPatchSmoke({ page, controlCenter, nativeImage, 
     if (!toggle || toggle.hidden) throw new Error('Hero detail 7.42 toggle missing');
     toggle.click();
     await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+    const flingAudio = document.querySelector('#hero-abilities .ability-bilingual-card.is-patch-new .recording-button');
+    if (!flingAudio || flingAudio.disabled || flingAudio.dataset.audioFreshness !== 'current-verified') {
+      throw new Error('Fling new ability audio button is disabled or unverified: ' + flingAudio?.textContent);
+    }
     document.querySelector('.hero-abilities-head-row').scrollIntoView({ block: 'start' });
     await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
   })()`);
