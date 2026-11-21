@@ -6,6 +6,7 @@ contextBridge.exposeInMainWorld('dotapetI18n', ipcRenderer.sendSync('i18n:get'))
 contextBridge.exposeInMainWorld('controlCenter', {
   state: () => ipcRenderer.invoke('hub:state'),
   navigate: page => ipcRenderer.invoke('hub:navigate', page),
+  retryPage: () => ipcRenderer.invoke('hub:retry-page'),
   setSidebarCollapsed: collapsed => ipcRenderer.invoke('hub:set-sidebar-collapsed', collapsed),
   slide: x => ipcRenderer.send('hub:slide', x),
   setLanguage: choice => ipcRenderer.invoke('hub:set-language', choice),

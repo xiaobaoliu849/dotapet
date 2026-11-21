@@ -36,6 +36,7 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
   let shellURL = pathToFileURL(shellFile).href;
   const pages = new Map();
   const views = new Map();
+  const failedPages = new Set();
   let window = null;
   let active = 'services';
   let collapsed = Boolean(sidebarCollapsed);
@@ -47,7 +48,7 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
   const alive = () => Boolean(window && !window.isDestroyed());
   const available = () => PAGE_ORDER.filter(id => NATIVE_PAGES.includes(id) || pages.has(id));
   const defaultPage = () => available().includes('learning') ? 'learning' : available().includes('services') ? 'services' : available()[0] || 'help';
-  const state = () => ({ pages: available(), active, compact: geometry.compact, narrow: geometry.narrow, collapsed,
+  const state = () => ({ pages: available(), active, pageFailed: failedPages.has(active), compact: geometry.compact, narrow: geometry.narrow, collapsed,
     sidebar: geometry.sidebar, top: HUB_TOP });
   function publishState() {
     if (alive() && !window.webContents.isDestroyed()) window.webContents.send('hub:state', state());
@@ -106,6 +107,16 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
     const view = views.get(id);
     if (view && detach(id, view) && !view.webContents.isDestroyed()) view.webContents.close();
   }
+  function markPageFailed(id, view, error) {
+    if (views.get(id) !== view) return;
+    console.warn(`[Settings] Could not load ${id}:`, error);
+    failedPages.add(id);
+    if (active === id && !view.webContents.isDestroyed()) pages.get(id)?.onHide?.(view.webContents);
+    closeView(id);
+    if (active !== id || !alive()) return;
+    publishState();
+    if (window.isVisible()) window.webContents.focus();
+  }
   /**
    * Focus inside a page cannot Tab back to the sidebar (separate documents),
    * so the usual tab-switching keys move between pages from anywhere.
@@ -130,6 +141,9 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
     contents.setWindowOpenHandler(() => ({ action: 'deny' }));
     contents.on('before-input-event', switchKeys);
     contents.once('destroyed', () => detach(id, view));
+    contents.on('did-fail-load', (_event, code, description, _url, isMainFrame) => {
+      if (isMainFrame && code !== -3) markPageFailed(id, view, description);
+    });
     // A crashed page is rebuilt (unsaved input is already lost) instead of staying blank.
     contents.on('render-process-gone', (_event, details) => {
       if (details?.reason === 'clean-exit' || views.get(id) !== view) return;
@@ -143,7 +157,10 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
     window.contentView.addChildView(view);
     view.setBounds(geometry.content);
     page.onCreated?.(contents);
-    contents.loadFile(path.join(rendererDirectory, page.file), page.query ? { query: page.query } : undefined);
+    Promise.resolve(contents.loadFile(path.join(rendererDirectory, page.file), page.query ? { query: page.query } : undefined))
+      .catch(error => {
+        if (error?.code !== 'ERR_ABORTED') markPageFailed(id, view, error.message);
+      });
     return view;
   }
   function show(id) {
@@ -151,7 +168,7 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
     if (!available().includes(id)) id = defaultPage();
     const previous = active;
     active = id;
-    const target = NATIVE_PAGES.includes(id) ? null : views.get(id) || createView(id);
+    const target = NATIVE_PAGES.includes(id) || failedPages.has(id) ? null : views.get(id) || createView(id);
     for (const [key, view] of views) view.setVisible(key === id);
     // Pages release what they hold while out of sight (the microphone check).
     if (previous !== id && views.has(previous)) pages.get(previous)?.onHide?.(views.get(previous).webContents);
@@ -198,6 +215,7 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
       stopSlide();
       for (const page of pages.values()) page.onHubClose?.();
       for (const id of [...views.keys()]) closeView(id);
+      failedPages.clear();
       window = null;
       onFocusChange(false);
     });
@@ -224,6 +242,7 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
   }
   function unregister(id) {
     closeView(id);
+    failedPages.delete(id);
     pages.delete(id);
     if (active === id) show(defaultPage());
     else publishState();
@@ -234,6 +253,11 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
   ipcMain.handle('hub:navigate', (event, id) => {
     if (!trustedShell(event) || !available().includes(id)) return { ok: false };
     show(id);
+    return { ok: true, state: state() };
+  });
+  ipcMain.handle('hub:retry-page', event => {
+    if (!trustedShell(event) || !failedPages.delete(active)) return { ok: false };
+    show(active);
     return { ok: true, state: state() };
   });
   // Only the choice is remembered; a narrow window stays icon-only either way.

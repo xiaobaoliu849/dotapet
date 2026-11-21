@@ -251,6 +251,33 @@ test('sidebar IPC accepts only the shell document and only pages that exist', as
   assert.deepEqual(state.pages, ['services', 'help'], 'unregistered pages stay out of the sidebar');
 });
 
+test('a failed top-level page can be retried from the trusted shell while other pages stay available', async () => {
+  const { hub, handlers, shell } = fixture();
+  hub.register('services', services());
+  hub.open('services');
+  const first = hub.contents('services');
+  const retry = handlers.get('hub:retry-page');
+  const state = () => handlers.get('hub:state')(shell()).state;
+  first.emit('did-fail-load', {}, -3, 'ERR_ABORTED', first.mainFrame.url, true);
+  first.emit('did-fail-load', {}, -6, 'ERR_FILE_NOT_FOUND', first.mainFrame.url, false);
+  assert.equal(state().pageFailed, false);
+  first.emit('did-fail-load', {}, -6, 'ERR_FILE_NOT_FOUND', first.mainFrame.url, true);
+  assert.equal(hub.contents('services'), null);
+  assert.equal(state().pageFailed, true);
+  assert.equal(first.destroyed, true);
+  assert.equal((await retry({ sender: first, senderFrame: first.mainFrame })).ok, false);
+  hub.open('help');
+  assert.equal(state().pageFailed, false);
+  assert.equal((await retry(shell())).ok, false);
+  hub.open('services');
+  assert.equal(state().pageFailed, true);
+  assert.equal((await retry(shell())).ok, true);
+  assert.notEqual(hub.contents('services'), first);
+  assert.equal(state().pageFailed, false);
+  first.emit('did-fail-load', {}, -6, 'ERR_FILE_NOT_FOUND', first.mainFrame.url, true);
+  assert.equal(state().pageFailed, false, 'retired view cannot break a new page');
+});
+
 test('late pages appear in the sidebar and removed pages fall back to the setup page', async () => {
   const { hub, windows, handlers, shell } = fixture();
   hub.register('services', services());

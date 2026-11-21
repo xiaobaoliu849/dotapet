@@ -17,7 +17,7 @@ export async function runCompanionSmoke({
 }) {
   const { dialog, nativeImage, safeStorage } = electron;
   if (mainWindow.getTitle() !== '刀塔宠物 · DotaPet') throw new Error('Desktop still shows legacy branding');
-  const { pageLoaded, captureHub, navigateHub, runPreferenceSaveSmoke } = await import('./controlCenterSmoke.js');
+  const { pageLoaded, captureHub, navigateHub, runPreferenceSaveSmoke, runSettingsPageRetrySmoke } = await import('./controlCenterSmoke.js');
   const firstSetup = welcomeController.showOnFirstRun();
   if (!firstSetup || firstSetup !== controlCenter.window || controlCenter.active !== 'services') throw new Error('First launch did not open configuration directly');
   const firstSetupClosed = new Promise(resolve => firstSetup.once('closed', resolve));
@@ -59,6 +59,7 @@ export async function runCompanionSmoke({
     if (visible[0]?.dataset.page !== 'learning') throw new Error('Learning should be the first sidebar item');
   })()`);
   await runPreferenceSaveSmoke(controlCenter, app.getPath('userData'));
+  await runSettingsPageRetrySmoke(controlCenter);
   openAISettings('voice');
   const page = settingsPage();
   await Promise.all([pageLoaded(page), pageLoaded(controlCenter.window.webContents)]);

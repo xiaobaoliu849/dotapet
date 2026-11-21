@@ -3,6 +3,8 @@ const items = [...document.querySelectorAll('.nav-item')];
 const nativePages = { help: document.getElementById('page-help') };
 const toggle = document.getElementById('sidebar-toggle');
 const preferenceStatus = document.getElementById('preference-status');
+const pageLoadError = document.getElementById('page-load-error');
+const retryPage = document.getElementById('retry-page');
 let collapsed = new URLSearchParams(location.search).get('sidebar') === 'collapsed', narrow = false, sliding = false;
 if (collapsed) { document.body.dataset.compact = 'true'; document.documentElement.style.setProperty('--sidebar', '64px'); }
 
@@ -28,7 +30,23 @@ function render(state) {
     else item.removeAttribute('aria-current');
   }
   for (const [page, element] of Object.entries(nativePages)) element.hidden = page !== state.active;
+  const showError = Boolean(state.pageFailed);
+  if (showError && pageLoadError.hidden) {
+    pageLoadError.hidden = false;
+    retryPage.disabled = false;
+    retryPage.focus();
+  } else if (!showError) pageLoadError.hidden = true;
 }
+retryPage.addEventListener('click', async () => {
+  retryPage.disabled = true;
+  try {
+    await hub.retryPage();
+  } catch {
+    // The retry panel stays available if the request did not reach main.
+  } finally {
+    retryPage.disabled = false;
+  }
+});
 
 for (const item of items) {
   item.addEventListener('click', async () => {

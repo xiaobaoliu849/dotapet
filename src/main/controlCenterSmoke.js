@@ -104,3 +104,32 @@ export async function runPreferenceSaveSmoke(controlCenter, dataDirectory) {
   if (settings.settingsSidebarCollapsed !== false) throw new Error('Fold retry was not saved to disk');
   console.log('[Settings preferences] PASS: failed saves stay visible and retries preserve state');
 }
+
+export async function runSettingsPageRetrySmoke(controlCenter) {
+  const appearance = { file: 'customize.html', preload: '../preload/customize.js', background: '#f6f7f2' };
+  const shell = controlCenter.window.webContents;
+  controlCenter.register('appearance', { ...appearance, file: 'missing-settings-smoke.html' });
+  try {
+    await navigateHub(controlCenter, 'appearance');
+    await shell.executeJavaScript(`(async () => {
+      const error = document.getElementById('page-load-error');
+      for (let i = 0; i < 100 && error.hidden; i++) await new Promise(resolve => setTimeout(resolve, 20));
+      if (error.hidden) throw new Error('Missing Settings file left a blank page');
+    })()`);
+    await navigateHub(controlCenter, 'help');
+    if (!await shell.executeJavaScript("document.getElementById('page-load-error').hidden")) throw new Error('Failed page blocked Help');
+    await navigateHub(controlCenter, 'appearance');
+    controlCenter.register('appearance', appearance);
+    await shell.executeJavaScript(`(async () => {
+      document.getElementById('retry-page').click();
+      const error = document.getElementById('page-load-error');
+      for (let i = 0; i < 100 && !error.hidden; i++) await new Promise(resolve => setTimeout(resolve, 20));
+      if (!error.hidden) throw new Error('Retry kept the Settings error panel open');
+    })()`);
+    await pageLoaded(controlCenter.contents('appearance'));
+    if (!controlCenter.contents('appearance').getURL().endsWith('/customize.html')) throw new Error('Retry did not load the registered page');
+  } finally {
+    controlCenter.register('appearance', appearance);
+  }
+  console.log('[Settings navigation] PASS: missing page, independent navigation, retry to working page');
+}
