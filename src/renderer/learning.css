@@ -202,16 +202,16 @@ input:focus,select:focus{border-color:#5b8267;box-shadow:0 0 0 3px rgba(63,106,8
 #session-mistakes{margin:14px 0}
 .guide-footer{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid #e6ede0}
 #guide-help{font-size:12.5px;line-height:1.55;color:#607253;margin:0;flex:1;min-width:220px}
-#guide-status{font-size:12px;line-height:1.5;color:#607253;margin:8px 0 0}
-#guide-status:empty{display:none}
+#guide-status,.study-action-status{font-size:12px;line-height:1.5;color:#607253;margin:8px 0 0;overflow-wrap:anywhere}
+#guide-status:empty,.study-action-status:empty{display:none}
 .guided-card{max-width:680px}
 .guided-card .lesson-title h3{font-size:23px;line-height:1.3;margin:0 0 4px;overflow-wrap:anywhere}
 .guided-card .item-picture{width:96px;height:70px}
 .guide-meaning{font-size:15.5px;line-height:1.55;margin:10px 0 3px}
 .guide-translation{font-size:13.5px;color:#607253;margin:0 0 10px}
 .guided-card .item-coach{padding:12px 14px}
-#guide-next,#new-session{background:#3f6a52;color:#fff;border:0;font-weight:600;padding:8px 16px;height:36px;border-radius:9px;margin:0;flex-shrink:0}
-#guide-next:hover:not(:disabled),#new-session:hover:not(:disabled){background:#325844}
+#guide-next{background:#3f6a52;color:#fff;border:0;font-weight:600;padding:8px 16px;height:36px;border-radius:9px;margin:0;flex-shrink:0}
+#guide-next:hover:not(:disabled){background:#325844}
 
 /* === Lesson Cards & Explore / Saved Library === */
 .lessons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}

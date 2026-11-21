@@ -38,6 +38,23 @@ export async function runStarterPathSmoke({ page, controlCenter, nativeImage, ou
     byId('guided-lesson').scrollIntoView({block:'start'});
   })()`);
   fs.writeFileSync(path.join(outputDirectory, 'learning-guide.png'), (await captureHub(controlCenter, nativeImage)).toPNG());
+  // Block the atomic write in this isolated smoke profile. The open card should show the failure and remain usable.
+  const stateTempPath = path.join(outputDirectory, 'learning-state.json.tmp');
+  fs.mkdirSync(stateTempPath);
+  try {
+    await page.executeJavaScript(`(async () => {
+      const byId = id => document.getElementById(id);
+      byId('guide-end').click();
+      for (let i = 0; i < 100 && !byId('guide-status').textContent; i++) await new Promise(resolve => setTimeout(resolve, 20));
+      if (byId('guided-lesson').hidden || !byId('guide-status').textContent) throw new Error('Guided lesson write failure had no visible feedback');
+      byId('guide-next').click();
+      for (let i = 0; i < 100 && byId('guide-next').disabled; i++) await new Promise(resolve => setTimeout(resolve, 20));
+      if (byId('guide-next').disabled || !byId('guide-status').textContent.includes('learning-state.json.tmp')) throw new Error('Next card did not offer visible retry feedback');
+      if ((await window.learningAPI.load()).study.active.guideIndex !== 2) throw new Error('Failed write changed the learning-card checkpoint');
+    })()`);
+  } finally {
+    fs.rmdirSync(stateTempPath);
+  }
   page.reload(); await pageLoaded(page);
   await page.executeJavaScript(`(async () => {
     const byId = id => document.getElementById(id);
@@ -81,6 +98,24 @@ export async function runStarterPathSmoke({ page, controlCenter, nativeImage, ou
     if (byId('session-summary').hidden) throw new Error('Starter lesson has no summary');
     const final = await window.learningAPI.load();
     if (final.study.active.answers.filter(answer => answer.correct).length !== 5 || !final.progress['item:44'].saved) throw new Error('Starter results or bookmarks were lost');
+  })()`);
+  fs.mkdirSync(stateTempPath);
+  try {
+    await page.executeJavaScript(`(async () => {
+      const byId = id => document.getElementById(id);
+      const nextUnit = byId('start-next-unit');
+      const previous = (await window.learningAPI.load()).study.active;
+      if (nextUnit.hidden || nextUnit.disabled) throw new Error('Summary offered no direct next starter lesson');
+      nextUnit.click();
+      for (let i = 0; i < 100 && nextUnit.disabled; i++) await new Promise(resolve => setTimeout(resolve, 20));
+      if (nextUnit.disabled || byId('session-summary').hidden || !byId('summary-status').textContent.includes('learning-state.json.tmp')) throw new Error('Next lesson did not offer visible retry feedback');
+      if ((await window.learningAPI.load()).study.active.id !== previous.id) throw new Error('Failed next lesson start discarded the summary');
+    })()`);
+  } finally {
+    fs.rmdirSync(stateTempPath);
+  }
+  await page.executeJavaScript(`(async () => {
+    const byId = id => document.getElementById(id);
     // Planning another session after finishing starter-lane must auto-advance away from the exhausted unit.
     byId('new-session').click();
     if (byId('session-scope').value !== 'starter-team') throw new Error('Plan another session stayed stuck on exhausted scope: ' + byId('session-scope').value);
@@ -113,5 +148,5 @@ export async function runStarterPathSmoke({ page, controlCenter, nativeImage, ou
     }
     if ((await window.learningAPI.load()).study.active.options.scope !== 'starter-team') throw new Error('Starter action did not advance to the next ready unit');
   })()`);
-  console.log('[Starter path] PASS: ten local pictures, learn-before-recall, saved cards, reload recovery, focused English quiz, review scheduling, next-unit routing, narrow layout');
+  console.log('[Starter path] PASS: ten local pictures, learn-before-recall, saved cards, reload recovery, focused English quiz, visible write errors, next-unit routing, narrow layout');
 }

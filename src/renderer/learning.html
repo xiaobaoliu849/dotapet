@@ -178,6 +178,7 @@
       </div>
       <div id="quiz-explanation" class="quiz-explanation" translate="no"></div>
     </div>
+    <p id="quiz-status" class="study-action-status" role="status" aria-live="polite"></p>
   </section>
   <section id="session-summary" class="practice" hidden aria-labelledby="summary-heading">
     <h2 id="summary-heading">Session complete</h2>
@@ -188,8 +189,12 @@
     <div id="session-mistakes" translate="no"></div>
     <div class="summary-actions">
       <div id="summary-extra-actions" class="summary-extra-actions"></div>
-      <button id="new-session" type="button">Plan another session →</button>
+      <div class="summary-extra-actions">
+        <button id="new-session" class="summary-action-btn is-primary" type="button">Plan another session →</button>
+        <button id="start-next-unit" class="summary-action-btn is-primary" type="button" hidden></button>
+      </div>
     </div>
+    <p id="summary-status" class="study-action-status" role="status" aria-live="polite"></p>
   </section>
   <section id="library" aria-label="Bilingual lessons"><div id="lessons" class="lessons" translate="no"></div></section>
   <button id="more" hidden>Load more</button>

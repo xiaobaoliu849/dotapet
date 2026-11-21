@@ -722,21 +722,25 @@ function itemCoachNode(lesson) {
   }
   return coach;
 }
-function nextStarterUnit() {
-  return STARTER_UNITS.find(unit => unit.lessonIds.every(id => catalog.lessons.some(lesson => lesson.id === id && starterAvailability(starterEvidence, id, lesson)))
-    && unit.lessonIds.some(id => catalog.lessons.some(lesson => lesson.id === id) && (!progress[id]?.due || progress[id].due <= Date.now())));
+function nextStarterUnit(excludeScope) {
+  return STARTER_UNITS.find(unit => unit.id !== excludeScope && unitReadyCount(unit) > 0);
+}
+function quickStarterUnit() {
+  const completedScope = study.active?.completedAt ? study.active.options.scope : null;
+  return nextStarterUnit(completedScope) || nextStarterUnit();
 }
 function quickLabel() {
   const running = Boolean(study.active && !study.active.completedAt);
   const paused = Boolean(study.paused && !study.paused.completedAt);
-  const next = mode === 'starter' ? nextStarterUnit() : null;
+  const next = mode === 'starter' ? quickStarterUnit() : null;
   $('quick-practice').hidden = mode === 'quiz' || (mode === 'saved' && !running);
   $('quick-practice').disabled = starting || (mode === 'starter' && !running && !paused && !next);
   $('quick-practice').textContent = running
     ? text('Continue session →', '继续上次练习 →')
     : mode === 'starter'
       ? paused ? text('Resume paused lesson →', '继续暂停的课程 →')
-        : next === STARTER_UNITS[0] ? text('Start first lesson →', '开始第一课 →')
+        : next && next.id === study.active?.options.scope ? text('Review this lesson →', '复习本课 →')
+        : next === STARTER_UNITS[0] && !study.history.some(entry => starterUnit(entry.scope)) ? text('Start first lesson →', '开始第一课 →')
         : next ? text('Start next lesson →', '开始下一课 →') : text('Reviews scheduled', '已安排后续复习')
       : text('Practice 5 lessons →', '练习 5 条课程 →');
 }
@@ -781,8 +785,7 @@ async function startStarterUnit(unit) {
     await resumePausedSession();
     return;
   }
-  enterPractice(unit.id, { scope: unit.id, size: '5', kind: 'item', search: '', direction: 'zh' });
-  await beginSession();
+  await beginSession({ scope: unit.id, size: 5, kind: 'item', search: '', direction: 'zh' });
 }
 function renderGuide(active) {
   const index = active.guideIndex, lesson = active.items[index].lesson;
@@ -1986,6 +1989,12 @@ function renderStudy() {
 function renderSummary(active) {
   player.stop();
   $('session-summary').hidden = false;
+  const nextUnit = starterUnit(active.options.scope) && nextStarterUnit(active.options.scope);
+  const nextButton = $('start-next-unit');
+  nextButton.hidden = !nextUnit;
+  nextButton.textContent = text('Start next lesson →', '开始下一课 →');
+  nextButton.onclick = nextUnit ? () => startStarterUnit(nextUnit) : null;
+  $('new-session').classList.toggle('is-primary', !nextUnit);
   const correct = active.answers.filter(answer => answer.correct).length;
   const isFocus = active.options?.scope === 'focus';
   const focusItem = isFocus ? active.items[0] : null;
@@ -2275,7 +2284,7 @@ async function endActiveSession() {
     render();
     focusStudy();
   } catch (error) {
-    $('study-status').textContent = error.message;
+    studyActionStatus().textContent = `${text('Could not end the session. Try again.', '暂无法结束本轮。请重试。')} ${error.message}`;
   }
 }
 async function resumePausedSession() {
@@ -2298,7 +2307,7 @@ async function resumePausedSession() {
     render();
     focusStudy();
   } catch (error) {
-    $('study-status').textContent = error.message;
+    studyActionStatus().textContent = `${text('Could not resume the session. Try again.', '暂无法继续本轮。请重试。')} ${error.message}`;
   }
 }
 function focusStudy() {
@@ -2307,26 +2316,55 @@ function focusStudy() {
   heading.focus({ preventScroll: true });
   heading.closest('section').scrollIntoView({ block: 'start' });
 }
-async function beginSession() {
+function studyActionStatus() {
+  if (mode === 'starter') return $('starter-status');
+  if (!$('guided-lesson').hidden) return $('guide-status');
+  if (!$('practice').hidden) return $('quiz-status');
+  if (!$('session-summary').hidden) return $('summary-status');
+  return $('study-status');
+}
+async function beginSession(starterOptions) {
   if (starting) return;
   player.stop();
-  starting = true; $('start-session').disabled = true; $('new-session').disabled = true;
+  const originMode = mode;
+  const status = studyActionStatus();
+  const controls = [$('start-session'), $('new-session'), $('start-next-unit')];
+  starting = true;
+  for (const control of controls) control.disabled = true;
+  quickLabel();
+  status.textContent = text('Starting lesson…', '正在开始课程…');
   try {
-    const response = await api.startSession({ size: Number($('session-size').value), scope: $('session-scope').value,
+    const response = await api.startSession(starterOptions || { size: Number($('session-size').value), scope: $('session-scope').value,
       kind: $('kind').value, search: $('search').value, direction: $('direction').value });
-    receive(response); feedbackIndex = null;
-    if (!response.empty) { planning = false; returnContext = null; }
-    if (!response.empty && study.active && study.active.options?.scope !== 'focus') {
+    receive(response);
+    status.textContent = '';
+    if (response.empty) {
+      if (!starterOptions && mode === 'quiz') updateStudyPreview();
+      else status.textContent = text('No reviews are due for this lesson yet.', '本课暂无到期复习词条。');
+      return;
+    }
+    planning = false; returnContext = null; feedbackIndex = null;
+    if (study.active && study.active.options?.scope !== 'focus') {
       const options = study.active.options;
       $('kind').value = options.kind; $('search').value = options.search; $('direction').value = options.direction;
       $('session-size').value = safeSize(options.size); $('session-scope').value = safeScope(options.scope);
     }
-    if (mode === 'quiz') { render(); focusStudy(); }
-    if (response.empty && !$('study-status').textContent) {
-      $('study-status').textContent = text('No words are ready in this collection. Save some words, change topic, or return when reviews are due.', '此词库暂无到期课程。请先收藏词条、更换主题，或到复习时间再来。');
+    const stayed = mode === originMode;
+    if (stayed) mode = 'quiz';
+    render();
+    if (stayed) focusStudy();
+  } catch (error) {
+    status.textContent = `${text('Could not start the lesson. Try again.', '暂无法开始课程。请重试。')} ${error.message}`;
+  } finally {
+    starting = false;
+    for (const control of controls) control.disabled = false;
+    if (mode === 'starter') {
+      const message = $('starter-status').textContent;
+      renderStarter();
+      if (originMode === 'starter' && message) $('starter-status').textContent = message;
     }
-  } catch (error) { $('study-status').textContent = error.message; }
-  finally { starting = false; $('start-session').disabled = false; $('new-session').disabled = false; quickLabel(); }
+    quickLabel();
+  }
 }
 for (const [id, m] of [['starter-tab', 'starter'], ['heroes-tab', 'heroes'], ['items-tab', 'items'], ['phrases-tab', 'phrases'], ['browse', 'browse'], ['saved', 'saved'], ['quiz', 'quiz']]) $(id).onclick = () => {
   player.stop();
@@ -2389,7 +2427,7 @@ $('practice-saved').onclick = () => {
 };
 $('quick-practice').onclick = async () => {
   if (mode === 'starter') {
-    const unit = nextStarterUnit();
+    const unit = quickStarterUnit();
     if (study.active && !study.active.completedAt) enterPractice();
     else if (study.paused && !study.paused.completedAt) await resumePausedSession();
     else if (unit) await startStarterUnit(unit);
@@ -2403,7 +2441,7 @@ $('quick-practice').onclick = async () => {
   enterPractice(scope, { scope, kind, search: currentSearch, size: '5' });
   await beginSession();
 };
-$('start-session').onclick = beginSession;
+$('start-session').onclick = () => beginSession();
 $('quiz-end').onclick = endActiveSession;
 $('guide-end').onclick = endActiveSession;
 $('resume-paused').onclick = resumePausedSession;
@@ -2419,11 +2457,15 @@ $('discard-paused').onclick = async () => {
 $('guide-next').onclick = async () => {
   const active = study.active;
   if (advancing || !isLearningStep(active)) return;
-  advancing = true; $('guide-next').disabled = true; $('guide-status').textContent = ''; player.stop();
+  advancing = true; $('guide-next').disabled = true; player.stop();
+  $('guide-status').textContent = text('Saving your place…', '正在保存学习进度…');
   try {
     receive(await api.advanceGuide(active.id, active.items[active.guideIndex].lesson.id));
+    $('guide-status').textContent = '';
     if (mode === 'quiz') { render(); focusStudy(); }
-  } catch (error) { $('guide-status').textContent = error.message; }
+  } catch (error) {
+    $('guide-status').textContent = `${text('Could not save your place. Try again.', '暂无法保存学习进度。请重试。')} ${error.message}`;
+  }
   finally { advancing = false; $('guide-next').disabled = false; }
 };
 $('new-session').onclick = () => {
