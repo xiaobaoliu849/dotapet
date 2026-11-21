@@ -1,7 +1,51 @@
 import http from 'http';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { test } from 'node:test';
 import { GSIServer } from '../src/main/gsi/gsiServer.js';
 import { normalizeGsiHeroName } from '../src/main/gsi/heroMap.js';
-import { checkGsiInstalled, generateGsiConfigContent } from '../src/main/gsi/gsiInstaller.js';
+import { checkGsiInstalled, generateGsiConfigContent, GSI_HEARTBEAT_SECONDS, installGsiConfig } from '../src/main/gsi/gsiInstaller.js';
+
+test('GSI installation status requires the active listener port', () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'dotapet-gsi-'));
+  try {
+    const result = installGsiConfig(directory, 30080);
+    assert.equal(result.success, true);
+    assert.equal(checkGsiInstalled(directory, 30080).installed, true);
+    assert.equal(checkGsiInstalled(directory, 3008).installed, false);
+
+    const correctConfig = generateGsiConfigContent(3008);
+    fs.writeFileSync(result.path, `// "uri" "http://127.0.0.1:3008/"\n${correctConfig.replace('127.0.0.1', '192.0.2.1')}`);
+    assert.equal(checkGsiInstalled(directory, 3008).installed, false);
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test('GSI stays connected between idle heartbeats and eventually reports the game offline', t => {
+  t.mock.timers.enable({ apis: ['Date', 'setInterval'], now: 0 });
+  const server = new GSIServer();
+  const transitions = [];
+  server.on('connection_status', state => transitions.push(state.isConnected));
+  const heartbeatMs = GSI_HEARTBEAT_SECONDS * 1000;
+  server.startHeartbeatWatcher();
+  try {
+    server.onPacketReceived({ provider: { name: 'Dota 2' } });
+    t.mock.timers.tick(heartbeatMs);
+    assert.deepEqual(transitions, [true]);
+
+    server.onPacketReceived({ provider: { name: 'Dota 2' } });
+    t.mock.timers.tick(2 * heartbeatMs - 5000);
+    assert.deepEqual(transitions, [true]);
+
+    t.mock.timers.tick(10000);
+    assert.deepEqual(transitions, [true, false]);
+  } finally {
+    server.stop();
+  }
+});
 
 async function runTests() {
   console.log('=== Starting DOTA 2 GSI Integration Tests ===\n');

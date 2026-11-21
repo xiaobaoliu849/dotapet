@@ -3,6 +3,7 @@ import path from 'path';
 
 const GSI_CFG_FILENAME = 'gamestate_integration_voicespirit.cfg';
 const DEFAULT_PORT = 3008;
+export const GSI_HEARTBEAT_SECONDS = 30;
 
 export function generateGsiConfigContent(port = DEFAULT_PORT) {
   return `"Dota 2 VoiceSpirit Companion Integration"
@@ -11,7 +12,7 @@ export function generateGsiConfigContent(port = DEFAULT_PORT) {
     "timeout"       "1.5"
     "buffer"        "0.1"
     "throttle"      "0.1"
-    "heartbeat"     "30.0"
+    "heartbeat"     "${GSI_HEARTBEAT_SECONDS.toFixed(1)}"
     "data"
     {
         "buildings"     "0"
@@ -96,12 +97,15 @@ export function findDota2GsiDirectories() {
  */
 export function checkGsiInstalled(customDir = null, port = DEFAULT_PORT) {
   const dirs = customDir ? [customDir] : findDota2GsiDirectories();
+  const expectedUri = `http://127.0.0.1:${port}`;
   for (const dir of dirs) {
     const cfgPath = path.join(dir, GSI_CFG_FILENAME);
     if (fs.existsSync(cfgPath)) {
       try {
         const content = fs.readFileSync(cfgPath, 'utf8');
-        if (content.includes(`127.0.0.1:${port}`) || content.includes('VoiceSpirit')) {
+        const uri = /^\s*"uri"\s+"([^"\r\n]+)"/im.exec(content)?.[1];
+        // The filename and title remain the same when the listener port changes.
+        if (uri === expectedUri || uri === `${expectedUri}/`) {
           return { installed: true, path: cfgPath, directory: dir };
         }
       } catch (e) {}

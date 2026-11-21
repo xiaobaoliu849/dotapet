@@ -1,6 +1,7 @@
 import http from 'http';
 import { EventEmitter } from 'events';
 import { GSIParser } from './gsiParser.js';
+import { GSI_HEARTBEAT_SECONDS } from './gsiInstaller.js';
 
 export class GSIServer extends EventEmitter {
   constructor(options = {}) {
@@ -18,7 +19,8 @@ export class GSIServer extends EventEmitter {
     this.isConnected = false;
     this.lastPacketTime = 0;
     this.heartbeatTimer = null;
-    this.timeoutThresholdMs = 25000; // 25s without packet -> offline
+    // Idle games send one packet per heartbeat. Allow one missed heartbeat.
+    this.timeoutThresholdMs = GSI_HEARTBEAT_SECONDS * 2 * 1000;
 
     this.initParserForwarding();
   }
