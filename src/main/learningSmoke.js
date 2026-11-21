@@ -253,6 +253,7 @@ export async function runLearningSmoke({ controlCenter, nativeImage, outputDirec
     // 6. Practice tab shows paused starter banner + honest Hero mastery (0 mastered), resume + end session cleanly.
     byId('quiz').click();
     await wait(() => !byId('study-setup').hidden && !byId('paused-banner').hidden, 'Practice setup with paused banner');
+    if (!byId('paused-banner-text').textContent.includes('1/5')) throw new Error('Paused starter lesson did not show card one as the resume position');
     const heroMastery = document.querySelector('[data-mastery-key="hero"] .mastery-count')?.textContent || '';
     if (!heroMastery.startsWith('0/')) throw new Error('Heroes mastery inflated with <3 streak: ' + heroMastery);
     byId('resume-paused').click();

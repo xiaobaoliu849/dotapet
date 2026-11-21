@@ -792,10 +792,22 @@ function renderGuide(active) {
   const brief = STARTER_ITEMS[lesson.id];
   $('study-setup').hidden = true; $('guided-lesson').hidden = false;
   $('guide-counter').textContent = text(`Learn ${index + 1} / ${active.items.length} · Recall comes next`, `认识第 ${index + 1} / ${active.items.length} 个词 · 随后回忆英文`);
-  $('guide-progress').value = index; $('guide-progress').max = active.items.length;
+  const progressBar = $('guide-progress');
+  progressBar.max = active.items.length;
+  progressBar.value = index;
+  progressBar.setAttribute('aria-label', text('Learning card progress', '学习卡进度'));
+  progressBar.setAttribute('aria-valuetext', text(`${index} of ${active.items.length} cards completed`, `已完成 ${index} / ${active.items.length} 张学习卡`));
   const card = node('article', '', 'guided-card');
   const heading = node('div', '', 'lesson-heading');
-  const title = node('div', '', 'lesson-title'); title.append(node('h3', lesson.en), node('p', lesson.zh, 'zh'));
+  const title = node('div', '', 'lesson-title');
+  const name = node('h3', lesson.en);
+  name.id = 'guide-card-title';
+  name.lang = 'en';
+  name.setAttribute('aria-describedby', 'guide-counter guide-card-translation');
+  const translation = node('p', lesson.zh, 'zh');
+  translation.id = 'guide-card-translation';
+  translation.lang = 'zh-Hans';
+  title.append(name, translation);
   heading.append(itemImageNode(lesson), title);
   card.append(heading, node('p', brief.en, 'guide-meaning'), node('p', brief.zh, 'guide-translation'), itemCoachNode(lesson));
   const actions = node('div', '', 'actions'); actions.append(audioButton(lesson), saveButton(lesson)); card.append(actions);
@@ -1890,7 +1902,7 @@ function updatePausedBanner() {
   if (!paused) return;
   const unit = starterUnit(paused.options?.scope);
   const done = isLearningStep(paused)
-    ? text(`Learning card ${paused.guideIndex}/${paused.items.length}`, `学习卡 ${paused.guideIndex}/${paused.items.length}`)
+    ? text(`Next card ${paused.guideIndex + 1}/${paused.items.length}`, `继续第 ${paused.guideIndex + 1}/${paused.items.length} 张学习卡`)
     : text(`${paused.answers.length}/${paused.items.length} answered`, `已完成 ${paused.answers.length}/${paused.items.length} 题`);
   const label = unit ? text(unit.en, unit.zh) : text('Paused practice session', '已暂停的练习');
   $('paused-banner-text').textContent = `${label} · ${done}`;
@@ -2311,7 +2323,7 @@ async function resumePausedSession() {
   }
 }
 function focusStudy() {
-  const heading = !$('guided-lesson').hidden ? $('guide-heading') : !$('practice').hidden ? $('question') : !$('session-summary').hidden ? $('summary-heading') : $('study-heading');
+  const heading = !$('guided-lesson').hidden ? $('guide-card-title') : !$('practice').hidden ? $('question') : !$('session-summary').hidden ? $('summary-heading') : $('study-heading');
   heading.tabIndex = -1;
   heading.focus({ preventScroll: true });
   heading.closest('section').scrollIntoView({ block: 'start' });
@@ -2457,16 +2469,25 @@ $('discard-paused').onclick = async () => {
 $('guide-next').onclick = async () => {
   const active = study.active;
   if (advancing || !isLearningStep(active)) return;
-  advancing = true; $('guide-next').disabled = true; player.stop();
+  const next = $('guide-next');
+  const hadFocus = document.activeElement === next;
+  let failed = false;
+  advancing = true; next.disabled = true; player.stop();
   $('guide-status').textContent = text('Saving your place…', '正在保存学习进度…');
   try {
     receive(await api.advanceGuide(active.id, active.items[active.guideIndex].lesson.id));
     $('guide-status').textContent = '';
     if (mode === 'quiz') { render(); focusStudy(); }
   } catch (error) {
+    failed = true;
     $('guide-status').textContent = `${text('Could not save your place. Try again.', '暂无法保存学习进度。请重试。')} ${error.message}`;
+  } finally {
+    advancing = false;
+    next.disabled = false;
+    if (failed && hadFocus && !$('guided-lesson').hidden && document.activeElement === document.body) {
+      next.focus({ preventScroll: true });
+    }
   }
-  finally { advancing = false; $('guide-next').disabled = false; }
 };
 $('new-session').onclick = () => {
   const wasFocus = study.active?.options?.scope === 'focus';

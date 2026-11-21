@@ -18,6 +18,10 @@ export async function runStarterPathSmoke({ page, controlCenter, nativeImage, ou
     document.querySelector('[data-starter-unit="starter-lane"]').click();
     for (let i = 0; i < 100 && byId('guided-lesson').hidden; i++) await new Promise(resolve => setTimeout(resolve, 20));
     if (byId('guided-lesson').hidden || !byId('practice').hidden) throw new Error('Starter path skipped learning');
+    const title = byId('guide-card-title');
+    if (document.activeElement !== title || title.textContent !== 'Tango' || !title.getAttribute('aria-describedby').includes('guide-counter')) {
+      throw new Error('First starter card did not focus its item title and describe its position');
+    }
     await document.querySelector('#guide-card img').decode();
     if (!document.querySelector('#guide-card .guide-meaning') || !document.querySelector('#guide-card .match-english')) throw new Error('Starter card lacks a meaning or sentence');
     document.querySelector('#guide-card .actions button:last-child').click();
@@ -35,6 +39,10 @@ export async function runStarterPathSmoke({ page, controlCenter, nativeImage, ou
     }
     const state = await window.learningAPI.load();
     if (state.study.active.guideIndex !== 2 || state.progress['item:44'].attempts) throw new Error('Reading changed quiz progress');
+    const currentTitle = byId('guide-card-title');
+    if (document.activeElement !== currentTitle || currentTitle.textContent !== 'Magic Stick' || !byId('guide-progress').getAttribute('aria-valuetext').includes('2')) {
+      throw new Error('Advancing did not focus the new card and describe completed progress');
+    }
     byId('guided-lesson').scrollIntoView({block:'start'});
   })()`);
   fs.writeFileSync(path.join(outputDirectory, 'learning-guide.png'), (await captureHub(controlCenter, nativeImage)).toPNG());
@@ -47,9 +55,11 @@ export async function runStarterPathSmoke({ page, controlCenter, nativeImage, ou
       byId('guide-end').click();
       for (let i = 0; i < 100 && !byId('guide-status').textContent; i++) await new Promise(resolve => setTimeout(resolve, 20));
       if (byId('guided-lesson').hidden || !byId('guide-status').textContent) throw new Error('Guided lesson write failure had no visible feedback');
+      byId('guide-next').focus();
       byId('guide-next').click();
       for (let i = 0; i < 100 && byId('guide-next').disabled; i++) await new Promise(resolve => setTimeout(resolve, 20));
       if (byId('guide-next').disabled || !byId('guide-status').textContent.includes('learning-state.json.tmp')) throw new Error('Next card did not offer visible retry feedback');
+      if (document.activeElement !== byId('guide-next')) throw new Error('Keyboard focus did not return to the next-card retry');
       if ((await window.learningAPI.load()).study.active.guideIndex !== 2) throw new Error('Failed write changed the learning-card checkpoint');
     })()`);
   } finally {
@@ -62,6 +72,7 @@ export async function runStarterPathSmoke({ page, controlCenter, nativeImage, ou
     byId('quick-practice').click();
     const state = await window.learningAPI.load();
     if (state.study.active.guideIndex !== 2 || byId('guided-lesson').hidden || !byId('guide-card').textContent.includes('Magic Stick')) throw new Error('Learning cards did not resume after reload');
+    if (document.activeElement !== byId('guide-card-title')) throw new Error('Resumed card did not receive keyboard focus');
     for (let index = 2; index < 5; index++) {
       byId('guide-next').click();
       for (let i = 0; i < 100; i++) {
@@ -148,5 +159,5 @@ export async function runStarterPathSmoke({ page, controlCenter, nativeImage, ou
     }
     if ((await window.learningAPI.load()).study.active.options.scope !== 'starter-team') throw new Error('Starter action did not advance to the next ready unit');
   })()`);
-  console.log('[Starter path] PASS: ten local pictures, learn-before-recall, saved cards, reload recovery, focused English quiz, visible write errors, next-unit routing, narrow layout');
+  console.log('[Starter path] PASS: ten local pictures, learn-before-recall, saved cards, reload recovery, keyboard card focus and retry, focused English quiz, visible write errors, next-unit routing, narrow layout');
 }
