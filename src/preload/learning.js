@@ -8,7 +8,7 @@ contextBridge.exposeInMainWorld('learningAPI', {
   abandonSession: target => ipcRenderer.invoke('learning:abandon-session', target),
   resumePaused: () => ipcRenderer.invoke('learning:resume-paused'),
   advanceGuide: (sessionId, lessonId) => ipcRenderer.invoke('learning:advance-guide', sessionId, lessonId),
-  answerSession: (sessionId, lessonId, choice) => ipcRenderer.invoke('learning:answer-session', sessionId, lessonId, choice),
+  answerSession: (sessionId, lessonId, choice, mode) => ipcRenderer.invoke('learning:answer-session', sessionId, lessonId, choice, mode),
   update: () => ipcRenderer.invoke('learning:update'),
   sources: () => ipcRenderer.invoke('learning:sources'),
   practiceVoice: persona => ipcRenderer.invoke('learning:practice-voice', persona),

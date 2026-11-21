@@ -70,7 +70,7 @@ export function recordAnswer(previous = {}, correct, now = Date.now(), { earlyRe
     due: now + (correct ? [0, 1, 3, 7, 14, 30][box] * 86400000 : 60000) };
 }
 
-function quizLabelKey(label) {
+export function quizLabelKey(label) {
   return typeof label === 'string' ? label.normalize('NFKC').trim().replace(/\s+/g, ' ').toLowerCase() : '';
 }
 

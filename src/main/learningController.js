@@ -10,7 +10,9 @@ import { applyReviewedLocalizations } from '../learning/reviewedLocalizations.js
 import { planStudy, planFocusedLesson, studyOptions, studySummary, STUDY_DEFAULTS } from '../learning/study.js';
 import { diffCatalog } from '../learning/contentAudit.js';
 import { buildPatchChangesManifest } from '../learning/patchChanges.js';
-import { starterUnit, starterAvailability, isLearningStep } from '../learning/starterPath.js';
+import {
+  starterUnit, starterAvailability, isLearningStep, supportsTypedStarterRecall, matchesStarterAnswer, MAX_TYPED_ANSWER_LENGTH,
+} from '../learning/starterPath.js';
 
 export function createLearningController({ electron, hub, rendererDirectory, dataDirectory, refreshCatalog = fetchCatalog, onPracticeVoice = null, onStopVoice = null }) {
   const { ipcMain, shell } = electron;
@@ -163,16 +165,25 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
     commit({ ...state, active: { ...active, guideIndex: active.guideIndex + 1 } });
     return snapshot();
   }));
-  ipcMain.handle('learning:answer-session', respond((sessionId, lessonId, choice) => {
+  ipcMain.handle('learning:answer-session', respond((sessionId, lessonId, choice, mode = 'choice') => {
     const active = state.active;
     if (!active || active.id !== sessionId) throw new Error('This study session is no longer active');
     if (isLearningStep(active)) throw new Error('Complete the learning cards before starting recall.');
     // Retried IPC messages must not count a successful disk write twice.
     if (active.answers.some(answer => answer.id === lessonId)) return snapshot();
     const item = active.items[active.answers.length];
-    if (!item || item.lesson.id !== lessonId || !item.question.options.includes(choice)) throw new Error('Invalid session answer');
-    const correct = item.question.answer === choice;
-    const answers = [...active.answers, { id: lessonId, choice, correct }];
+    if (!item || item.lesson.id !== lessonId) throw new Error('Invalid session answer');
+    const typed = mode === 'typed';
+    if (typed) {
+      if (!supportsTypedStarterRecall(active, item) || typeof choice !== 'string' || choice.length > MAX_TYPED_ANSWER_LENGTH || !choice.trim()) {
+        throw new Error('Invalid typed starter answer');
+      }
+      choice = choice.trim();
+    } else if (mode !== 'choice' || !item.question.options.includes(choice)) {
+      throw new Error('Invalid session answer');
+    }
+    const correct = typed ? matchesStarterAnswer(item, choice) : item.question.answer === choice;
+    const answers = [...active.answers, { id: lessonId, choice, correct, ...(typed && { typed: true }) }];
     const next = { ...active, answers, ...(answers.length === active.items.length ? { completedAt: Date.now() } : {}) };
     const history = next.completedAt ? [...state.history, studySummary(next)].slice(-180) : state.history;
     commit({ ...state, active: next, history,

@@ -201,4 +201,8 @@ For each checkpoint, reproduce the issue or define the expected behavior, make t
 
 Final verification for this pass: **315 tests passed**, along with full Windows Electron smoke and English Settings smoke.
 
-**Next checkpoint** Add an optional typed English answer to starter recall. Review a small alias list for the ten items, keep **Show choices** available, and verify that blank input, reload, and retries preserve the spaced-review schedule. Short recordings remain queued for source and redistribution review.
+## 2026-11-21 — Ongoing curriculum and reliability loop
+
+1. **Typed English starter recall.** The ten starter items accept their official English name and selected in-game aliases such as `TP`, `salve`, and `obs`. The learner can check a typed answer or reveal multiple-choice options. Existing answer saves and spaced-review intervals handle both. The regression tests cover blank input, ambiguous aliases, failed writes, retry after reload, and replies out of sequence. All **316 tests** and the Windows Electron smoke passed.
+
+**Next checkpoints** Make app preference saves atomic and show feedback when they fail. Then make Settings page and GSI listener startup failures recoverable. Short recordings remain queued for source and redistribution review.

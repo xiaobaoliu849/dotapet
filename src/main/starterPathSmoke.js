@@ -140,15 +140,32 @@ export async function runStarterPathSmoke({ page, controlCenter, nativeImage, ou
       if (!byId('answers').hidden || byId('show-choices').hidden || byId('question').textContent !== item.lesson.zh) {
         throw new Error('Starter recall resumed without the covered English choices and Chinese cue');
       }
-      byId('show-choices').click();
-      [...document.querySelectorAll('#answers button')].find(button => button.textContent === item.question.answer).click();
+      const typed = item.lesson.id === 'item:39';
+      if (typed) {
+        const field = byId('typed-answer'), form = byId('typed-recall');
+        if (form.hidden) throw new Error('Starter recall did not offer typing');
+        field.value = '   ';
+        form.requestSubmit();
+        if (field.validity.valid || (await window.learningAPI.load()).study.active.answers.length !== 1) throw new Error('Blank typed answer changed progress');
+        field.value = ' SALVE ';
+        field.dispatchEvent(new Event('input'));
+        field.focus();
+        form.requestSubmit();
+      } else {
+        byId('show-choices').click();
+        [...document.querySelectorAll('#answers button')].find(button => button.textContent === item.question.answer).click();
+      }
       for (let i = 0; i < 100 && byId('next').hidden; i++) await new Promise(resolve => setTimeout(resolve, 20));
       if (byId('next').hidden) throw new Error('Starter answer was not saved');
+      if (typed && (!byId('answers').hidden || document.activeElement !== byId('next') || !byId('result').textContent.includes(item.question.answer))) {
+        throw new Error('Typed starter feedback did not show the canonical answer and focus Next');
+      }
       byId('next').click();
     }
     if (byId('session-summary').hidden) throw new Error('Starter lesson has no summary');
     const final = await window.learningAPI.load();
-    if (final.study.active.answers.filter(answer => answer.correct).length !== 5 || !final.progress['item:44'].saved) throw new Error('Starter results or bookmarks were lost');
+    if (final.study.active.answers.filter(answer => answer.correct).length !== 5 || !final.progress['item:44'].saved
+      || !final.study.active.answers.some(answer => answer.id === 'item:39' && answer.typed)) throw new Error('Starter results, typed recall, or bookmarks were lost');
   })()`);
   fs.mkdirSync(stateTempPath);
   try {
@@ -199,5 +216,5 @@ export async function runStarterPathSmoke({ page, controlCenter, nativeImage, ou
     }
     if ((await window.learningAPI.load()).study.active.options.scope !== 'starter-team') throw new Error('Starter action did not advance to the next ready unit');
   })()`);
-  console.log('[Starter path] PASS: ten local pictures, learn-before-recall, saved cards, reload recovery, keyboard card focus and retry, picture-first English recall, visible write errors, next-unit routing, narrow layout');
+  console.log('[Starter path] PASS: ten local pictures, learn-before-recall, saved cards, reload recovery, keyboard card focus and retry, typed and picture-first English recall, visible write errors, next-unit routing, narrow layout');
 }

@@ -16,7 +16,9 @@ import { MASTERY_BOX_THRESHOLD, summarizeMastery } from '../learning/mastery.js'
 import { SPOKEN_CATEGORIES, SPOKEN_PHRASES } from '../learning/spokenPhrases.js';
 import { buildHeroPracticePersona, buildPhrasePracticePersona } from '../learning/voicePractice.js';
 import { localDay, reviewCounts, STUDY_DEFAULTS } from '../learning/study.js';
-import { STARTER_UNITS, STARTER_ITEMS, starterUnit, starterAvailability, isLearningStep } from '../learning/starterPath.js';
+import {
+  STARTER_UNITS, STARTER_ITEMS, starterUnit, starterAvailability, isLearningStep, supportsTypedStarterRecall, MAX_TYPED_ANSWER_LENGTH,
+} from '../learning/starterPath.js';
 const api = window.learningAPI;
 const $ = id => document.getElementById(id);
 const chinese = window.dotapetI18n?.language === 'zh';
@@ -1925,7 +1927,7 @@ function renderStudy() {
   const item = active.items[index];
   if (!item) return;
   const isFocus = active.options?.scope === 'focus';
-  const pictureRecall = active.options?.direction === 'zh' && Boolean(starterUnit(active.options.scope));
+  const pictureRecall = supportsTypedStarterRecall(active, item);
   const recallKey = `${active.id}:${index}`;
   const awaitingReveal = pictureRecall && !showFeedback && revealedRecall !== recallKey;
   $('practice').hidden = false;
@@ -1945,7 +1947,7 @@ function renderStudy() {
   const chooseHelp = text('Choose the item’s English name.', '请选择物品的英文名称。');
   if (pictureRecall) {
     help.textContent = awaitingReveal
-      ? text('Look at the picture and try saying the English name before showing the choices.', '先看图，试着说出物品的英文名称，再显示选项。')
+      ? text('Look at the picture and recall the English name.', '看图回忆物品的英文名称。')
       : showFeedback ? '' : chooseHelp;
   } else {
     help.textContent = item.lesson.kind === 'item'
@@ -1954,13 +1956,28 @@ function renderStudy() {
   }
   const answers = $('answers');
   const reveal = $('show-choices');
-  answers.hidden = awaitingReveal;
+  const typedForm = $('typed-recall');
+  const typedInput = $('typed-answer');
+  const checkAnswer = $('check-typed-answer');
+  const typedFeedback = Boolean(showFeedback?.typed);
+  answers.hidden = awaitingReveal || typedFeedback;
   answers.setAttribute('aria-label', text('Answer choices', '答案选项'));
   reveal.hidden = !awaitingReveal;
+  typedForm.hidden = !awaitingReveal;
+  $('typed-answer-label').textContent = text('English item name', '物品英文名');
+  checkAnswer.textContent = text('Check answer', '检查答案');
+  typedInput.maxLength = MAX_TYPED_ANSWER_LENGTH;
+  if (typedInput.dataset.question !== recallKey) {
+    typedInput.value = '';
+    typedInput.dataset.question = recallKey;
+    typedInput.setCustomValidity('');
+  }
+  typedInput.oninput = () => typedInput.setCustomValidity('');
   reveal.textContent = text('Show choices', '显示选项');
   reveal.onclick = awaitingReveal ? () => {
     revealedRecall = recallKey;
     reveal.hidden = true;
+    typedForm.hidden = true;
     answers.hidden = false;
     help.textContent = chooseHelp;
     answers.focus();
@@ -1971,40 +1988,60 @@ function renderStudy() {
   feedbackBox.dataset.outcome = showFeedback ? (showFeedback.correct ? 'correct' : 'wrong') : '';
   $('next').hidden = !showFeedback;
   $('next').textContent = active.completedAt ? text('See session summary →', '查看学习总结 →') : text('Next question →', '下一题 →');
+  const lockAnswerControls = disabled => {
+    for (const control of [typedInput, checkAnswer, reveal, ...answers.children]) control.disabled = disabled;
+  };
+  const submitAnswer = async (choice, answerMode) => {
+    if (pendingAnswer || study.active?.id !== active.id || study.active.answers.length !== index) return;
+    const focus = document.activeElement;
+    const restoreFocus = focus?.parentElement === answers || typedForm.contains(focus);
+    pendingAnswer = true;
+    lockAnswerControls(true);
+    try {
+      receive(await api.answerSession(active.id, item.lesson.id, choice, answerMode));
+      feedbackIndex = index;
+    } catch (error) {
+      feedbackBox.hidden = false;
+      feedbackBox.dataset.outcome = 'wrong';
+      $('result').textContent = error.message;
+      return;
+    } finally {
+      pendingAnswer = false;
+      lockAnswerControls(false);
+      if (mode === 'quiz' && restoreFocus && document.activeElement === document.body) focus.focus();
+    }
+    if (mode === 'quiz') {
+      const keepFocus = restoreFocus && (document.activeElement === focus || document.activeElement === document.body);
+      render();
+      if (pictureRecall && keepFocus) $('next').focus();
+    }
+  };
+  typedForm.onsubmit = event => {
+    event.preventDefault();
+    if (typedForm.hidden) return;
+    const value = typedInput.value.trim();
+    if (!value) {
+      typedInput.setCustomValidity(text('Enter a name before checking your answer.', '请先输入物品英文名。'));
+      typedInput.reportValidity();
+      return;
+    }
+    void submitAnswer(value, 'typed');
+  };
   for (const option of item.question.options) {
     const button = node('button', option); button.disabled = Boolean(showFeedback || pendingAnswer);
     button.lang = heading.lang === 'en' ? 'zh-Hans' : 'en';
     if (showFeedback && option === item.question.answer) button.classList.add('correct');
     if (showFeedback && !showFeedback.correct && option === showFeedback.choice) button.classList.add('wrong');
-    button.onclick = async () => {
-      if (answers.hidden || pendingAnswer || study.active?.id !== active.id || study.active.answers.length !== index) return;
-      const hadFocus = document.activeElement === button;
-      pendingAnswer = true;
-      for (const control of answers.children) control.disabled = true;
-      try {
-        receive(await api.answerSession(active.id, item.lesson.id, option));
-        feedbackIndex = index;
-        if (mode === 'quiz') {
-          const keepFocus = hadFocus && (document.activeElement === button || document.activeElement === document.body);
-          render();
-          if (pictureRecall && keepFocus) $('next').focus();
-        }
-      } catch (error) {
-        feedbackBox.hidden = false;
-        feedbackBox.dataset.outcome = 'wrong';
-        $('result').textContent = error.message;
-        for (const control of answers.children) control.disabled = false;
-        if (pictureRecall && hadFocus && document.activeElement === document.body) button.focus();
-      }
-      finally { pendingAnswer = false; }
-    };
+    button.onclick = () => { if (!answers.hidden) void submitAnswer(option, 'choice'); };
     answers.append(button);
   }
   if (showFeedback) {
     $('result').textContent = showFeedback.correct
       ? item.earlyReview
         ? text('✓ Correct! Extra drill recorded (review date unchanged).', '✓ 答对了！已记录本次加练（原复习计划不变）。')
-        : text('✓ Correct! Scheduled for a later review.', '✓ 答对了！已安排后续复习。')
+        : typedFeedback
+          ? text(`✓ Correct! ${item.question.answer} is scheduled for review.`, `✓ 答对了！已安排复习 ${item.question.answer}。`)
+          : text('✓ Correct! Scheduled for a later review.', '✓ 答对了！已安排后续复习。')
       : text('✕ Answer: ', '✕ 正确答案：') + item.question.answer;
     $('quiz-audio').append(audioButton(item.lesson));
     const explanation = $('quiz-explanation');

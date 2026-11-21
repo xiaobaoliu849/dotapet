@@ -55,6 +55,36 @@ test('failed guided checkpoint writes keep the learning cursor and reject foreig
   assert.equal((await f.call('load')).study.active.guideIndex, 0);
 });
 
+test('typed starter recall validates the current item, recognizes precise aliases, and persists one review per answer', async t => {
+  const f = fixture(t);
+  const { study: { active } } = await f.call('start-session', { scope: 'starter-team', direction: 'zh' });
+  const [observer, sentry] = active.items;
+  assert.equal(observer.lesson.id, 'item:42');
+  assert.equal((await f.call('answer-session', active.id, observer.lesson.id, 'obs', 'typed')).ok, false);
+  for (const item of active.items) await f.call('advance-guide', active.id, item.lesson.id);
+  assert.equal((await f.call('answer-session', active.id, sentry.lesson.id, 'sentry', 'typed')).ok, false);
+  for (const invalid of ['   ', 'x'.repeat(81), 7]) {
+    assert.equal((await f.call('answer-session', active.id, observer.lesson.id, invalid, 'typed')).ok, false);
+  }
+  const blockedWrite = path.join(f.dataDirectory, 'learning-state.json.tmp');
+  fs.mkdirSync(blockedWrite);
+  assert.equal((await f.call('answer-session', active.id, observer.lesson.id, 'obs', 'typed')).ok, false);
+  assert.equal((await f.call('load')).study.active.answers.length, 0);
+  fs.rmdirSync(blockedWrite);
+  const saved = await f.call('answer-session', active.id, observer.lesson.id, '  ＯＢＳ  ', 'typed');
+  assert.deepEqual(saved.study.active.answers[0], { id: observer.lesson.id, choice: 'ＯＢＳ', correct: true, typed: true });
+  assert.equal(saved.progress[observer.lesson.id].box, 1);
+  f.reload();
+  const retry = await f.call('answer-session', active.id, observer.lesson.id, 'obs', 'typed');
+  assert.deepEqual(retry.progress[observer.lesson.id], saved.progress[observer.lesson.id]);
+  assert.equal(retry.study.active.answers.length, 1);
+  const wrong = await f.call('answer-session', active.id, sentry.lesson.id, 'ward', 'typed');
+  assert.equal(wrong.study.active.answers[1].correct, false);
+  assert.equal(wrong.progress[sentry.lesson.id].box, 0);
+  const focused = await f.call('practice-lesson', { lessonId: observer.lesson.id, direction: 'zh' });
+  assert.equal((await f.call('answer-session', focused.study.active.id, observer.lesson.id, 'obs', 'typed')).ok, false);
+});
+
 test('saved spoken callouts can be practiced, answered and resumed through the same session IPC', async t => {
   const f = fixture(t), id = 'spoken:smoke-triangle';
   assert.equal((await f.call('progress', id, 'saved', true)).ok, true);

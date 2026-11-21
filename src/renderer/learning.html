@@ -167,7 +167,14 @@
         <p id="recall-help">Say your answer aloud before choosing. The picture is your memory cue.</p>
       </div>
     </div>
-    <button id="show-choices" type="button" aria-controls="answers" hidden>Show choices</button>
+    <form id="typed-recall" class="starter-recall-actions" hidden>
+      <label for="typed-answer" id="typed-answer-label">English item name</label>
+      <div class="typed-recall-row">
+        <input id="typed-answer" type="text" lang="en" required autocomplete="off" autocapitalize="off" spellcheck="false" translate="no">
+        <button id="check-typed-answer" type="submit">Check answer</button>
+        <button id="show-choices" type="button" aria-controls="answers" hidden>Show choices</button>
+      </div>
+    </form>
     <div id="answers" role="group" aria-label="Answer choices" tabindex="-1" translate="no"></div>
     <div id="quiz-feedback" class="quiz-feedback" hidden>
       <div class="quiz-feedback-bar">
