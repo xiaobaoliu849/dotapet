@@ -9,6 +9,9 @@ const shopCategories = readJson('../src/learning/item-shop-categories.json');
 const announcement = readJson('../docs/audits/official-announcement-check.json');
 
 const latestPatch = afterCatalog.patch || announcement?.latestPatchListEntry?.patchNumber || null;
+if (latestPatch && beforeCatalog.patch === latestPatch) {
+  throw new Error('Patch comparison needs a catalog from before the release. The last refresh used the same verified patch.');
+}
 const previousGameplay = (announcement?.headlines || [])
   .map(h => h.title?.match(/\b(\d+\.\d+[a-z]?)\b/i)?.[1])
   .find(v => v && v !== latestPatch) || null;

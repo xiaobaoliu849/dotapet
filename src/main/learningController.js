@@ -69,7 +69,14 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
     && Date.parse(cached.fetchedAt) > Date.parse(bundled.fetchedAt);
   let catalog = withBundledImages(usingCachedCatalog ? applyReviewedLocalizations(cached) : bundled);
   const cachedPatchChanges = usingCachedCatalog ? read(patchChangesFile, null) : null;
-  let patchChanges = cachedPatchChanges?.schema === 1 && cachedPatchChanges.entries ? cachedPatchChanges : bundledPatchChanges;
+  // Older refreshes could replace the bundled release comparison with a same-patch diff.
+  const replacedBundledComparison = cachedPatchChanges?.patch === bundledPatchChanges.patch
+    && !cachedPatchChanges?.previousPatch && bundledPatchChanges.previousPatch;
+  const patchCandidates = replacedBundledComparison
+    ? [bundledPatchChanges, cachedPatchChanges] : [cachedPatchChanges, bundledPatchChanges];
+  let patchChanges = patchCandidates.find(manifest => (
+    manifest?.schema === 1 && manifest.patch && manifest.entries && (!catalog.patch || manifest.patch === catalog.patch)
+  )) || buildPatchChangesManifest({ afterCatalog: catalog, shopCategories: itemShopCategories });
   let legacyProgress = read(progressFile, {});
   if (!legacyProgress || typeof legacyProgress !== 'object' || Array.isArray(legacyProgress)) legacyProgress = {};
   const saved = read(stateFile, null);
@@ -196,8 +203,10 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
       const changes = diffCatalog(catalog, fresh);
       write(path.join(dataDirectory, 'learning-catalog.previous.json'), catalog);
       write(path.join(dataDirectory, 'learning-catalog-changes.json'), changes);
-      if (changes.changes.length) {
-        const nextPatchChanges = buildPatchChangesManifest({
+      let nextPatchChanges = patchChanges;
+      // Feed edits within a release belong in the refresh log, not the release comparison.
+      if (fresh.patch && fresh.patch !== patchChanges.patch) {
+        nextPatchChanges = buildPatchChangesManifest({
           diff: changes,
           beforeCatalog: catalog,
           afterCatalog: fresh,
@@ -207,9 +216,10 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
           releasedAt: fresh.patchDate || null,
         });
         write(patchChangesFile, nextPatchChanges);
-        patchChanges = nextPatchChanges;
       }
-      write(catalogFile, fresh); catalog = fresh;
+      write(catalogFile, fresh);
+      catalog = fresh;
+      patchChanges = nextPatchChanges;
       return { catalog: lessonCatalog(), changes, patchChanges };
     } finally { updating = false; }
   }));

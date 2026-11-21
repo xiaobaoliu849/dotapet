@@ -229,21 +229,25 @@ function stats() {
   if (patchPill) {
     if (ver) {
       patchPill.hidden = false;
+      const verified = Boolean(catalog.patch);
+      const label = verified ? text(`Patch ${ver}`, `${ver} 最新`) : text(`Last verified patch ${ver}`, `上次核验版本 ${ver}`);
+      const action = !verified ? text('See changes', '看更新')
+        : hasPatchDiff() ? text('What’s new', '看更新') : text('Latest', '最新版本');
       patchPill.replaceChildren(
         node('span', '', 'patch-pill-dot'),
-        node('span', text(`Patch ${ver}`, `${ver} 最新`), 'patch-pill-ver'),
-        node('span', hasPatchDiff() ? text('What’s new', '看更新') : text('Latest', '最新版本'), 'patch-pill-cta'),
+        node('span', label, 'patch-pill-ver'),
+        node('span', action, 'patch-pill-cta'),
       );
       patchPill.title = text(
-        `Synced to Dota 2 Patch ${ver} — click to inspect new items, hero changes, and stat diffs`,
-        `已同步 Dota 2 最新 ${ver} 版本 — 点击查看新增物品、英雄改动与数值对比`,
+        `Inspect new items, hero changes, and stat comparisons for Patch ${ver}`,
+        `查看 ${ver} 版本的新增物品、英雄改动与数值对比`,
       );
-      patchPill.setAttribute('aria-label', text(`Dota 2 Patch ${ver} — What’s new`, `Dota 2 ${ver} 最新版本 — 查看更新内容`));
+      patchPill.setAttribute('aria-label', `${label} · ${action}`);
     } else {
       patchPill.hidden = true;
     }
   }
-  const patchText = ver ? text(`Patch ${ver} · Latest`, `${ver} 最新版本`) : text('Patch number unverified', '未核验版本号');
+  const patchText = catalog.patch ? text(`Patch ${catalog.patch} · Latest`, `${catalog.patch} 最新版本`) : text('Patch number unverified', '未核验版本号');
   $('source').textContent = `${catalog.sourceLabel} · ${patchText} · ${new Date(catalog.fetchedAt).toLocaleString()}`;
   const strip = $('mastery-strip');
   if (strip) {

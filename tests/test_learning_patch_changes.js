@@ -182,7 +182,7 @@ test('Starforge distinguishes landing and stun durations and repairs the exact o
   assert.doesNotMatch(tome.descriptionEn + tome.descriptionZh, /%customval_team_tomes_used%/);
 });
 
-test('learningController serves bundled patchChanges, updates on diff refresh, and preserves markers on no-op refresh', async t => {
+test('patch history stays with its verified version through same-patch updates and new releases', async t => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'dotapet-patch-changes-'));
   t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
   const handlers = new Map(), frame = {}, contents = { mainFrame: frame, isDestroyed: () => false, send() {} };
@@ -198,21 +198,26 @@ test('learningController serves bundled patchChanges, updates on diff refresh, a
       ? { ...lesson, zh: lesson.en, descriptionZh: lesson.descriptionEn }
       : lesson),
   }));
+  fs.writeFileSync(path.join(directory, 'learning-patch-changes.json'), JSON.stringify({
+    schema: 1, patch: '7.42', previousPatch: null, entries: {}, removed: [],
+  }));
 
   let nextCatalog = null;
-  createLearningController({
+  const controllerOptions = {
     electron: { ipcMain: { handle: (name, fn) => handlers.set(name, fn) }, shell: {} },
     hub: { contents: () => contents, register() {} },
     rendererDirectory,
     dataDirectory: directory,
     refreshCatalog: async () => nextCatalog,
-  });
+  };
+  createLearningController(controllerOptions);
 
   const initial = await handlers.get('learning:load')(trusted);
   assert.equal(initial.ok, true);
   assert.equal(initial.catalog.patch, '7.42');
   assert.deepEqual(initial.catalog.lessons.find(lesson => lesson.id === balmhook.id), balmhook);
   assert.equal(initial.patchChanges.patch, '7.42');
+  assert.equal(initial.patchChanges.previousPatch, '7.41f');
   assert.equal(initial.patchChanges.counts.addedShopItems, 6);
 
   // Zero-diff refresh keeps existing 7.42 markers intact
@@ -226,6 +231,21 @@ test('learningController serves bundled patchChanges, updates on diff refresh, a
   assert.equal(noopRes.changes.changes.length, 0);
   assert.equal(noopRes.patchChanges.patch, '7.42');
   assert.equal(noopRes.patchChanges.counts.addedShopItems, 6);
+
+  // A feed-only translation correction must not erase highlights from the release comparison.
+  nextCatalog = {
+    ...nextCatalog,
+    fetchedAt: new Date(Date.parse(catalog.fetchedAt) + 90000).toISOString(),
+    lessons: nextCatalog.lessons.map(lesson => lesson.id === balmhook.id
+      ? { ...lesson, descriptionZh: '服务器提供的更正说明。' }
+      : lesson),
+  };
+  const samePatch = await handlers.get('learning:update')(trusted);
+  assert.equal(samePatch.changes.changes.length, 1);
+  assert.equal(samePatch.catalog.lessons.find(lesson => lesson.id === balmhook.id).descriptionZh, '服务器提供的更正说明。');
+  assert.deepEqual(samePatch.patchChanges, initial.patchChanges);
+  createLearningController(controllerOptions);
+  assert.deepEqual((await handlers.get('learning:load')(trusted)).patchChanges, initial.patchChanges);
 
   // Real diff refresh builds and persists a new manifest for the next patch
   const modifiedLessons = catalog.lessons.filter(l => l.kind !== 'phrase').map(l => (
@@ -243,6 +263,34 @@ test('learningController serves bundled patchChanges, updates on diff refresh, a
   assert.equal(updatedRes.patchChanges.patch, '7.43');
   assert.equal(updatedRes.patchChanges.previousPatch, '7.42');
   assert.equal(updatedRes.patchChanges.entries['item:1'].stats[0].after, '2300g');
+
+  // A verified release may have no diff in the fields we collect.
+  nextCatalog = {
+    ...nextCatalog,
+    patch: '7.43a',
+    fetchedAt: new Date(Date.parse(catalog.fetchedAt) + 180000).toISOString(),
+  };
+  const noObservedChanges = await handlers.get('learning:update')(trusted);
+  assert.equal(noObservedChanges.changes.changes.length, 0);
+  assert.equal(noObservedChanges.patchChanges.patch, '7.43a');
+  assert.equal(noObservedChanges.patchChanges.previousPatch, '7.43');
+  assert.deepEqual(noObservedChanges.patchChanges.entries, {});
+  createLearningController(controllerOptions);
+  assert.deepEqual((await handlers.get('learning:load')(trusted)).patchChanges, noObservedChanges.patchChanges);
+
+  // If the patch lookup fails, keep the previous known history and the new lesson contents.
+  nextCatalog = {
+    ...nextCatalog,
+    patch: null,
+    fetchedAt: new Date(Date.parse(catalog.fetchedAt) + 240000).toISOString(),
+    lessons: nextCatalog.lessons.map(lesson => lesson.id === balmhook.id
+      ? { ...lesson, descriptionZh: '未核验版本的更新说明。' }
+      : lesson),
+  };
+  const unverified = await handlers.get('learning:update')(trusted);
+  assert.equal(unverified.catalog.patch, null);
+  assert.equal(unverified.changes.changes.length, 1);
+  assert.deepEqual(unverified.patchChanges, noObservedChanges.patchChanges);
 });
 
 test('buildPatchChangesManifest gracefully handles empty diffs', () => {
