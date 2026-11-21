@@ -128,7 +128,7 @@ The installer is currently unsigned. Real cloud recognition quality, latency and
 
 ## Develop locally
 
-On Windows with Node.js 22:
+On Windows with Node.js 22.12 or later:
 
 ```powershell
 git clone https://github.com/xiaobaoliu849/dotapet.git

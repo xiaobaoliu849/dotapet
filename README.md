@@ -128,7 +128,7 @@ DOTA 2 桌面陪伴 · AI 语音聊天 · 双语快捷短语 · 文字与截图�
 
 ## 本地开发
 
-Windows，Node.js 22：
+Windows，Node.js 22.12 或更新版本：
 
 ```powershell
 git clone https://github.com/xiaobaoliu849/dotapet.git

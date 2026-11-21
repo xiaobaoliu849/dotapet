@@ -9,15 +9,16 @@ const crypto = require('node:crypto');
 const assert = require('node:assert/strict');
 
 const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'dotapet-update-download-'));
+const releaseDirectory = path.resolve(process.argv[2] || path.join(__dirname, '../release'));
 app.setPath('userData', directory);
 app.disableHardwareAcceleration();
 const timeout = setTimeout(() => { console.error('[Update download] Timed out'); app.exit(1); }, 45000);
 app.whenReady().then(async () => {
   const version = require('../package.json').version;
-  const installer = path.resolve(__dirname, `../release/DotaPet-Setup-${version}.exe`);
+  const installer = path.join(releaseDirectory, `DotaPet-Setup-${version}.exe`);
   const bytes = fs.readFileSync(installer);
   const sha512 = crypto.createHash('sha512').update(bytes).digest('base64');
-  const metadata = fs.readFileSync(path.resolve(__dirname, '../release/latest.yml'), 'utf8');
+  const metadata = fs.readFileSync(path.join(releaseDirectory, 'latest.yml'), 'utf8');
   assert.equal(metadata.match(/^version: (.+)$/m)?.[1], version);
   assert.equal(metadata.match(/^sha512: (.+)$/m)?.[1], sha512);
   assert.equal(metadata.match(/^path: (.+)$/m)?.[1], path.basename(installer));
