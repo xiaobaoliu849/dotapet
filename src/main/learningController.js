@@ -6,6 +6,7 @@ import { isTrustedSettingsSender } from './aiSettingsIpc.js';
 import { recordAnswer } from '../learning/model.js';
 import { SPOKEN_PHRASES, learningCollection } from '../learning/spokenPhrases.js';
 import { fetchCatalog } from '../learning/update.js';
+import { applyReviewedLocalizations } from '../learning/reviewedLocalizations.js';
 import { planStudy, planFocusedLesson, studyOptions, studySummary, STUDY_DEFAULTS } from '../learning/study.js';
 import { diffCatalog } from '../learning/contentAudit.js';
 import { buildPatchChangesManifest } from '../learning/patchChanges.js';
@@ -66,7 +67,7 @@ export function createLearningController({ electron, hub, rendererDirectory, dat
   const cached = read(catalogFile, null);
   const usingCachedCatalog = cached?.schema === 1 && Array.isArray(cached.lessons)
     && Date.parse(cached.fetchedAt) > Date.parse(bundled.fetchedAt);
-  let catalog = withBundledImages(usingCachedCatalog ? cached : bundled);
+  let catalog = withBundledImages(usingCachedCatalog ? applyReviewedLocalizations(cached) : bundled);
   const cachedPatchChanges = usingCachedCatalog ? read(patchChangesFile, null) : null;
   let patchChanges = cachedPatchChanges?.schema === 1 && cachedPatchChanges.entries ? cachedPatchChanges : bundledPatchChanges;
   let legacyProgress = read(progressFile, {});

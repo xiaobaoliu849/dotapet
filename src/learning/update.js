@@ -1,4 +1,5 @@
 import { pairRecords } from './model.js';
+import { applyReviewedLocalizations } from './reviewedLocalizations.js';
 
 const BASE = 'https://www.dota2.com/datafeed/';
 
@@ -73,5 +74,6 @@ export async function fetchCatalog({ fetcher = fetch, onProgress = () => {} } = 
   if (failure) throw failure.reason;
   const lessons = [...new Map(output.flat().map(r => [r.id, r])).values()];
   const { patch, patchDate } = await fetchLatestPatch(fetcher);
-  return { schema: 1, fetchedAt: new Date().toISOString(), source: BASE, sourceLabel: 'Valve official bilingual data feed', patch, ...(patchDate ? { patchDate } : {}), omitted, lessons };
+  return applyReviewedLocalizations({ schema: 1, fetchedAt: new Date().toISOString(), source: BASE,
+    sourceLabel: 'Valve official bilingual data feed', patch, ...(patchDate ? { patchDate } : {}), omitted, lessons });
 }

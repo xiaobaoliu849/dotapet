@@ -190,3 +190,7 @@ The review covered the lesson renderer and IPC, saved progress, the quiz bank an
 | 5 | Upgrade the Windows app from Electron 33, which is past end of support. | Verify desktop startup, microphone permissions, encrypted settings, global shortcuts, packaged notices, and updater compatibility on a supported version. [Electron release schedule](https://releases.electronjs.org/schedule) |
 
 For each checkpoint, reproduce the issue or define the expected behavior, make the smallest complete change, run the targeted and shared tests, record the evidence here, and push that checkpoint before starting the next one. Keep release and installer publication separate from development pushes.
+
+## 2026-11-21 — Curriculum refinement checkpoints
+
+1. **Keep reviewed Chinese translations through refresh.** Patch 7.42 keeps eight reviewed names and eight reviewed descriptions across twelve lessons when Valve's Chinese fields are blank or fall back to the English text. A description also has to match the reviewed English source fingerprint. The same rule repairs existing 7.42 caches when loaded and leaves newly localized feed text and differently versioned catalogs as supplied. Verified against a mocked bilingual fetch, an older on-disk cache, fresh Chinese text, changed mechanics wording, and unknown and newer patch versions. [Reviewed source manifest](../src/learning/reviewed-localizations.json)

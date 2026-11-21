@@ -13,6 +13,7 @@ import {
   formatPatchStatLabel,
 } from '../src/learning/patchChanges.js';
 import { fetchCatalog, fetchLatestPatch } from '../src/learning/update.js';
+import { applyReviewedLocalizations } from '../src/learning/reviewedLocalizations.js';
 import { createLearningController } from '../src/main/learningController.js';
 import { searchShopItems } from '../src/learning/itemShop.js';
 import { createHash } from 'node:crypto';
@@ -110,6 +111,8 @@ test('fetchLatestPatch and fetchCatalog parse official patchnoteslist when avail
   assert.equal(withPatch.patchDate, new Date(1794988800 * 1000).toISOString());
 
   const list = Array.from({ length: 100 }, (_, i) => ({ id: i + 1, name: 'entry_' + i }));
+  const balmhook = catalog.lessons.find(lesson => lesson.internalName === 'item_balmhook');
+  const fixtureItem = { id: 1917, name: balmhook.internalName };
   const fetcher = async url => {
     const endpoint = url.pathname.split('/').pop(), zh = url.searchParams.get('language') === 'schinese';
     if (endpoint === 'patchnoteslist') {
@@ -117,16 +120,44 @@ test('fetchLatestPatch and fetchCatalog parse official patchnoteslist when avail
     }
     let data;
     if (endpoint === 'herolist') data = { heroes: list };
-    else if (endpoint === 'itemlist') data = { itemabilities: list };
+    else if (endpoint === 'itemlist') data = { itemabilities: [...list, fixtureItem] };
     else {
       const hero = endpoint === 'herodata', id = Number(url.searchParams.get(hero ? 'hero_id' : 'item_id'));
-      data = { [hero ? 'heroes' : 'items']: [{ id, name_loc: (zh ? '中文' : 'English') + id, desc_loc: 'Text', abilities: [] }] };
+      data = { [hero ? 'heroes' : 'items']: [!hero && id === fixtureItem.id
+        ? { id, name_loc: balmhook.en, desc_loc: balmhook.descriptionEn }
+        : { id, name_loc: (zh ? '中文' : 'English') + id, desc_loc: 'Text', abilities: [] }] };
     }
     return { ok: true, json: async () => ({ result: { data } }) };
   };
   const fetched = await fetchCatalog({ fetcher });
   assert.equal(fetched.patch, '7.42');
   assert.ok(fetched.patchDate);
+  const localized = fetched.lessons.find(lesson => lesson.id === balmhook.id);
+  assert.equal(localized.zh, balmhook.zh);
+  assert.equal(localized.descriptionZh, balmhook.descriptionZh);
+  assert.equal(localized.descriptionEn, balmhook.descriptionEn);
+});
+
+test('reviewed translations are limited to the exact patch, matching lesson and known feed gaps', () => {
+  const balmhook = catalog.lessons.find(lesson => lesson.internalName === 'item_balmhook');
+  const fallback = { ...balmhook, zh: balmhook.en, descriptionZh: balmhook.descriptionEn };
+  const patch = { patch: '7.42', lessons: [fallback] };
+  assert.deepEqual(applyReviewedLocalizations(patch).lessons, [balmhook]);
+  assert.equal(fallback.zh, fallback.en);
+
+  for (const version of ['7.42a', '7.43', null]) {
+    const otherPatch = { ...patch, patch: version };
+    assert.equal(applyReviewedLocalizations(otherPatch), otherPatch);
+  }
+  const feedTranslation = { ...fallback, zh: '新译名', descriptionZh: '新的官方中文说明' };
+  const differentLesson = { ...fallback, en: 'Reused ID', zh: 'Reused ID' };
+  const changedDescription = { ...fallback, descriptionEn: 'New mechanic', descriptionZh: 'New mechanic' };
+  const lessons = [feedTranslation, differentLesson, changedDescription];
+  const result = applyReviewedLocalizations({ ...patch, lessons }).lessons;
+  assert.equal(result[0], feedTranslation);
+  assert.equal(result[1], differentLesson);
+  assert.equal(result[2].zh, balmhook.zh);
+  assert.equal(result[2].descriptionZh, changedDescription.descriptionEn);
 });
 
 test('learningController serves bundled patchChanges, updates on diff refresh, and preserves markers on no-op refresh', async t => {
@@ -136,6 +167,15 @@ test('learningController serves bundled patchChanges, updates on diff refresh, a
   const rendererDirectory = path.resolve('src/renderer');
   frame.url = pathToFileURL(path.join(rendererDirectory, 'learning.html')).href;
   const trusted = { sender: contents, senderFrame: frame };
+
+  const balmhook = catalog.lessons.find(lesson => lesson.internalName === 'item_balmhook');
+  fs.writeFileSync(path.join(directory, 'learning-catalog.json'), JSON.stringify({
+    ...catalog,
+    fetchedAt: new Date(Date.parse(catalog.fetchedAt) + 30000).toISOString(),
+    lessons: catalog.lessons.map(lesson => lesson.id === balmhook.id
+      ? { ...lesson, zh: lesson.en, descriptionZh: lesson.descriptionEn }
+      : lesson),
+  }));
 
   let nextCatalog = null;
   createLearningController({
@@ -149,6 +189,7 @@ test('learningController serves bundled patchChanges, updates on diff refresh, a
   const initial = await handlers.get('learning:load')(trusted);
   assert.equal(initial.ok, true);
   assert.equal(initial.catalog.patch, '7.42');
+  assert.deepEqual(initial.catalog.lessons.find(lesson => lesson.id === balmhook.id), balmhook);
   assert.equal(initial.patchChanges.patch, '7.42');
   assert.equal(initial.patchChanges.counts.addedShopItems, 6);
 

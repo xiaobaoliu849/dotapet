@@ -1,0 +1,97 @@
+{
+  "patch": "7.42",
+  "sources": {
+    "ability": "https://www.dota2.com.cn/article/details/20261119/220540.html",
+    "item": "https://www.dota2.com.cn/article/details/20261119/220541.html"
+  },
+  "lessons": {
+    "ability:1921": {
+      "en": "Pack Hunter",
+      "source": "ability",
+      "zh": "狼群猎手"
+    },
+    "ability:1762": {
+      "en": "Fling",
+      "source": "ability",
+      "description": {
+        "feedEnglishSha256": "d7eda42e461110f902a1aea80003bde8e7d01f9baad08f84d0cc491e75f8eb46",
+        "zh": "把分则能成抓起的米波或友方非英雄单位向目标敌人、自己的米波之一或者指定地点扔出，对撞击点200范围内的敌人造成伤害和减速。抓起的米波会和携带者共享伤害。被抓的单位会在5秒后被放下。"
+      }
+    },
+    "item:1942": {
+      "en": "Bloodslinger",
+      "source": "item",
+      "zh": "血腥投带"
+    },
+    "item:1944": {
+      "en": "Ristul's Devotion",
+      "source": "item",
+      "zh": "瑞斯图尔的奉献",
+      "description": {
+        "feedEnglishSha256": "6e719cd1fe5d1adac7e7048b9e213d686a7e9c15567eda6ee0e31f6ae3b0947b",
+        "zh": "被动：瑞斯图尔光环\n对附近友军提供20%吸血，18%技能吸血，18%攻击力加成，1点/秒魔法恢复和2点护甲。\n\n作用范围：1200。攻击非英雄单位的吸血效果减少至12%。对非英雄单位的技能吸血减少至3.6%。不与玄冥盾牌光环叠加。"
+      }
+    },
+    "item:1946": {
+      "en": "Starforge",
+      "source": "item",
+      "zh": "锻星炉"
+    },
+    "item:1948": {
+      "en": "Skypiercer",
+      "source": "item",
+      "zh": "破天之矛"
+    },
+    "item:1951": {
+      "en": "Greater Horn of Battle",
+      "source": "item",
+      "zh": "大战斗号角",
+      "description": {
+        "feedEnglishSha256": "7503f14d6510f522229e4c9078132cf839e1b4147595b8fbba6ab34a768d92c7",
+        "zh": "使用：征召群兵\n己方每条兵线上召唤一波超级士兵。士兵数量取决于当前每波小兵数，但是每条兵线始终至少有1个攻城单位和1个士兵旗手。可以在背包中使用。"
+      }
+    },
+    "item:1911": {
+      "en": "Helm of the Hivemind",
+      "source": "item",
+      "description": {
+        "feedEnglishSha256": "5e0a1d8394669570dcac7e0122cfc9f2ba05faa0714d2105e7605f3a2a9e3fa8",
+        "zh": "被动：巢群觉醒\n与一位未知的君主融合意识，获得120施法距离。双方每有一名同化的英雄（包括自身）都会使这个加成提升80，但所有持有者的最大生命值减少8%。"
+      }
+    },
+    "item:1916": {
+      "en": "Brick",
+      "source": "item",
+      "description": {
+        "feedEnglishSha256": "3d9cf0bb15c90a86627fd1e191b0ee66c07395f08a688b7ae54cb04ab3eba972",
+        "zh": "主动：板砖\n向目标敌人投掷一块砖头，移除护盾的200点生命并造成150点物理伤害。"
+      }
+    },
+    "item:1917": {
+      "en": "Balmhook",
+      "source": "item",
+      "zh": "镇痛之钩",
+      "description": {
+        "feedEnglishSha256": "75ba235c3e3197741243462e7dfa62a3606ca5fcdf55e0934859e8fe8dae37b8",
+        "zh": "被动：牧羊人保护\n对友方单位施放法术会使他们的生命恢复提升12，持续12秒。"
+      }
+    },
+    "item:1880": {
+      "en": "Red Ledger",
+      "source": "item",
+      "description": {
+        "feedEnglishSha256": "07279d269c1c9c01c1e964146099858efa274e60f5726141f5718b0b27f4f882",
+        "zh": "主动：悬赏\n生成一个名单，上面是具有共同特征的2-5名敌方英雄。击杀这些英雄会产生额外50金 + 12 * 阵亡英雄高出自身的等级。助攻会提供75%的赏金，并且仍视为拿到悬赏。名单上的所有英雄都已击杀，或者技能重新激活时，都会生成一个新名单。每个英雄的赏金只能领取一次，直到产生新的名单。"
+      }
+    },
+    "item:1882": {
+      "en": "Vile Phial",
+      "source": "item",
+      "zh": "邪恶药瓶",
+      "description": {
+        "feedEnglishSha256": "99078c4d912fc21c01a6e51cf8021cba07839782a1b8aa2776fc40a0fb628003",
+        "zh": "被动：毒性酊剂\n攻击敌人会对其施加一层叠加效果。如果目标在10秒内获得4层叠加效果，则会中毒5秒：其生命回复降低35%，并且每秒受到40点伤害。"
+      }
+    }
+  }
+}
