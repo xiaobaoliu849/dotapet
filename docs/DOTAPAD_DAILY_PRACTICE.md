@@ -4,7 +4,7 @@
 
 The learning page now opens on **Start here / 从这里开始**. Choose **Stay in lane** or **See and move together**, each covering five item names. View each picture, read the short bilingual meaning, and say the match sentence aloud. Then recall the English names in a quiz restricted to that unit.
 
-Both learning-card position and quiz answers save automatically. Reading a card does not count as a correct answer. After finishing a unit, the main action chooses the next unit with words ready; words with future review dates remain scheduled. The units teach English, not a recommended purchase order. Their shop-source check date is displayed on the page.
+Both learning-card position and quiz answers save automatically. Reading a card does not count as a correct answer. After finishing a unit, select **Start next lesson** from its summary when another unit has words ready. **Plan another session** opens the practice filters. Words with future review dates stay scheduled. If a write fails while opening or advancing a lesson, the current screen shows the error and keeps the saved position available for retry. The units teach English, not a recommended purchase order. Their shop-source check date is displayed on the page.
 
 The [tracked roadmap](DOTAPAD_INTUITIVE_LEARNING_PLAN.md#tracked-roadmap) records completed work and the next phase: short name and match-sentence recordings.
 

@@ -6,6 +6,8 @@ Evolve the existing DotaPet desktop companion into DotaPad: a desktop companion 
 
 The core learning loop is **explore → read English → reveal Chinese → listen → save → answer a quiz → review later**. Learning must work without an AI key or an internet connection after installation. Network access is needed only for refreshing game content and opening patch notes. System speech availability depends on installed voices and the operating system.
 
+The [current progress and next priorities](DOTAPAD_LEARNING_PROGRESS.md#2026-11-21--lesson-reliability-curriculum-and-packaging) track implementation and verification. The phases below describe the original learning design and its delivery history.
+
 ## Existing material and boundaries
 
 - Local reference project: `D:\Projects\dota-2-bilingual-lexicon`.
@@ -52,7 +54,7 @@ Developer refresh: `npm run learning:update`. This updates the bundled snapshot 
 
 - Explain recurring ability language: “within range,” “per second,” “on hit,” “dispel,” “channel,” “root,” “silence,” “pierce debuff immunity,” and “cooldown.”
 - Add original bilingual example sentences and usage notes, clearly separated from Valve's mechanics descriptions.
-- Implemented on November 15, 2026: short daily sessions with 5/10 lessons, saved-only practice, due-mistake priority, automatic resume and completion summaries. Guided beginner lessons remain future work.
+- Short daily sessions with 5/10 lessons, saved-only practice, due-mistake priority, automatic resume and completion summaries shipped on November 15, 2026. Two guided five-item lessons shipped on November 16 and now offer direct continuation from the completion summary.
 - Add cloze questions and typed answers with accepted synonyms, punctuation normalization and Chinese variants.
 - Add optional playback speed controls and regenerate stale or missing recordings from verified source text. The initial Windows system-voice playback has been replaced with the author's MP3 library.
 - Include innate abilities, facets, talents, Shard and Scepter changes as separate lesson types. The initial catalog focuses on the abilities returned in the normal ability list and item descriptions.
