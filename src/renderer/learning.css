@@ -161,8 +161,8 @@ input:focus,select:focus{border-color:#5b8267;box-shadow:0 0 0 3px rgba(63,106,8
 .quiz-audio-slot{display:inline-flex;align-items:center;gap:8px}
 .quiz-audio-slot button{height:36px;padding:0 13px;border-radius:9px;background:#fff;border:1px solid #c4d5b9;color:#29462d;font-size:12.5px;font-weight:600}
 .quiz-audio-slot button:hover:not(:disabled){background:#f5f9f0;border-color:#8cab7c}
-#next{height:36px;padding:0 16px;border:0;border-radius:9px;background:#3f6a52;color:#fff;font-size:13px;font-weight:600;margin:0}
-#next:hover:not(:disabled){background:#325844}
+#next,#show-choices{height:36px;padding:0 16px;border:0;border-radius:9px;background:#3f6a52;color:#fff;font-size:13px;font-weight:600;margin:0}
+#next:hover:not(:disabled),#show-choices:hover:not(:disabled){background:#325844}
 
 .quiz-explanation:empty{display:none}
 .quiz-explanation{display:flex;flex-direction:column;gap:8px}

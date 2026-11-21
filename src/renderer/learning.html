@@ -163,11 +163,12 @@
     <div class="quiz-prompt-row">
       <div id="quiz-picture"></div>
       <div class="quiz-prompt-copy">
-        <h2 id="question" translate="no"></h2>
+        <h2 id="question" aria-describedby="quiz-counter recall-help" translate="no"></h2>
         <p id="recall-help">Say your answer aloud before choosing. The picture is your memory cue.</p>
       </div>
     </div>
-    <div id="answers" translate="no"></div>
+    <button id="show-choices" type="button" aria-controls="answers" hidden>Show choices</button>
+    <div id="answers" role="group" aria-label="Answer choices" tabindex="-1" translate="no"></div>
     <div id="quiz-feedback" class="quiz-feedback" hidden>
       <div class="quiz-feedback-bar">
         <p id="result" role="status" aria-live="polite"></p>

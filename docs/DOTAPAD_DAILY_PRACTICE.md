@@ -6,6 +6,8 @@ The learning page now opens on **Start here / 从这里开始**. Choose **Stay i
 
 Both learning-card position and quiz answers save automatically. Reading a card does not count as a correct answer. After finishing a unit, select **Start next lesson** from its summary when another unit has words ready. **Plan another session** opens the practice filters. Words with future review dates stay scheduled. If a write fails while opening or advancing a lesson, the current screen shows the error and keeps the saved position available for retry. The units teach English, not a recommended purchase order. Their shop-source check date is displayed on the page.
 
+In starter English recall, look at the picture and Chinese name and try saying the English name. Select **Show choices** when you are ready. Your answer is recorded when you choose an option.
+
 The [tracked roadmap](DOTAPAD_INTUITIVE_LEARNING_PLAN.md#tracked-roadmap) records completed work and the next phase: short name and match-sentence recordings.
 
 ## Start a session

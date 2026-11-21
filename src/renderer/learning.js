@@ -60,6 +60,7 @@ let starterEvidence = { entries: {} };
 let patchChanges = { schema: 1, patch: null, removed: [], entries: {} };
 let audioBaseline = { entries: {} };
 let pendingAnswer = false, starting = false, feedbackIndex = null, planning = false, advancing = false;
+let revealedRecall = null;
 const ATTR_GROUPS = [
   { key: 'uni', en: 'Universal', zh: '全才', icon: '🟡' },
   { key: 'int', en: 'Intelligence', zh: '智力', icon: '🔵' },
@@ -1920,6 +1921,9 @@ function renderStudy() {
   const item = active.items[index];
   if (!item) return;
   const isFocus = active.options?.scope === 'focus';
+  const pictureRecall = active.options?.direction === 'zh' && Boolean(starterUnit(active.options.scope));
+  const recallKey = `${active.id}:${index}`;
+  const awaitingReveal = pictureRecall && !showFeedback && revealedRecall !== recallKey;
   $('practice').hidden = false;
   $('quiz-counter').textContent = text('Lesson ', '第 ') + (index + 1) + ' / ' + active.items.length;
   $('session-progress').max = active.items.length; $('session-progress').value = active.answers.length;
@@ -1928,13 +1932,36 @@ function renderStudy() {
     ? `${baseContext} · ${item.earlyReview ? text('Focused drill', '定向加练') : text('Focused practice', '定向练习')}`
     : baseContext;
   $('quiz-end').textContent = isFocus ? text('← Back', '← 返回') : text('× End session', '× 结束本轮');
-  $('question').textContent = item.question.prompt;
+  const heading = $('question');
+  heading.textContent = item.question.prompt;
+  heading.lang = active.options?.direction === 'zh' ? 'zh-Hans' : 'en';
   $('quiz-picture').replaceChildren();
   if (item.lesson.kind === 'item') $('quiz-picture').append(itemImageNode(item.lesson, true));
-  $('recall-help').textContent = item.lesson.kind === 'item'
-    ? text('Say your answer aloud before choosing. The picture is your memory cue.', '先大声说出答案，再选择。物品图片可以帮助你回忆。')
-    : text('Try saying your answer aloud before choosing.', '先尝试大声说出答案，再选择。');
-  $('answers').replaceChildren(); $('quiz-audio').replaceChildren(); $('result').textContent = ''; $('quiz-explanation').replaceChildren();
+  const help = $('recall-help');
+  const chooseHelp = text('Choose the item’s English name.', '请选择物品的英文名称。');
+  if (pictureRecall) {
+    help.textContent = awaitingReveal
+      ? text('Look at the picture and try saying the English name before showing the choices.', '先看图，试着说出物品的英文名称，再显示选项。')
+      : showFeedback ? '' : chooseHelp;
+  } else {
+    help.textContent = item.lesson.kind === 'item'
+      ? text('Say your answer aloud before choosing. The picture is your memory cue.', '先大声说出答案，再选择。物品图片可以帮助你回忆。')
+      : text('Try saying your answer aloud before choosing.', '先尝试大声说出答案，再选择。');
+  }
+  const answers = $('answers');
+  const reveal = $('show-choices');
+  answers.hidden = awaitingReveal;
+  answers.setAttribute('aria-label', text('Answer choices', '答案选项'));
+  reveal.hidden = !awaitingReveal;
+  reveal.textContent = text('Show choices', '显示选项');
+  reveal.onclick = awaitingReveal ? () => {
+    revealedRecall = recallKey;
+    reveal.hidden = true;
+    answers.hidden = false;
+    help.textContent = chooseHelp;
+    answers.focus();
+  } : null;
+  answers.replaceChildren(); $('quiz-audio').replaceChildren(); $('result').textContent = ''; $('quiz-explanation').replaceChildren();
   const feedbackBox = $('quiz-feedback');
   feedbackBox.hidden = !showFeedback;
   feedbackBox.dataset.outcome = showFeedback ? (showFeedback.correct ? 'correct' : 'wrong') : '';
@@ -1942,25 +1969,32 @@ function renderStudy() {
   $('next').textContent = active.completedAt ? text('See session summary →', '查看学习总结 →') : text('Next question →', '下一题 →');
   for (const option of item.question.options) {
     const button = node('button', option); button.disabled = Boolean(showFeedback || pendingAnswer);
+    button.lang = heading.lang === 'en' ? 'zh-Hans' : 'en';
     if (showFeedback && option === item.question.answer) button.classList.add('correct');
     if (showFeedback && !showFeedback.correct && option === showFeedback.choice) button.classList.add('wrong');
     button.onclick = async () => {
-      if (pendingAnswer || study.active.id !== active.id || study.active.answers.length !== index) return;
+      if (answers.hidden || pendingAnswer || study.active?.id !== active.id || study.active.answers.length !== index) return;
+      const hadFocus = document.activeElement === button;
       pendingAnswer = true;
-      for (const control of $('answers').children) control.disabled = true;
+      for (const control of answers.children) control.disabled = true;
       try {
         receive(await api.answerSession(active.id, item.lesson.id, option));
         feedbackIndex = index;
-        if (mode === 'quiz') render();
+        if (mode === 'quiz') {
+          const keepFocus = hadFocus && (document.activeElement === button || document.activeElement === document.body);
+          render();
+          if (pictureRecall && keepFocus) $('next').focus();
+        }
       } catch (error) {
         feedbackBox.hidden = false;
         feedbackBox.dataset.outcome = 'wrong';
         $('result').textContent = error.message;
-        for (const control of $('answers').children) control.disabled = false;
+        for (const control of answers.children) control.disabled = false;
+        if (pictureRecall && hadFocus && document.activeElement === document.body) button.focus();
       }
       finally { pendingAnswer = false; }
     };
-    $('answers').append(button);
+    answers.append(button);
   }
   if (showFeedback) {
     $('result').textContent = showFeedback.correct

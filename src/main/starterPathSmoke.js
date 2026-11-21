@@ -66,6 +66,7 @@ export async function runStarterPathSmoke({ page, controlCenter, nativeImage, ou
     fs.rmdirSync(stateTempPath);
   }
   page.reload(); await pageLoaded(page);
+  page.focus();
   await page.executeJavaScript(`(async () => {
     const byId = id => document.getElementById(id);
     for (let i = 0; i < 100 && byId('total').textContent === '—'; i++) await new Promise(resolve => setTimeout(resolve, 20));
@@ -83,10 +84,37 @@ export async function runStarterPathSmoke({ page, controlCenter, nativeImage, ou
     if (byId('practice').hidden || !byId('guided-lesson').hidden) throw new Error('Learning did not lead to recall');
     const active = (await window.learningAPI.load()).study.active;
     if (active.options.direction !== 'zh' || active.options.scope !== 'starter-lane') throw new Error('Starter recall lost its English direction or collection');
+    const { lesson } = active.items[0];
+    const picture = document.querySelector('#quiz-picture img');
+    if (byId('question').textContent !== lesson.zh || byId('question').lang !== 'zh-Hans' || !picture || picture.alt.includes(lesson.en)) {
+      throw new Error('Starter recall lacks an accessible cue or exposes the answer in the image');
+    }
+    await picture.decode();
+    const reveal = byId('show-choices');
+    if (reveal.hidden || reveal.getAttribute('aria-controls') !== 'answers' || !byId('answers').hidden || !byId('next').hidden) {
+      throw new Error('Starter recall showed options or feedback before the learner asked');
+    }
+    reveal.focus();
+  })()`);
+  page.sendInputEvent({ type: 'keyDown', keyCode: 'Enter' });
+  page.sendInputEvent({ type: 'char', keyCode: 'Enter' });
+  page.sendInputEvent({ type: 'keyUp', keyCode: 'Enter' });
+  await page.executeJavaScript(`(async () => {
+    const byId = id => document.getElementById(id);
+    const answers = byId('answers');
+    for (let i = 0; i < 100 && answers.hidden; i++) await new Promise(resolve => setTimeout(resolve, 20));
+    if (answers.hidden || !byId('show-choices').hidden || document.activeElement !== answers) {
+      throw new Error('Enter did not reveal and focus the answer choices: hidden=' + answers.hidden + ', focus=' + document.activeElement?.id);
+    }
+    const state = await window.learningAPI.load();
+    const active = state.study.active;
+    if (active.answers.length || state.progress[active.items[0].lesson.id]?.attempts) throw new Error('Revealing choices counted as practice');
     // Answer the first item (Tango) and verify Play + Next remain visible above the fold with zero scrolling.
-    [...document.querySelectorAll('#answers button')].find(button => button.textContent === active.items[0].question.answer).click();
+    const answer = [...answers.children].find(button => button.textContent === active.items[0].question.answer);
+    answer.focus();
+    answer.click();
     for (let i = 0; i < 100 && byId('next').hidden; i++) await new Promise(resolve => setTimeout(resolve, 20));
-    if (byId('next').hidden) throw new Error('Starter answer was not saved');
+    if (byId('next').hidden || document.activeElement !== byId('next') || answers.hidden || !byId('show-choices').hidden) throw new Error('Starter feedback lost its answer choices or Next focus');
     window.scrollTo(0, 0);
     await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
     const nextRect = byId('next').getBoundingClientRect();
@@ -96,11 +124,23 @@ export async function runStarterPathSmoke({ page, controlCenter, nativeImage, ou
     }
   })()`);
   fs.writeFileSync(path.join(outputDirectory, 'learning-quiz-feedback.png'), (await captureHub(controlCenter, nativeImage)).toPNG());
+  await page.executeJavaScript(`(() => {
+    const byId = id => document.getElementById(id);
+    byId('next').click();
+    if (!byId('answers').hidden || byId('show-choices').hidden) throw new Error('Next question inherited revealed choices');
+  })()`);
+  page.reload(); await pageLoaded(page);
   await page.executeJavaScript(`(async () => {
     const byId = id => document.getElementById(id);
+    for (let i = 0; i < 100 && byId('total').textContent === '—'; i++) await new Promise(resolve => setTimeout(resolve, 20));
+    byId('quick-practice').click();
     const active = (await window.learningAPI.load()).study.active;
-    byId('next').click();
+    if (active.answers.length !== 1 || byId('practice').hidden) throw new Error('Reload lost the saved starter recall position');
     for (const item of active.items.slice(1)) {
+      if (!byId('answers').hidden || byId('show-choices').hidden || byId('question').textContent !== item.lesson.zh) {
+        throw new Error('Starter recall resumed without the covered English choices and Chinese cue');
+      }
+      byId('show-choices').click();
       [...document.querySelectorAll('#answers button')].find(button => button.textContent === item.question.answer).click();
       for (let i = 0; i < 100 && byId('next').hidden; i++) await new Promise(resolve => setTimeout(resolve, 20));
       if (byId('next').hidden) throw new Error('Starter answer was not saved');
@@ -159,5 +199,5 @@ export async function runStarterPathSmoke({ page, controlCenter, nativeImage, ou
     }
     if ((await window.learningAPI.load()).study.active.options.scope !== 'starter-team') throw new Error('Starter action did not advance to the next ready unit');
   })()`);
-  console.log('[Starter path] PASS: ten local pictures, learn-before-recall, saved cards, reload recovery, keyboard card focus and retry, focused English quiz, visible write errors, next-unit routing, narrow layout');
+  console.log('[Starter path] PASS: ten local pictures, learn-before-recall, saved cards, reload recovery, keyboard card focus and retry, picture-first English recall, visible write errors, next-unit routing, narrow layout');
 }
