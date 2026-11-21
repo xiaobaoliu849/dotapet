@@ -36,6 +36,14 @@ jobs:
       - run: npm run dist
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - name: Verify packaged license and attribution
+        shell: pwsh
+        run: |
+          foreach ($file in @('LICENSE', 'NOTICE.md')) {
+            $packaged = Join-Path 'release/win-unpacked' $file
+            if (!(Test-Path -LiteralPath $packaged -PathType Leaf)) { throw "Missing packaged $file" }
+            if ((Get-FileHash -LiteralPath $packaged).Hash -ne (Get-FileHash -LiteralPath $file).Hash) { throw "Packaged $file differs from the repository" }
+          }
       - run: node scripts/smoke-desktop.mjs release/win-unpacked/DotaPet.exe
         env: { TEMP: '${{ runner.temp }}', TMP: '${{ runner.temp }}' }
       - name: Verify update download and corrupt-package rejection without installing

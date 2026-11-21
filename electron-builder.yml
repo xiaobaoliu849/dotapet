@@ -18,6 +18,9 @@ files:
   - '!**/*config.json.bak'
   - '!**/ai-settings.json'
   - '!**/custom_phrases.json'
+extraFiles:
+  - LICENSE
+  - NOTICE.md
 win:
   target: nsis
   icon: src/renderer/assets/app-icon.ico
