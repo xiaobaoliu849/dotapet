@@ -102,8 +102,8 @@ test('one page shows five voice providers and a translation card without cloud c
   assert.equal(ui.nodes.get('voice').children.length, 3);
   assert.equal(ui.nodes.get('voice').value, 'Tina');
   card(ui, 'moss').click();
-  assert.equal(ui.nodes.get('voice').children.length, 2, 'MOSS dropdown shows only the 2 curated English and Chinese voices');
-  assert.deepEqual(ui.nodes.get('voice').children.map(item => item.text), ['Chenlin · 原生英语', '豆包 · 原生中文']);
+  assert.deepEqual(ui.nodes.get('voice').children.map(item => item.text), ['Donald Trump · 美式英语', 'Chenlin · 原生英语', '豆包 · 原生中文']);
+  assert.equal(ui.nodes.get('voice').value, '5e36ed14-b48a-5cb9-8c81-f61b00bab50e');
 });
 
 test('the Qwen key is pasted once: translation reuses it instead of asking again', async () => {

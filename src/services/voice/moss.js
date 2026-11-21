@@ -37,8 +37,8 @@ import { audioBuffer, generateEventId } from './shared.js';
  * voice_name and its language/accent metadata.
  */
 export function resolveMossVoice(voiceOrAccent) {
-  const raw = String(voiceOrAccent || '').trim();
-  if (!raw || ['en', 'en-us', 'en-gb', 'uk'].includes(raw.toLowerCase())) {
+  const raw = String(voiceOrAccent || '').trim() || DEFAULT_MOSS_REALTIME_VOICE;
+  if (['en', 'en-us', 'en-gb', 'uk'].includes(raw.toLowerCase())) {
     return { voiceId: DEFAULT_MOSS_ENGLISH_VOICE, ...MOSS_VOICE_CATALOG[DEFAULT_MOSS_ENGLISH_VOICE] };
   }
   if (raw.toLowerCase() === 'zh' || raw.toLowerCase() === 'zh-cn') {

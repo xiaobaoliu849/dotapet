@@ -104,17 +104,18 @@ export const MOSS_OUTPUT_SAMPLE_RATE = 48000;
 export const MOSS_INPUT_FRAME_BYTES = 640; // 20 ms of 16 kHz mono S16LE
 export const MOSS_PLAYBACK_LEAD_SECONDS = 0.04;
 
-// Curated Native English & Native Chinese voices from MOSS Voice Library:
+// Curated voices from the MOSS Voice Library.
 // Passed via `{"action": "change_voice", "voice_name": "<id>"}` after `session_attached`.
 export const DEFAULT_MOSS_ENGLISH_VOICE = 'ad8f9ced-3276-42f1-a2ca-a686c7d5e01d'; // Chenlin · 纯正英式专业英语女声
 export const DEFAULT_MOSS_CHINESE_VOICE = '42161c92-b6ad-4d12-a51e-48506ecfad82'; // 豆包 · 自然原生中文女声
-export const DEFAULT_MOSS_REALTIME_VOICE = DEFAULT_MOSS_ENGLISH_VOICE;
+// Matches the Donald Trump preset in Voice Spirit (e43f2bd).
+export const DEFAULT_MOSS_REALTIME_VOICE = '5e36ed14-b48a-5cb9-8c81-f61b00bab50e';
 export const DEFAULT_MOSS_REALTIME_ACCENT = DEFAULT_MOSS_REALTIME_VOICE;
 
 export const MOSS_VOICE_CATALOG = Object.freeze({
-  // Primary curated Native English & Native Chinese voices
-  'ad8f9ced-3276-42f1-a2ca-a686c7d5e01d': { lang: 'en', accent: 'en-GB', label: 'Chenlin · 原生英语' },
-  '42161c92-b6ad-4d12-a51e-48506ecfad82': { lang: 'zh', accent: 'zh-CN', label: '豆包 · 原生中文' },
+  [DEFAULT_MOSS_REALTIME_VOICE]: { lang: 'en', accent: 'en-US', label: 'Donald Trump' },
+  [DEFAULT_MOSS_ENGLISH_VOICE]: { lang: 'en', accent: 'en-GB', label: 'Chenlin · 原生英语' },
+  [DEFAULT_MOSS_CHINESE_VOICE]: { lang: 'zh', accent: 'zh-CN', label: '豆包 · 原生中文' },
   // Additional / legacy catalog entries retained for custom / advanced selection
   '6c3152b1-1d4f-4e49-ade3-09f447712fec': { lang: 'zh', accent: 'zh-CN', label: '暖暖 · 温柔中文' },
   '6cc93520-3207-4f7a-bca9-2d560b9c306b': { lang: 'zh', accent: 'zh-CN', label: '沐沐 · 自然男声' },

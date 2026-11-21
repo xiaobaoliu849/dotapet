@@ -72,7 +72,7 @@ function waitFor(predicate, timeoutMs = 2000) {
   });
 }
 
-test('MOSS-Live connects with Bearer auth, sends change_voice for native English voice (Amber), and frames 640B audio', async () => {
+test('MOSS-Live selects the Voice Spirit Donald Trump preset before enabling the mic and frames 640B audio', async () => {
   const server = await startMockMossServer();
   const prevUrl = CLOUD_KEYS.moss_ws_url;
   configureCloudKeys({ moss_ws_url: server.wsUrl });
@@ -98,15 +98,13 @@ test('MOSS-Live connects with Bearer auth, sends change_voice for native English
     assert.equal(conn.url, `/v1/realtime?model=${DEFAULT_MOSS_REALTIME_MODEL}`);
     assert.equal(conn.headers.authorization, 'Bearer moss-test-key');
 
-    const attach = conn.jsonMessages.find(m => m.action === 'attach_session');
-    const changeVoice = conn.jsonMessages.find(m => m.action === 'change_voice');
-    const update = conn.jsonMessages.find(m => m.action === 'session.update');
-    const mic = conn.jsonMessages.find(m => m.action === 'mic_state');
-    assert.ok(attach);
-    assert.equal(changeVoice?.voice_name, DEFAULT_MOSS_ENGLISH_VOICE);
-    assert.ok(update?.session?.instructions.includes('native UK English accent'));
-    assert.ok(update?.session?.instructions.includes('Never utter Chinese characters'));
-    assert.equal(mic?.enabled, true);
+    const handshake = conn.jsonMessages.slice(0, 4);
+    assert.deepEqual(handshake.map(message => message.action), ['attach_session', 'change_voice', 'session.update', 'mic_state']);
+    const [, changeVoice, update, mic] = handshake;
+    assert.equal(changeVoice.voice_name, '5e36ed14-b48a-5cb9-8c81-f61b00bab50e');
+    assert.match(update.session.instructions, /native US English accent/);
+    assert.match(update.session.instructions, /Never utter Chinese characters/);
+    assert.equal(mic.enabled, true);
 
     // Send 1000 bytes -> 1 frame of 640 bytes, 360 bytes buffered; then +300 bytes -> 2nd 640-byte frame.
     engine.sendAudioChunk(Buffer.alloc(1000, 1));
@@ -252,29 +250,37 @@ test('AISettingsStore and engineOptions support MOSS-Live voice UUIDs', () => {
   };
   try {
     const store = new AISettingsStore({ filePath, safeStorage });
+    const trumpVoiceId = '5e36ed14-b48a-5cb9-8c81-f61b00bab50e';
+    assert.equal(engineOptions(store, 'moss').mossVoice, trumpVoiceId);
     store.save({
       provider: 'moss',
       model: 'moss-live-1.0',
-      voice: DEFAULT_MOSS_CHINESE_VOICE,
+      voice: trumpVoiceId,
       secrets: { apiKey: 'moss-secret-123' },
     });
-    const opts = engineOptions(store, 'moss');
+    const opts = engineOptions(new AISettingsStore({ filePath, safeStorage }), 'moss');
     assert.equal(opts.provider, 'moss');
     assert.equal(opts.apiKey, 'moss-secret-123');
-    assert.equal(opts.mossVoice, DEFAULT_MOSS_CHINESE_VOICE);
+    assert.equal(opts.mossVoice, trumpVoiceId);
     assert.equal(opts.mossModel, 'moss-live-1.0');
     assert.equal(aiKeyPage('moss'), 'https://platform.moss.cn');
 
     assert.throws(() => store.save({ provider: 'moss', voice: 'not-a-moss-voice' }), /请选择支持的音色/);
 
-    // Verify legacy 'en' / '0f2815fb-0d4c-4cee-ac8c-0bb916af7b28' / '29ab8244-1319-40d4-b508-2b58bb5e2d81' voice values migrate cleanly to Chenlin
-    for (const legacyVoice of ['en', '0f2815fb-0d4c-4cee-ac8c-0bb916af7b28', '29ab8244-1319-40d4-b508-2b58bb5e2d81']) {
+    // Keep the previous voice for saved settings, including older aliases.
+    for (const [savedVoice, expectedVoice] of [
+      ['en', DEFAULT_MOSS_ENGLISH_VOICE],
+      ['0f2815fb-0d4c-4cee-ac8c-0bb916af7b28', DEFAULT_MOSS_ENGLISH_VOICE],
+      ['29ab8244-1319-40d4-b508-2b58bb5e2d81', DEFAULT_MOSS_ENGLISH_VOICE],
+      [DEFAULT_MOSS_ENGLISH_VOICE, DEFAULT_MOSS_ENGLISH_VOICE],
+      [DEFAULT_MOSS_CHINESE_VOICE, DEFAULT_MOSS_CHINESE_VOICE],
+    ]) {
       const rawVault = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-      rawVault.providers.moss.voice = legacyVoice;
+      rawVault.providers.moss.voice = savedVoice;
       fs.writeFileSync(filePath, JSON.stringify(rawVault));
       const reloaded = new AISettingsStore({ filePath, safeStorage });
       assert.equal(reloaded.error, '');
-      assert.equal(reloaded.getPrivate('moss').voice, DEFAULT_MOSS_ENGLISH_VOICE);
+      assert.equal(reloaded.getPrivate('moss').voice, expectedVoice);
     }
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });

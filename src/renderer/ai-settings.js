@@ -40,6 +40,7 @@ const simpleVoices = {
   doubao: ['zh_female_xiaohe_jupiter_bigtts', 'zh_female_vv_jupiter_bigtts', 'zh_male_yunzhou_jupiter_bigtts'],
   google: ['Puck', 'Kore', 'Aoede'],
   moss: [
+    '5e36ed14-b48a-5cb9-8c81-f61b00bab50e', // Donald Trump · 美式英语
     'ad8f9ced-3276-42f1-a2ca-a686c7d5e01d', // Chenlin · 原生英语
     '42161c92-b6ad-4d12-a51e-48506ecfad82', // 豆包 · 原生中文
   ],
@@ -51,6 +52,7 @@ const voiceNames = {
   Puck: 'Puck · 活泼男声',
   Kore: 'Kore · 干练女声',
   Aoede: 'Aoede · 轻快女声',
+  '5e36ed14-b48a-5cb9-8c81-f61b00bab50e': 'Donald Trump · 美式英语',
   'ad8f9ced-3276-42f1-a2ca-a686c7d5e01d': 'Chenlin · 原生英语',
   '42161c92-b6ad-4d12-a51e-48506ecfad82': '豆包 · 原生中文',
   '6c3152b1-1d4f-4e49-ade3-09f447712fec': '暖暖 · 温柔中文',
