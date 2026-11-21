@@ -67,14 +67,31 @@ export function recordAnswer(previous = {}, correct, now = Date.now(), { earlyRe
     due: now + (correct ? [0, 1, 3, 7, 14, 30][box] * 86400000 : 60000) };
 }
 
+function quizLabelKey(label) {
+  return typeof label === 'string' ? label.normalize('NFKC').trim().replace(/\s+/g, ' ').toLowerCase() : '';
+}
+
 export function canQuizLesson(lesson) {
-  return Boolean(lesson?.en && lesson?.zh && lesson.en.trim().toLowerCase() !== lesson.zh.trim().toLowerCase());
+  const en = quizLabelKey(lesson?.en);
+  const zh = quizLabelKey(lesson?.zh);
+  return Boolean(en && zh && en !== zh);
 }
 
 export function makeQuestion(lesson, lessons, direction = 'en', random = Math.random) {
   if (!canQuizLesson(lesson)) return null;
   const field = direction === 'en' ? 'zh' : 'en';
-  const pool = [...new Set(lessons.filter(r => r.kind === lesson.kind && r[field] !== lesson[field]).map(r => r[field]))];
+  const promptKey = quizLabelKey(lesson[direction]);
+  const validAnswers = new Set([quizLabelKey(lesson[field])]);
+  const distractors = new Map();
+  for (const candidate of lessons) {
+    if (candidate.kind !== lesson.kind || !canQuizLesson(candidate)) continue;
+    const answerKey = quizLabelKey(candidate[field]);
+    // A shared label can have several correct translations, such as 远行鞋 for both Boots of Travel variants.
+    if (quizLabelKey(candidate[direction]) === promptKey) validAnswers.add(answerKey);
+    else distractors.set(answerKey, candidate[field]);
+  }
+  for (const answer of validAnswers) distractors.delete(answer);
+  const pool = [...distractors.values()];
   const shuffle = array => {
     for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; }
     return array;

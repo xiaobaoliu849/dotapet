@@ -64,9 +64,11 @@ test('item aliases work in both library search and session search; coaching avoi
   assert.deepEqual(itemCoaching(neutral).vocabulary.map(row => row.en), ['dispel', 'damage']);
 });
 
-test('review counts separate unseen and saved-only words from previously studied words', () => {
-  const lessons = ['unseen', 'saved', 'due', 'future'].map(id => ({ id }));
-  assert.deepEqual(reviewCounts(lessons, { saved: { saved: true }, due: { attempts: 1, due: 50 }, future: { attempts: 1, due: 200 } }, 100), { reviews: 1, unseen: 2 });
+test('review counts separate unseen lessons from due reviews and skip unavailable translations', () => {
+  const lessons = ['unseen', 'saved', 'due', 'future'].map(id => ({ id, en: id, zh: `词条 ${id}` }));
+  lessons.push({ id: 'english-only', en: 'Archive', zh: 'Archive' });
+  assert.deepEqual(reviewCounts(lessons, { saved: { saved: true }, due: { attempts: 1, due: 50 }, future: { attempts: 1, due: 200 },
+    'english-only': { attempts: 1, due: 50 } }, 100), { reviews: 1, unseen: 2 });
 });
 
 test('spoken phrases share the wordbook and mastery counts without duplicate entries', () => {
@@ -176,6 +178,14 @@ test('summarizeMastery computes practiced, mastered, and saved counts per catego
   assert.equal(phrase.saved, 1);
 });
 
+test('mastery excludes unavailable translations from the goal and still counts their bookmarks', () => {
+  const translated = { id: 'item:study', kind: 'item', en: 'Boots', zh: '靴子' };
+  const archive = { id: 'item:archive', kind: 'item', en: 'Archive', zh: 'Archive' };
+  const progress = { [translated.id]: { attempts: 3, box: 3 }, [archive.id]: { saved: true, attempts: 3, box: 3 } };
+  const items = summarizeMastery([translated, archive], progress).find(row => row.key === 'item');
+  assert.deepEqual([items.total, items.practiced, items.mastered, items.saved, items.masteredPct], [1, 1, 1, 1, 100]);
+});
+
 test('early voluntary drills record accuracy without inflating future SRS boxes, but still reset on mistakes', () => {
   const scheduled = recordAnswer({}, true, 1000);
   assert.equal(scheduled.box, 1);
@@ -222,7 +232,24 @@ test('voicePractice builds hero-ability and spoken-phrase personas and dispatche
 test('makeQuestion and canQuizLesson skip lessons whose English and Chinese names are identical', () => {
   const identical = { id: 'item:test', kind: 'item', en: 'Black Grimoire\n(Warlock)', zh: 'Black Grimoire\n(Warlock)' };
   assert.equal(canQuizLesson(identical), false);
+  assert.equal(canQuizLesson({ ...identical, zh: 'ＢＬＡＣＫ  Grimoire  (Warlock)' }), false);
+  assert.equal(canQuizLesson({ ...identical, zh: '  ' }), false);
   assert.equal(canQuizLesson(catalog.lessons.find(row => row.id === 'item:1953')), true);
   assert.equal(makeQuestion(identical, catalog.lessons, 'en'), null);
   assert.equal(makeQuestion(identical, catalog.lessons, 'zh'), null);
+});
+
+test('reverse quiz offers one valid translation when item variants share a Chinese name', () => {
+  const boots = catalog.lessons.find(row => row.id === 'item:48');
+  const upgraded = catalog.lessons.find(row => row.id === 'item:220');
+  assert.equal(boots.zh, upgraded.zh);
+  const englishOnly = { id: 'item:english-only', kind: 'item', en: 'Archived Item', zh: 'Archived Item' };
+  const candidates = [boots, upgraded, englishOnly, ...['item:29', 'item:46', 'item:44'].map(id => catalog.lessons.find(row => row.id === id))];
+  for (const [lesson, other] of [[boots, upgraded], [upgraded, boots]]) {
+    const question = makeQuestion(lesson, candidates, 'zh', () => 0.99);
+    assert.equal(question.answer, lesson.en);
+    assert.equal(question.options.length, 4);
+    assert.ok(!question.options.includes(other.en), 'a valid translation cannot be a distractor');
+    assert.ok(!question.options.includes(englishOnly.en), 'untranslated rows stay out of the quiz');
+  }
 });
