@@ -8,6 +8,7 @@ import { fileURLToPath, pathToFileURL } from 'url';
 import { registerShortcuts, unregisterShortcuts, getDefaultShortcuts, getShortcutActions, validateShortcutsConfig } from './shortcuts.js';
 import { createGamePhraseShortcuts } from './gamePhraseShortcuts.js';
 import { PhrasesStore } from './phrasesStore.js';
+import { readPreferences, writePreferences } from './preferences.js';
 export { DEFAULT_SIMPLIFIED_PHRASES } from './phrasesStore.js';
 import { VoiceSpiritClient } from '../services/voiceSpiritClient.js';
 import { FREE_CHAT_HERO_ID } from '../services/cloudVoiceEngine.js';
@@ -493,39 +494,20 @@ function sendPhraseToGame(digit, type = 'cn') {
 /** The settings file as an object; {} when it is missing or unreadable. */
 function loadSettings() {
   try {
-    const sPath = getSettingsPath();
-    if (!fs.existsSync(sPath)) return {};
-    const data = JSON.parse(fs.readFileSync(sPath, 'utf8'));
-    return data && typeof data === 'object' && !Array.isArray(data) ? data : {};
+    return readPreferences(getSettingsPath());
   } catch (e) {
     console.error('[Settings] Failed to load saved settings:', e);
     return {};
   }
 }
 
-/**
- * Merge changes into the settings file. An unreadable file is moved aside for
- * recovery first, so one save can never silently erase every other setting.
- */
 function saveSettings(changes) {
   try {
-    const sPath = getSettingsPath();
-    let data = {};
-    if (fs.existsSync(sPath)) {
-      try {
-        data = JSON.parse(fs.readFileSync(sPath, 'utf8'));
-        if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('not an object');
-      } catch (e) {
-        const aside = sPath.replace(/\.json$/, '.unreadable.json');
-        fs.renameSync(sPath, aside);
-        console.error(`[Settings] Unreadable settings moved to ${aside}:`, e);
-        data = {};
-      }
-    }
-    Object.assign(data, changes, { updatedAt: new Date().toISOString() });
-    fs.writeFileSync(sPath, JSON.stringify(data, null, 2), 'utf8');
+    writePreferences(getSettingsPath(), changes);
+    return true;
   } catch (e) {
     console.error(`[Settings] Failed to save ${Object.keys(changes).join(', ')}:`, e);
+    return false;
   }
 }
 
@@ -1558,7 +1540,7 @@ function setupIPC() {
     if (!validation.valid) {
       return { ok: false, error: validation.error };
     }
-    saveSettings({ shortcuts: validation.shortcuts });
+    if (!saveSettings({ shortcuts: validation.shortcuts })) return { ok: false };
     const result = applyAppShortcuts(validation.shortcuts);
     if (mainWindow && !mainWindow.isDestroyed()) {
       mainWindow.webContents.send('shortcuts:changed', { shortcuts: validation.shortcuts });
@@ -1571,7 +1553,7 @@ function setupIPC() {
 
   ipcMain.handle('shortcuts:reset-defaults', () => {
     const defaults = getDefaultShortcuts();
-    saveSettings({ shortcuts: defaults });
+    if (!saveSettings({ shortcuts: defaults })) return { ok: false };
     const result = applyAppShortcuts(defaults);
     if (mainWindow && !mainWindow.isDestroyed()) {
       mainWindow.webContents.send('shortcuts:changed', { shortcuts: defaults });
@@ -1796,9 +1778,8 @@ if (app?.whenReady) {  app.whenReady().then(() => {
       sidebarCollapsed: loadSettings().settingsSidebarCollapsed === true,
       onSidebarCollapsedChange: collapsed => saveSettings({ settingsSidebarCollapsed: collapsed }),
       onLanguageChange: choice => {
-        if (!LANGUAGE_CHOICES.includes(choice)) return false;
+        if (!LANGUAGE_CHOICES.includes(choice) || !saveSettings({ language: choice })) return false;
         languageChoice = choice;
-        saveSettings({ language: choice });
         // The F6 panel keeps any unsaved rows; it opens in the new language next time.
         return true;
       } });

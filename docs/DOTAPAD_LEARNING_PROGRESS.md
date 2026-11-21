@@ -204,5 +204,6 @@ Final verification for this pass: **315 tests passed**, along with full Windows 
 ## 2026-11-21 — Ongoing curriculum and reliability loop
 
 1. **Typed English starter recall.** The ten starter items accept their official English name and selected in-game aliases such as `TP`, `salve`, and `obs`. The learner can check a typed answer or reveal multiple-choice options. Existing answer saves and spaced-review intervals handle both. The regression tests cover blank input, ambiguous aliases, failed writes, retry after reload, and replies out of sequence. All **316 tests** and the Windows Electron smoke passed.
+2. **Atomic preference saves.** The previous settings file stays available until a complete replacement is ready. Unreadable files get uniquely named recovery copies. The Settings Center keeps the current sidebar, language, and shortcuts when a save fails, with visible feedback and a retry. A simulated file lock preserved the prior file byte for byte. The Windows smoke blocked real saves in an isolated profile and verified recovery. All **319 tests** and the Windows and English smoke checks passed.
 
-**Next checkpoints** Make app preference saves atomic and show feedback when they fail. Then make Settings page and GSI listener startup failures recoverable. Short recordings remain queued for source and redistribution review.
+**Next checkpoints** Make GSI listener startup and Settings page failures recoverable. Short recordings remain queued for source and redistribution review.

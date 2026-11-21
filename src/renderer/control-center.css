@@ -18,6 +18,7 @@ body[data-compact='true'] .sidebar-toggle .chevron { transform: rotate(180deg); 
 .sidebar-toggle[aria-disabled='true'] { opacity: .5; cursor: default; }
 .sidebar-toggle[aria-disabled='true']:hover { background: transparent; color: var(--muted); }
 .chrome-caption { min-width: 0; color: var(--muted); font-weight: 400; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chrome-caption.save-error { color: #8c2f23; }
 /* Language sits in the title bar, on every page, just left of the window buttons: findable in any language. */
 .chrome-language { flex: none; display: flex; align-items: center; gap: 2px; margin-left: auto; padding-left: 6px; border-radius: 8px; color: var(--muted); font-size: 14px; -webkit-app-region: no-drag; }
 .chrome-language:hover, .chrome-language:focus-within { background: #e3e9dd; color: var(--ink); }

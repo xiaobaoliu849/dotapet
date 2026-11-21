@@ -2,8 +2,14 @@ const hub = window.controlCenter;
 const items = [...document.querySelectorAll('.nav-item')];
 const nativePages = { help: document.getElementById('page-help') };
 const toggle = document.getElementById('sidebar-toggle');
+const preferenceStatus = document.getElementById('preference-status');
 let collapsed = new URLSearchParams(location.search).get('sidebar') === 'collapsed', narrow = false, sliding = false;
 if (collapsed) { document.body.dataset.compact = 'true'; document.documentElement.style.setProperty('--sidebar', '64px'); }
+
+function reportPreferenceSave(ok) {
+  preferenceStatus.textContent = ok ? '设置中心' : '操作失败，请重试。';
+  preferenceStatus.classList.toggle('save-error', !ok);
+}
 
 function render(state) {
   if (!state) return;
@@ -63,6 +69,7 @@ toggle.addEventListener('click', async () => {
   document.body.classList.add('animating');
   const response = await hub.setSidebarCollapsed(!collapsed).catch(() => null);
   if (!response?.slide) { sliding = false; setTimeout(() => document.body.classList.remove('animating'), 260); }
+  reportPreferenceSave(response?.ok);
   if (response?.ok) render(response.state);
   if (response?.slide) runSlide(response.slide);
 });
@@ -88,7 +95,11 @@ languageSelect.value = choice;
 languageSelect.addEventListener('change', async () => {
   languageSelect.disabled = true;
   const response = await hub.setLanguage(languageSelect.value).catch(() => null);
-  if (!response?.ok) { languageSelect.value = choice; languageSelect.disabled = false; }
+  if (!response?.ok) {
+    languageSelect.value = choice;
+    languageSelect.disabled = false;
+    reportPreferenceSave(false);
+  }
 });
 
 hub.onState(render);
@@ -295,7 +306,7 @@ async function updateShortcut(actionId, accelerator) {
     renderShortcuts();
     showFeedback(accelerator ? `已更新快捷键: ${accelerator}` : '已禁用该快捷键', 'success');
   } else {
-    showFeedback(res?.error || '保存快捷键失败', 'error');
+    showFeedback(res?.error || '操作失败，请重试。', 'error');
   }
 }
 
@@ -308,7 +319,7 @@ if (resetShortcutsBtn) {
       renderShortcuts();
       showFeedback('已恢复所有默认快捷键', 'success');
     } else {
-      showFeedback(res?.error || '重置快捷键失败', 'error');
+      showFeedback(res?.error || '操作失败，请重试。', 'error');
     }
   });
 }

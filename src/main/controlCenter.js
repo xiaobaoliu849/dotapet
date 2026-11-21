@@ -240,9 +240,9 @@ export function createControlCenter({ electron, rendererDirectory, icon, smokeTe
   ipcMain.handle('hub:set-sidebar-collapsed', (event, value) => {
     if (!trustedShell(event) || typeof value !== 'boolean') return { ok: false };
     if (value !== collapsed) {
+      if (onSidebarCollapsedChange(value) === false) return { ok: false };
       collapsed = value;
       const slide = slideLayout();
-      onSidebarCollapsedChange(collapsed);
       return { ok: true, state: state(), slide };
     }
     return { ok: true, state: state(), slide: null };

@@ -1,10 +1,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { EventEmitter } from 'node:events';
 import { pathToFileURL } from 'node:url';
 import { createControlCenter, hubLayout, HUB_TOP, PAGE_ORDER } from '../src/main/controlCenter.js';
 import { isTrustedSettingsSender } from '../src/main/aiSettingsIpc.js';
+import { readPreferences, writePreferences } from '../src/main/preferences.js';
 
 const rendererDirectory = path.resolve('src/renderer');
 const tick = () => new Promise(resolve => setImmediate(resolve));
@@ -90,6 +93,50 @@ test('the shell folds the sidebar on request, re-lays out pages and reports the 
   windows[0].setSize(1060, 820);
   assert.equal(view('services').bounds.x, 196, 'widening restores the expanded choice');
   assert.deepEqual(saved, [true, false]);
+});
+
+test('a failed fold save keeps the previous layout and can be retried', async () => {
+  let canSave = false;
+  const { hub, handlers, shell, view } = fixture({ onSidebarCollapsedChange: () => canSave });
+  hub.register('services', services());
+  hub.open();
+  const fold = handlers.get('hub:set-sidebar-collapsed');
+  assert.deepEqual(await fold(shell(), true), { ok: false });
+  assert.equal(view('services').bounds.x, 196);
+  canSave = true;
+  assert.equal((await fold(shell(), true)).state.collapsed, true);
+  assert.equal(view('services').bounds.x, 64);
+});
+
+test('preference replacement preserves the last complete file on failure and merges on retry', t => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'dotapet-prefs-'));
+  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+  const target = path.join(directory, 'settings.json');
+  assert.deepEqual(readPreferences(target), {});
+  writePreferences(target, { language: 'en', windowState: { x: 30 } });
+  const before = fs.readFileSync(target, 'utf8');
+  const blocked = { ...fs, renameSync() { throw new Error('Simulated file lock'); } };
+  assert.throws(() => writePreferences(target, { language: 'ru' }, blocked), /Simulated file lock/);
+  assert.equal(fs.readFileSync(target, 'utf8'), before);
+  assert.deepEqual(fs.readdirSync(directory), ['settings.json']);
+  writePreferences(target, { language: 'ru' });
+  const { language, windowState, updatedAt } = readPreferences(target);
+  assert.equal(language, 'ru');
+  assert.deepEqual(windowState, { x: 30 });
+  assert.ok(Date.parse(updatedAt));
+});
+
+test('unreadable preferences get a unique recovery copy with the original bytes', t => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'dotapet-prefs-'));
+  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+  const target = path.join(directory, 'settings.json');
+  for (const malformed of ['{"language":', '[]']) {
+    fs.writeFileSync(target, malformed);
+    writePreferences(target, { language: 'en' });
+    assert.equal(readPreferences(target).language, 'en');
+  }
+  const backups = fs.readdirSync(directory).filter(name => name.includes('.unreadable-'));
+  assert.deepEqual(backups.map(name => fs.readFileSync(path.join(directory, name), 'utf8')).sort(), ['[]', '{"language":']);
 });
 
 test('an animated fold follows the shell frame by frame and lands on the final layout', async () => {
