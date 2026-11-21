@@ -9,9 +9,12 @@ export function cleanText(value = '') {
 export function describe(record) {
   const values = new Map((record.special_values || []).map(v => [v.name.toLowerCase(), v.values_float || []]));
   const fields = { abilitycastrange: 'cast_ranges', abilityduration: 'durations', abilitychanneltime: 'channel_times', abilitycooldown: 'cooldowns', abilitymanacost: 'mana_costs', abilitydamage: 'damages' };
-  return cleanText(record.desc_loc).replace(/%([\w]+)%/g, (token, key) => {
+  const aliases = { tower_dps_pct: 'tower_dps_penalty_pct' };
+  // The archived Tome tooltip ends with a counter supplied only by a running match.
+  const text = cleanText(record.desc_loc).replace(/[\r\n]+[^\r\n]*%customval_team_tomes_used%[^\r\n]*$/, '');
+  return text.replace(/%([\w]+)%/g, (token, key) => {
     key = key.toLowerCase();
-    const numbers = values.get(key) || values.get(key.replace(/^bonus_/, '')) || record[fields[key]];
+    const numbers = values.get(key) || values.get(key.replace(/^bonus_/, '')) || values.get(aliases[key]) || record[fields[key]];
     return numbers?.length ? [...new Set(numbers)].join(' / ') : token;
   }).replace(/%%/g, '%');
 }

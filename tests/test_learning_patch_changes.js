@@ -160,6 +160,28 @@ test('reviewed translations are limited to the exact patch, matching lesson and 
   assert.equal(result[2].descriptionZh, changedDescription.descriptionEn);
 });
 
+test('Starforge distinguishes landing and stun durations and repairs the exact old Chinese text', () => {
+  const starforge = catalog.lessons.find(lesson => lesson.id === 'item:1946');
+  const values = new Map(starforge.mechanics.special_values.map(entry => [entry.name, entry.values[0]]));
+  assert.equal(values.get('land_time'), 0.5);
+  assert.equal(values.get('stun_duration'), 0.75);
+  assert.match(starforge.descriptionZh, /0\.5秒延迟.*眩晕0\.75秒/);
+  assert.match(audioManifest.entries[starforge.id].script, /stunning enemies for 0\.75s/);
+
+  const stale = { ...starforge, descriptionZh: starforge.descriptionZh.replace('眩晕0.75秒', '眩晕0.5秒') };
+  const localized = { ...starforge, descriptionZh: '陨星在0.5秒后落下，眩晕持续0.75秒。' };
+  const patch = { patch: '7.42', lessons: [stale, localized] };
+  const [restored, untouched] = applyReviewedLocalizations(patch).lessons;
+  assert.deepEqual(restored, starforge);
+  assert.equal(untouched, localized);
+  assert.equal(applyReviewedLocalizations({ ...patch, patch: '7.42a' }).lessons[0], stale);
+
+  const curse = catalog.lessons.find(lesson => lesson.id === 'ability:5587');
+  assert.match(curse.descriptionZh, /对建筑的持续伤害减少100%/);
+  const tome = catalog.lessons.find(lesson => lesson.id === 'item:257');
+  assert.doesNotMatch(tome.descriptionEn + tome.descriptionZh, /%customval_team_tomes_used%/);
+});
+
 test('learningController serves bundled patchChanges, updates on diff refresh, and preserves markers on no-op refresh', async t => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'dotapet-patch-changes-'));
   t.after(() => fs.rmSync(directory, { recursive: true, force: true }));

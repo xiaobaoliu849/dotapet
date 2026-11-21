@@ -50,6 +50,20 @@ test('official text interpolation uses exact bonus names, builtin fields and a s
   assert.equal(describe({ desc_loc: '%unknown%' }), '%unknown%');
 });
 
+test('descriptions resolve the current tower-damage field and omit the offline Tome counter', () => {
+  const curse = {
+    desc_loc: '对建筑的持续伤害减少%tower_dps_pct%%%。',
+    special_values: [{ name: 'tower_dps_penalty_pct', values_float: [100] }],
+  };
+  assert.equal(describe(curse), '对建筑的持续伤害减少100%。');
+  assert.equal(describe({ ...curse, special_values: [...curse.special_values, { name: 'tower_dps_pct', values_float: [75] }] }),
+    '对建筑的持续伤害减少75%。');
+  assert.match(describe({ ...curse, special_values: [] }), /%tower_dps_pct%/);
+
+  assert.equal(describe({ desc_loc: 'Grants 750 experience.<br><br>Tomes Used By Team: %customval_team_tomes_used%' }), 'Grants 750 experience.');
+  assert.equal(describe({ desc_loc: '获得750点经验。\r\n己方已使用本数：%customval_team_tomes_used%' }), '获得750点经验。');
+});
+
 test('audit evidence is complete; synthesis queue blocks placeholders and starts unreviewed', () => {
   const read = file => JSON.parse(fs.readFileSync(new URL(file, import.meta.url)));
   const catalog = read('../src/learning/catalog.json'), manifest = read('../src/learning/audio-manifest.json'), baseline = read('../src/learning/audio-baseline.json');

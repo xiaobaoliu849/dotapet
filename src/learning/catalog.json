@@ -70350,7 +70350,7 @@
       "en": "Curse of Avernus",
       "zh": "魔霭诅咒",
       "descriptionEn": "Abaddon strikes an enemy, affecting them by a chilling curse, slowing them, causing them to take damage over time, and all attacks against them gain an attack speed boost. Abaddon gains 1.5x the attack speed boost. Damage over time component to buildings is reduced by 100%.",
-      "descriptionZh": "亚巴顿打击一个敌人，使其受到寒心诅咒的作用，被减速，并且持续受到伤害，同时所有攻击目标的单位将提升攻击速度。亚巴顿获得1.5倍攻击速度提升。对建筑的持续伤害减少%tower_dps_pct%%。",
+      "descriptionZh": "亚巴顿打击一个敌人，使其受到寒心诅咒的作用，被减速，并且持续受到伤害，同时所有攻击目标的单位将提升攻击速度。亚巴顿获得1.5倍攻击速度提升。对建筑的持续伤害减少100%。",
       "mechanics": {
         "cooldowns": [
           0
@@ -103648,7 +103648,7 @@
       "en": "Starforge",
       "zh": "锻星炉",
       "descriptionEn": "Active: Meteor Hammer\n CHANNELED - After a 2s channel, summons a meteor after 0.5s that strikes a 400 AoE, stunning enemies for 0.75s and dealing 150 impact damage. Continues to deal 60 damage per second for 6s.\n\nNon-building units take an additional 15% max health impact damage and are slowed by 15% for 6s.\n\nDeals 75% damage to buildings.\n\nPassive: Celestial Flare\nAfter any of your disables ends on an enemy unit, they burn for 60 damage a second and move 15% slower for 3s.\nCelestial Flare can trigger from any of your abilities or items.\nCelestial Flare stacks with Meteor Hammer's Burn.",
-      "descriptionZh": "主动：陨星锤\n持续施法 - 持续施法2秒后，在0.5秒延迟后召唤一颗陨星，冲击400范围区域，使敌人眩晕0.5秒并持续烧灼6秒。受到冲击的每个单位还会受到相当于其最大生命值15%的伤害（对建筑无效）。\n\n被动：天界光耀\n佩戴者的任意控制效果在敌方单位身上结束时，他们都会被烧灼，受到每秒60点伤害，移动速度减缓15%，持续3秒。烧灼伤害可以和主动技能的烧灼伤害叠加。对建筑无效。",
+      "descriptionZh": "主动：陨星锤\n持续施法 - 持续施法2秒后，在0.5秒延迟后召唤一颗陨星，冲击400范围区域，使敌人眩晕0.75秒并持续烧灼6秒。受到冲击的每个单位还会受到相当于其最大生命值15%的伤害（对建筑无效）。\n\n被动：天界光耀\n佩戴者的任意控制效果在敌方单位身上结束时，他们都会被烧灼，受到每秒60点伤害，移动速度减缓15%，持续3秒。烧灼伤害可以和主动技能的烧灼伤害叠加。对建筑无效。",
       "imageUrl": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/starforge.png",
       "internalName": "item_starforge",
       "mechanics": {
@@ -110121,8 +110121,8 @@
       "parent": "",
       "en": "Tome of Knowledge",
       "zh": "知识之书",
-      "descriptionEn": "Use: Enlighten\nGrants you 750 experience plus 150 per tome consumed by your team after the first two.\n\nTomes Used By Team: %customval_team_tomes_used%",
-      "descriptionZh": "使用：启迪\n直接获得750点经验值，而且己方在前两本书后每消耗一本知识之书，将额外获得150点经验。\n\n己方已使用本数：%customval_team_tomes_used%",
+      "descriptionEn": "Use: Enlighten\nGrants you 750 experience plus 150 per tome consumed by your team after the first two.",
+      "descriptionZh": "使用：启迪\n直接获得750点经验值，而且己方在前两本书后每消耗一本知识之书，将额外获得150点经验。",
       "imageUrl": "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/items/tome_of_knowledge.png",
       "internalName": "item_tome_of_knowledge",
       "mechanics": {

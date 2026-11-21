@@ -2,7 +2,8 @@
   "patch": "7.42",
   "sources": {
     "ability": "https://www.dota2.com.cn/article/details/20261119/220540.html",
-    "item": "https://www.dota2.com.cn/article/details/20261119/220541.html"
+    "item": "https://www.dota2.com.cn/article/details/20261119/220541.html",
+    "starforge": "https://www.dota2.com/datafeed/itemdata?item_id=1946&language=schinese"
   },
   "lessons": {
     "ability:1921": {
@@ -34,8 +35,13 @@
     },
     "item:1946": {
       "en": "Starforge",
-      "source": "item",
-      "zh": "锻星炉"
+      "source": "starforge",
+      "zh": "锻星炉",
+      "description": {
+        "feedEnglishSha256": "c4c6ca834913e2cc3a0fa867a9e3627fc92fb83d765a8697a37a506690c30991",
+        "staleChineseSha256": "33fb6170e0a21a69fb4c10327e14d983247ab061a34714b1c7671d8ad6be2a0b",
+        "zh": "主动：陨星锤\n持续施法 - 持续施法2秒后，在0.5秒延迟后召唤一颗陨星，冲击400范围区域，使敌人眩晕0.75秒并持续烧灼6秒。受到冲击的每个单位还会受到相当于其最大生命值15%的伤害（对建筑无效）。\n\n被动：天界光耀\n佩戴者的任意控制效果在敌方单位身上结束时，他们都会被烧灼，受到每秒60点伤害，移动速度减缓15%，持续3秒。烧灼伤害可以和主动技能的烧灼伤害叠加。对建筑无效。"
+      }
     },
     "item:1948": {
       "en": "Skypiercer",
