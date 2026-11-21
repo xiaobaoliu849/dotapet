@@ -9,6 +9,7 @@ export class GSIServer extends EventEmitter {
     this.port = options.port || 3008;
     this.host = options.host || '127.0.0.1';
     this.server = null;
+    this.lastError = null;
     this.parser = new GSIParser({
       heroesConfig: options.heroesConfig,
       autoSwitchHero: options.autoSwitchHero !== false,
@@ -51,8 +52,9 @@ export class GSIServer extends EventEmitter {
 
   start() {
     if (this.server) return;
+    this.lastError = null;
 
-    this.server = http.createServer((req, res) => {
+    const server = http.createServer((req, res) => {
       // DOTA 2 sends POST requests with application/json
       if (req.method === 'POST') {
         let body = '';
@@ -123,16 +125,26 @@ export class GSIServer extends EventEmitter {
       }
     });
 
-    this.server.on('error', (err) => {
+    this.server = server;
+    const onError = err => {
+      if (this.server !== server) return;
+      this.stop();
+      this.lastError = err;
       console.error(`[GSIServer] Error on port ${this.port}:`, err.message);
       this.emit('error', err);
-    });
+    };
+    server.on('error', onError);
 
-    this.server.listen(this.port, this.host, () => {
-      console.log(`[GSIServer] DOTA 2 GSI Local Listener running on http://${this.host}:${this.port}/`);
-      this.startHeartbeatWatcher();
-      this.emit('listening', { host: this.host, port: this.port });
-    });
+    try {
+      server.listen(this.port, this.host, () => {
+        if (this.server !== server) return;
+        console.log(`[GSIServer] DOTA 2 GSI Local Listener running on http://${this.host}:${this.port}/`);
+        this.startHeartbeatWatcher();
+        this.emit('listening', { host: this.host, port: this.port });
+      });
+    } catch (error) {
+      onError(error);
+    }
   }
 
   onPacketReceived(payload) {
@@ -161,9 +173,13 @@ export class GSIServer extends EventEmitter {
 
   stop() {
     clearInterval(this.heartbeatTimer);
-    if (this.server) {
-      this.server.close();
-      this.server = null;
+    this.heartbeatTimer = null;
+    this.isConnected = false;
+    this.lastPacketTime = 0;
+    const server = this.server;
+    this.server = null;
+    if (server) {
+      server.close();
       console.log('[GSIServer] DOTA 2 GSI Server stopped.');
     }
   }

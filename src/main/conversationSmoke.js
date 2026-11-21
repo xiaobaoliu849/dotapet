@@ -147,6 +147,15 @@ export async function runConversationSmoke({ mainWindow, outputDirectory }) {
     `);
     await page.capturePage();
     fs.writeFileSync(path.join(outputDirectory, 'conversation-bkb-avatar.png'), (await page.capturePage()).toPNG());
+    send('gsi:connection-status', { isConnected: false, port: 9999, listenerError: '端口 9999 已被占用' });
+    await run(`await wait();
+      check(get('gsi-badge').classList.contains('gsi-error') && get('gsi-badge').title.includes('9999'), 'Pet missed the GSI listener failure');
+    `);
+    send('gsi:connection-status', { isConnected: false, port: 9999 });
+    await run(`await wait();
+      check(!get('gsi-badge').classList.contains('gsi-error') && get('gsi-label').textContent === 'GSI 待机' && !get('gsi-badge').title.includes('9999'),
+        'Pet kept the listener failure after retry');
+    `);
     send('gsi:tactical-timer', { type: 'clutch_escape', title: '❓ 极限逃生 · 公屏打问号', message: '丝血反杀/极限逃生！全屏飘起灵魂问号 ？' });
     await run(`await wait();
       check(get('hud-meaning').textContent.includes('灵魂问号'), 'GSI clutch_escape did not trigger ? bubble');

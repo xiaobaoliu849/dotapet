@@ -213,6 +213,11 @@ textarea,
   color: #34d399;
 }
 
+.gsi-badge.gsi-error {
+  border-color: rgba(248, 113, 113, 0.4);
+  color: #fca5a5;
+}
+
 .gsi-dot {
   width: 6px;
   height: 6px;
@@ -226,6 +231,8 @@ textarea,
   box-shadow: 0 0 8px #10b981;
   animation: gsi-pulse 2s infinite;
 }
+
+.gsi-error .gsi-dot { background: #f87171; }
 
 @keyframes gsi-pulse {
   0%, 100% { transform: scale(1); opacity: 1; }

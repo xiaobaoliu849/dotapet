@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { test } from 'node:test';
+import { once } from 'node:events';
 import { GSIServer } from '../src/main/gsi/gsiServer.js';
 import { normalizeGsiHeroName } from '../src/main/gsi/heroMap.js';
 import { checkGsiInstalled, generateGsiConfigContent, GSI_HEARTBEAT_SECONDS, installGsiConfig } from '../src/main/gsi/gsiInstaller.js';
@@ -45,6 +46,35 @@ test('GSI stays connected between idle heartbeats and eventually reports the gam
   } finally {
     server.stop();
   }
+});
+
+test('GSI reports a busy port and can restart after the port is released', async t => {
+  const blocker = http.createServer();
+  t.after(() => { if (blocker.listening) blocker.close(); });
+  const blocked = once(blocker, 'listening');
+  blocker.listen(0, '127.0.0.1');
+  await blocked;
+  const port = blocker.address().port;
+  const server = new GSIServer({ port });
+  t.after(() => server.stop());
+
+  const failed = once(server, 'error');
+  server.start();
+  const [error] = await failed;
+  assert.equal(error.code, 'EADDRINUSE');
+  assert.equal(server.lastError, error);
+  assert.equal(server.server, null);
+  assert.equal(server.heartbeatTimer, null);
+
+  const released = once(blocker, 'close');
+  blocker.close();
+  await released;
+  const ready = once(server, 'listening');
+  server.start();
+  assert.equal((await ready)[0].port, port);
+  assert.equal(server.lastError, null);
+  const health = await fetch(`http://127.0.0.1:${port}/`);
+  assert.deepEqual(await health.json(), { status: 'active', isConnected: false, port });
 });
 
 async function runTests() {

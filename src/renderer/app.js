@@ -2746,14 +2746,17 @@ function setupEventListeners() {
 
     window.electronAPI.onGsiConnectionStatus?.((data) => {
       const isLive = Boolean(data?.isConnected);
+      const listenerError = data?.listenerError;
       if (elements.gsiBadge) {
         elements.gsiBadge.classList.toggle('gsi-live', isLive);
+        elements.gsiBadge.classList.toggle('gsi-error', Boolean(listenerError));
+        elements.gsiBadge.title = listenerError || 'DOTA 2 GSI 游戏联动状态 (点击检测/安装配置)';
       }
       if (elements.gsiLabel) {
-        elements.gsiLabel.textContent = isLive ? 'GSI 对局中' : 'GSI 待机';
+        elements.gsiLabel.textContent = listenerError ? 'GSI 监听失败' : isLive ? 'GSI 对局中' : 'GSI 待机';
       }
       if (elements.ctxGsiLabel) {
-        elements.ctxGsiLabel.textContent = isLive ? '已连接 (对局中)' : '待机中 (3008)';
+        elements.ctxGsiLabel.textContent = listenerError || (isLive ? '已连接 (对局中)' : `待机中 (${data?.port || 3008})`);
       }
       if (elements.gsiHudBar) {
         elements.gsiHudBar.classList.toggle('hidden', !isLive);

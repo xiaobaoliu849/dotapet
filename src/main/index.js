@@ -670,6 +670,10 @@ function createWindow() {
   mainWindow.webContents.setVisualZoomLevelLimits(1, 1);
   mainWindow.webContents.setZoomFactor(1);
 
+  const contents = mainWindow.webContents;
+  contents.on('did-finish-load', () => {
+    if (gsiServer) contents.send('gsi:connection-status', currentGsiStatus());
+  });
   mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
 
   const showAndPresentWindow = () => {
@@ -981,6 +985,15 @@ function snapWindow(position = 'center') {
   }
 }
 
+function gsiListenerErrorMessage(error, port) {
+  return error.code === 'EADDRINUSE' ? `端口 ${port} 已被占用` : `无法监听端口 ${port}`;
+}
+
+function currentGsiStatus() {
+  const { port, isConnected, lastError } = gsiServer;
+  return { port, isConnected, ...(lastError && { listenerError: gsiListenerErrorMessage(lastError, port) }) };
+}
+
 function updateTrayMenu() {
   if (!tray) return;
 
@@ -1071,12 +1084,21 @@ function updateTrayMenu() {
     },
   ];
 
-  const gsiStatusLabel = gsiServer?.isConnected ? '🟢 DOTA 2 联动: 游戏中' : '⚪ DOTA 2 联动: 待机中';
+  const gsiError = gsiServer?.lastError;
+  const gsiStatusLabel = gsiError ? '🔴 DOTA 2 联动: 监听失败'
+    : gsiServer?.isConnected ? '🟢 DOTA 2 联动: 游戏中' : '⚪ DOTA 2 联动: 待机中';
+  const gsiDetail = gsiError ? gsiListenerErrorMessage(gsiError, gsiSettings.port)
+    : gsiServer?.isConnected ? '已连接' : `未连接 (端口 ${gsiSettings.port})`;
 
   const gsiSubmenu = [
     {
-      label: `● 状态: ${gsiServer?.isConnected ? '已连接' : '未连接 (端口 ' + gsiSettings.port + ')'}`,
+      label: `● 状态: ${gsiDetail}`,
       enabled: false,
+    },
+    {
+      label: '重新启动 DOTA 2 监听',
+      visible: Boolean(gsiError),
+      click: () => { gsiServer.start(); updateTrayMenu(); },
     },
     {
       label: '🔄 自动识别并同步选定英雄',
@@ -1255,12 +1277,15 @@ function setupServices() {
     }
   });
 
-  gsiServer.on('connection_status', (data) => {
+  const publishGsiStatus = data => {
     if (mainWindow && !mainWindow.isDestroyed()) {
-      mainWindow.webContents.send('gsi:connection-status', data);
+      mainWindow.webContents.send('gsi:connection-status', { ...data, ...currentGsiStatus() });
     }
     updateTrayMenu();
-  });
+  };
+  gsiServer.on('connection_status', publishGsiStatus);
+  gsiServer.on('error', () => publishGsiStatus());
+  gsiServer.on('listening', () => publishGsiStatus());
 
   gsiServer.start();
 }
